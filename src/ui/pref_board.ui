@@ -1,0 +1,424 @@
+<ui version="4.0" >
+ <class>PrefBoard</class>
+ <widget class="QWidget" name="PrefBoard" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>403</width>
+    <height>467</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="margin" >
+    <number>0</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item>
+    <widget class="QGroupBox" name="groupAnimations" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>2</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="focusPolicy" >
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title" >
+      <string>&amp;Animations</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="1" >
+       <widget class="QCheckBox" name="checkTransformations" >
+        <property name="text" >
+         <string>&amp;Transformations</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="checkExplosions" >
+        <property name="text" >
+         <string>&amp;Explosions</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="checkMovements" >
+        <property name="text" >
+         <string>&amp;Movements</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QCheckBox" name="checkFading" >
+        <property name="text" >
+         <string>&amp;Fading</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0" colspan="2" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_6" >
+          <property name="text" >
+           <string>Rough
+(little CPU usage)</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="buddy" >
+           <cstring>sliderSmoothness</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliderSmoothness" >
+          <property name="maximum" >
+           <number>32</number>
+          </property>
+          <property name="pageStep" >
+           <number>4</number>
+          </property>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_7" >
+          <property name="text" >
+           <string>Smooth
+(high CPU usage)</string>
+          </property>
+          <property name="alignment" >
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="buddy" >
+           <cstring>sliderSmoothness</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="6" column="0" colspan="2" >
+       <widget class="QLabel" name="label_8" >
+        <property name="text" >
+         <string>Animation s&amp;moothness:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>sliderSmoothness</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" colspan="2" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_2" >
+          <property name="text" >
+           <string>Slow</string>
+          </property>
+          <property name="buddy" >
+           <cstring>sliderSpeed</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliderSpeed" >
+          <property name="maximum" >
+           <number>32</number>
+          </property>
+          <property name="singleStep" >
+           <number>1</number>
+          </property>
+          <property name="pageStep" >
+           <number>4</number>
+          </property>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_4" >
+          <property name="text" >
+           <string>Fast</string>
+          </property>
+          <property name="buddy" >
+           <cstring>sliderSpeed</cstring>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="4" column="0" colspan="2" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>Animation s&amp;peed:</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignCenter</set>
+        </property>
+        <property name="buddy" >
+         <cstring>sliderSpeed</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" colspan="2" >
+       <layout class="QHBoxLayout" >
+        <property name="margin" >
+         <number>0</number>
+        </property>
+        <property name="spacing" >
+         <number>6</number>
+        </property>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" >
+           <size>
+            <width>31</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_9" >
+          <property name="sizePolicy" >
+           <sizepolicy>
+            <hsizetype>7</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>15</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text" >
+           <string>&amp;Max sequence length:</string>
+          </property>
+          <property name="buddy" >
+           <cstring>spinSequenceMax</cstring>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="spinSequenceMax" >
+          <property name="maximum" >
+           <number>9999</number>
+          </property>
+          <property name="minimum" >
+           <number>2</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QCheckBox" name="checkSequence" >
+        <property name="text" >
+         <string>Animate move &amp;sequences</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBorder" >
+     <property name="sizePolicy" >
+      <sizepolicy>
+       <hsizetype>5</hsizetype>
+       <vsizetype>5</vsizetype>
+       <horstretch>0</horstretch>
+       <verstretch>1</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="focusPolicy" >
+      <enum>Qt::StrongFocus</enum>
+     </property>
+     <property name="title" >
+      <string>&amp;Border</string>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>&amp;Color</string>
+        </property>
+        <property name="buddy" >
+         <cstring>colorBorder</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>&amp;Text Color</string>
+        </property>
+        <property name="buddy" >
+         <cstring>colorBorderText</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QCheckBox" name="checkBorderFont" >
+        <property name="sizePolicy" >
+         <sizepolicy>
+          <hsizetype>1</hsizetype>
+          <vsizetype>0</vsizetype>
+          <horstretch>1</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Custom &amp;font:</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="KColorButton" name="colorBorder" />
+      </item>
+      <item row="1" column="1" >
+       <widget class="KColorButton" name="colorBorderText" />
+      </item>
+      <item row="2" column="1" >
+       <widget class="KFontRequester" native="1" name="fontBorder" >
+        <property name="focusPolicy" >
+         <enum>Qt::StrongFocus</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KColorButton</class>
+   <extends>QPushButton</extends>
+   <header>kdewidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>KFontRequester</class>
+   <extends>QWidget</extends>
+   <header>kdewidgets.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>groupAnimations</tabstop>
+  <tabstop>checkMovements</tabstop>
+  <tabstop>checkFading</tabstop>
+  <tabstop>checkExplosions</tabstop>
+  <tabstop>checkTransformations</tabstop>
+  <tabstop>checkSequence</tabstop>
+  <tabstop>spinSequenceMax</tabstop>
+  <tabstop>sliderSpeed</tabstop>
+  <tabstop>sliderSmoothness</tabstop>
+  <tabstop>groupBorder</tabstop>
+  <tabstop>colorBorder</tabstop>
+  <tabstop>colorBorderText</tabstop>
+  <tabstop>checkBorderFont</tabstop>
+  <tabstop>fontBorder</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>checkBorderFont</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>fontBorder</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>228</x>
+     <y>442</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>374</x>
+     <y>444</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkSequence</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_9</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>158</x>
+     <y>113</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>151</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkSequence</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>spinSequenceMax</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>376</x>
+     <y>112</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>404</x>
+     <y>143</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

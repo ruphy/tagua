@@ -1,0 +1,57 @@
+<% cvariant = variant.capitalize %>
+
+#include "<%= variant %>.h"
+#include "xchess/animator.h"
+#include "xchess/piece.h"
+#include "xchess/move.h"
+
+class <%= cvariant %>Position : public ChessPosition {
+public:
+  typedef ChessPosition::Piece Piece;
+  <%= cvariant %>Position();
+  <%= cvariant %>Position(const ChessPosition&);
+  <%= cvariant %>Position(Piece::Color turn, bool wk, bool wq,
+                                          bool bk, bool bq, const Point& ep);
+  virtual <%= cvariant %>Position* clone() const { return new <%= cvariant %>Position(*this); }
+};
+
+<%= cvariant %>Position::<%= cvariant %>Position() { }
+
+<%= cvariant %>Position::<%= cvariant %>Position(const ChessPosition& other)
+: ChessPosition(other) { }
+
+<%= cvariant %>Position::<%= cvariant %>Position(Piece::Color turn, bool wk, bool wq,
+                               bool bk, bool bq, const Point& ep)
+: ChessPosition(turn, wk, wq, bk, bq, ep) { }
+
+
+
+class <%= cvariant %>VariantInfo {
+public:
+  typedef <%= cvariant %>Position Position;
+  typedef Position::Move Move;
+  typedef Position::Piece Piece;
+  typedef ChessAnimator Animator;
+  static void loadPieces(PixmapLoader::Info&);
+  static void forallPieces(PieceFunction& f);
+  static int moveListLayout() { return 0; }
+};
+
+void <%= cvariant %>VariantInfo::loadPieces(PixmapLoader::Info& info) {
+  ChessVariant::loadPieces(info);
+}
+
+void <%= cvariant %>VariantInfo::forallPieces(PieceFunction& f) {
+  ChessVariant::forallPieces(f);
+}
+
+
+
+VariantInfo* <%= cvariant %>Variant::static_<%= variant %>_variant = 0;
+
+VariantInfo* <%= cvariant %>Variant::info() {
+  if (!static_<%= variant %>_variant)
+    static_<%= variant %>_variant = new WrappedVariantInfo<<%= cvariant %>VariantInfo>;
+  return static_<%= variant %>_variant;
+}
+

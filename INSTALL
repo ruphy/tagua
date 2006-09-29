@@ -1,0 +1,37 @@
+What you need
+==================
+
+  * qt (at least a 4.2 snapshot)
+  * kdelibs
+  * boost headers
+
+Further you will need GNU make, a working C++ compiler (e.g. gcc 3.4.x or later)
+and CMake 2.4.3 or later.
+
+The following packages are optional:
+
+  * X11 headers (UNIX only - to enable task bar flashing)
+  * lua (5.1.1, if it is not available you can use the internal copy)
+
+Preparations
+==================
+
+Installing CMake:
+
+Get the latest version of CMake from http://www.cmake.org/
+unpack, run "./configure && make && make install" will install into /usr/local.
+
+Ensure cmake is in your $PATH.
+
+Compiling KBoard
+==================
+
+Unpack the KBoard package, change to the package root directory, and type:
+
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local
+make
+make install
+
+If you want kboard to be linked to system lua instead that the internall one,
+and -DSYSTEM_LUA=1 to the command line, and optionally add -DLUA_PKG=xyz to
+specify the pkg-config lua package.

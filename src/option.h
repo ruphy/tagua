@@ -1,0 +1,335 @@
+/*
+  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
+            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+*/
+
+#ifndef OPTION_H
+#define OPTION_H
+
+#include <list>
+#include <boost/shared_ptr.hpp>
+#include <QString>
+#include <QFont>
+#include <QColor>
+#include <QApplication>
+#include <QList>
+#include <QStringList>
+#include <QWidget>
+
+class BaseOpt;
+class BoolOpt;
+class IntOpt;
+class StringOpt;
+class ColorOpt;
+class FontOpt;
+class ComboOpt;
+class SelectOpt;
+class UrlOpt;
+typedef boost::shared_ptr<BaseOpt> OptPtr;
+typedef boost::shared_ptr<BoolOpt> BoolOptPtr;
+typedef boost::shared_ptr<IntOpt> IntOptPtr;
+typedef boost::shared_ptr<StringOpt> StringOptPtr;
+typedef boost::shared_ptr<ColorOpt> ColorOptPtr;
+typedef boost::shared_ptr<FontOpt> FontOptPtr;
+typedef boost::shared_ptr<ComboOpt> ComboOptPtr;
+typedef boost::shared_ptr<SelectOpt> SelectOptPtr;
+typedef boost::shared_ptr<UrlOpt> UrlOptPtr;
+typedef QList<OptPtr> OptList;
+typedef QList<BoolOptPtr> BoolOptList;
+
+template<typename O>
+QList<boost::shared_ptr<O> > options_list_duplicate(const QList<boost::shared_ptr<O> >& o) {
+  QList<boost::shared_ptr<O> > retv;
+  for(int i=0;i<o.size();i++)
+    retv << boost::static_pointer_cast<O,BaseOpt>(o[i]->clone());
+  return retv;
+}
+
+template<typename O1, typename O2>
+bool options_list_equals(const QList<boost::shared_ptr<O1> >& o1,
+                          const QList<boost::shared_ptr<O2> >& o2) {
+  if(o1.size() != o2.size())
+    return false;
+  for(int i=0;i<o1.size();i++)
+  if(!o1[i]->equals(*o2[i]))
+    return false;
+  return true;
+}
+
+void dump_options_list(OptList& options, int indent = 0);
+
+class BaseOpt {
+private:
+  QString m_name;
+  QString m_label;
+public:
+  BaseOpt(const QString& name, const QString& label)
+    : m_name(name)
+    , m_label(label) {}
+  virtual ~BaseOpt() {};
+  QString name() const { return m_name; }
+  QString label() const { return m_label; }
+  virtual OptPtr clone() const = 0;
+  virtual bool equals(const BaseOpt&) const = 0;
+};
+
+class BoolOpt : public BaseOpt {
+//private:
+public:
+  bool m_default;
+  bool m_value;
+  QList<OptPtr> m_sub_options;
+public:
+  BoolOpt(const QString& name, const QString& label, bool def = false,
+            const QList<OptPtr>& suboptions = QList<OptPtr>())
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_value(def)
+    , m_sub_options(suboptions) {}
+  bool defaultValue() const { return m_default; }
+  bool value() const { return m_value; }
+  void setValue(bool v) { m_value = v; }
+  OptList subOptions() { return m_sub_options; }
+  virtual OptPtr clone() const {
+    BoolOpt *o = new BoolOpt(name(), label(), m_default, options_list_duplicate(m_sub_options) );
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const BoolOpt* o = dynamic_cast<const BoolOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_value != o->m_value
+        && options_list_equals(m_sub_options, o->m_sub_options);
+  }
+};
+
+class IntOpt : public BaseOpt {
+private:
+  int m_default;
+  int m_min;
+  int m_max;
+  int m_value;
+public:
+  IntOpt(const QString& name, const QString& label, int def, int min, int max)
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_min(min)
+    , m_max(max)
+    , m_value(def) {}
+  int defaultValue() const { return m_default; }
+  int min() const { return m_min; }
+  int max() const { return m_max; }
+  int value() const { return m_value; }
+  void setValue(int v) { m_value = v; }
+  virtual OptPtr clone() const {
+    IntOpt *o = new IntOpt(name(), label(), m_default, m_min, m_max);
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const IntOpt* o = dynamic_cast<const IntOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_min != o->m_min
+        && m_max != o->m_max
+        && m_value != o->m_value;
+  }
+};
+
+class StringOpt : public BaseOpt {
+private:
+  QString m_default;
+  QString m_value;
+public:
+  StringOpt(const QString& name, const QString& label, QString def = QString())
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_value(def) {}
+  QString defaultValue() const { return m_default; }
+  QString value() const { return m_value; }
+  void setValue(QString v) { m_value = v; }
+  virtual OptPtr clone() const {
+    StringOpt *o = new StringOpt(name(), label(), m_default);
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const StringOpt* o = dynamic_cast<const StringOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_value != o->m_value;
+  }
+};
+
+class UrlOpt : public BaseOpt {
+private:
+  QString m_default;
+  QString m_value;
+public:
+  UrlOpt(const QString& name, const QString& label, QString def = QString())
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_value(def) {}
+  QString defaultValue() const { return m_default; }
+  QString value() const { return m_value; }
+  void setValue(QString v) { m_value = v; }
+  virtual OptPtr clone() const {
+    UrlOpt *o = new UrlOpt(name(), label(), m_default);
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const UrlOpt* o = dynamic_cast<const UrlOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_value != o->m_value;
+  }
+};
+
+class ComboOpt : public BaseOpt {
+//private:
+public:
+  QStringList m_values;
+  int         m_selected;
+public:
+  ComboOpt(const QString& name, const QString& label, const QStringList& values, int selected = 0)
+    : BaseOpt(name, label)
+    , m_values(values)
+    , m_selected(selected) {}
+  int selected() const { return m_selected; }
+  void setSelected(int v) { m_selected = v; }
+  virtual OptPtr clone() const {
+    ComboOpt *o = new ComboOpt(name(), label(), m_values, m_selected);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const ComboOpt* o = dynamic_cast<const ComboOpt*>(&_o);
+    return o
+        && m_values == o->m_values
+        && m_selected != o->m_selected;
+  }
+};
+
+class ColorOpt : public BaseOpt {
+private:
+  QColor m_default;
+  QColor m_value;
+public:
+  ColorOpt(const QString& name, const QString& label, QColor def = Qt::black)
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_value(def) {}
+  QColor defaultValue() const { return m_default; }
+  QColor value() const { return m_value; }
+  void setValue(QColor v) { m_value = v; }
+  virtual OptPtr clone() const {
+    ColorOpt *o = new ColorOpt(name(), label(), m_default);
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const ColorOpt* o = dynamic_cast<const ColorOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_value != o->m_value;
+  }
+};
+
+class FontOpt : public BaseOpt {
+private:
+  QFont m_default;
+  QFont m_value;
+public:
+  FontOpt(const QString& name, const QString& label, QFont def = QApplication::font())
+    : BaseOpt(name, label)
+    , m_default(def)
+    , m_value(def) {}
+  QFont defaultValue() const { return m_default; }
+  QFont value() const { return m_value; }
+  void setValue(QFont v) { m_value = v; }
+  virtual OptPtr clone() const {
+    FontOpt *o = new FontOpt(name(), label(), m_default);
+    o->setValue(m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const FontOpt* o = dynamic_cast<const FontOpt*>(&_o);
+    return o
+        && m_default == o->m_default
+        && m_value != o->m_value;
+  }
+};
+
+class SelectOpt : public BaseOpt {
+//private:
+public:
+  QList<BoolOptPtr> m_options;
+  int m_selected;
+
+public:
+  SelectOpt(const QString& name, const QString& label, QList<BoolOptPtr> options,
+                                                                  int selected = 0)
+    : BaseOpt(name, label)
+    , m_options(options) {
+    setSelected(selected);
+  }
+  int selected() const { return m_selected; }
+  void setSelected(int s) {
+    m_selected = std::min(std::max(s, 0), m_options.size()-1);
+    for(int i=0;i<m_options.size();i++)
+      m_options[i]->setValue(i==m_selected);
+  }
+  BoolOptList options(){ return m_options; }
+  virtual OptPtr clone() const {
+    return OptPtr(new SelectOpt(name(), label(), options_list_duplicate(m_options), m_selected));
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const SelectOpt* o = dynamic_cast<const SelectOpt*>(&_o);
+    return o
+        && m_selected != o->m_selected
+        && options_list_equals(m_options, o->m_options);
+  }
+};
+
+
+
+template<typename O>
+boost::shared_ptr<O> options_list_find(const OptList& o, const QString& name) {
+  for(int i=0;i<o.size();i++)
+  if(o[i]->name() == name)
+    if(boost::shared_ptr<O> retv = boost::dynamic_pointer_cast<O, BaseOpt>(o[i]))
+      return retv;
+  return boost::shared_ptr<O>();
+}
+
+
+
+class OptionWidget : public QWidget {
+  Q_OBJECT
+  QList<OptPtr> m_options;
+  void setupOptionWidget(QWidget*, OptList&, bool indent = false);
+  void notifyChange();
+
+  friend class OptCheckBox;
+  friend class OptRadioButton;
+  friend class OptSpinBox;
+  friend class OptLineEdit;
+  friend class OptColorButton;
+  friend class OptFontRequester;
+  friend class OptUrlRequester;
+  friend class OptComboBox;
+
+public:
+  OptionWidget(OptList& options, QWidget* parent = NULL);
+
+signals:
+  void changed(const OptList& options);
+};
+
+#endif //OPTION_H

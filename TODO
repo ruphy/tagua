@@ -1,0 +1,56 @@
+FEATURES:
+
+[DONE] * Play from any position.
+[PARTIALLY DONE] * Implement a real SDI interface.
+
+* Configuration dialog.
+
+  This should not present problems, but is quite boring.
+  There are already pages for highlighting and clock configurations, but they should be linked in a tabbed configuration dialog similar to that of Kate, for example.
+  Needed pages:
+  * General: language choice, automatically connect on startup, default variant, etc...
+  * Connection: manage ics connections and options.
+  * [DONE] Highlighting: manage highlighting patterns for the ics console.
+  * [DONE] Animations: animation speed, graphical effects, etc...
+  * [DONE] Theme: manage themes and theme options; choose default theme; associate themes with variants.
+  * [DONE] Movelist: colors, fonts, animations and graphical effects preferences.
+  * [PARTIALLY DONE] Clock: colors and fonts.
+  * Engine: List of engines, with type, command line options, working path, etc...
+
+* GUI Tuning.
+
+  Many things still have to be done to make the gui really user friendly (think about the Panda):
+  * Message boxes to notify the user of error, for instance while connecting.
+  * Restore a functional status bar.
+  [SKETCHED] * Add some game info between the pools (like "FICS, rated crazyhouse")
+  * Notify the user of Server/Engine events. I don't like the Babaschess-like popup when
+    i get a match request, i'd prefer an amarok-like notification.
+
+CURRENT RELEASE:
+
+[DONE] * Set up a decent installation system, maybe with a cool one-click windows (linux?) installer.
+* Improve default highlighting script.
+[DONE] * Add support for multiple ICS interactions.
+[MOSTLY DONE] * More robust ICS support: do not crash when testing invalid moves.
+[DONE] * About dialog.
+* Choose an icon for the application.
+
+FUTURE RELEASES:
+
+* Ability to define a variant in some script language (ruby or lua or ...)
+* Complete support for chess engines or variant specific AI.
+* An advanced Edit Position mode, with the ability to edit a position for
+  an arbitrary variant, as well as the various flags such as the en passant
+  square,  etc...
+* Improve Examine Mode and Observe Mode:
+  Movelist support for examination is not as extensive as it could, and I don't know if it will ever be.
+  Problems:
+  * [FIXED] Crash when going back to the starting position
+  * [FIXED] Moves are sometimes not correctly displayed even where there's enough information available.
+  Future possible features:
+  * Execute move immediately instead waiting the server response, when possible.
+    Note: this may prove hard to implement correctly, because one needs to filter out server responses
+    (after a suitable consistency check) so that they do not cause wrong updates if they come out when they
+    are already obsolete.
+  * Display variations correctly in the movelist, instead of always replacing mainline entries.
+    Note: hard to do, because the protocol sends very few information about the reason of a style12 update.

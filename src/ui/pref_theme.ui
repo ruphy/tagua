@@ -1,0 +1,112 @@
+<ui version="4.0" >
+ <class>PrefTheme</class>
+ <widget class="QWidget" name="PrefTheme" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>447</width>
+    <height>424</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>0</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="1" column="1" >
+    <widget class="QGroupBox" name="groupSquares" >
+     <property name="title" >
+      <string>&amp;Squares</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkSquares" />
+      </item>
+      <item>
+       <widget class="QListWidget" name="listSquares" />
+      </item>
+      <item>
+       <widget class="QLabel" name="labelSquares" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QGroupBox" name="groupPieces" >
+     <property name="title" >
+      <string>&amp;Pieces</string>
+     </property>
+     <layout class="QVBoxLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="checkPieces" />
+      </item>
+      <item>
+       <widget class="QListWidget" name="listPieces" />
+      </item>
+      <item>
+       <widget class="QLabel" name="labelPieces" >
+        <property name="text" >
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <property name="margin" >
+      <number>0</number>
+     </property>
+     <property name="spacing" >
+      <number>6</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_1" >
+       <property name="text" >
+        <string>&amp;Variant:</string>
+       </property>
+       <property name="buddy" >
+        <cstring>comboVariant</cstring>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="comboVariant" />
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>comboVariant</tabstop>
+  <tabstop>checkPieces</tabstop>
+  <tabstop>listPieces</tabstop>
+  <tabstop>checkSquares</tabstop>
+  <tabstop>listSquares</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

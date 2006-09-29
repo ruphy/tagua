@@ -1,0 +1,108 @@
+/*
+  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
+            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+*/
+
+
+#include <cmath>
+#include <QTimer>
+#include "settings.h"
+#include "piecegroup.h"
+#include "pointconverter.h"
+#include "animation.h"
+#include "piecesprite.h"
+
+using namespace boost;
+
+//BEGIN PieceGroup
+
+PieceGroup::PieceGroup(Canvas::Abstract* parent)
+: ClickableCanvas(parent)
+, m_flipped(false)
+, m_square_size(0) {
+  m_main_animation = new MainAnimation( 1.0 );
+  settingsChanged();
+}
+
+PieceGroup::~PieceGroup()
+{
+  delete m_main_animation;
+}
+
+void PieceGroup::settingsChanged() {
+  if((settings["AnimationsEnabled"] |= true).value<bool>()) {
+    (settings["AnimateFade"] |= true) >> m_anim_fade;
+    (settings["AnimateMovement"] |= true) >> m_anim_movement;
+  }
+  else {
+    m_anim_fade = false;
+    m_anim_movement = false;
+  }
+
+  int speed = (settings["AnimationsSpeed"] |= 16).value<int>();
+  int smoothness = (settings["AnimationsSmoothness"] |= 16).value<int>();
+  m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );
+  m_main_animation->setDelay( int(70.0*pow(10.0, -smoothness/32.0)) );
+}
+
+void PieceGroup::onResize(int new_size, bool force_reload) {
+  if(m_square_size == new_size && !force_reload)
+    return;
+
+  m_square_size = new_size;
+  m_loader.setSize(m_square_size);
+}
+
+void PieceGroup::animatePiece(const shared_ptr<PieceSprite>& piece,
+                                    const Point& to, double speed) {
+  enqueue(
+    m_anim_movement
+    ? shared_ptr<Animation>(new MovementAnimation(piece, converter()->toReal(to), speed))
+    : shared_ptr<Animation>(new InstantAnimation(piece, converter()->toReal(to)))
+  );
+}
+
+void PieceGroup::enqueue(const shared_ptr<Animation>& anim) {
+  m_main_animation->addAnimation(anim);
+}
+
+void PieceGroup::stopAnimations() {
+  m_main_animation->stop();
+}
+
+void PieceGroup::finalizeAnimation(AnimationGroup* group) {
+  delete group;
+}
+
+void PieceGroup::adjustSprite(const Point& p, bool smooth) {
+  shared_ptr<PieceSprite> sprite = spriteAt(p);
+  if (sprite) {
+    if (smooth) {
+      animatePiece(sprite, p, 1.0);
+    }
+    else {
+      enqueue(shared_ptr<Animation>(new InstantAnimation(sprite, converter()->toReal(p))));
+    }
+  }
+}
+
+void PieceGroup::fadeIn(const Point& p) {
+  shared_ptr<PieceSprite> sprite = spriteAt(p);
+  if (sprite) {
+    if(m_anim_fade)
+      enqueue(shared_ptr<Animation>(new FadeAnimation(sprite, converter()->toReal(p), 0, 255)));
+    else
+      enqueue(shared_ptr<Animation>(new DropAnimation(sprite)));
+  }
+}
+
+shared_ptr<PieceSprite> PieceGroup::createSprite(const QPixmap& pix, const Point& pos) {
+  return shared_ptr<PieceSprite>(new PieceSprite(pix, piecesGroup(), converter()->toReal(pos)));
+}
+
+//END PieceGroup

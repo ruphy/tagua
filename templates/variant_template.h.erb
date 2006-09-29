@@ -1,0 +1,16 @@
+<% vtag = "#{variant.upcase}VARIANT_H" %>
+<% cvariant = variant.capitalize %>
+
+#ifndef <%= vtag %>
+#define <%= vtag %>
+
+#include "chess.h"
+
+class <%= cvariant %>Variant {
+private:
+  static VariantInfo* static_<%= variant %>_variant;
+public:
+  static VariantInfo* info();
+};
+
+#endif // <%= vtag %>

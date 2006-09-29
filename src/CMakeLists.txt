@@ -1,0 +1,95 @@
+
+SETUP_SOURCES(kboard_SRC kboard_UIS)
+
+# # find sources
+# FILE(GLOB_RECURSE kboard_SRC *.c *.cpp)
+#
+# #find uis
+# FILE(GLOB_RECURSE kboard_UIS *.ui)
+#
+# FOREACH(FILE1 ${kboard_SRC} ${kboard_UIS})
+#   GET_FILENAME_COMPONENT(FILE2 ${FILE1} PATH)
+#   FILE(RELATIVE_PATH FILE3 ${CMAKE_CURRENT_SOURCE_DIR} ${FILE2})
+#   IF(NOT "${FILE3}" STREQUAL "")
+#     LIST(APPEND DIRS "${FILE3}")
+#   ENDIF(NOT "${FILE3}" STREQUAL "")
+# ENDFOREACH(FILE1)
+#
+# #LIST(SORT DIRS)
+#
+# FOREACH(D ${DIRS})
+#   IF(NOT "${D}" STREQUAL "${PREVD}")
+#     LIST(APPEND UDIRS "${D}")
+#   ENDIF(NOT "${D}" STREQUAL "${PREVD}")
+#   SET(PREVD "${D}")
+# ENDFOREACH(D)
+#
+# FOREACH(D ${UDIRS})
+#   FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${D}")
+# ENDFOREACH(D)
+#
+# SET(PREVD)
+# SET(DIRS)
+# SET(UDIRS)
+
+
+# i have to do this because QT4_WRAP_UI is stupid
+SET(old_bin_dir ${CMAKE_CURRENT_BINARY_DIR})
+SET(CMAKE_CURRENT_BINARY_DIR ${old_bin_dir}/ui)
+#QT4_WRAP_UI(kboard_UIS_H ${kboard_UIS})
+KDE4_ADD_UI_FILES(kboard_SRC ${kboard_UIS})
+SET(CMAKE_CURRENT_BINARY_DIR ${old_bin_dir})
+SET(old_bin_dir)
+
+# QT4_AUTOMOC is not very intelligent either
+KDE4_AUTOMOC(${kboard_SRC} ${kboard_UIS_H})
+
+KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC})
+
+
+INCLUDE_DIRECTORIES(
+#   ${QT_INCLUDE_DIR}
+   ${QT_QTNETWORK_INCLUDE_DIR}
+   ${QT_QTSVG_INCLUDE_DIR}
+#  ${QT_QTOPENGL_INCLUDE_DIR}
+  ${LUA_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIRS}
+  ${KDE4_INCLUDE_DIR}
+  .
+  ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+ADD_DEFINITIONS(
+  ${LUA_CFLAGS}
+)
+
+LINK_DIRECTORIES(
+  ${LUA_LIBRARY_DIRS}
+  ${Boost_LIBRARY_DIRS}
+)
+
+TARGET_LINK_LIBRARIES(kboard
+  ${QT_LIBRARIES}
+  ${QT_QTNETWORK_LIBRARIES}
+  ${QT_QTSVG_LIBRARIES}
+#  ${QT_QTOPENGL_LIBRARIES}
+  ${LUA_LINK_FLAGS}
+  ${KDE4_KDEUI_LIBS}
+  ${KDE4_KIO_LIBS}
+)
+
+INSTALL(TARGETS kboard
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+
+
+IF(0)
+  MESSAGE("(TEST) uis: ${kboard_UIS}")
+  MESSAGE("(TEST) ui headers: ${kboard_UIS_H}")
+
+  FILE(
+    GLOB_RECURSE kboard_H *.h)
+
+  QT4_WRAP_CPP(kboard_MOCS ${kboard_H})
+
+  MESSAGE("(TEST) mocs: ${kboard_MOCS}")
+ENDIF(0)

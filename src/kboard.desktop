@@ -1,0 +1,15 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=kboard
+Exec=kboard %i %m -caption "%c"
+Icon=kboard
+Type=Application
+DocPath=kboard/kboard.html
+Comment=A KDE chessboard
+Comment[bg]=Шах за KDE
+Comment[es]=Un tablero de ajedrez para KDE
+Comment[ga]=Clár fichille KDE
+Comment[nl]=Een KDE-schaakbord
+Comment[pt]=Um tabuleiro de xadrez para o KDE
+Comment[pt_BR]=A tabuleiro de xadrez para o KDE 
+Terminal=false

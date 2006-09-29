@@ -1,0 +1,13 @@
+#ifndef SUICIDE_H
+#define SUICIDE_H
+
+class SuicidePosition : public ChessPosition {
+public:
+  SuicidePosition();
+  SuicidePosition(const SuicidePosition&);
+  virtual SuicidePosition* clone() const;
+  
+  
+};
+
+#endif // SUICIDE_H

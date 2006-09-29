@@ -1,0 +1,13 @@
+
+#ADD_SUBDIRECTORY(
+#  image)
+
+ADD_SUBDIRECTORY(
+  luaimage)
+
+ADD_SUBDIRECTORY(
+  options)
+
+#ADD_SUBDIRECTORY(
+#  hl)
+

@@ -1,0 +1,104 @@
+
+[Site "?"]
+[Date "????.??.??"]
+[Round "?"]
+[White "White player"]
+[Black "Black player"]
+[Result "*"]
+[WhiteElo "0"]
+[BlackElo "0"]
+[ECO "C30"]
+[TimeControl "0"]
+
+1. e4 e5 2. f4 {This is really a good move.} Bc5 ({This is a comment at the
+start of a variation.} 2. ... exf4 {And this is a comment after.} 3. Nf3 g5
+4. h4 g4 5. Ne5 Nf6 6. Nxg4 (6. Nc3 d6 7. Nxf7 ) ) 3. Nf3 Nc6 4. Bc4 {The
+bishop is attacking f7 and is threatening to checkmate the black king} d6 5.
+c3 (5. d3 Nf6 6. Nc3 Bg4 7. Na4 Bb4+ 8. c3 Ba5 9. Be3 (9. Bd2 Bxf3 10. Qxf3
+Nh5 (10. ... O-O 11. O-O-O a6 12. b4 b5 13. bxa5 bxc4 14. d4 exd4 15. cxd4
+Nxd4 ) ) Nd4 10. O-O Nxf3+ 11. gxf3 Bh3 12. Rf2 a6 (12. ... O-O 13. b4 Bb6
+14. Nxb6 axb6 15. a4 Nh5 16. f5 g6 17. f4 (17. Bh6 Re8 18. f4 Nxf4 19. Bxf4
+exf4 20. Qf3 Qg5+ ) Nxf4 18. Bxf4 exf4 19. Rxf4 ) 13. b4 b5 14. bxa5 {After
+this one white is in a hopeless position} bxc4 15. dxc4 Qd7 16. Nb2 Nh5 17.
+f5 ) Nf6 6. Qe2 Ng4 7. Rf1 O-O 8. d3 Be6 9. Bb3 *
+
+[White "Maurizio"]
+[Black "Rattatechess"]
+1. e4 c5 2. Nf3 e6 3. Nc3 Nc6 4. d4 cxd4 5. Nxd4 Nf6 6. f3 Bb4 7. Be3 Bxc3+ 8. bxc3 Nxe4 9. fxe4 Qh4+ 10. Bf2 Qxe4+ 11. Qe2 Qd5 12. c4 Qd6 13. Qd3 Qb4+ 14. c3 Qb2 15. Rd1 Qxa2 16. Nxc6 bxc6 17. Bc5 Qa5 18. Qd6 Qxc3+ 19. Kf2 Qf6+ 20. Kg1 Qg5 21. h4 Qd8 22. Rh3 f5 23. Rg3 Qf6 24. Be2 Rg8 25. h5 g6 26. Bf3 Qf8 27. Qe5 Qh6 28. Rd6 Qc1+ 29. Kh2 Qxc4 30. Rxc6 g5 31. Qf6 Qxc5 32. Rxc5 f4 33. Rgxg5 Rf8 34. Qg7 Bb7 35. Bxb7 Rd8 36. Qxh7 Rf7 37. Rg7 Rxg7 38. Qxg7 Rb8 39. h6 Rd8 40. h7 Rc8 41. h8=Q#
+
+[White "Maurizio"]
+[Black "Rattatechess"]
+1. d4 Nf6 2. c4 g6 3. Nc3 Bg7 4. e4 d6 5. Nf3 O-O 6. Bd3 c5 7. d5 Na6 8. O-O Nb4 9. Re1 Ng4 10. h3 Bxc3 11. bxc3 Nxd3 12. Qxd3 Nf6 13. e5 dxe5 14. Nxe5 Bf5 15. Qf3 Nd7 16. g4 Nxe5 17. Rxe5 Qd6 18. Bf4 Bc8 19. Rae1 Qa6 20. Rxe7 Qf6 21. Qe3 Rd8 22. Bg5 Qd6 23. Re8+ Rxe8 24. Qxe8+ Kg7 25. Be7 Be6 26. Qxa8 Qxe7 27. dxe6 fxe6 28. Qb8 b6 29. Qe5+ Qf6 30. g5 Qxe5 31. Rxe5 Kf7 32. Kg2 a6 33. a4 Ke7 34. a5 bxa5 35. Rxc5 a4 36. Ra5 e5 37. Rxa4 Kd6 38. Rxa6+ Kc5 39. Kf3 Kxc4 40. Rc6+ Kd3 41. Rc8 Kd2 42. c4 Kd3 43. c5 Kc4 44. c6 Kd5 45. Ke3 Kc5 46. Ke4 Kd6 47. f3 Kc5 48. Kxe5 Kb5 49. Kd6 Kc4 50. c7 Kd3 51. Re8 Kd2 52. c8=Q Kd3 53. Qc5 Kd2 54. Re3 Kd1 55. Qc3 h6 56. Re1#
+
+[White "Maurizio"]
+[Black "Rattatechess"]
+1. e4 c5 2. Nf3 Nc6 3. Nc3 g6 4. d4 cxd4 5. Nxd4 Bg7 6. Be3 Nf6 7. f3 Qc7 8. Qd2 a6 9. O-O-O e5 10. Ndb5 axb5 11. Nxb5 Qb8 12. Nd6+ Kf8 13. a3 Kg8 14. Bc4 Nd8 15. Bb6 Ne6 16. Qc3 Nh5 17. Nb5 Bh6+ 18. Kb1 Bg5 19. Bxe6 Bd2 20. Rxd2 d5 21. Bxf7+ Kxf7 22. Bc7 Bd7 23. Nd6+ Kg8 24. Bxb8 Rxb8 25. Rxd5 Nf4 26. Rxe5 Ne6 27. Qb3 Kg7 28. Rxe6 Bxe6 29. Qxe6 Rhf8 30. Rd1 Rbd8 31. Qe7+ Kg8 32. Ka2 Ra8 33. Nf5 Rf7 34. Qe6 gxf5 35. Rd7 Rf8 36. exf5 b5 37. g4 Kh8 38. Rxf7 Rxf7 39. Qxf7 h5 40. g5 h4 41. g6 b4 42. Qf8#
+
+[Event "Convergence"]
+1. e4 e5 2. f4 d6 3. d4 f6 4. Nf3 Nc6 5. Na3 Nh6 6. b3 Nf7 7. Nc4 Qe7 8. Nb2
+g6 9. Nd3 Bg7 10. Bb2 O-O 11. Bc3 Re8 12. Qb1 b5 13. a4 bxa4 14. Rxa4 Bb7 15.
+Qa1 Qd7 16. Be2 Re7 17. h4 Rae8 18. h5 gxh5 19. Rxh5 Qg4 20. Ra5 Qg3+ 21. Kd1
+Kh8 {E ora un magna-magna generale} 22. fxe5 fxe5 23. dxe5 dxe5 24. Nfxe5 Ncxe5
+25. Nxe5 Nxe5 26. Bxe5 Bxe5 27. Rhxe5 Rxe5 28. Rxe5 Rxe5 29. Qxe5+ Qxe5
+
+[Event "Bachetto!!!! (42. Qb1#)"]
+1. e4 d5 2. exd5 Qxd5 3. Nc3 Qc6 4. Bb5 Qxb5 5. Nxb5 Na6 6. Qf3 Nf6 7. Kd1 Bg4
+8. Qxg4 Nxg4 9. Nh3 O-O-O 10. f3 Ne5 11. Re1 Ng6 12. c3 Nc5 13. Nxa7+ Kb8 14. Nb5
+Nd3 15. Re3 e6 16. Kc2 Nde5 17. d4 Nc4 18. Rd3 c6 19. Na3 Nxa3+ 20. bxa3 Rd5
+21. Rb1 Ra5 22. Rb3 Bd6 23. g3 Rd8 24. Ng5 f6 25. Ne4 Bc7 26. Be3 Ne7 27. c4
+Kc8 28. Bd2 Rh5 29. h4 f5 30. Ng5 Bxg3 31. Nxe6 Rd6 32. Nxg7 Rxh4 33. Nxf5
+Nxf5 34. Kc3 Nxd4 35. c5 Rf6 36. Rxd4 Rxd4 37. Kxd4 R@d5+ 38. Kc3 Q@d3+ 39. Kb2
+N@c4+ 40. Ka1 N@c2+ 41. Kb1 N2xa3+ 42. Ka1 Qb1# 43. Rxb1 Nc2#
+
+[Event "Lo stesso bachetto"]
+1. d4 g6 2. d5 Nf6 3. Qd4 Bh6 4. g4 Nxg4 5. Qxh8#
+
+[Event "Reversi"]
+1. f5 f6 2. f7 g7 3. c4 c3 4. c2 b2 5. e6 d6 6. e7 d8 7. g6 g5 8. f4 g8 9. h8
+h7 10. a1 f3 11. f8 d3 12. h6 b3 13. h5 g4 14. e8 d7 15. c8 b1 16. c7 c6 17. h4
+ b8 18. a8 b7 19. b6 h3 20. g3 g2 21. c1 a3 22. a2 e3 23. f2 c5 24. a7 a6 25. b4
+  b5 26. a4 a5 27. h2 d2 28. d1 e2 29. e1 g1 30. h1 f1
+
+[Event "Reversi2"]
+1. f5 d6 2. c5 f6 3. c4 f4 4. e6 d7 5. e7 c7 6. g6 f8 7. g4 h6 8. g7 g5 9. f7
+f3 10. e8 h8 11. g8 d8 12. f2 h7 13. c8 b8 14. c6 h5 15. b7 h4 16. h3 g3 17. e3
+g2 18. d3 e2 19. a8 h1 20. h2 g1 21. b6 c2 22. b3 b5 23. c3 a6 24. e1 d2 25. f1
+b4 26. a5 b2 27. d1 a7 28. a1 c1 29. b1 a3 30. a2 a4
+
+[Event "dfasdfadf ][] \"\"\" neally nasty tag"]
+1. e4 f5 2. g4
+
+[Event "QUEEEE"]
+1. d4 e6 2. c4 Nf6 3. Nc3 d5 4. Bg5 Nbd7 5. e3 Be7 6. Nf3 O-O 7. Qc2 c6 8. a3
+Re8 9. Rd1 dxc4 10. Bxc4 Nd5 11. Bxe7 Qxe7 12. O-O Nxc3 13. Qxc3 c5 14. d5 exd5
+15. Rxd5 b6 16. Rfd1 Rf8 17. b4 cxb4 18. axb4 Nf6 19. Re5 Qc7 20. Ng5 Bb7 21. Ne6
+Qc6 22. f3 Ba6 23. Rd4 Rfc8 24. Nd8 (24. b5 Bxb5 25. Nxg7 (25. Rxb5 fxe6) Bxc4
+(25. ... Kxg7 26. Rg4+ (26. Rg5+ Kh6 27. Rh4+ (27. Rf4 Kxg5 28. h4+ Kg6) (27. Qe1
+Kxg5 28. Qg3+ Kf5 (28. ... Kh6 29. Rh4+ Nh5 30. Qf4+) 29. Rf4+ Ke5 30. Rg4+
+(30. Rh4+ Kf5) Kf5 31. Qf4#) Kxg5 28. Qe5+ Kg6) Nxg4 (26. ... Kf8 27. Qa3+ (27. Qb4+
+Qc5 28. Rxc5 Rxc5 29. Bxb5 Nxg4 30. fxg4)) (26. ... Kh6 27. Reg5 Qxc4) (26. ... Kh8
+27. Re6 (27. Rxb5 Rg8 28. Rxg8+ Kxg8 (28. ... Rxg8 29. Rf5 Kg7 (29. ... Rg6 30. g4
+(30. h4 Kg8 (30. ... Qd6 31. h5 Rh6 32. Bxf7 Kg7 33. Bb3)) Kg7 31. g5 b5 32. Rxb5
+Qxf3) 30. Rg5+ (30. g4 b5 31. Rxb5 Kf8 32. Rb8+ Ke7 33. Qe5+ Kd7 34. Bb5) Kf8
+(30. ... Kh8 31. Rxg8+) 31. Qb4+ Ke8 32. Bb5))) 27. Rg5+ Kf8 28. Qb4+ (28. Qg7+
+Ke7 29. Qxf7+ Kd6 30. Qf4+ Ke7 31. Rg7+ (31. Qf7+ Kd6 32. Rd5+ Qxd5 33. Qxd5+ Kc7
+34. Bxb5 Nh6) Kd8 32. Qf8# (32. Qg5+ Qf6 33. Qd5+ Ke8 34. Bxb5+) Qe8 33. Qd6+ Bd7
+34. Rg8 Qxg8 35. Bxg8) Qc5 (28. ... Ke8 29. Rg8+ (29. Bxb5) Kd7) 29. Rxc5 bxc5
+(29. ... Rxc5 30. Bxb5 Nf6) 30. Qxb5 Nf6 (30. ... Nh6 31. Qd7 a5 32. Qd6+ Kg7 33. Qe5+
+Kg8 (33. ... Kf8 34. Qh8+ Ke7 35. Qxh7 Rh8 36. Qe4+)) 31. Qb7) 26. Rg5 (26. Nf5
+Qc5 (26. ... Qc7 27. Rg4+ Kh8 28. Re8#) (26. ... Rc7 27. Rg4+ Kh8 28. Rxc4) (26. ...
+Qa4 27. Rg4+ (27. Re8+ Qxe8 (27. ... Nxe8 28. Rg4+ Ng7) (27. ... Rxe8 28. Rg4+ Kf8
+29. Qxf6 Qd1+ 30. Kf2 Qf1+ 31. Kg3 Qe1+ 32. Kh3 Qg3+) 28. Rg4+ Kf8 29. Qb4+ (29. Qxf6)
+Rc5) Kf8)) Ba6 (26. ... Bd5) 27. Rd8+ Ne8 28. Rxe8# Qxe8 29. Nxe8+ Kf8 30. Qh8+ Ke7)
+Qc7 25. Rg4 Qxd8 26. Reg5 Qd1+ 27. Kf2 Nxg4+ 28. Rxg4 g6 29. Bxf7+ Kxf7 30. Rf4+ Kg8
+31. Qf6 Qd7
+
+[Event "A chain reaction game"]
+1. d4 e4 2. d4 e4 3. d4 e4 4. d5 e5 5. d4 f5 6. e5 f5 7. e5 f7 8. e7 f7 9. e7 f7
+10. d7 e7 11. d6 d7 12. c7 d7 13. c6 d6 14. c6 c5 15. d5 c7 16. c6 b8 17. a7 b8
+18. a7 b8 19. a7 c8 20. b7 b5 21. d7 e8 22. d7 f6 23. a5 b5 24. b4 b5 25. b4 b5
+26. b3 b4 27. c3 c4 28. a3 b4 29. a3 b5 30. b4 d6 31. c3 (31. b4 d8 (31. ... c7)
+32. d5 d7 33. e5 d7 34. b5 (34. e5 d7) e8 (34. ... d8) 35. e5 f8 36. e5 f3 37. d4
+d7) b7 32. c4 d7 33. b5 c6 34. a6 c6 35. b3 d6 36. b3 e6 37. e3 d7 38. e4 d8
+39. e4 b7 40. f3 e8 41. b5 (41. e4)
+
