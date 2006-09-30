@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -18,7 +18,7 @@ class BackInserterPatternIteratorAdaptor : public PatternListAdaptorOutputIterat
 public:
   BackInserterPatternIteratorAdaptor(std::vector<Highlighter::Pattern>& vector)
   : m_vector(vector) { }
-  
+
   virtual void add(const Highlighter::Pattern& p) {
     m_vector.push_back(p);
   }
@@ -36,16 +36,16 @@ public:
   virtual shared_ptr<PatternListAdaptorInputIterator> clone() const {
     return shared_ptr<PatternListAdaptorInputIterator>(new VectorIterator(*this));
   }
-  
+
   virtual bool valid() const {
     return m_it != m_end;
   }
-  
+
   virtual PatternListAdaptorInputIterator& inc() {
     ++m_it;
     return *this;
   }
-  
+
   virtual const Highlighter::Pattern& value() const {
     return *m_it;
   }
@@ -80,7 +80,7 @@ void Highlighter::load(PatternListAdaptorOutputIterator& out) {
       pattern.format.setFontWeight(QFont::Bold);
     if (settings["italic"].value<bool>())
       pattern.format.setFontItalic(true);
-    
+
     out.add(pattern);
   }
   config->endArray();
@@ -100,7 +100,7 @@ void Highlighter::save(const PatternListAdaptorInputIterator& in) {
     settings["pattern"] = pattern.pattern.pattern();
     settings["foreground"] = pattern.format.foreground().color();
     settings["bold"] = pattern.format.fontWeight() == QFont::Bold;
-    settings["italic"] = pattern.format.fontItalic();    
+    settings["italic"] = pattern.format.fontItalic();
   }
   config->endArray();
   config->endGroup();
@@ -117,16 +117,15 @@ std::vector<Highlighter::Pattern>& Highlighter::patterns() {
 
 void Highlighter::highlightBlock(const QString& text) {
   int offset = 0;
-  
+
   while (true) {
     int best = -1;
     int best_offset = -1;
-    int best_length;
-    
+
     // try each pattern and find the closest matching one
     for (uint i = 0; i < m_patterns.size(); i++) {
       int match_offset = text.indexOf(m_patterns[i].pattern, offset);
-      if (match_offset >= 0 && 
+      if (match_offset >= 0 &&
           (best_offset == -1 || match_offset < best_offset)) {
         int length = m_patterns[i].pattern.matchedLength();
         if (length > 0) {
@@ -136,7 +135,7 @@ void Highlighter::highlightBlock(const QString& text) {
         }
       }
     }
-    
+
     if (best >= 0) {
       setFormat(best_offset, best_length, m_patterns[best].format);
       offset = best_offset + best_length;

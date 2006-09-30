@@ -21,6 +21,8 @@
 #include <QStringList>
 #include <QWidget>
 
+class Settings;
+
 class BaseOpt;
 class BoolOpt;
 class IntOpt;
@@ -81,29 +83,25 @@ public:
 class BoolOpt : public BaseOpt {
 //private:
 public:
-  bool m_default;
   bool m_value;
   QList<OptPtr> m_sub_options;
 public:
+  typedef bool ValueType;
   BoolOpt(const QString& name, const QString& label, bool def = false,
             const QList<OptPtr>& suboptions = QList<OptPtr>())
     : BaseOpt(name, label)
-    , m_default(def)
     , m_value(def)
     , m_sub_options(suboptions) {}
-  bool defaultValue() const { return m_default; }
   bool value() const { return m_value; }
   void setValue(bool v) { m_value = v; }
   OptList subOptions() { return m_sub_options; }
   virtual OptPtr clone() const {
-    BoolOpt *o = new BoolOpt(name(), label(), m_default, options_list_duplicate(m_sub_options) );
-    o->setValue(m_value);
+    BoolOpt *o = new BoolOpt(name(), label(), m_value, options_list_duplicate(m_sub_options) );
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
     const BoolOpt* o = dynamic_cast<const BoolOpt*>(&_o);
     return o
-        && m_default == o->m_default
         && m_value != o->m_value
         && options_list_equals(m_sub_options, o->m_sub_options);
   }
@@ -111,31 +109,27 @@ public:
 
 class IntOpt : public BaseOpt {
 private:
-  int m_default;
   int m_min;
   int m_max;
   int m_value;
 public:
+  typedef int ValueType;
   IntOpt(const QString& name, const QString& label, int def, int min, int max)
     : BaseOpt(name, label)
-    , m_default(def)
     , m_min(min)
     , m_max(max)
     , m_value(def) {}
-  int defaultValue() const { return m_default; }
   int min() const { return m_min; }
   int max() const { return m_max; }
   int value() const { return m_value; }
   void setValue(int v) { m_value = v; }
   virtual OptPtr clone() const {
-    IntOpt *o = new IntOpt(name(), label(), m_default, m_min, m_max);
-    o->setValue(m_value);
+    IntOpt *o = new IntOpt(name(), label(), m_value, m_min, m_max);
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
     const IntOpt* o = dynamic_cast<const IntOpt*>(&_o);
     return o
-        && m_default == o->m_default
         && m_min != o->m_min
         && m_max != o->m_max
         && m_value != o->m_value;
@@ -144,50 +138,84 @@ public:
 
 class StringOpt : public BaseOpt {
 private:
-  QString m_default;
   QString m_value;
 public:
+  typedef QString ValueType;
   StringOpt(const QString& name, const QString& label, QString def = QString())
     : BaseOpt(name, label)
-    , m_default(def)
     , m_value(def) {}
-  QString defaultValue() const { return m_default; }
   QString value() const { return m_value; }
   void setValue(QString v) { m_value = v; }
   virtual OptPtr clone() const {
-    StringOpt *o = new StringOpt(name(), label(), m_default);
-    o->setValue(m_value);
+    StringOpt *o = new StringOpt(name(), label(), m_value);
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
     const StringOpt* o = dynamic_cast<const StringOpt*>(&_o);
     return o
-        && m_default == o->m_default
         && m_value != o->m_value;
   }
 };
 
 class UrlOpt : public BaseOpt {
 private:
-  QString m_default;
   QString m_value;
 public:
+  typedef QString ValueType;
   UrlOpt(const QString& name, const QString& label, QString def = QString())
     : BaseOpt(name, label)
-    , m_default(def)
     , m_value(def) {}
-  QString defaultValue() const { return m_default; }
   QString value() const { return m_value; }
   void setValue(QString v) { m_value = v; }
   virtual OptPtr clone() const {
-    UrlOpt *o = new UrlOpt(name(), label(), m_default);
-    o->setValue(m_value);
+    UrlOpt *o = new UrlOpt(name(), label(), m_value);
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
     const UrlOpt* o = dynamic_cast<const UrlOpt*>(&_o);
     return o
-        && m_default == o->m_default
+        && m_value != o->m_value;
+  }
+};
+
+class ColorOpt : public BaseOpt {
+private:
+  QColor m_value;
+public:
+  typedef QColor ValueType;
+  ColorOpt(const QString& name, const QString& label, QColor def = Qt::black)
+    : BaseOpt(name, label)
+    , m_value(def) {}
+  QColor value() const { return m_value; }
+  void setValue(QColor v) { m_value = v; }
+  virtual OptPtr clone() const {
+    ColorOpt *o = new ColorOpt(name(), label(), m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const ColorOpt* o = dynamic_cast<const ColorOpt*>(&_o);
+    return o
+        && m_value != o->m_value;
+  }
+};
+
+class FontOpt : public BaseOpt {
+private:
+  QFont m_value;
+public:
+  typedef QFont ValueType;
+  FontOpt(const QString& name, const QString& label, QFont def = QApplication::font())
+    : BaseOpt(name, label)
+    , m_value(def) {}
+  QFont value() const { return m_value; }
+  void setValue(QFont v) { m_value = v; }
+  virtual OptPtr clone() const {
+    FontOpt *o = new FontOpt(name(), label(), m_value);
+    return OptPtr(o);
+  }
+  virtual bool equals(const BaseOpt& _o) const {
+    const FontOpt* o = dynamic_cast<const FontOpt*>(&_o);
+    return o
         && m_value != o->m_value;
   }
 };
@@ -198,10 +226,12 @@ public:
   QStringList m_values;
   int         m_selected;
 public:
+  typedef int ValueType;
   ComboOpt(const QString& name, const QString& label, const QStringList& values, int selected = 0)
     : BaseOpt(name, label)
     , m_values(values)
     , m_selected(selected) {}
+  int value() const { return m_selected; }
   int selected() const { return m_selected; }
   void setSelected(int v) { m_selected = v; }
   virtual OptPtr clone() const {
@@ -216,56 +246,6 @@ public:
   }
 };
 
-class ColorOpt : public BaseOpt {
-private:
-  QColor m_default;
-  QColor m_value;
-public:
-  ColorOpt(const QString& name, const QString& label, QColor def = Qt::black)
-    : BaseOpt(name, label)
-    , m_default(def)
-    , m_value(def) {}
-  QColor defaultValue() const { return m_default; }
-  QColor value() const { return m_value; }
-  void setValue(QColor v) { m_value = v; }
-  virtual OptPtr clone() const {
-    ColorOpt *o = new ColorOpt(name(), label(), m_default);
-    o->setValue(m_value);
-    return OptPtr(o);
-  }
-  virtual bool equals(const BaseOpt& _o) const {
-    const ColorOpt* o = dynamic_cast<const ColorOpt*>(&_o);
-    return o
-        && m_default == o->m_default
-        && m_value != o->m_value;
-  }
-};
-
-class FontOpt : public BaseOpt {
-private:
-  QFont m_default;
-  QFont m_value;
-public:
-  FontOpt(const QString& name, const QString& label, QFont def = QApplication::font())
-    : BaseOpt(name, label)
-    , m_default(def)
-    , m_value(def) {}
-  QFont defaultValue() const { return m_default; }
-  QFont value() const { return m_value; }
-  void setValue(QFont v) { m_value = v; }
-  virtual OptPtr clone() const {
-    FontOpt *o = new FontOpt(name(), label(), m_default);
-    o->setValue(m_value);
-    return OptPtr(o);
-  }
-  virtual bool equals(const BaseOpt& _o) const {
-    const FontOpt* o = dynamic_cast<const FontOpt*>(&_o);
-    return o
-        && m_default == o->m_default
-        && m_value != o->m_value;
-  }
-};
-
 class SelectOpt : public BaseOpt {
 //private:
 public:
@@ -273,12 +253,14 @@ public:
   int m_selected;
 
 public:
+  typedef int ValueType;
   SelectOpt(const QString& name, const QString& label, QList<BoolOptPtr> options,
                                                                   int selected = 0)
     : BaseOpt(name, label)
     , m_options(options) {
     setSelected(selected);
   }
+  int value() const { return m_selected; }
   int selected() const { return m_selected; }
   void setSelected(int s) {
     m_selected = std::min(std::max(s, 0), m_options.size()-1);
@@ -308,6 +290,18 @@ boost::shared_ptr<O> options_list_find(const OptList& o, const QString& name) {
   return boost::shared_ptr<O>();
 }
 
+template<typename O>
+typename O::ValueType options_list_find(const OptList& o, const QString& name,
+                                              const typename O::ValueType& def) {
+  for(int i=0;i<o.size();i++)
+  if(o[i]->name() == name)
+    if(boost::shared_ptr<O> retv = boost::dynamic_pointer_cast<O, BaseOpt>(o[i]))
+      return retv->value();
+  return def;
+}
+
+void options_list_load_from_settings(OptList&, Settings& s);
+void options_list_save_to_settings(const OptList&, Settings& s);
 
 
 class OptionWidget : public QWidget {

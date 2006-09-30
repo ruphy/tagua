@@ -136,15 +136,9 @@ ChainReactionPosition::ChainReactionPosition()
 , m_turn(WHITE) { }
 
 ChainReactionPosition::ChainReactionPosition(const OptList& l)
-: m_board(0,0)
-, m_turn(WHITE) {
-  int width = 9, height = 9;
-  if(IntOptPtr o = options_list_find<IntOpt>(l, "width"))
-    width = o->value();
-  if(IntOptPtr o = options_list_find<IntOpt>(l, "height"))
-    height = o->value();
-  m_board = Grid<Piece>(width, height);
-}
+: m_board(options_list_find<IntOpt>(l, "width", 9),
+           options_list_find<IntOpt>(l, "height", 9))
+, m_turn(WHITE) { }
 
 ChainReactionPosition::ChainReactionPosition(Piece::Color turn, bool, bool, bool, bool, const Point&)
 : m_board(9,9)

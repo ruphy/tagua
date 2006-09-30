@@ -1,12 +1,6 @@
 
 SET(this_test options)
-
-
-FILE(GLOB_RECURSE ${this_test}_SRC_CXX *.cpp)
-FILE(GLOB_RECURSE ${this_test}_SRC_C *.c)
-SET(${this_test}_SRC ${${this_test}_SRC_CXX} ${${this_test}_SRC_C})
-
-FILE(GLOB_RECURSE ${this_test}_UIS *.ui)
+SETUP_SOURCES(${this_test}_SRC ${this_test}_UIS)
 
 
 # i have to do this because QT4_WRAP_UI is stupid
@@ -25,13 +19,14 @@ ADD_EXECUTABLE(
 
 
 INCLUDE_DIRECTORIES(
-  .
   ${QT_INCLUDE_DIR}
   #${QT_QTNETWORK_INCLUDE_DIR}
   ${QT_QTSVG_INCLUDE_DIR}
   ${LUA_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
   ${KDE4_INCLUDE_DIR}
+  .
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
 ADD_DEFINITIONS(

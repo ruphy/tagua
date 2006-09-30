@@ -3,6 +3,7 @@
 #include <QApplication>
 #include <QWidget>
 #include "common.h"
+#include "settings.h"
 #include "option.h"
 #include "luaapi/loader.h"
 
@@ -33,16 +34,32 @@ int main(int argc, char *argv[]) {
   QApplication app(argc, argv);
 
   LuaApi::Loader ja(NULL);
+  Settings sets("test.settings");
   ja.runFile("test.lua");
   OptList opts2 = ja.getOptList("options");
   if(ja.error())
     std::cout << ja.errorString() << std::endl;
   else {
+    sets.qSettings()->beginGroup("o2");
+    options_list_load_from_settings(opts2, sets);
+    sets.qSettings()->endGroup();
     dump_options_list(opts2);
     OptionWidget& w2 = *new OptionWidget(opts2);
     w2.show();
   }
+  sets.qSettings()->beginGroup("o1");
+  options_list_load_from_settings(opts, sets);
+  sets.qSettings()->endGroup();
   OptionWidget w(opts);
   w.show();
-  return app.exec();
+  app.exec();
+
+  sets.qSettings()->beginGroup("o1");
+  options_list_save_to_settings(opts, sets);
+  sets.qSettings()->endGroup();
+  sets.qSettings()->beginGroup("o2");
+  options_list_save_to_settings(opts2, sets);
+  sets.qSettings()->endGroup();
+
+  return 0;
 }

@@ -1,38 +1,6 @@
 
 SETUP_SOURCES(kboard_SRC kboard_UIS)
 
-# # find sources
-# FILE(GLOB_RECURSE kboard_SRC *.c *.cpp)
-#
-# #find uis
-# FILE(GLOB_RECURSE kboard_UIS *.ui)
-#
-# FOREACH(FILE1 ${kboard_SRC} ${kboard_UIS})
-#   GET_FILENAME_COMPONENT(FILE2 ${FILE1} PATH)
-#   FILE(RELATIVE_PATH FILE3 ${CMAKE_CURRENT_SOURCE_DIR} ${FILE2})
-#   IF(NOT "${FILE3}" STREQUAL "")
-#     LIST(APPEND DIRS "${FILE3}")
-#   ENDIF(NOT "${FILE3}" STREQUAL "")
-# ENDFOREACH(FILE1)
-#
-# #LIST(SORT DIRS)
-#
-# FOREACH(D ${DIRS})
-#   IF(NOT "${D}" STREQUAL "${PREVD}")
-#     LIST(APPEND UDIRS "${D}")
-#   ENDIF(NOT "${D}" STREQUAL "${PREVD}")
-#   SET(PREVD "${D}")
-# ENDFOREACH(D)
-#
-# FOREACH(D ${UDIRS})
-#   FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${D}")
-# ENDFOREACH(D)
-#
-# SET(PREVD)
-# SET(DIRS)
-# SET(UDIRS)
-
-
 # i have to do this because QT4_WRAP_UI is stupid
 SET(old_bin_dir ${CMAKE_CURRENT_BINARY_DIR})
 SET(CMAKE_CURRENT_BINARY_DIR ${old_bin_dir}/ui)

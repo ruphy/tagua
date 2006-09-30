@@ -14,6 +14,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
+#include "settings.h"
 #include "common.h"
 #include "option.h"
 #include "option_p.h"
@@ -218,7 +219,8 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
       layout->addWidget(ow, lpos++, right);
     }
     else {
-
+      std::cout << "OptionWidget::setupOptionWidget: Error, unknown option of type "
+          << prettyTypeName(typeid(_o.get()).name()) << std::endl;
     }
   }
 
@@ -237,18 +239,6 @@ void dump_options_list(OptList& options, int indent) {
       std::cout << (o->value()?"[X]":"[ ]") << " " << o->label() << std::endl;
       dump_options_list(o->m_sub_options, indent+1);
     }
-    else if(boost::shared_ptr<SelectOpt> o =
-            boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << "[group] " << o->label() << std::endl;
-      for(int j=0;j<o->m_options.size();j++) {
-        BoolOptPtr so = o->m_options[j];
-        for(int j=0;j<indent+1;j++)std::cout << "  ";
-        std::cout << (so->value()?"(*)":"( )") << " " << so->label() << std::endl;
-        if(so->m_sub_options.size())
-          dump_options_list(so->m_sub_options, indent+2);
-      }
-    }
     else if(boost::shared_ptr<IntOpt> o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
@@ -264,6 +254,16 @@ void dump_options_list(OptList& options, int indent) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " {" << o->value() << "}" << std::endl;
     }
+    else if(boost::shared_ptr<ColorOpt> o =
+            boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
+      for(int j=0;j<indent;j++)std::cout << "  ";
+      std::cout << o->label() << " {" << o->value().name() << "}" << std::endl;
+    }
+    else if(boost::shared_ptr<FontOpt> o =
+            boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
+      for(int j=0;j<indent;j++)std::cout << "  ";
+      std::cout << o->label() << " {" << o->value().toString() << "}" << std::endl;
+    }
     else if(boost::shared_ptr<ComboOpt> o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
@@ -276,21 +276,126 @@ void dump_options_list(OptList& options, int indent) {
           std::cout << "  <" << o->m_values[k] << ">" << std::endl;
       }
     }
-    else if(boost::shared_ptr<ColorOpt> o =
-            boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
+    else if(boost::shared_ptr<SelectOpt> o =
+            boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " {" << o->value().name() << "}" << std::endl;
-    }
-    else if(boost::shared_ptr<FontOpt> o =
-            boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " {" << o->value().toString() << "}" << std::endl;
+      std::cout << "[group] " << o->label() << std::endl;
+      for(int j=0;j<o->m_options.size();j++) {
+        BoolOptPtr so = o->m_options[j];
+        for(int j=0;j<indent+1;j++)std::cout << "  ";
+        std::cout << (so->value()?"(*)":"( )") << " " << so->label() << std::endl;
+        if(so->m_sub_options.size())
+          dump_options_list(so->m_sub_options, indent+2);
+      }
     }
     else {
-
+      std::cout << "dump_options_list: Error, unknown option of type "
+          << prettyTypeName(typeid(_o.get()).name()) << std::endl;
     }
   }
   if(!indent)std::cout << "---- end dump ----" << std::endl;
+}
+
+void options_list_load_from_settings(OptList& options, Settings& s) {
+  for(int i=0;i<options.size();i++) {
+    OptPtr _o = options[i];
+    if(boost::shared_ptr<BoolOpt> o =
+            boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
+      s.qSettings()->beginGroup("sub_options");
+      options_list_load_from_settings(o->m_sub_options, s);
+      s.qSettings()->endGroup();
+      o->setValue( (s[o->name()] | o->value()).value<bool>() );
+    }
+    else if(boost::shared_ptr<IntOpt> o =
+            boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
+      o->setValue( (s[o->name()] | o->value()).value<int>() );
+    }
+    else if(boost::shared_ptr<StringOpt> o =
+            boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
+      o->setValue( (s[o->name()] | o->value()).value<QString>() );
+    }
+    else if(boost::shared_ptr<UrlOpt> o =
+            boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
+      o->setValue( (s[o->name()] | o->value()).value<QString>() );
+    }
+    else if(boost::shared_ptr<ColorOpt> o =
+            boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
+      o->setValue( (s[o->name()] | o->value()).value<QColor>() );
+    }
+    else if(boost::shared_ptr<FontOpt> o =
+            boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
+      o->setValue( (s[o->name()] | o->value()).value<QFont>() );
+    }
+    else if(boost::shared_ptr<ComboOpt> o =
+            boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
+      o->setSelected( (s[o->name()] | o->value()).value<int>() );
+    }
+    else if(boost::shared_ptr<SelectOpt> o =
+            boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
+      OptList l;
+      for(int i=0;i<o->m_options.size();i++)
+        l <<  o->m_options[i];
+      s.qSettings()->beginGroup("options");
+      options_list_load_from_settings(l, s);
+      s.qSettings()->endGroup();
+      o->setSelected( (s[o->name()] | o->value()).value<int>() );
+    }
+    else {
+      std::cout << "options_list_load_from_settings: Error, unknown option of type "
+          << prettyTypeName(typeid(_o.get()).name()) << std::endl;
+    }
+  }
+}
+
+void options_list_save_to_settings(const OptList& options, Settings& s) {
+  for(int i=0;i<options.size();i++) {
+    OptPtr _o = options[i];
+    if(boost::shared_ptr<BoolOpt> o =
+            boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
+      s.qSettings()->beginGroup("sub_options");
+      options_list_save_to_settings(o->m_sub_options, s);
+      s.qSettings()->endGroup();
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<IntOpt> o =
+            boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<StringOpt> o =
+            boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<UrlOpt> o =
+            boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<ColorOpt> o =
+            boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<FontOpt> o =
+            boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<ComboOpt> o =
+            boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
+      s[o->name()] = o->value();
+    }
+    else if(boost::shared_ptr<SelectOpt> o =
+            boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
+      OptList l;
+      for(int i=0;i<o->m_options.size();i++)
+        l <<  o->m_options[i];
+      s.qSettings()->beginGroup("options");
+      options_list_save_to_settings(l, s);
+      s.qSettings()->endGroup();
+      s[o->name()] = o->value();
+    }
+    else {
+      std::cout << "options_list_load_from_settings: Error, unknown option of type "
+          << prettyTypeName(typeid(_o.get()).name()) << std::endl;
+    }
+  }
 }
 
 #include "option.moc"
