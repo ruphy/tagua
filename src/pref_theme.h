@@ -13,7 +13,9 @@
 
 #include <set>
 #include <map>
+#include <boost/shared_ptr.hpp>
 #include <QDir>
+#include "option.h"
 #include "ui/ui_pref_theme.h"
 
 class VariantInfo;
@@ -28,11 +30,18 @@ Q_OBJECT
 
   ThemeInfoList m_pieces_themes;
   ThemeInfoList m_squares_themes;
+  std::map<QString, boost::shared_ptr<OptList> > m_new_theme_options;
   std::map<QString, QString> m_new_piece_themes;
   std::map<QString, QString> m_new_square_themes;
   std::map<QString, bool> m_new_use_def_pieces;
   std::map<QString, bool> m_new_use_def_squares;
 
+  QLayout *m_pieces_opt_layout;
+  QLayout *m_squares_opt_layout;
+  QWidget *m_pieces_opt_widget;
+  QWidget *m_squares_opt_widget;
+
+  OptList              get_file_options(const QString&);
   static QStringList   find_lua_files(const QDir& d);
   static ThemeInfoList to_theme_info_list(const QStringList& files, Settings& s);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,

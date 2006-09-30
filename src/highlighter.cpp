@@ -121,6 +121,7 @@ void Highlighter::highlightBlock(const QString& text) {
   while (true) {
     int best = -1;
     int best_offset = -1;
+    int best_length = 0;
 
     // try each pattern and find the closest matching one
     for (uint i = 0; i < m_patterns.size(); i++) {

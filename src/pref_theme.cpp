@@ -108,8 +108,26 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   return retv;
 }
 
+OptList PrefTheme::get_file_options(const QString& f) {
+  if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
+    return *o;
+
+  LuaApi::Loader l(NULL);
+  l.runFile(f);
+
+  boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptions()));
+  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(f)));
+  options_list_load_from_settings(*o, settings);
+  settings.qSettings()->endGroup();
+
+  m_new_theme_options[f] = o;
+  return *o;
+}
+
 PrefTheme::PrefTheme(QWidget *parent)
-: QWidget(parent) {
+: QWidget(parent)
+, m_pieces_opt_widget(NULL)
+, m_squares_opt_widget(NULL) {
   setupUi(this);
   listPieces->setSelectionMode(QAbstractItemView::SingleSelection);
   listSquares->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -118,6 +136,10 @@ PrefTheme::PrefTheme(QWidget *parent)
   connect(checkPieces, SIGNAL(toggled(bool)), this, SLOT(piecesThemeChecked(bool)));
   connect(checkSquares, SIGNAL(toggled(bool)), this, SLOT(squaresThemeChecked(bool)));
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
+  m_pieces_opt_layout = new QHBoxLayout(widgetPieces);
+  m_pieces_opt_layout->setMargin(0);
+  m_squares_opt_layout = new QHBoxLayout(widgetSquares);
+  m_squares_opt_layout->setMargin(0);
 
   QString themeDir = data_dir() + "/themes/";
 
@@ -155,6 +177,13 @@ void PrefTheme::apply() {
   for(std::map<QString, bool>::iterator it = m_new_use_def_squares.begin();
                                             it != m_new_use_def_squares.end(); ++it)
     settings["Variants/"+it->first+"/UseDefSquares"] = it->second;
+
+  for(std::map<QString, boost::shared_ptr<OptList> >::iterator it = m_new_theme_options.begin();
+          it != m_new_theme_options.end(); ++it) {
+    settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(it->first)));
+    options_list_save_to_settings(*it->second, settings);
+    settings.qSettings()->endGroup();
+  }
 }
 
 void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
@@ -246,6 +275,16 @@ void PrefTheme::piecesThemeChanged() {
       VariantInfo *vi = Variant::variant(c);
       if(vi)
         m_new_piece_themes[vi->name()] = m_pieces_themes[i].file_name;
+
+      if(m_pieces_opt_widget) {
+        delete m_pieces_opt_widget;
+        m_pieces_opt_widget = NULL;
+      }
+      OptList ol = get_file_options(m_pieces_themes[i].file_name);
+      if(ol.size() != 0) {
+        m_pieces_opt_widget = new OptionWidget(ol, widgetPieces);
+        m_pieces_opt_layout->addWidget(m_pieces_opt_widget);
+      }
       return;
     }
   }
@@ -273,6 +312,16 @@ void PrefTheme::squaresThemeChanged() {
       VariantInfo *vi = Variant::variant(c);
       if(vi)
         m_new_square_themes[vi->name()] = m_squares_themes[i].file_name;
+
+      if(m_squares_opt_widget) {
+        delete m_squares_opt_widget;
+        m_squares_opt_widget = NULL;
+      }
+      OptList ol = get_file_options(m_squares_themes[i].file_name);
+      if(ol.size() != 0) {
+        m_squares_opt_widget = new OptionWidget(ol, widgetSquares);
+        m_squares_opt_layout->addWidget(m_squares_opt_widget);
+      }
       return;
     }
   }

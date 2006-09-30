@@ -47,6 +47,7 @@ public:
   QStringList getVariants();
   QString getName();
   QString getDescription();
+  OptList getOptions();
   OptList getOptList(const QString&);
 
   bool error(){ return m_error; }

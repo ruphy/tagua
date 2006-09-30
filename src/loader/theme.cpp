@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -10,26 +10,37 @@
 
 
 #include <iostream>
+#include <QHash>
 #include "common.h"
+#include "settings.h"
 #include "loader/theme.h"
 
 namespace Loader {
 
 Theme::Theme(const QString& lua_file)
-: m_context()
+: m_file(lua_file)
+, m_context()
 , m_lua_loader(&m_context) {
 
-  m_lua_loader.runFile(lua_file.toAscii().constData());
-  if(m_lua_loader.error()) {
+  m_lua_loader.runFile(m_file.toAscii().constData());
+  if(m_lua_loader.error())
     std::cout << "SCRIPT LOAD ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;
-    asm volatile("int $3\n\t");
-  }
+  settings.onChange(this, SLOT(onSettingsChanged()));
+  onSettingsChanged();
 }
 
 Theme::~Theme() {
   if(!m_cache.empty()) {
     std::cout << " --> Error in Theme::~Theme, sizes still referenced" << std::endl;
   }
+}
+
+void Theme::onSettingsChanged() {
+  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(m_file)));
+  OptList ol = m_lua_loader.getOptions();
+  if(options_list_load_from_settings(ol, settings))
+    m_cache.clear();
+  settings.qSettings()->endGroup();
 }
 
 void Theme::refSize(int size) {
@@ -70,5 +81,7 @@ QPixmap Theme::getPixmap(const QString& key, int size) {
   it->second.m_cache[key] = retv;
   return retv;
 }
+
+#include "theme.moc"
 
 } //end namespace Loader

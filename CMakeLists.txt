@@ -57,10 +57,9 @@ IF(SYSTEM_LUA)
 
   ADD_CUSTOM_TARGET(lua_library)
 ELSE(SYSTEM_LUA)
-  SET(LUA_SRC_DIR "${CMAKE_CURRENT_BINARY_DIR}/lua")
-  MESSAGE("LUA ${LUA_SRC_DIR}")
-  SET(LUA_INCLUDE_DIRS ${LUA_SRC_DIR}/include)
-  SET(LUA_LIBRARY_DIRS ${LUA_SRC_DIR})
+  SET(LUA_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/lua")
+  SET(LUA_INCLUDE_DIRS "${LUA_BIN_DIR}/include")
+  SET(LUA_LIBRARY_DIRS "${LUA_BIN_DIR}")
   SET(LUA_LINK_FLAGS lua)
 
   ADD_SUBDIRECTORY(lua)
@@ -80,10 +79,11 @@ ENDIF(SYSTEM_LUA)
 # X11
 FIND_PACKAGE(X11)
 
-IF (FOUND_X11)
-  ADD_DEFINITION(-DHAVE_X11)
-ENDIF (FOUND_X11)
-
+IF(0)
+IF (X11_FOUND)
+  ADD_DEFINITIONS(-DHAVE_X11)
+ENDIF (X11_FOUND)
+ENDIF(0)
 
 # Qt4 / KDE4 stuff
 ADD_DEFINITIONS(-DHAVE_KDE -fexceptions)
@@ -97,8 +97,8 @@ SET(CMAKE_BUILD_TYPE debug)
 
 # FIXME, i think this is not portable
 IF(1)
-ADD_DEFINITIONS(-Wall -ansi -pedantic -Wno-long-long -pg)
-LINK_LIBRARIES(-pg)
+  ADD_DEFINITIONS(-Wall -ansi -pedantic -Wno-long-long) # -pg
+  #LINK_LIBRARIES(-pg)
 ENDIF(1)
 
 # Note by Paolo: verbose mode can be controlled
@@ -108,15 +108,24 @@ ENDIF(1)
 # once and for all.
 
 # Debug messages
-MESSAGE("  Qt4:")
+
+IF (X11_FOUND)
+MESSAGE("* X11 was found!")
+ENDIF (X11_FOUND)
+
+MESSAGE("* Qt4:")
 MESSAGE("    Includes:  ${QT_INCLUDE_DIR}")
 MESSAGE("    LinkFlags: ${QT_LIBRARIES}")
 
-MESSAGE("  Boost:")
+MESSAGE("* Kde4:")
+MESSAGE("    Includes:  ${KDE4_INCLUDE_DIR}")
+MESSAGE("    LinkFlags: ${KDE4_KDEUI_LIBS}")
+
+MESSAGE("* Boost:")
 MESSAGE("    Includes: ${Boost_INCLUDE_DIRS}")
 MESSAGE("    LinkDir:  ${Boost_LIBRARY_DIRS}")
 
-MESSAGE("  Lua:")
+MESSAGE("* Lua:")
 MESSAGE("    Includes:  ${LUA_INCLUDE_DIRS}")
 MESSAGE("    LinkDir:   ${LUA_LIBRARY_DIRS}")
 MESSAGE("    LinkFlags: ${LUA_LINK_FLAGS}")

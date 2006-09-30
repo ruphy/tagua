@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -13,12 +13,15 @@
 
 #include <map>
 #include <QPixmap>
+#include <QObject>
 #include "loader/context.h"
 #include "luaapi/loader.h"
 
 namespace Loader {
 
-class Theme {
+class Theme : public QObject {
+Q_OBJECT
+  QString m_file;
 public:
   class SizeCache {
   public:
@@ -44,6 +47,8 @@ public:
   void unrefSize(int size);
 
   QPixmap getPixmap(const QString& key, int size);
+private slots:
+  void onSettingsChanged();
 };
 
 } //end namespace loader

@@ -142,6 +142,10 @@ OptList Loader::getOptList(const QString& l) {
   return list ? *list : OptList();
 }
 
+OptList Loader::getOptions() {
+  return getOptList("options");
+}
+
 QStringList Loader::getVariants() {
   QStringList retv;
 

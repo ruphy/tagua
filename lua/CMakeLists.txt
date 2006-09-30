@@ -68,4 +68,21 @@ FOREACH(HEADER ${LUA_HEADERS})
   CONFIGURE_FILE(${HEADER} "${LUA_INCLUDE_DIRS}/${H}" COPYONLY)
 ENDFOREACH(HEADER)
 
+
+IF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  ADD_DEFINITIONS(-DLUA_USE_LINUX)
+  MESSAGE("* Looks like you're using Linux, lua will be compiled with")
+  MESSAGE("    CFlags:    -DLUA_USE_LINUX")
+ELSE(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+  IF(UNIX)
+    MESSAGE("* Looks like you're some Unix, lua will be compiled with")
+    MESSAGE("    CFlags:    -DLUA_USE_POSIX -DLUA_USE_DLOPEN")
+    MESSAGE("  I hope this is not too optimistic for your system")
+    ADD_DEFINITIONS(-DLUA_USE_POSIX -DLUA_USE_DLOPEN)
+  ELSE(UNIX)
+    MESSAGE("* Could not recognise you system, lua will be compiled with generic options")
+  ENDIF(UNIX)
+ENDIF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+
+
 ADD_LIBRARY(lua STATIC ${LUA_SRC})

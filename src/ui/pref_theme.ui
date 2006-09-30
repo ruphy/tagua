@@ -5,77 +5,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>447</width>
-    <height>424</height>
+    <width>415</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle" >
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" >
+  <layout class="QVBoxLayout" >
    <property name="margin" >
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="spacing" >
     <number>6</number>
    </property>
-   <item row="1" column="1" >
-    <widget class="QGroupBox" name="groupSquares" >
-     <property name="title" >
-      <string>&amp;Squares</string>
-     </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QCheckBox" name="checkSquares" />
-      </item>
-      <item>
-       <widget class="QListWidget" name="listSquares" />
-      </item>
-      <item>
-       <widget class="QLabel" name="labelSquares" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QGroupBox" name="groupPieces" >
-     <property name="title" >
-      <string>&amp;Pieces</string>
-     </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QCheckBox" name="checkPieces" />
-      </item>
-      <item>
-       <widget class="QListWidget" name="listPieces" />
-      </item>
-      <item>
-       <widget class="QLabel" name="labelPieces" >
-        <property name="text" >
-         <string/>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="2" >
+   <item>
     <layout class="QHBoxLayout" >
      <property name="margin" >
       <number>0</number>
@@ -97,6 +41,71 @@
       <widget class="QComboBox" name="comboVariant" />
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QTabWidget" name="tabWidget" >
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>&amp;Pieces</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="checkPieces" />
+       </item>
+       <item>
+        <widget class="QListWidget" name="listPieces" />
+       </item>
+       <item>
+        <widget class="QWidget" native="1" name="widgetPieces" />
+       </item>
+       <item>
+        <widget class="QLabel" name="labelPieces" >
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2" >
+      <attribute name="title" >
+       <string>&amp;Squares</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item>
+        <widget class="QCheckBox" name="checkSquares" />
+       </item>
+       <item>
+        <widget class="QListWidget" name="listSquares" />
+       </item>
+       <item>
+        <widget class="QWidget" native="1" name="widgetSquares" />
+       </item>
+       <item>
+        <widget class="QLabel" name="labelSquares" >
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>
