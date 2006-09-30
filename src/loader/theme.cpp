@@ -38,8 +38,10 @@ Theme::~Theme() {
 void Theme::onSettingsChanged() {
   settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(m_file)));
   OptList ol = m_lua_loader.getOptions();
-  if(options_list_load_from_settings(ol, settings))
-    m_cache.clear();
+  if(options_list_load_from_settings(ol, settings)) {
+    for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
+      it->second.m_cache.clear();
+  }
   settings.qSettings()->endGroup();
 }
 
