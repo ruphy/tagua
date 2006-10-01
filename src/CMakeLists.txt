@@ -12,7 +12,7 @@ SET(old_bin_dir)
 # QT4_AUTOMOC is not very intelligent either
 KDE4_AUTOMOC(${kboard_SRC} ${kboard_UIS_H})
 
-KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC})
+KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC} config.cxx)
 
 
 INCLUDE_DIRECTORIES(

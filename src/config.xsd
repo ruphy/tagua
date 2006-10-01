@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:complexType name="Configuration">
+    <xs:sequence>
+      <xs:element name="general" type="General" />
+      <xs:element name="animations" type="AnimationConfiguration" />
+      <xs:element name="board-border" type="BoardBorderConfiguration" />
+      <xs:element name="ics" type="IcsConfiguration" />
+      <xs:element name="clock" type="ClockConfiguration" />
+      <xs:element name="highlighting" type="HighlightingConfiguration" />
+      <xs:element name="movelist" type="MovelistConfiguration" />
+      <xs:element name="variants" type="VariantConfiguration" />
+      <xs:element name="engines" type="EngineConfiguration" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- general -->
+  
+  <xs:complexType name="General">
+    <xs:sequence>
+      <xs:element name="data-dir" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- board border -->
+  
+  <xs:complexType name="BoardBorderConfiguration">
+    <xs:sequence>
+      <xs:element name="visible" type="xs:string" />
+      <xs:element name="color" type="xs:string" />
+      <xs:element name="font" type="xs:string" />
+      <xs:element name="text-color" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- ics -->
+  
+  <xs:complexType name="IcsConfiguration">
+    <xs:sequence>
+      <xs:element name="username" type="xs:string" />
+      <xs:element name="password" type="xs:string" />
+      <xs:element name="host" type="xs:string" />
+      <xs:element name="port" type="xs:integer" />
+      <xs:element name="timeseal" type="Timeseal" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="Timeseal">
+    <xs:sequence>
+      <xs:element name="command" type="TimesealCommand" />
+      <xs:element name="path" type="xs:string" />
+    </xs:sequence>
+    <xs:attribute name="use" use="optional" default="false" type="xs:boolean" />
+  </xs:complexType>
+  
+  <xs:complexType name="TimesealCommand">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="use" use="optional" default="true" type="xs:boolean" />
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+  
+  <!-- clock -->
+  
+  <xs:complexType name="ClockConfiguration">
+    <xs:sequence>
+      <xs:element name="background-color" type="xs:string" />
+      <xs:element name="caption" type="ClockElement" />
+      <xs:element name="decimals" type="ClockElement" />
+      <xs:element name="player" type="ClockElement" />
+      <xs:element name="time" type="ClockElement" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="ClockElement">
+    <xs:sequence>
+      <xs:element name="size" type="xs:integer" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- highlighting -->
+
+  <xs:complexType name="HighlightingConfiguration">
+    <xs:sequence>
+      <xs:element name="lua" type="LuaHLConfiguration" />
+      <xs:element name="simple-highlighting" type="SimpleHighlighting" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="LuaHLConfiguration">
+    <xs:sequence>
+      <xs:element name="library-path" type="xs:string" />
+      <xs:element name="scripts" type="ScriptList" />
+    </xs:sequence>
+    <xs:attribute name="use" use="optional" default="true" type="xs:boolean" />
+  </xs:complexType>
+
+  <xs:complexType name="ScriptList">
+    <xs:sequence>
+      <xs:element name="script" maxOccurs="unbounded" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="SimpleHighlighting">
+    <xs:sequence>
+      <xs:element name="pattern" maxOccurs="unbounded" type="HighlightingPattern" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="HighlightingPattern">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" />
+      <xs:element name="regexp" type="xs:string" />
+      <xs:element name="format" type="HighlightingFormat" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="HighlightingFormat">
+    <xs:sequence>
+      <xs:element name="bold" minOccurs="0" type="xs:boolean" />
+      <xs:element name="italic" minOccurs="0" type="xs:boolean" />
+      <xs:element name="color" minOccurs="0" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- movelist -->
+  
+  <xs:complexType name="MovelistConfiguration">
+    <xs:sequence>
+      <xs:element name="animations" type="MovelistAnimationConfiguration" />
+      <xs:element name="comments" type="MovelistComments" />
+      <xs:element name="selection-color" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>  
+  
+  <xs:complexType name="MovelistAnimationConfiguration">
+    <xs:sequence>
+      <xs:element name="speed" type="xs:integer" />
+      <xs:element name="smoothness" type="xs:integer" />
+      <xs:element name="animation-list" type="MovelistAnimationList" />
+    </xs:sequence>
+    <xs:attribute name="enabled" type="xs:boolean" />
+  </xs:complexType>
+  
+  <xs:complexType name="MovelistAnimationList">
+    <xs:sequence>
+      <xs:element name="hide-show" type="MovelistAnimation" />
+      <xs:element name="highlight" type="MovelistAnimation" />
+      <xs:element name="moving" type="MovelistAnimation" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="MovelistAnimation">
+    <xs:attribute name="enabled" use="optional" default="false" type="xs:boolean" />
+  </xs:complexType>
+
+  <xs:complexType name="MovelistComments">
+    <xs:sequence>
+      <xs:element name="color" type="xs:string" />
+      <xs:element name="font" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <!-- variants -->
+  
+  <xs:complexType name="VariantConfiguration">
+    <xs:sequence>
+      <xs:element name="variant" maxOccurs="unbounded" type="Variant" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="Variant">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" />
+      <xs:element name="theme" type="VariantTheme" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="VariantTheme">
+    <xs:sequence>
+      <xs:element name="pieces" type="xs:string" />
+      <xs:element name="squares" type="xs:string" />
+    </xs:sequence>
+    <xs:attribute name="inherit-pieces" use="optional" default="false" type="xs:boolean" />
+    <xs:attribute name="inherit-squares" use="optional" default="false" type="xs:boolean" />
+  </xs:complexType> 
+
+  
+  <!-- animations -->
+  
+  <xs:complexType name="AnimationConfiguration">
+    <xs:sequence>
+      <xs:element name="smoothness" minOccurs="0" type="xs:integer" />
+      <xs:element name="speed" minOccurs="0" type="xs:integer" />
+      <xs:element name="animation-list" type="AnimationList" />
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="AnimationList">
+    <xs:sequence>
+      <xs:element name="capture" type="Animation" />
+      <xs:element name="fade" type="Animation" />
+      <xs:element name="movement" type="Animation" />
+      <xs:element name="transform" type="Animation" />
+      <xs:element name="sequence" type="SequenceAnimation" />
+    </xs:sequence>
+  </xs:complexType>  
+  
+  <xs:complexType name="Animation">
+    <xs:attribute name="enabled" type="xs:boolean" />
+  </xs:complexType>
+  
+  <xs:complexType name="SequenceAnimation">
+    <xs:complexContent>
+      <xs:extension base="Animation">
+        <xs:sequence>
+          <xs:element name="max" type="xs:integer" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <!-- engines -->
+  
+  <xs:complexType name="EngineConfiguration">
+    <xs:sequence>
+      <xs:element name="default" minOccurs="0" type="xs:integer" />
+      <xs:element name="engine-list" type="EngineList" />
+    </xs:sequence>
+  </xs:complexType>
+
+   <xs:complexType name="EngineList">
+      <xs:sequence>
+         <xs:element name="engine" maxOccurs="unbounded" type="Engine" />
+      </xs:sequence>
+   </xs:complexType>
+   
+   <xs:complexType name="Engine">
+      <xs:sequence>
+        <xs:element name="name" type="xs:string" /> 
+        <xs:element name="path" type="xs:string" /> 
+      </xs:sequence>
+      <xs:attribute name="type" type="EngineType" />
+   </xs:complexType>   
+   
+   <xs:simpleType name="EngineType">
+      <xs:restriction base="xs:string">
+         <xs:enumeration value="xboard"/>
+         <xs:enumeration value="UCI"/>
+         <xs:enumeration value="kboard"/>
+      </xs:restriction>
+   </xs:simpleType>
+         
+   <xs:element name="configuration" type="Configuration" />
+   
+</xs:schema>
