@@ -18,8 +18,10 @@
 #else
   #include <boost/variant.hpp>
 #endif
+#ifndef NO_PGN
 #include "pgnparser.h"
 #include "kboard.h"
+#endif //NO_PGN
 #include "game.h"
 #include "game_p.h"
 
@@ -843,6 +845,7 @@ QString Game::pgn() const {
   return variationPgn(history, history[0], 1, Index(1));
 }
 
+#ifndef NO_PGN
 /** loads a pgn in the current game */
 void Game::load(const PGN& pgn) {
   load(position(Index(0)), pgn);
@@ -973,3 +976,5 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
   current = Index(0);
   onCurrentIndexChanged();
 }
+#endif //NO_PGN
+

@@ -14,7 +14,7 @@
 #include "game_p.h"
 #include "settings.h"
 #include "graphicalinfo.h"
-#include "movelist_widget.h"
+#include "movelist_table.h"
 #include "entities/userentity.h"
 #include <iostream>
 
@@ -43,7 +43,7 @@ public:
 };
 
 GraphicalGame::GraphicalGame(GraphicalInfo* graphical,
-                             MoveList::Widget* m)
+                             MoveList::Table* m)
 : Game()
 , m_graphical(graphical)
 , m_movelist(m)
@@ -75,6 +75,10 @@ void GraphicalGame::settingsChanged() {
 }
 
 void GraphicalGame::onAdded(const Index& ix) {
+  onAddedInternal(ix);
+}
+
+void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
   if(!m_movelist)
     return;
 
@@ -85,7 +89,7 @@ void GraphicalGame::onAdded(const Index& ix) {
     return;
   }
 
-  m_movelist->remove(ix); //clear existing, if any
+  m_movelist->remove(ix, confirm_promotion); //clear existing, if any
 
   Index index = ix;
   for(int i=at;i<(int)vec->size();i++) {
@@ -95,14 +99,14 @@ void GraphicalGame::onAdded(const Index& ix) {
                   e->position ? "(-)" : "???";
     int turn = prev ? prev->turn() : (index.totalNumMoves()+1)%2;
     //mv += " " + QString::number(turn);
-    m_movelist->setMove(index, turn, mv, e->comment);
+    m_movelist->setMove(index, turn, mv, e->comment, confirm_promotion);
 
     for (Variations::const_iterator it = e->variations.begin();
             it != e->variations.end(); ++it)
-      onAdded(index.next(it->first));
+      onAddedInternal(index.next(it->first), confirm_promotion);
     for (VComments::const_iterator it = e->vcomments.begin();
             it != e->vcomments.end(); ++it)
-      m_movelist->setVComment(index, it->first, it->second);
+      m_movelist->setVComment(index, it->first, it->second, confirm_promotion);
 
     index = index.next();
   }
@@ -154,8 +158,16 @@ void GraphicalGame::onRemoved(const Index& i) {
 }
 
 void GraphicalGame::onPromoteVariation(const Index& i, int v) {
-  if(m_movelist)
+  if(m_movelist) {
     m_movelist->promoteVariation(i,v);
+    onAddedInternal(i.next(), true);
+    onAddedInternal(i.next(v), true);
+    VComments vc = fetch(i)->vcomments;
+    VComments::const_iterator it = vc.find(v);
+    if(it != vc.end())
+      m_movelist->setVComment(i, v, it->second, true);
+    m_movelist->select(current, true);
+  }
 }
 
 void GraphicalGame::onSetComment(const Index& i, const QString& s) {

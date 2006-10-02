@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -9,14 +9,30 @@
 */
 
 #include <iostream>
+#include <QStringList>
 #include "index.h"
 
 Index::operator QString() const {
   QString retv = QString::number(num_moves);
 
   for(int i = 0; i < (int)nested.size(); i++)
-    retv += QString(",%1#%2").arg( nested[i].variation ).arg( nested[i].num_moves );
+    retv += QString("_%1.%2").arg( nested[i].variation ).arg( nested[i].num_moves );
 
+  return retv;
+}
+
+Index Index::fromString(const QString& s) {
+  QStringList l = s.split("_");
+  if(l.isEmpty())
+    return Index(-1);
+
+  Index retv(l[0].toInt());
+  for(int i=1;i<l.size();i++) {
+    QStringList v = l[i].split(".");
+    if(v.size()!=2)
+      return Index(-1);
+    retv.nested.push_back(Ref(v[0].toInt(), v[1].toInt()));
+  }
   return retv;
 }
 

@@ -8,6 +8,9 @@ ADD_SUBDIRECTORY(
 ADD_SUBDIRECTORY(
   options)
 
+ADD_SUBDIRECTORY(
+  movelist)
+
 #ADD_SUBDIRECTORY(
 #  hl)
 

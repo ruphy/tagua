@@ -149,12 +149,6 @@ public:
 
   /** Sets the currently selected index */
   void select(const Index& index);
-
-  /** Enables/disables the undo action */
-  void enableUndo(bool e);
-
-  /** Enables/disables the redo action */
-  void enableRedo(bool e);
 };
 
 } //end namespace

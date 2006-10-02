@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -36,7 +36,7 @@ class GraphicalGame : public Game, public MoveList::Notifier {
 private:
   friend class GraphicalGameProxy;
   GraphicalInfo*      m_graphical;
-  MoveList::Widget*   m_movelist;
+  MoveList::Table*   m_movelist;
   GraphicalGameProxy* m_proxy;
   bool                m_anim_sequence;
   int                 m_anim_sequence_max;
@@ -47,9 +47,10 @@ private:
   void settingsChanged();
 
 public:
-  GraphicalGame(GraphicalInfo* graphical, MoveList::Widget* m);
+  GraphicalGame(GraphicalInfo* graphical, MoveList::Table* m);
   ~GraphicalGame();
 
+  void onAddedInternal(const Index& i, bool confirm_promotion = false);
   virtual void onAdded(const Index& i);
   virtual void onRemoved(const Index& i);
   virtual void onEntryChanged(const Index& at, int propagate=1);

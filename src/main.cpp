@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -113,9 +113,9 @@ int main(int argc, char **argv) {
 //  atexit(trap);
 
   KAboutData about("kboard", I18N_NOOP("KBoard"), version, description,
-                    KAboutData::License_GPL, 
+                    KAboutData::License_GPL,
                     "(C) 2006 Paolo Capriotti, Maurizio Monge",
-                    0, 
+                    0,
                     "http://kboard.sourceforge.net",
                     "p.capriotti@gmail.com");
   about.addAuthor("Paolo Capriotti", 0, "p.capriotti@gmail.com");
@@ -129,7 +129,7 @@ int main(int argc, char **argv) {
   KApplication app;
 
 //   QString locale = QLocale::system().name();
-// 
+//
 //   QTranslator translator;
 //   translator.load(QString("kboard_") + locale);
 //   app.installTranslator(&translator);

@@ -501,9 +501,6 @@ void Widget::reset() {
   history.clear();
   history.push_back( EntryPtr(new Entry(-1, mv, Index(0), this)) );
 
-  enableUndo(false);
-  enableRedo(false);
-
   layout();
 }
 
@@ -1304,72 +1301,6 @@ void Widget::select(const Index& index) {
   layout();
 }
 
-void Widget::enableUndo(bool e) {
-  if(owner_table)
-    owner_table->m_undo->setEnabled(e);
-}
-
-void Widget::enableRedo(bool e) {
-  if(owner_table)
-    owner_table->m_redo->setEnabled(e);
-}
-
 //END Widget-------------------------------------------------------------------
-
-
-//BEGIN Table------------------------------------------------------------------
-
-Table::Table(QWidget* w)
-: QWidget(w) {
-  setWindowTitle("Move List - kboard");
-
-  QVBoxLayout *vbox = new QVBoxLayout(this);
-  QHBoxLayout *hbox = new QHBoxLayout();
-  hbox->setMargin(0);
-  hbox->setSpacing(1);
-  vbox->setMargin(1);
-  vbox->setSpacing(1);
-
-  QString icons = data_dir() + "/icons/";
-  QToolButton *b1 = new QToolButton(this);
-  m_undo = new QAction(QIcon(icons+"undo.png"), "&Undo", this);
-  m_undo->setShortcut(Qt::CTRL+Qt::Key_Z);
-  connect(m_undo, SIGNAL(triggered()), this, SLOT(onUndo()));
-  b1->setDefaultAction(m_undo);
-  b1->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  hbox->addWidget(b1);
-
-  QToolButton *b2 = new QToolButton(this);
-  m_redo = new QAction(QIcon(icons+"redo.png"), "Re&do", this);
-  m_redo->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
-  connect(m_redo, SIGNAL(triggered()), this, SLOT(onRedo()));
-  b2->setDefaultAction(m_redo);
-  b2->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  hbox->addWidget(b2);
-
-  hbox->addStretch(1);
-
-  vbox->addLayout(hbox);
-
-  m_scroll_area = new QScrollArea(this);
-  m_movelist = new Widget(m_scroll_area, this);
-  m_scroll_area->setFocusPolicy(Qt::NoFocus);
-  m_scroll_area->setWidgetResizable(true);
-  m_scroll_area->setWidget(m_movelist);
-  m_scroll_area->resize(50,100);
-  vbox->addWidget(m_scroll_area);
-}
-
-void Table::onUndo() {
-  if(m_movelist->notifier)
-    m_movelist->notifier->onUserUndo();
-}
-
-void Table::onRedo() {
-  if(m_movelist->notifier)
-    m_movelist->notifier->onUserRedo();
-}
-
-//END Table--------------------------------------------------------------------
 
 } //end namespace MoveList
