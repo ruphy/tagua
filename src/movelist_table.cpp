@@ -15,7 +15,7 @@
 #include <QScrollArea>
 #include <QToolButton>
 #include <QScrollBar>
-#include "settings.h"
+#include "global.h"
 #include "movelist_textual.h"
 #include "movelist_notifier.h"
 #include "movelist_widget.h"

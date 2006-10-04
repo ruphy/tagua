@@ -24,7 +24,7 @@
 #include <QCloseEvent>
 #include <QTextStream>
 #include <QTextCodec>
-#include "tabbar.h"
+#include <ktabwidget.h>
 #include "chesstable.h"
 #include "console.h"
 #include "clock.h"
@@ -38,7 +38,7 @@
 #include "movelist_table.h"
 #include "icsconnection.h"
 #include "qconnect.h"
-#include "settings.h"
+#include "global.h"
 #include "flash.h"
 #include "pref_highlight.h"
 #include "pref_clock.h"
@@ -55,7 +55,7 @@ MainWindow::~MainWindow() {
 MainWindow::MainWindow()
 : KMainWindow(0) {
   setObjectName("kboard_main");
-  m_main = new TabWidget(this);
+  m_main = new KTabWidget(this);
   setCentralWidget(m_main);
   
   m_movelist_stack = new QStackedWidget;
@@ -232,7 +232,7 @@ void MainWindow::closeTab() {
     delete old_board;
 
     if (m_main->count() <= 1) {
-      m_main->hideTabBar();
+      m_main->setTabBarHidden(true);
     }
 
     // update ui controller (just in case...)
@@ -252,7 +252,7 @@ void MainWindow::createTab(ChessTable* board, const shared_ptr<Controller>& cont
   m_ui.setCurrentTab(board);
   m_movelist_stack->addWidget(board->moveListTable());
   m_movelist_stack->setCurrentIndex(index);
-  if (m_main->count() > 1) m_main->showTabBar();
+  if (m_main->count() > 1) m_main->setTabBarHidden(false);
 }
 
 
@@ -467,13 +467,14 @@ void MainWindow::icsDisconnect() {
 }
 
 void MainWindow::testConnect() {
-  if (settings["username"]) {
-    QString username = settings["username"].value<QString>();
-    QString password = (settings["password"] | QString("")).value<QString>();
-    QString host = (settings["icsHost"] | "freechess.org").value<QString>();
-    quint16 port = (settings["icsPort"] | 5000).value<int>();
+  Settings s_ics = settings.group("ics");
+  if (s_ics["username"]) {
+    QString username = s_ics["username"].value<QString>();
+    QString password = (s_ics["password"] | "");
+    QString host = (s_ics["icsHost"] | "freechess.org");
+    quint16 port = (s_ics["icsPort"] | 5000);
     createConnection(username, password, host, port, QString(), QString() );
-  }
+  } 
   else icsConnect();
 }
 
@@ -575,6 +576,7 @@ void MainWindow::flash() {
     Flash::flash(this);
 }
 
+#if 0
 void MainWindow::prefHighlight() {
   PrefHighlight dialog;
   int result = dialog.exec();
@@ -582,6 +584,7 @@ void MainWindow::prefHighlight() {
     dialog.apply();
   }
 }
+#endif
 
 void MainWindow::prefClock() {
   PrefClock dialog;

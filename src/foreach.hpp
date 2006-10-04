@@ -27,6 +27,7 @@
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
 
+#if 0
 // Some compilers let us detect even const-qualified rvalues at compile-time
 #if BOOST_WORKAROUND(BOOST_MSVC, >= 1310)                                                       \
  || BOOST_WORKAROUND(__GNUC__, >= 4)                                                            \
@@ -58,6 +59,7 @@
 # else
 #  define BOOST_FOREACH_RUN_TIME_CONST_RVALUE_DETECTION
 # endif
+#endif
 #endif
 
 #include <boost/mpl/if.hpp>
@@ -327,7 +329,7 @@ inline T *&to_ptr(T const &)
 }
 
 // Borland needs a little extra help with arrays
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
+#if 0 // BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564))
 template<typename T,std::size_t N>
 inline T (*&to_ptr(T (&)[N]))[N]
 {
@@ -516,7 +518,7 @@ template<typename T>
 inline auto_any<T *> contain(T &t, boost::mpl::false_ *) // lvalue
 {
     // Cannot seem to get sunpro to handle addressof() with array types.
-    #if BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x570))
+    #if 0 // BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x570))
     return &t;
     #else
     return boost::addressof(t);

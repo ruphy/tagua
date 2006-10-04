@@ -12,7 +12,7 @@
 #include "graphicalgame.h"
 #include "game.h"
 #include "game_p.h"
-#include "settings.h"
+#include "global.h"
 #include "graphicalinfo.h"
 #include "movelist_table.h"
 #include "entities/userentity.h"

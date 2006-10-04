@@ -16,7 +16,7 @@
 #include "piecesprite.h"
 #include "animation.h"
 #include "pref_theme.h"
-#include "settings.h"
+#include "global.h"
 
 using namespace boost;
 
@@ -83,19 +83,19 @@ void GraphicalInfo::setup(const shared_ptr<UserEntity>& entity) {
 }
 
 int GraphicalInfo::getIntSetting(const QString& key, int def_value) const {
-  return (settings[key] | def_value).value<int>();
+  return settings[key] | def_value;
 }
 
 bool GraphicalInfo::getBoolSetting(const QString& key, bool def_value) const {
-  return (settings[key] | def_value).value<bool>();
+  return settings[key] | def_value;
 }
 
 QString GraphicalInfo::getStringSetting(const QString& key, const QString& def_value) const {
-  return (settings[key] | def_value).value<QString>();
+  return settings[key] | def_value;
 }
 
 GraphicalInfo::SpritePtr GraphicalInfo::getSprite(const Point& p) const {
-  if(!m_board->m_sprites.valid(p))
+  if (!m_board->m_sprites.valid(p))
     return shared_ptr<PieceSprite>();
 
   return m_board->m_sprites[p].sprite();

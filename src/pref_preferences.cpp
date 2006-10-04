@@ -15,7 +15,7 @@
 #else // HAVE_KDE
 #include <QIcon>
 #endif // HAVE_KDE
-#include "settings.h"
+#include "global.h"
 #include "pref_board.h"
 #include "pref_movelist.h"
 #include "pref_theme.h"

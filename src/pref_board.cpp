@@ -10,7 +10,7 @@
 
 
 #include <QApplication>
-#include "settings.h"
+#include "global.h"
 #include "pref_board.h"
 
 
@@ -19,42 +19,60 @@ PrefBoard::PrefBoard(QWidget *parent)
 
   setupUi(this);
 
-  groupAnimations->setChecked((settings["AnimationsEnabled"]|=true).value<bool>());
-  checkMovements->setChecked((settings["AnimateMovement"]|=true).value<bool>());
-  checkExplosions->setChecked((settings["AnimateExplode"]|=true).value<bool>());
-  checkFading->setChecked((settings["AnimateFade"]|=true).value<bool>());
-  checkTransformations->setChecked((settings["AnimateTransform"]|=true).value<bool>());
-  checkSequence->setChecked((settings["AnimationsSequence"]|=true).value<bool>());
-  spinSequenceMax->setValue((settings["AnimationsSequenceMax"]|=10).value<int>());
+  {
+    Settings s_anim = settings.group("animations");
+    groupAnimations->setChecked(s_anim.flag("enabled", true));
+    checkMovements->setChecked(s_anim["movement"].flag("enabled", true));
+    checkExplosions->setChecked(s_anim["explode"].flag("enabled", true));
+    checkFading->setChecked(s_anim["fading"].flag("enabled", true));
+    checkTransformations->setChecked(s_anim["transform"].flag("enabled", true));
+    {
+      Settings s_sequence = s_anim.group("sequence");
+      checkSequence->setChecked(s_sequence.flag("enabled", true));
+      spinSequenceMax->setValue(s_sequence["max"] | 10);
+    }
+  
+    sliderSpeed->setValue(s_anim["speed"] |= 16);
+    sliderSmoothness->setValue(s_anim["smoothness"] |= 16);
+  }
 
-  sliderSpeed->setValue((settings["AnimationsSpeed"]|=16).value<int>());
-  sliderSmoothness->setValue((settings["AnimationsSmoothness"]|=16).value<int>());
-
-  groupBorder->setChecked((settings["BoardBorderShow"]|=true).value<bool>());
-  colorBorder->setColor((settings["BoardBorderColor"]|=QColor(Qt::white)).value<QColor>());
-  colorBorderText->setColor((settings["BoardBorderTextColor"]|=QColor(Qt::black)).value<QColor>());
-  fontBorder->setFont((settings["BoardBorderFont"]|=QApplication::font()).value<QFont>());
+  {
+    Settings s_border = settings.group("board-border");
+    groupBorder->setChecked(s_border.flag("visible", "true"));
+    colorBorder->setColor(s_border["color"] |= QColor(Qt::white));
+    colorBorderText->setColor(s_border["text-color"] |= QColor(Qt::black));
+    fontBorder->setFont(s_border["font"] |= QApplication::font());
+  }
 }
 
 PrefBoard::~PrefBoard() {
 }
 
 void PrefBoard::apply() {
-  settings["AnimationsEnabled"] = groupAnimations->isChecked();
-  settings["AnimateMovement"] = checkMovements->isChecked();
-  settings["AnimateExplode"] = checkExplosions->isChecked();
-  settings["AnimateFade"] = checkFading->isChecked();
-  settings["AnimateTransform"] = checkTransformations->isChecked();
-  settings["AnimationsSequence"] = checkSequence->isChecked();
-  settings["AnimationsSequenceMax"] = spinSequenceMax->value();
-
-  settings["AnimationsSpeed"] = sliderSpeed->value();
-  settings["AnimationsSmoothness"] = sliderSmoothness->value();
-
-  settings["BoardBorderShow"] = groupBorder->isChecked();
-  settings["BoardBorderColor"] = colorBorder->color();
-  settings["BoardBorderTextColor"] = colorBorderText->color();
-  settings["BoardBorderFont"] = fontBorder->font();
+  {
+    Settings s_anim = settings.group("animations");
+    s_anim.setFlag("enabled", groupAnimations->isChecked());
+    s_anim["movement"].setFlag("enabled", checkMovements->isChecked());
+    s_anim["explode"].setFlag("enabled", checkExplosions->isChecked());
+    s_anim["fading"].setFlag("enabled", checkFading->isChecked());
+    s_anim["transform"].setFlag("enabled", checkTransformations->isChecked());
+    {
+      Settings s_sequence = s_anim.group("sequence");
+      s_sequence.setFlag("enabled", checkSequence->isChecked());
+      s_sequence["max"] = spinSequenceMax->value();
+    }
+    
+    s_anim["speed"] = sliderSpeed->value();
+    s_anim["smoothness"] = sliderSmoothness->value();
+  }
+  
+  {
+    Settings s_border = settings.group("board-border");
+    s_border.setFlag("visible", groupBorder->isChecked());
+    s_border["color"] = colorBorder->color();
+    s_border["text-color"] = colorBorderText->color();
+    s_border["font"] = fontBorder->font();
+  }
 }
 
 #include "pref_board.moc"

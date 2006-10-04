@@ -1,102 +1,131 @@
-/*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
-            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2 of the License, or
-  (at your option) any later version.
-*/
-
-#include <QApplication>
-#include <QDir>
-#include <QFile>
-#include <QMessageBox>
-#include <QFileDialog>
-#include "common.h"
 #include "settings.h"
+#include <iostream>
 
-Settings settings(".kboardrc");
-
-SettingRef::operator bool() {
-  return settings->qSettings()->value(key).isValid();
+SettingConstRef::SettingConstRef(const QDomElement& element)
+: m_element(element) {
+  if (!m_element.isNull()) {
+    if (m_element.firstChild().toText().isNull())
+      m_element.appendChild(m_element.ownerDocument().createTextNode(""));
+  }
 }
+
+SettingRefBase::operator bool() const {
+  return !element().isNull();
+}
+
+bool SettingRefBase::flag(const QString& attr, bool def) const {
+  return element().attribute(attr, def ? "true" : "false") == "true";
+}
+
+void SettingRefBase::setFlag(const QString& attr, bool val) {
+  element().setAttribute(attr, val ? "true" : "false");
+}
+
+SettingRef::SettingRef(const QDomElement& parent, const QString& key)
+: m_parent(parent)
+, m_key(key) { }
 
 void SettingRef::remove() {
-  return settings->qSettings()->remove(key);
+  m_parent.removeChild(element());
 }
 
-QSettings *Settings::qSettings()
-{
-  if(!m_qsettings) {
-    QString base = QDir::homePath()+"/";
-    m_qsettings = new QSettings( base+m_path, QSettings::IniFormat, qApp);
-  }
+Settings::Settings(const QDomElement& node)
+: m_node(node) { }
 
-  return m_qsettings;
+SettingRef Settings::operator[](const QString& key) {
+  return SettingRef(node(), key);
 }
 
-void Settings::changed() {
-  if(m_notifier) {
-    emit m_notifier->settingsChanged();
-  }
+SettingConstRef Settings::operator[](const QString& key) const {
+  return SettingConstRef(node().firstChildElement(key));
 }
 
-void Settings::onChange(QObject* obj, const char *slot) {
-  if(!m_notifier)
-    m_notifier = new SettingsNotifier;
-  QObject::connect(m_notifier, SIGNAL(settingsChanged()), obj, slot);
+SettingGroup Settings::group(const QString& name) const {
+  return SettingGroup(node(), name);
 }
 
-#define STRINGIFY(x) #x
-#define TOSTRING(x) STRINGIFY(x)
-#define DATA_INSTALL_DIR_STR TOSTRING(DATA_INSTALL_DIR)
-
-static bool dir_ok(const QString& d) {
-  return QFile::exists(d+"/icons")
-          && QFile::exists(d+"/themes")
-          && QFile::exists(d+"/scripts");
+SettingArray Settings::array(const QString& name) const {
+  return SettingArray(node(), name);
 }
 
-QString data_dir() {
-  static bool initialied = false;
-  static QString s_data_dir;
+SettingArray Settings::newArray(const QString& name) const {
+  SettingArray res(node(), name);
+  res.clear();
+  return res;
+}
 
-  if(initialied)
-    return s_data_dir;
-
-  if(settings["DataDir"])
-    s_data_dir = settings["DataDir"].value<QString>();
-  else {
-    if(QFile::exists(DATA_INSTALL_DIR_STR)) {
-      settings["DataDir"] = DATA_INSTALL_DIR_STR;
-      s_data_dir = DATA_INSTALL_DIR_STR;
-    }
-    else if(dir_ok(QDir::current().absolutePath())) {
-      settings["DataDir"] = QDir::current().absolutePath();
-      s_data_dir = QDir::current().absolutePath();
-    }
-    else if(dir_ok(QDir::current().absolutePath()+"/..")) {
-      settings["DataDir"] = QDir::cleanPath(QDir::current().absolutePath()+"/..");
-      s_data_dir = QDir::cleanPath(QDir::current().absolutePath()+"/..");
-    }
-    else {
-      QMessageBox::critical(NULL, "Error!", "KBoard could not find data!\n"
-                                           "Please select kboard base directory");
-      QString retv = QFileDialog::getExistingDirectory(NULL, "Select the data directory");
-      if(retv.isEmpty() || !dir_ok(retv)) {
-        if(!retv.isEmpty())
-          QMessageBox::critical(NULL, "Error!", "This is not a valid data directory!\n"
-                                                "KBoard data directory should have \"themes\",\n"
-                                                "\"icons\" and \"scripts\" subdirectories");
-        exit(1);
-      }
-      settings["DataDir"] = retv;
-      s_data_dir = retv;
+void Settings::ensureExistence(QDomElement& node, QDomElement parent, const QString& name) {
+  if (node.isNull()) {
+    node = parent.firstChildElement(name);
+    if (node.isNull()) {
+      node = parent.ownerDocument().createElement(name);
+      parent.appendChild(node);
     }
   }
-  initialied = true;
-  return s_data_dir;
 }
 
-#include "settings.moc"
+bool Settings::flag(const QString& attr, bool def) const {
+  return node().attribute(attr, def ? "true" : "false") == "true";
+}
+
+void Settings::setFlag(const QString& attr, bool val) {
+  node().setAttribute(attr, val ? "true" : "false");
+}
+
+SettingGroup::SettingGroup(const QDomElement& parent, const QString& name)
+: m_name(name) 
+, m_parent(parent) { }
+
+QDomElement SettingGroup::node() const {
+  ensureExistence(const_cast<QDomElement&>(m_node), m_parent, m_name);
+  return m_node;
+}
+
+void SettingGroup::remove() {
+  node().parentNode().removeChild(node());
+}
+
+SettingArray::SettingArray(const QDomElement& node, const QString& element)
+: m_node(node)
+, m_element(element) {
+  QDomNodeList elements = m_node.elementsByTagName(m_element);
+  m_array.resize(elements.size());
+  for (int i = 0; i < elements.size(); i++)
+    m_array[i] = elements.item(i).toElement();
+}
+  
+Settings SettingArray::get(int index) const {
+  return m_array[index];
+}
+
+Settings SettingArray::insert(int index) {
+  QDomElement el = node().ownerDocument().createElement(m_element);
+  node().insertBefore(el, m_array[index].node());
+  Settings res = el;
+  m_array.insert(m_array.begin() + index, res);
+  return res;
+}
+
+Settings SettingArray::append() {
+  QDomElement el = node().ownerDocument().createElement(m_element);
+  node().appendChild(el);
+  Settings res = el;
+  m_array.push_back(res);
+  return res;
+}
+
+void SettingArray::clear() {
+  QDomNodeList children = node().childNodes();
+  while (children.size() > 0) {
+    QDomElement e = children.item(0).toElement();
+    if (!e.isNull() || e.tagName() == m_element)
+      node().removeChild(e);
+  }
+}
+
+void Settings::dump() const {
+  std::cout << "dumping" << std::endl;
+  Q_ASSERT(!node().isNull());
+  Q_ASSERT(!node().ownerDocument().isNull());
+  std::cout << node().ownerDocument().toString() << std::endl;
+}

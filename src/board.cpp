@@ -13,7 +13,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include "settings.h"
+#include "global.h"
 #include "board.h"
 #include "piecesprite.h"
 #include "animation.h"
@@ -52,11 +52,11 @@ Board::~Board() {
 }
 
 void Board::mySettingsChanged() {
-
-  m_show_border = (settings["BoardBorderShow"]|=true).value<bool>();
-  m_border_color = (settings["BoardBorderColor"]|=QColor(Qt::white)).value<QColor>();
-  m_border_text_color = (settings["BoardBorderTextColor"]|=QColor(Qt::black)).value<QColor>();
-  m_border_font = (settings["BoardBorderFont"]|=QApplication::font()).value<QFont>();
+  Settings s_border = settings.group("board-border");
+  m_show_border = s_border.flag("visible", true);
+  m_border_color = (s_border["color"] |= QColor(Qt::white));
+  m_border_text_color = (s_border["text-color"] |= QColor(Qt::black));
+  m_border_font = (s_border["font"] |= QApplication::font());
 
   recreateBorder();
 }

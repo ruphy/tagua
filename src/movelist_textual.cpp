@@ -18,7 +18,7 @@
 #include <dom/html_element.h>
 #include <dom/dom_element.h>
 #include <dom/dom_text.h>
-#include "settings.h"
+#include "global.h"
 #include "movelist_p.h"
 #include "movelist_textual.h"
 

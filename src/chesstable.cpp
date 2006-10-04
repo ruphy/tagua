@@ -18,7 +18,7 @@
 #include "connection.h"
 #include "piecepool.h"
 #include "clock.h"
-#include "settings.h"
+#include "global.h"
 #include "movelist_table.h"
 #include "infodisplay.h"
 

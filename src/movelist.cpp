@@ -23,7 +23,7 @@
 #include <QTimer>
 #include <cmath>
 #include <iostream>
-#include "settings.h"
+#include "global.h"
 #include "movelist_widget.h"
 #include "movelist_table.h"
 #include "movelist_notifier.h"
@@ -398,33 +398,35 @@ void Entry::doUpdate () {
 //BEGIN Settings---------------------------------------------------------------
 
 void Settings::load() {
-  icons = data_dir() + "/icons/";
+//  icons = data_dir() + "/icons/";
 
-  settings.qSettings()->beginGroup("MoveList");
+//  settings.qSettings()->beginGroup("MoveList");
 
-  (settings["AnimationsEnabled"] |= true) >> anim_enabled;
-  (settings["AnimateMoving"] |= true) >> anim_moving;
-  (settings["AnimateHideShow"] |= true) >> anim_hideshow;
-  (settings["AnimateHighlight"] |= true) >> anim_highlight;
-  (settings["AnimateSpeed"] |= 16) >> anim_speed;
+  ::Settings s = settings.group("MoveList");
+
+  (s["AnimationsEnabled"] |= true) >> anim_enabled;
+  (s["AnimateMoving"] |= true) >> anim_moving;
+  (s["AnimateHideShow"] |= true) >> anim_hideshow;
+  (s["AnimateHighlight"] |= true) >> anim_highlight;
+  (s["AnimateSpeed"] |= 16) >> anim_speed;
   anim_time = DEFAULT_ANIMATION_TIME*pow(5.0, 1.0 - anim_speed/16.0);
-  (settings["AnimateSmoothness"] |= 16) >> anim_smoothness;
-  (settings["SelectColor"] |= Qt::red) >> select_color;
-  (settings["CommentColor"] |= QColor(64,64,64) ) >> comment_color;
-  piece_icons = icons + "pieces/";
-  if( (use_mv_font = (settings["UseMoveFont"] |= true).value<bool>()) )
-    (settings["MoveFont"] |= QApplication::font()) >> mv_font;
+  (s["AnimateSmoothness"] |= 16) >> anim_smoothness;
+  (s["SelectColor"] |= Qt::red) >> select_color;
+  (s["CommentColor"] |= QColor(64,64,64) ) >> comment_color;
+ // piece_icons = icons + "pieces/";
+  if ((use_mv_font = (s["UseMoveFont"] |= true)))
+    (s["MoveFont"] |= QApplication::font()) >> mv_font;
   else
     mv_font = QApplication::font();
   sel_mv_font = mv_font;
   sel_mv_font.setBold(true);
-  if( (use_comm_font = (settings["UseCommentFont"] |= true).value<bool>()) ) {
-    if(settings["CommentFont"])
-      comm_font = settings["CommentFont"].value<QFont>();
+  if ((use_comm_font = (s["UseCommentFont"] |= true))) {
+    if(s["CommentFont"])
+      comm_font = s["CommentFont"].value<QFont>();
     else {
       comm_font = QApplication::font();
       comm_font.setItalic(true);
-      settings["CommentFont"] = comm_font;
+      s["CommentFont"] = comm_font;
     }
   }
   else {
@@ -435,25 +437,24 @@ void Settings::load() {
   sel_mv_fmetrics = QFontMetrics(sel_mv_font);
   comm_fmetrics = QFontMetrics(comm_font);
 
-  settings.qSettings()->endGroup();
+//  settings.qSettings()->endGroup();
 }
 
 void Settings::save() {
-  settings.qSettings()->beginGroup("MoveList");
-  settings["AnimationsEnabled"] = anim_enabled;
-  settings["AnimateMoving"]    = anim_moving;
-  settings["AnimateHideShow"]  = anim_hideshow;
-  settings["AnimateHighlight"] = anim_highlight;
-  settings["AnimateSpeed"]     = anim_speed;
-  settings["AnimateSmoothness"] = anim_smoothness;
-  settings["SelectColor"]      = select_color;
-  settings["CommentColor"]     = comment_color;
-  settings["PieceIconDir"]     = piece_icons;
-  settings["UseMoveFont"]      = use_mv_font;
-  settings["MoveFont"]         = mv_font;
-  settings["UseCommentFont"]   = use_comm_font;
-  settings["CommentFont"]      = comm_font;
-  settings.qSettings()->endGroup();
+  ::Settings s = settings.group("MoveList");
+  s["AnimationsEnabled"] = anim_enabled;
+  s["AnimateMoving"]    = anim_moving;
+  s["AnimateHideShow"]  = anim_hideshow;
+  s["AnimateHighlight"] = anim_highlight;
+  s["AnimateSpeed"]     = anim_speed;
+  s["AnimateSmoothness"] = anim_smoothness;
+  s["SelectColor"]      = select_color;
+  s["CommentColor"]     = comment_color;
+  s["PieceIconDir"]     = piece_icons;
+  s["UseMoveFont"]      = use_mv_font;
+  s["MoveFont"]         = mv_font;
+  s["UseCommentFont"]   = use_comm_font;
+  s["CommentFont"]      = comm_font;
 }
 
 //END Settings-----------------------------------------------------------------

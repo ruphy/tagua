@@ -23,7 +23,7 @@
 #include <iostream>
 #include <boost/scoped_ptr.hpp>
 #include "common.h"
-#include "settings.h"
+#include "global.h"
 
 #include "histlineedit.h"
 #include "highlighter.h"
@@ -67,10 +67,9 @@ void ConsoleOutput::operator()(const QString& text) {
 LuaConsoleHighlighter::LuaConsoleHighlighter()
 : m_display(0) {
   QString luaHighlightingFile, luaHighlightingLibrary;
-  settings.qSettings()->beginGroup("Highlighting");
-  (settings["lua"]     |= data_dir() + "/scripts/highlighting.lua") >> luaHighlightingFile;
-  (settings["library"] |= data_dir() + "/scripts/hllib.lua") >> luaHighlightingLibrary;
-  settings.qSettings()->endGroup();
+  Settings hl = settings.group("highlighting");
+  (hl["lua"]     |= data_dir() + "/scripts/highlighting.lua") >> luaHighlightingFile;
+  (hl["library"] |= data_dir() + "/scripts/hllib.lua") >> luaHighlightingLibrary;
 
   m_api.runFile(qPrintable(luaHighlightingLibrary));
   m_api.runFile(qPrintable(luaHighlightingFile));
@@ -110,6 +109,7 @@ void LuaConsoleHighlighter::operator()(const QString& text, ConsoleOutput& outpu
   }
 }
 
+#if 0
 ConsoleHighlighter::ConsoleHighlighter()
 : m_display(0) {
   BackInserterPatternIteratorAdaptor out(m_patterns);
@@ -177,6 +177,7 @@ void ConsoleHighlighter::operator()(const QString& text, ConsoleOutput& output) 
   output(text.mid(offset));
 //   std::cout << "weight = " << m_display->currentCharFormat().fontWeight() << std::endl;
 }
+#endif
 
 QRegExp Console::promptRegexp("([a-zA-Z0-9]*% )");
 
@@ -212,12 +213,13 @@ Console::Console(QWidget* parent, const QString& caption)
   display->setAcceptRichText(false);
   display->setWordWrapMode (QTextOption::NoWrap);
   display->setUndoRedoEnabled (false);
-  if(!settings["ConsoleFont"]) {
+  Settings s_console = settings.group("console");
+  if (!s_console["font"]) {
     QFont f = QApplication::font();
     f.setFamily("Monospace");
-    settings["ConsoleFont"] = f;
+    s_console["font"] = f;
   }
-  display->setFont( settings["ConsoleFont"].value<QFont>() );
+  display->setFont(s_console["font"].value<QFont>());
 
   display->setFontWeight(QFont::Normal);
   m_highlighter.setDisplay(display);

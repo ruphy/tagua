@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include "qconnect.h"
-#include "settings.h"
+#include "global.h"
 
 static const char* timeseal_cmd_tool_tip =
   "Expandable variables ref:\n"
@@ -34,20 +34,20 @@ QConnect::QConnect(QWidget *parent, const char *name)
   editTimesealCmd->setToolTip(timeseal_cmd_tool_tip);
   //std::cout << "initializing dialog" << std::endl;
 
-  if(settings["IcsUsername"])
-    editUsername->setText(settings["IcsUsername"].value<QString>());
-  if (settings["IcsPassword"]) {
-    editPassword->setText(settings["IcsPassword"].value<QString>());
+  Settings s_ics = settings.group("ics");
+  if (s_ics["username"])
+    editUsername->setText(s_ics["username"].value<QString>());
+  if (s_ics["password"]) {
+    editPassword->setText(s_ics["password"].value<QString>());
     chkStore->setChecked(true);
   }
-  if (settings["IcsHost"])
-    editHost->setText( settings["IcsHost"].value<QString>());
-  spinPort->setValue( (settings["IcsPort"] | 5000).value<int>());
-  groupTimeseal->setChecked( (settings["UseTimeseal"] |= false).value<bool>() );
-  editTimeseal->setText( (settings["TimesealPath"] |= QString()).value<QString>());
-  chkTimesealCmd->setChecked( (settings["UseTimesealCustomCmd"] |= false).value<bool>() );
-  editTimesealCmd->setText(
-    (settings["TimesealCustomCmd"] |= "$(HOST_IP) $(PORT)" ).value<QString>() );
+  if (s_ics["host"])
+    editHost->setText(s_ics["host"] | "");
+  spinPort->setValue((s_ics["port"] | 5000));
+  Settings s_timeseal = s_ics.group("timeseal");
+  groupTimeseal->setChecked(s_timeseal.flag("use", false));
+  editTimeseal->setText(s_timeseal["path"] |= QString());
+  chkTimesealCmd->setChecked(s_timeseal["command"].flag("use", false));  editTimesealCmd->setText(s_timeseal["command"] |= "$(HOST_IP) $(PORT)");
 }
 
 void QConnect::setTimesealPath() {
@@ -59,17 +59,22 @@ void QConnect::setTimesealPath() {
 void QConnect::accept() {
   QDialog::accept();
 
-  settings["IcsUsername"] = editUsername->text();
+  Settings s_ics = settings.group("ics");
+  s_ics["username"] = editUsername->text();
   if (chkStore->isChecked())
-    settings["IcsPassword"] = editPassword->text();
+    s_ics["password"] = editPassword->text();
   else
-    settings["IcsPassword"].remove();
-  settings["IcsHost"] = editHost->text();
-  settings["IcsPort"] = spinPort->value();
-  settings["UseTimeseal"] = groupTimeseal->isChecked();
-  settings["TimesealPath"] = editTimeseal->text();
-  settings["UseTimesealCustomCmd"] = chkTimesealCmd->isChecked();
-  settings["TimesealCustomCmd"] = editTimesealCmd->text();
+    s_ics["password"].remove();
+  s_ics["host"] = editHost->text();
+  s_ics["port"] = spinPort->value();
+  
+  {
+    Settings s_timeseal = s_ics.group("timeseal");
+    s_timeseal.setFlag("use", groupTimeseal->isChecked());
+    s_timeseal["path"] = editTimeseal->text();
+    s_timeseal["command"].setFlag("use", chkTimesealCmd->isChecked());
+    s_timeseal["command"] = editTimesealCmd->text();
+  }
 
   emit acceptConnection(editUsername->text(),
                         editPassword->text(),

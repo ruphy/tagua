@@ -10,7 +10,7 @@
 
 #include "pref_clock.h"
 #include "clock.h"
-#include "settings.h"
+#include "global.h"
 
 #include <QBoxLayout>
 #include <QSpinBox>
@@ -54,20 +54,18 @@ PrefClock::PrefClock() {
 }
 
 void PrefClock::load() {
-  settings.qSettings()->beginGroup("Clock");
+  Settings s = settings.group("Clock");
 //  std::cout << "caption font size: " << settings["captionFontSize"].value<int>() << std::endl;
-  m_captionSpin->setValue(settings["captionFontSize"].value<int>());
-  m_timeSpin->setValue(settings["timeFontSize"].value<int>());
-  m_decsSpin->setValue(settings["decsFontSize"].value<int>());
-  m_playerSpin->setValue(settings["playerFontSize"].value<int>());
+  m_captionSpin->setValue(s["captionFontSize"].value<int>());
+  m_timeSpin->setValue(s["timeFontSize"].value<int>());
+  m_decsSpin->setValue(s["decsFontSize"].value<int>());
+  m_playerSpin->setValue(s["playerFontSize"].value<int>());
   
   {
     QPalette palette = m_background_button->palette();
-    palette.setColor(QPalette::Button, settings["background"].value<QColor>());
+    palette.setColor(QPalette::Button, s["background"].value<QColor>());
     m_background_button->setPalette(palette);
   }
-  
-  settings.qSettings()->endGroup();
 }
 
 void PrefClock::createSpin(QBoxLayout* parent, const QString& labelText, QSpinBox*& spin) {
@@ -82,13 +80,12 @@ void PrefClock::createSpin(QBoxLayout* parent, const QString& labelText, QSpinBo
 }
 
 void PrefClock::apply() {
-  settings.qSettings()->beginGroup("Clock");
-  settings["captionFontSize"] = m_captionSpin->value();
-  settings["timeFontSize"] = m_timeSpin->value();
-  settings["decsFontSize"] = m_decsSpin->value();
-  settings["playerFontSize"] = m_playerSpin->value();
-  settings["background"] = m_background_button->palette().color(QPalette::Button);
-  settings.qSettings()->endGroup();
+  Settings s = settings.group("Clock");
+  s["captionFontSize"] = m_captionSpin->value();
+  s["timeFontSize"] = m_timeSpin->value();
+  s["decsFontSize"] = m_decsSpin->value();
+  s["playerFontSize"] = m_playerSpin->value();
+  s["background"] = m_background_button->palette().color(QPalette::Button);
 }
 
 void PrefClock::setBackgroundColor() {

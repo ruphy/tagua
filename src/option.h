@@ -300,8 +300,8 @@ typename O::ValueType options_list_find(const OptList& o, const QString& name,
   return def;
 }
 
-bool options_list_load_from_settings(OptList&, Settings& s);
-void options_list_save_to_settings(const OptList&, Settings& s);
+bool options_list_load_from_settings(OptList&, const Settings& s);
+void options_list_save_to_settings(const OptList&, Settings s);
 
 
 class OptionWidget : public QWidget {

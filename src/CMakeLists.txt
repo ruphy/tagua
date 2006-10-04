@@ -12,7 +12,7 @@ SET(old_bin_dir)
 # QT4_AUTOMOC is not very intelligent either
 KDE4_AUTOMOC(${kboard_SRC} ${kboard_UIS_H})
 
-KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC} config.cxx)
+KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC})
 
 
 INCLUDE_DIRECTORIES(
@@ -48,7 +48,6 @@ TARGET_LINK_LIBRARIES(kboard
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
   ${KDE4_KHTML_LIBS}
-  ${XERCES_LIBRARY}
 )
 
 INSTALL(TARGETS kboard

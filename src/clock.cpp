@@ -12,7 +12,7 @@
 #include <iostream>
 #include <QResizeEvent>
 #include "clock.h"
-#include "settings.h"
+#include "global.h"
 
 static void setFontSize(int max, int width, const QString& text, QFont& font) {
   font.setPointSize(max);
@@ -39,11 +39,11 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
   m_total_time = 0;
   m_rect = rect;
 
-  settings.qSettings()->beginGroup("Clock");
+  Settings s_clock = settings.group("clock");
 
   QColor framecol(0x60,0x60,0x90);
   QColor backgroundColor;
-  (settings["background"] |= QColor(0xa0,0xf0,0xd0,200)) >> backgroundColor;
+  (s_clock["background"] |= QColor(0xa0,0xf0,0xd0,200)) >> backgroundColor;
   m_background = new Canvas::Rectangle(backgroundColor, QSize(m_rect.size()), this);
   m_frame[0] = new Canvas::Rectangle(framecol, QSize(m_rect.width()-2,1), this);
   m_frame[0]->moveTo(1,0);
@@ -58,7 +58,7 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 
   {
     QFont captionFont("Bitstream Vera Sans");
-    (settings["captionFontSize"] |=
+    (s_clock["captionFontSize"] |=
       static_cast<int>(captionFont.pointSize() * 1.4)) >> tempFontSize;
     captionFont.setPointSize(tempFontSize);
     m_caption = new Canvas::Text(caption, Qt::black, captionFont,
@@ -68,7 +68,7 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 
   {
     QFont timeFont("Bitstream Vera Sans");
-    (settings["timeFontSize"] |= timeFont.pointSize() * 2) >> tempFontSize;
+    (s_clock["timeFontSize"] |= timeFont.pointSize() * 2) >> tempFontSize;
     timeFont.setPointSize(tempFontSize);
     timeFont.setWeight(QFont::Bold);
     m_time_label = new Canvas::Text("", Qt::black, timeFont,
@@ -78,7 +78,7 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 
   {
     QFont decsFont("Bitstream Vera Sans");
-    (settings["decsFontSize"] |=
+    (s_clock["decsFontSize"] |=
       static_cast<int>(decsFont.pointSize() * 0.8)) >> tempFontSize;
     decsFont.setPointSize(tempFontSize);
     m_decs = new Canvas::Text("", Qt::black, decsFont,
@@ -87,13 +87,12 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 
   {
     QFont playerFont("Bitstream Vera Sans");
-    (settings["playerFontSize"] |= playerFont.pointSize()) >> tempFontSize;
+    (s_clock["playerFontSize"] |= playerFont.pointSize()) >> tempFontSize;
     playerFont.setPointSize(tempFontSize);
     m_player_name = new Canvas::Text(playerString(player), Qt::black, playerFont,
       Canvas::Text::HStart, Canvas::Text::VBottom, this);
     m_player_name->show();
   }
-  settings.qSettings()->endGroup();
 
   computeTime();
   update();
@@ -101,31 +100,29 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 }
 
 void Clock::Info::reload() {
-  settings.qSettings()->beginGroup("Clock");
+  Settings s_clock = settings.group("clock");
 
   QFont tempFont;
   QColor backgroundColor;
 
-  settings["background"] >> backgroundColor;
+  s_clock["background"] >> backgroundColor;
   m_background->setColor(backgroundColor);
 
   tempFont = m_caption->font();
-  tempFont.setPointSize(settings["captionFontSize"].value<int>());
+  tempFont.setPointSize(s_clock["captionFontSize"].value<int>());
   m_caption->setFont(tempFont);
 
   tempFont = m_time_label->font();
-  tempFont.setPointSize(settings["timeFontSize"].value<int>());
+  tempFont.setPointSize(s_clock["timeFontSize"].value<int>());
   m_time_label->setFont(tempFont);
 
   tempFont = m_decs->font();
-  tempFont.setPointSize(settings["decsFontSize"].value<int>());
+  tempFont.setPointSize(s_clock["decsFontSize"].value<int>());
   m_decs->setFont(tempFont);
 
   tempFont = m_player_name->font();
-  tempFont.setPointSize(settings["playerFontSize"].value<int>());
+  tempFont.setPointSize(s_clock["playerFontSize"].value<int>());
   m_player_name->setFont(tempFont);
-
-  settings.qSettings()->endGroup();
 }
 
 QString Clock::Info::playerString(const Player& player) const {

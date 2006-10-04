@@ -296,52 +296,50 @@ void dump_options_list(OptList& options, int indent) {
   if(!indent)std::cout << "---- end dump ----" << std::endl;
 }
 
-bool options_list_load_from_settings(OptList& options, Settings& s) {
+bool options_list_load_from_settings(OptList& options, const Settings& s) {
   bool retv = false;
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
     if(boost::shared_ptr<BoolOpt> o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      s.qSettings()->beginGroup("sub_options");
-      retv |= options_list_load_from_settings(o->m_sub_options, s);
-      s.qSettings()->endGroup();
-      bool newval = (s[o->name()] | o->value()).value<bool>();
+      retv |= options_list_load_from_settings(o->m_sub_options, s.group("sub_options"));
+      bool newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<IntOpt> o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
-      int newval = (s[o->name()] | o->value()).value<int>();
+      int newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<StringOpt> o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
-      QString newval = (s[o->name()] | o->value()).value<QString>();
+      QString newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<UrlOpt> o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
-      QString newval = (s[o->name()] | o->value()).value<QString>();
+      QString newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<ColorOpt> o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
-      QColor newval = (s[o->name()] | o->value()).value<QColor>();
+      QColor newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<FontOpt> o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
-      QFont newval = (s[o->name()] | o->value()).value<QFont>();
+      QFont newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
     else if(boost::shared_ptr<ComboOpt> o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
-      int newval = (s[o->name()] | o->selected()).value<int>();
+      int newval = s[o->name()] | o->selected();
       retv |= (newval != o->selected());
       o->setSelected( newval );
     }
@@ -350,10 +348,8 @@ bool options_list_load_from_settings(OptList& options, Settings& s) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)
         l <<  o->m_options[i];
-      s.qSettings()->beginGroup("options");
-      retv |= options_list_load_from_settings(l, s);
-      s.qSettings()->endGroup();
-      int newval = (s[o->name()] | o->selected()).value<int>();
+      retv |= options_list_load_from_settings(l, s.group("options"));
+      int newval = s[o->name()] | o->selected();
       retv |= (newval != o->selected());
       o->setSelected( newval );
     }
@@ -365,14 +361,12 @@ bool options_list_load_from_settings(OptList& options, Settings& s) {
   return retv;
 }
 
-void options_list_save_to_settings(const OptList& options, Settings& s) {
+void options_list_save_to_settings(const OptList& options, Settings s) {
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
     if(boost::shared_ptr<BoolOpt> o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      s.qSettings()->beginGroup("sub_options");
-      options_list_save_to_settings(o->m_sub_options, s);
-      s.qSettings()->endGroup();
+      options_list_save_to_settings(o->m_sub_options, s.group("sub_options"));
       s[o->name()] = o->value();
     }
     else if(boost::shared_ptr<IntOpt> o =
@@ -404,9 +398,7 @@ void options_list_save_to_settings(const OptList& options, Settings& s) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)
         l <<  o->m_options[i];
-      s.qSettings()->beginGroup("options");
-      options_list_save_to_settings(l, s);
-      s.qSettings()->endGroup();
+      options_list_save_to_settings(l, s.group("options"));
       s[o->name()] = o->value();
     }
     else {

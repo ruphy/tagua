@@ -12,7 +12,7 @@
 #include <iostream>
 #include <QHash>
 #include "common.h"
-#include "settings.h"
+#include "global.h"
 #include "loader/theme.h"
 
 namespace Loader {
@@ -36,13 +36,13 @@ Theme::~Theme() {
 }
 
 void Theme::onSettingsChanged() {
-  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(m_file)));
+  SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+  Settings entry = s_lua.insert(m_file);
   OptList ol = m_lua_loader.getOptions();
-  if(options_list_load_from_settings(ol, settings)) {
+  if(options_list_load_from_settings(ol, entry)) {
     for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
       it->second.m_cache.clear();
   }
-  settings.qSettings()->endGroup();
 }
 
 void Theme::refSize(int size) {

@@ -42,7 +42,7 @@ class QConnect;
 class NewGame;
 class EngineInfo;
 class QDockWidget;
-class TabWidget;
+class KTabWidget;
 class QStackedWidget;
 class QActionGroup;
 
@@ -51,7 +51,7 @@ Q_OBJECT
   QDockWidget* movelist_dock;
   QDockWidget* console_dock;
 
-  TabWidget* m_main;
+  KTabWidget* m_main;
   QStackedWidget* m_movelist_stack;
   boost::shared_ptr<ICSConnection> m_connection;
   Console* console;
@@ -132,7 +132,7 @@ public slots:
   void displayErrorMessage(ErrorCode);
   void flash();
 
-  void prefHighlight();
+//  void prefHighlight();
   void prefClock();
   void preferences();
 };

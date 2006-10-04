@@ -11,7 +11,7 @@
 
 #include <cmath>
 #include <QTimer>
-#include "settings.h"
+#include "global.h"
 #include "piecegroup.h"
 #include "pointconverter.h"
 #include "animation.h"
@@ -35,17 +35,18 @@ PieceGroup::~PieceGroup()
 }
 
 void PieceGroup::settingsChanged() {
-  if((settings["AnimationsEnabled"] |= true).value<bool>()) {
-    (settings["AnimateFade"] |= true) >> m_anim_fade;
-    (settings["AnimateMovement"] |= true) >> m_anim_movement;
+  Settings s_anim = settings.group("animations");
+  if (s_anim.flag("enabled", true)) {
+    (s_anim["fading"] |= true) >> m_anim_fade;
+    (s_anim["movement"] |= true) >> m_anim_movement;
   }
   else {
     m_anim_fade = false;
     m_anim_movement = false;
   }
 
-  int speed = (settings["AnimationsSpeed"] |= 16).value<int>();
-  int smoothness = (settings["AnimationsSmoothness"] |= 16).value<int>();
+  int speed = (s_anim["AnimationsSpeed"] |= 16);
+  int smoothness = (s_anim["AnimationsSmoothness"] |= 16);
   m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );
   m_main_animation->setDelay( int(70.0*pow(10.0, -smoothness/32.0)) );
 }

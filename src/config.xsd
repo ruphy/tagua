@@ -66,7 +66,7 @@
   
   <xs:complexType name="ClockConfiguration">
     <xs:sequence>
-      <xs:element name="background-color" type="xs:string" />
+      <xs:element name="background-color" type="Color" />
       <xs:element name="caption" type="ClockElement" />
       <xs:element name="decimals" type="ClockElement" />
       <xs:element name="player" type="ClockElement" />
@@ -131,7 +131,9 @@
     <xs:sequence>
       <xs:element name="animations" type="MovelistAnimationConfiguration" />
       <xs:element name="comments" type="MovelistComments" />
-      <xs:element name="selection-color" type="xs:string" />
+      <xs:element name="selection-color" type="Color" />
+      <xs:element name="selection-font" type="Font" />
+      <xs:element name="font" type="Font" />
     </xs:sequence>
   </xs:complexType>  
   
@@ -253,6 +255,20 @@
       </xs:restriction>
    </xs:simpleType>
          
+   <!-- colors and fonts -->
+   
+   <xs:complexType name="Color">
+     <xs:attribute name="r" use="required" type="xs:integer" />
+     <xs:attribute name="g" use="required" type="xs:integer" />
+     <xs:attribute name="b" use="required" type="xs:integer" />
+   </xs:complexType>
+   
+   <xs:simpleType name="Font">
+     <xs:restriction base="xs:string" />
+   </xs:simpleType>
+   
+   <!-- global element -->
+   
    <xs:element name="configuration" type="Configuration" />
    
 </xs:schema>

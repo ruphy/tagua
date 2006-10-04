@@ -9,14 +9,15 @@
 */
 
 #include "pref_engines.h"
-#include "settings.h"
+#include "global.h"
+#include "kicon.h"
 
 PrefEngines::PrefEngines(QWidget* parent)
 : QWidget(parent) {
   setupUi(this);
 
-  m_add_engine->setIcon(QIcon(data_dir() + "/icons/add.png"));
-  m_remove_engine->setIcon(QIcon(data_dir() + "/icons/remove.png"));
+  m_add_engine->setIcon(KIcon("add"));
+  m_remove_engine->setIcon(KIcon("remove.png"));
 }
 
 PrefEngines::~PrefEngines() { }

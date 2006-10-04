@@ -13,7 +13,7 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
-#include "settings.h"
+#include "global.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"
 #include "kboard.h"
@@ -50,20 +50,23 @@ QStringList PrefTheme::find_lua_files(const QDir& d) {
   return retv;
 }
 
-PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, Settings& s) {
+PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
   std::map<QString, ThemeInfo> cache;
 
-  int size = s.qSettings()->beginReadArray("Themes");
-  for (int i = 0; i < size; i++) {
-    s.qSettings()->setArrayIndex(i);
-    QString f = s["file_name"].value<QString>();
-    cache.insert( std::make_pair(f, ThemeInfo( f,
-                  s["name"].value<QString>(),
-                  s["description"].value<QString>(),
-                  (s["variants"] | QStringList()).value<QStringList>(),
-                  s["last_modified"].value<QDateTime>() ) ) );
+  SettingArray themes = s.group("themes").array("theme");
+  foreach (Settings s_theme, themes) {
+    QStringList variants;
+    SettingArray s_variants = s_theme.group("variants").array("variant");
+    foreach (Settings s_var, s_variants) {
+      variants.append(s_var["name"].value<QString>());
+    }
+    QString f = s_theme["file-name"].value<QString>();
+    cache.insert(std::make_pair(f, ThemeInfo(f,
+                 s_theme["name"].value<QString>(),
+                 s_theme["description"].value<QString>(),
+                 variants,
+                 QDateTime::fromString(s_theme["last-modified"].value<QString>()))));
   }
-  s.qSettings()->endArray();
 
   ThemeInfoList allluafiles;
   ThemeInfoList retv;
@@ -93,16 +96,22 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   }
 
   if(updated) {
-    s.qSettings()->beginWriteArray("Themes");
-    for(int i=0;i<allluafiles.size();i++) {
-      s.qSettings()->setArrayIndex(i);
-      s["file_name"]     = allluafiles[i].file_name;
-      s["name"]          = allluafiles[i].name;
-      s["description"]   = allluafiles[i].description;
-      s["variants"]      = allluafiles[i].variants;
-      s["last_modified"] = allluafiles[i].last_modified;
+    SettingArray themes = s.group("themes").newArray("theme");
+    
+    for (int i = 0; i < allluafiles.size(); i++) {
+      Settings s_theme = themes.append();
+      s_theme["file-name"]     = allluafiles[i].file_name;
+      s_theme["name"]          = allluafiles[i].name;
+      s_theme["description"]   = allluafiles[i].description;
+      {
+        SettingArray variants = s_theme.group("variants").newArray("variant");
+        foreach (QString v, allluafiles[i].variants) {
+          Settings s_var = variants.append();
+          s_var["name"] = v;
+        }
+      }
+      s_theme["last-modified"] = allluafiles[i].last_modified.toString();
     }
-    s.qSettings()->endArray();
   }
 
   return retv;
@@ -116,9 +125,11 @@ OptList PrefTheme::get_file_options(const QString& f) {
   l.runFile(f);
 
   boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptions()));
-  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(f)));
-  options_list_load_from_settings(*o, settings);
-  settings.qSettings()->endGroup();
+  SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+  Settings entry = s_lua.insert(f); 
+//  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(f)));
+  options_list_load_from_settings(*o, entry.group("options"));
+//  settings.qSettings()->endGroup();
 
   m_new_theme_options[f] = o;
   return *o;
@@ -141,15 +152,15 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_squares_opt_layout = new QHBoxLayout(widgetSquares);
   m_squares_opt_layout->setMargin(0);
 
-  QString themeDir = data_dir() + "/themes/";
+  QString themeDir; //= data_dir() + "/themes/"; FIXME
 
-  Settings s(".kboard_config_cache");
-  s.qSettings()->beginGroup("Pieces");
-  m_pieces_themes = to_theme_info_list(find_lua_files(themeDir+"Pieces"), s);
-  s.qSettings()->endGroup();
-  s.qSettings()->beginGroup("Squares");
-  m_squares_themes = to_theme_info_list(find_lua_files(themeDir+"Squares"), s);
-  s.qSettings()->endGroup();
+  MasterSettings s(".kboard_config_cache");
+//  s.qSettings()->beginGroup("Pieces");
+  m_pieces_themes = to_theme_info_list(find_lua_files(themeDir+"Pieces"), s.group("pieces"));
+//  s.qSettings()->endGroup();
+//  s.qSettings()->beginGroup("Squares");
+  m_squares_themes = to_theme_info_list(find_lua_files(themeDir+"Squares"), s.group("squares"));
+//  s.qSettings()->endGroup();
 
   const Variant::Variants& all = Variant::allVariants();
   for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)
@@ -163,26 +174,34 @@ PrefTheme::~PrefTheme() {
 }
 
 void PrefTheme::apply() {
+  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
 
   for(std::map<QString, QString>::iterator it = m_new_piece_themes.begin();
-                                            it != m_new_piece_themes.end(); ++it)
-    settings["Variants/"+it->first+"/PiecesTheme"] = it->second;
+                                            it != m_new_piece_themes.end(); ++it) {
+    Settings var = variants.insert(it->first);
+    var["piece-theme"] = it->second;
+  }
   for(std::map<QString, bool>::iterator it = m_new_use_def_pieces.begin();
-                                            it != m_new_use_def_pieces.end(); ++it)
-    settings["Variants/"+it->first+"/UseDefPieces"] = it->second;
+                                            it != m_new_use_def_pieces.end(); ++it) {
+    Settings var = variants.insert(it->first);
+    var["use-def-pieces"] = it->second;
+  }
   for(std::map<QString, QString>::iterator it = m_new_square_themes.begin();
-
-                                            it != m_new_square_themes.end(); ++it)
-    settings["Variants/"+it->first+"/SquaresTheme"] = it->second;
+                                            it != m_new_square_themes.end(); ++it) {
+    Settings var = variants.insert(it->first);
+    var["square-theme"] = it->second;
+  }
   for(std::map<QString, bool>::iterator it = m_new_use_def_squares.begin();
-                                            it != m_new_use_def_squares.end(); ++it)
-    settings["Variants/"+it->first+"/UseDefSquares"] = it->second;
+                                            it != m_new_use_def_squares.end(); ++it) {
+    Settings var = variants.insert(it->first);
+    var["use-def-squares"] = it->second;
+  }
 
   for(std::map<QString, boost::shared_ptr<OptList> >::iterator it = m_new_theme_options.begin();
           it != m_new_theme_options.end(); ++it) {
-    settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(it->first)));
-    options_list_save_to_settings(*it->second, settings);
-    settings.qSettings()->endGroup();
+    SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+    Settings entry = s_lua.insert(it->first);
+    options_list_save_to_settings(*it->second, entry);
   }
 }
 
@@ -232,14 +251,17 @@ void PrefTheme::variantChanged() {
 
   QString vname = vi->name();
   QString vproxy = vi->themeProxy();
+  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
+  Settings var = variants.insert(vname);
+  
   bool ck = vname != vproxy;
   checkSquares->setVisible(ck);
   checkPieces->setVisible(ck);
   if(ck) {
     bool dp = m_new_use_def_pieces.count(vname) ? m_new_use_def_pieces[vname]
-                 : (settings["Variants/"+vname+"/UseDefPieces"] | true).value<bool>();
+                 : (var["use-def-pieces"] | true).value();
     bool ds = m_new_use_def_squares.count(vname) ? m_new_use_def_squares[vname]
-                 : (settings["Variants/"+vname+"/UseDefSquares"] | true).value<bool>();
+                 : (var["use-def-squares"] | true).value();
     checkPieces->setText("Same as "+vproxy);
     checkPieces->setChecked(dp);
     listPieces->setEnabled(!dp);
@@ -257,9 +279,9 @@ void PrefTheme::variantChanged() {
   }
 
   QString pth = m_new_piece_themes.count(vname) ? m_new_piece_themes[vname]
-          : (settings["Variants/"+vname+"/PiecesTheme"] | QString()).value<QString>();
+          : (var["piece-theme"] | QString()).value();
   QString sth = m_new_square_themes.count(vname) ? m_new_square_themes[vname]
-          : (settings["Variants/"+vname+"/SquaresTheme"] | QString()).value<QString>();
+          : (var["square-them"] | QString()).value();
   update_list_view(listPieces, m_pieces_themes, vproxy, pth);
   update_list_view(listSquares, m_squares_themes, vproxy, sth);
 }
@@ -339,20 +361,22 @@ void PrefTheme::squaresThemeChecked(bool ck) {
 }
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
-  QString type = squares ? "Squares" : "Pieces";
+  QString type = squares ? "square" : "piece";
   QString v = vi->name();
-  if(v != vi->themeProxy() &&
-      (settings["Variants/"+v+"/UseDef"+type] | true).value<bool>() )
+  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
+  Settings var = variants.insert(v);
+  if (v != vi->themeProxy() &&
+      (var[QString("use-def-")+type+"s"] | true))
     v = vi->themeProxy();
-  if(settings["Variants/"+v+"/"+type+"Theme"])
-    return settings["Variants/"+v+"/"+type+"Theme"].value<QString>();
+  if (var[type+"-theme"])
+    return var[type+"-theme"].value<QString>();
 
-  QString themeDir = data_dir() + "/themes/";
+  QString themeDir; //= data_dir() + "/themes/";
 
-  Settings s(".kboard_config_cache");
-  s.qSettings()->beginGroup("Pieces");
-  ThemeInfoList themes = to_theme_info_list(find_lua_files(themeDir+type), s);
-  s.qSettings()->endGroup();
+  MasterSettings s(".kboard_config_cache.xml");
+//  s.qSettings()->beginGroup("Pieces");
+  ThemeInfoList themes = to_theme_info_list(find_lua_files(themeDir+type), s.group("pieces"));
+//  s.qSettings()->endGroup();
 
   int best = 0;
   QString retv;
@@ -369,8 +393,8 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
     }
   }
 
-  if(!retv.isEmpty())
-    settings["Variants/"+v+"/"+type+"Theme"] = retv;
+  if (!retv.isEmpty())
+    var[type+"-theme"] = retv;
   return retv;
 }
 
