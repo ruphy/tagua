@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -32,7 +32,7 @@ private:
   Color m_color;
   Type m_type;
 public:
-  ChessPiece(Color, Type);
+  ChessPiece(Color = INVALID_COLOR, Type = INVALID_TYPE);
   ChessPiece(const ChessPiece& p);
   ChessPiece& operator=(const ChessPiece& p);
   ChessPiece* clone() const;
@@ -51,7 +51,7 @@ public:
   template <typename Pos>
   Move::Type canMove(const Pos& position, Point from, Point to) const;
 
-  bool equals(const ChessPiece* other) const;
+  bool equals(const ChessPiece& other) const;
   bool sameColor(const ChessPiece* other) const;
   int id() const;
   static Color colorFromId(int);
@@ -65,11 +65,14 @@ public:
   inline Point direction() const { return direction(color()); }
   static Point direction(Color color) { return Point(0, color == WHITE? -1 : 1); }
   inline int promotionRank() const { return color() == WHITE? 0 : 7; }
-  bool operator==(const ChessPiece& p) const { return equals(&p); }
+  bool operator==(const ChessPiece& p) const { return equals(p); }
+  bool operator!=(const ChessPiece& p) const { return !equals(p); }
+  bool operator!() const { return !valid(); }
   bool operator<(const ChessPiece& p) const {
                           return m_color != p.m_color ?
                                  m_color < p.m_color :
                                  m_type < p.m_type; }
+  operator bool() const { return valid(); }
 };
 
 std::ostream& operator<<(std::ostream& os, const ChessPiece& p);

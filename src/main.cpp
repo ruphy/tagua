@@ -109,8 +109,6 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-  installCrashHander();
-//  atexit(trap);
 
   KAboutData about("kboard", I18N_NOOP("KBoard"), version, description,
                     KAboutData::License_GPL,
@@ -127,6 +125,9 @@ int main(int argc, char **argv) {
   KCmdLineArgs::init(argc, argv, &about);
   KCmdLineArgs::addCmdLineOptions(options);
   KApplication app;
+
+  installCrashHander();
+  atexit(trap);
 
 //   QString locale = QLocale::system().name();
 //

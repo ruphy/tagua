@@ -646,7 +646,7 @@ int Wrapper<Image>::translate(lua_State* l) {
   if (n < 2 || n > 3) luaL_error(l, "Wrong argument count for Image::translate");
 
   Image* img = retrieve(l, 1, AssertOk);
-  if(n == 2) {
+  if(n == 3) {
     double x = lua_tonumber(l, 2);
     double y = lua_tonumber(l, 3);
     lua_pop(l, n);

@@ -135,8 +135,6 @@ void GraphicalGame::onEntryChanged(const Index& at, int propagate) {
     QString mv = (e->move && last_pos) ? e->move->SAN(last_pos) :
                                           e->position ? "(-)" : "???";
     int turn = last_pos ? last_pos->turn() : (at.totalNumMoves()+1)%2;
-    //mv += " " + QString::number(turn);
-    //std::cout << "adding move " << mv << std::endl;
     m_movelist->setMove(at, turn, mv, e->comment);
     if(at == current && e->position)
       m_graphical->warp(e->move, e->position);
@@ -236,7 +234,6 @@ void GraphicalGame::onAvailableRedo(bool e) {
 }
 
 void GraphicalGame::onUserSelectMove(const Index& i) {
-  //std::cout << "select move " << i << std::endl;
   if (boost::shared_ptr<UserEntity> entity = m_listener_entity.lock())
     if (entity->goTo(i))
       return;

@@ -65,67 +65,71 @@ Table::Table(QWidget* w)
   m_scroll_area->resize(50,100);
   vbox->addWidget(m_scroll_area);
 
-  m_movelist_textual = new Textual(this);
-  vbox->addWidget(m_movelist_textual->widget());
+  if(1)
+    m_movelist_textual = NULL;
+  else {
+    m_movelist_textual = new Textual(this);
+    vbox->addWidget(m_movelist_textual->widget());
+  }
 }
 
 void Table::onUndo() {
   if(m_movelist->notifier)
-    m_movelist->notifier->onUserUndo();
+    if(m_movelist) m_movelist->notifier->onUserUndo();
 }
 
 void Table::onRedo() {
   if(m_movelist->notifier)
-    m_movelist->notifier->onUserRedo();
+    if(m_movelist) m_movelist->notifier->onUserRedo();
 }
 
 void Table::setComment(const Index& index, const QString& comment) {
-  m_movelist->setComment(index, comment);
-  m_movelist_textual->setComment(index, comment);
+  if(m_movelist) m_movelist->setComment(index, comment);
+  if(m_movelist_textual) m_movelist_textual->setComment(index, comment);
 }
 
 void Table::setVComment(const Index& index, int v, const QString& comment, bool confirm_promotion) {
   if(!confirm_promotion)
-    m_movelist->setVComment(index, v, comment);
-  m_movelist_textual->setVComment(index, v, comment);
+    if(m_movelist) m_movelist->setVComment(index, v, comment);
+  if(m_movelist_textual) m_movelist_textual->setVComment(index, v, comment);
 }
 
 void Table::setMove(const Index& index, int turn, const std::vector<MovePart>& move,
                                 const QString& comment, bool confirm_promotion) {
   if(!confirm_promotion)
-    m_movelist->setMove(index, turn, move, comment);
-  m_movelist_textual->setMove(index, turn, move, comment);
+    if(m_movelist) m_movelist->setMove(index, turn, move, comment);
+  if(m_movelist_textual) m_movelist_textual->setMove(index, turn, move, comment);
 }
 
 void Table::setMove(const Index& index, int turn, const QString& move,
                                 const QString& comment, bool confirm_promotion) {
   if(!confirm_promotion)
-    m_movelist->setMove(index, turn, move, comment);
-  m_movelist_textual->setMove(index, turn, move, comment);
+    if(m_movelist) m_movelist->setMove(index, turn, move, comment);
+  if(m_movelist_textual) m_movelist_textual->setMove(index, turn, move, comment);
 }
 
 void Table::remove(const Index& index, bool confirm_promotion) {
   if(!confirm_promotion)
-    m_movelist->remove(index);
-  m_movelist_textual->remove(index);
+    if(m_movelist) m_movelist->remove(index);
+  if(m_movelist_textual) m_movelist_textual->remove(index);
 }
 
 void Table::Table::promoteVariation(const Index& ix, int v) {
-  m_movelist->promoteVariation(ix, v);
+  if(m_movelist) m_movelist->promoteVariation(ix, v);
   //m_movelist_textual->promoteVariation(index);
 }
 
 void Table::select(const Index& index, bool confirm_promotion) {
   if(!confirm_promotion)
-    m_movelist->select(index);
-  m_movelist_textual->select(index);
+    if(m_movelist) m_movelist->select(index);
+  if(m_movelist_textual) m_movelist_textual->select(index);
 }
 
 void Table::reset() {
   m_undo->setEnabled(false);
   m_redo->setEnabled(false);
-  m_movelist->reset();
-  m_movelist_textual->reset();
+  if(m_movelist) m_movelist->reset();
+  if(m_movelist_textual) m_movelist_textual->reset();
 }
 
 Notifier* Table::getNotifier() {
@@ -133,8 +137,8 @@ Notifier* Table::getNotifier() {
 }
 
 void Table::setNotifier(Notifier* n, bool detach_prev) {
-  m_movelist->setNotifier(n, detach_prev);
-  m_movelist_textual->setNotifier(n, false); //false here, it is important
+  if(m_movelist) m_movelist->setNotifier(n, detach_prev);
+  if(m_movelist_textual) m_movelist_textual->setNotifier(n, false); //false here, it is important
 }
 
 int Table::layoutStyle() {
@@ -142,8 +146,8 @@ int Table::layoutStyle() {
 }
 
 void Table::setLayoutStyle(int x) {
-  m_movelist->setLayoutStyle(x);
-  m_movelist_textual->setLayoutStyle(x);
+  if(m_movelist) m_movelist->setLayoutStyle(x);
+  if(m_movelist_textual) m_movelist_textual->setLayoutStyle(x);
 }
 
 void Table::enableUndo(bool e) {

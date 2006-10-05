@@ -132,8 +132,8 @@ public:
       if (m_move.m_type == DummyMove::Promotion)
         res = res + "=" + m_move.promotionSymbol();
       if(m_ref.m_board.valid(m_move.from) && m_ref.m_board[m_move.from]
-            && m_ref.m_board[m_move.from]->type() != PAWN)
-          res = DummyPiece::typeSymbol(m_ref.m_board[m_move.from]->type()) + res;
+            && m_ref.get(m_move.from)->type() != PAWN)
+          res = DummyPiece::typeSymbol(m_ref.get(m_move.from)->type()) + res;
       return res;
     }
   }

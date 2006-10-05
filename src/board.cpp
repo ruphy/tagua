@@ -270,6 +270,7 @@ void Board::updateTags() {
   }
 }
 
+
 bool Board::doMove(const NormalUserMove& m) {
   if (m_entity.lock()->oneClickMoves() || m_entity.lock()->validTurn(m.from) == Entity::Moving) {
     AbstractMove::Ptr mv = m_entity.lock()->testMove(m);

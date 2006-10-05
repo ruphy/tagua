@@ -95,17 +95,19 @@ public:
   virtual void removeFromPool(const Piece&, int){ }
 
   virtual const P* get(const Point& p) const {
-    return valid(p) ? m_board[p] : NULL;
+    return valid(p) && m_board[p] ? &m_board[p] : 0;
   }
   virtual P* get(const Point& p) {
-    return valid(p) ? m_board[p] : NULL;
+    return valid(p) && m_board[p] ? &m_board[p] : 0;
   }
   virtual const P* operator[](const Point& p) const { return get(p); }
   inline void set(const Point& p, P* piece) {
     if(!valid(p))
       return;
-    delete m_board[p];
-    m_board[p] = piece;
+    if(piece)
+      m_board[p] = *piece;
+    else
+      m_board[p] = Piece();
   }
   inline void removePiece(const Point& p) { set(p, 0); }
   inline void basicMovePiece(const M&);
@@ -300,7 +302,7 @@ void Position<M, P, B>::debugInfo() const {
 #endif
 }
 
-#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = new P(color, type)
+#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = P(color, type)
 template <typename M, typename P, typename B>
 void Position<M, P, B>::setup() {
   for (int i = 0; i < 8; i++) {
@@ -349,23 +351,22 @@ void Position<M, P, B>::movePiece(const M& move) {
 
 template <typename M, typename P, typename B>
 void Position<M, P, B>::executeCaptureOn(const Point& point) {
-  delete m_board[point];
+  m_board[point] = Piece();
 }
 
 template <typename M, typename P, typename B>
 void Position<M, P, B>::basicMovePiece(const M& move) {
-  P* p = m_board[move.from];
+  P p = m_board[move.from];
   Q_ASSERT(p);
 
   m_board[move.to] = p;
-  m_board[move.from] = 0;
+  m_board[move.from] = Piece();
 }
 
 template <typename M, typename P, typename B>
 void Position<M, P, B>::basicDropPiece(P* piece, const Point& to) {
   Q_ASSERT(piece);
-  delete m_board[to];
-  m_board[to] = piece;
+  m_board[to] = *piece;
   switchTurn();
 }
 
@@ -392,12 +393,12 @@ bool Position<M, P, B>::pseudolegal(M& move) const {
 
   if (!valid(move.from)) return false;
   if (!valid(move.to)) return false;
-  P* piece = m_board[move.from];
+  P piece = m_board[move.from];
   Q_ASSERT(piece);
-  Color thisTurn = piece->color();
+  Color thisTurn = piece.color();
   Color otherTurn = P::oppositeColor(thisTurn);
   if (piece && (turn() == thisTurn)) {
-    move.setType(piece->canMove(*this, move.from, move.to));
+    move.setType(piece.canMove(*this, move.from, move.to));
 
     if (move.type() == M::Invalid) return false;
 
@@ -420,9 +421,9 @@ bool Position<M, P, B>::pseudolegal(M& move) const {
 
 template <typename M, typename P, typename B>
 typename P::Color Position<M, P, B>::moveTurn(const M& move) const {
-  P* piece = m_board[move.from];
+  P piece = m_board[move.from];
   Q_ASSERT(piece);
-  return piece->color();
+  return piece.color();
 }
 
 template <typename M, typename P, typename B>
@@ -444,7 +445,8 @@ bool Position<M, P, B>::testMove(M& move) const {
       else
           move.status = M::Legal;
     }
-    else move.status = M::Illegal;
+    else
+      move.status = M::Illegal;
   }
 
   return move.status == M::Legal;
@@ -462,8 +464,8 @@ M Position<M, P, B>::getMove(const AlgebraicNotation& san, bool& ok) const {
   if (san.castling != AlgebraicNotation::NoCastling) {
     Point from = kingStartingPosition(turn());
     Point to = from + (san.castling == AlgebraicNotation::KingSide? Point(2,0) : Point(-2,0));
-    P* king = m_board[from];
-    if (!(king && king->type() == KING)) {
+    P king = m_board[from];
+    if (!(king && king.type() == KING)) {
       ok = false;
       return candidate;
     }
@@ -478,9 +480,9 @@ M Position<M, P, B>::getMove(const AlgebraicNotation& san, bool& ok) const {
   }
   else {
     for (Point i = first(); i <= last(); i = next(i)) {
-      P* p = m_board[i];
+      P p = m_board[i];
       M mv(i, san.to, static_cast<typename P::Type>(san.promotion));
-      if (i.resembles(san.from) && p && p->type() == san.type && p->color() == turn()
+      if (i.resembles(san.from) && p && p.type() == san.type && p.color() == turn()
           && testMove(mv)) {
 
         if (candidate.valid()) {
@@ -523,11 +525,7 @@ template <typename M, typename P, typename B>
 Position<M, P, B>* Position<M, P, B>::legallyMove(M& mv) const {
   if (testMove(mv)) {
     Position* res = clone();
-//     std::cout << "before moving" << std::endl;
-//     res->dump();
     res->move(mv);
-//     std::cout << "after moving" << std::endl;
-//     res->dump();
     return res;
   }
   else
@@ -601,7 +599,7 @@ QString Position<M, P, B>::fen(int halfmove, int fullmove) const {
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       Point p = Point(j, i);
-      Piece* pc = m_board[p];
+      Piece pc = m_board[p];
       if (!pc)
         cn++;
       else {
@@ -609,8 +607,8 @@ QString Position<M, P, B>::fen(int halfmove, int fullmove) const {
           str += QString::number(cn);
           cn = 0;
         }
-        QString symbol = P::typeSymbol(pc->type());
-        if (pc->color() == BLACK)
+        QString symbol = P::typeSymbol(pc.type());
+        if (pc.color() == BLACK)
           symbol = symbol.toLower();
         str += symbol;
       }
@@ -659,11 +657,11 @@ void Position<M, P, B>::dump() const {
     if (i.x == 0)
       std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
 
-    const Piece* piece = m_board[i];
+    Piece piece = m_board[i];
     QString symbol;
     if (piece) {
-      symbol = Piece::typeSymbol(piece->type());
-      if (piece->color() == BLACK) symbol = symbol.toLower();
+      symbol = Piece::typeSymbol(piece.type());
+      if (piece.color() == BLACK) symbol = symbol.toLower();
     }
     else
       symbol = ((i.x + i.y) % 2 == 0) ? " " : ".";
@@ -684,11 +682,11 @@ void Position<M, P, B>::dump() const {
 
 template <typename M, typename P, typename B>
 void Position<M, P, B>::move(const M& move) {
-  P* piece = m_board[move.from];
+  P piece = m_board[move.from];
   Q_ASSERT(piece);
 
-  Color color = piece->color();
-  typename P::Type type = piece->type();
+  Color color = piece.color();
+  typename P::Type type = piece.type();
 
   executeCaptureOn(move.to);
   basicMovePiece(move);
@@ -700,25 +698,22 @@ void Position<M, P, B>::move(const M& move) {
 
     if (move.type() == M::EnPassantCapture) {
       Point phantom(move.to.x, move.from.y);
-      delete m_board[phantom];
-      m_board[phantom] = 0;
+      m_board[phantom] = Piece();
     }
 
     else if (move.type() == M::Promotion) {
       typename P::Type type = move.promotionType;
-      P* promoted = new P(piece->color(), type);
-      delete piece; // delete pawn
-      m_board[move.to] = promoted;
+      m_board[move.to] = P(piece.color(), type);
     }
 
     else if (move.type() == M::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
       Point rookDestination = move.from + Point(1,0);
 
-      P* rook = m_board[rookSquare];
+      P rook = m_board[rookSquare];
 
       Q_ASSERT(rook);
-      Q_ASSERT(rook->type() ==  ROOK);
+      Q_ASSERT(rook.type() ==  ROOK);
       Q_UNUSED(rook);
 
       basicMovePiece(M(rookSquare, rookDestination));
@@ -728,10 +723,10 @@ void Position<M, P, B>::move(const M& move) {
       Point rookSquare = move.to - Point(2,0);
       Point rookDestination = move.from - Point(1,0);
 
-      P* rook = m_board[rookSquare];
+      P rook = m_board[rookSquare];
 
       Q_ASSERT(rook);
-      Q_ASSERT(rook->type() == ROOK);
+      Q_ASSERT(rook.type() == ROOK);
       Q_UNUSED(rook);
 
       basicMovePiece(M(rookSquare, rookDestination));
@@ -774,8 +769,8 @@ void Position<M, P, B>::setTurn(Color turn) {
 template <typename M, typename P, typename B>
 bool Position<M, P, B>::testPremove(M premove) const {
   for (Point p = first(); p <= last(); p = next(p)) {
-    P* piece = m_board[p];
-    if (!piece || piece->color() != turn()) continue;
+    P piece = m_board[p];
+    if (!piece || piece.color() != turn()) continue;
     for (Point q = first(); q <= last(); q = next(q)) {
       M move(p,q);
       if (testMove(move)) {
@@ -799,8 +794,8 @@ bool Position<M, P, B>::attacks(Color color, const Point& destination) const {
 template <typename M, typename P, typename B>
 bool Position<M, P, B>::attacks(Color color, const Point& destination, Point& source) const {
   for (Point p = first(); p <= last(); p = next(p)) {
-    P* piece = m_board[p];
-    if (piece && piece->color() == color && piece->canMove(*this, p, destination)) {
+    P piece = m_board[p];
+    if (piece && piece.color() == color && piece.canMove(*this, p, destination)) {
       source = p;
       return true;
     }
@@ -818,8 +813,8 @@ Point Position<M, P, B>::findPiece(Color color, typename P::Type type) const {
   for (int i = 0; i < 8; i++)
   for (int j = 0; j < 8; j++) {
     Point p = Point(i,j);
-    P* piece = m_board[p];
-    if (piece && piece->color() == color && piece->type() == type)
+    P piece = m_board[p];
+    if (piece && piece.color() == color && piece.type() == type)
       return p;
   }
   return Point::invalid();

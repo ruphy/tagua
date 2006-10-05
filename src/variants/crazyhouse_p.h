@@ -18,7 +18,8 @@ class CrazyhousePiece : public ChessPiece {
   bool m_promoted;
 
 public:
-  CrazyhousePiece(ChessPiece::Color, ChessPiece::Type, bool promoted = false);
+  CrazyhousePiece(ChessPiece::Color = INVALID_COLOR, ChessPiece::Type = INVALID_TYPE,
+                                                              bool promoted = false);
   CrazyhousePiece(const CrazyhousePiece&);
   CrazyhousePiece(const ChessPiece&);
 
@@ -55,11 +56,11 @@ public:
   }
 };
 
-class CrazyhousePosition : public Position<CrazyhouseMove, CrazyhousePiece, PointerGrid<CrazyhousePiece> > {
+class CrazyhousePosition : public Position<CrazyhouseMove, CrazyhousePiece, Grid<CrazyhousePiece> > {
 public:
   typedef CrazyhouseMove Move;
   typedef CrazyhousePiece Piece;
-  typedef Position<Move, Piece, PointerGrid<Piece> > Base;
+  typedef Position<Move, Piece, Grid<Piece> > Base;
   typedef std::map<CrazyhousePiece, int> Pool;
 
   CrazyhousePosition();

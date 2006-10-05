@@ -59,7 +59,7 @@ bool AtomicPosition::attacks(Color color, const Point& destination) const {
     for (int i = -1; i <= 1; i++)
     for (int j = -1; j <= 1; j++) {
       Point p = destination + Point(i,j);
-      if (valid(p) && king.equals(m_board[p])) return false;
+      if (valid(p) && king == m_board[p]) return false;
     }
 
     return true;
@@ -83,11 +83,10 @@ void AtomicPosition::move(const ChessMove& mv) {
   for (int j = -1; j <= 1; j++) {
     Point p = mv.to + Point(i,j);
     if (!valid(p)) continue;
-    Piece* piece = m_board[p];
-    if (piece && (piece->type() != PAWN ||
+    Piece piece = m_board[p];
+    if (piece && (piece.type() != PAWN ||
                   (i == 0 && j == 0))) {
-      delete m_board[p];
-      m_board[p] = 0;
+      m_board[p] = Piece();
     }
   }
 }
@@ -97,7 +96,7 @@ bool AtomicPosition::pseudolegal(ChessMove& mv) const {
 
   // a move that causes the explosion of one's king
   // is not pseudolegal
-  Piece::Color color = m_board[mv.from]->color();
+  Piece::Color color = m_board[mv.from].color();
 
   { std::auto_ptr<AtomicPosition> temp(clone());
 

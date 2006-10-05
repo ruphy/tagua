@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -12,7 +12,6 @@
 #define PIECEGRID_H
 
 #include "grid.h"
-#include "pathinfo.h"
 
 /**
   * A specialization of Grid useful for containing pointers.
@@ -26,41 +25,9 @@ public:
   PointerGrid(const PointerGrid<T>& other);
   template <typename T1>
   PointerGrid(const PointerGrid<T1>& other);
-  
+
   bool operator==(const PointerGrid<T>& other) const;
-  
-  
-  PathInfo path(const Point& from, const Point& to) const {
-    Point delta = to - from;
-    PathInfo::Direction direction;
-  
-    if (delta.x == 0)
-      direction = PathInfo::Vertical;
-    else if (delta.y == 0)
-      direction = PathInfo::Horizontal;
-    else if (delta.x == delta.y)
-      direction = PathInfo::Diagonal1;
-    else if (delta.x == -delta.y)
-      direction = PathInfo::Diagonal2;
-    else
-      direction = PathInfo::Undefined;
-  
-    bool clear = true;
-    if (direction != PathInfo::Undefined) {
-      Point step = delta.normalizeInfinity();
-      Point position = from;
-      T* element;
-      while ((position += step) != to) {
-        element = (*this)[position];
-        if (!element) continue;
-        clear = false;
-        break;
-      }
-    }
-    
-    return PathInfo(direction, clear);
-  }
-  
+
   Point find(const T& x) const {
     for (Point i = this->first(); i <= this->last(); i = this->next(i)) {
       if ((*this)[i] && *(*this)[i] == x)
@@ -68,7 +35,7 @@ public:
     }
     return Point::invalid();
   }
-  
+
   virtual ~PointerGrid();
 };
 
@@ -87,7 +54,7 @@ PointerGrid<T>::PointerGrid(const PointerGrid<T>& other)
       board[i] = new T(*p);
     else
       board[i] = 0;
-  }    
+  }
 }
 
 template <typename T>

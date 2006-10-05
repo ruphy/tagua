@@ -111,10 +111,10 @@ public:
   void setup();
 
   const Piece* get(const Point& p) const {
-    return valid(p) && m_board[p] ? new Piece(m_board[p]) : 0;
+    return valid(p) && m_board[p] ? &m_board[p] : 0;
   }
   Piece* get(const Point& p) {
-    return valid(p) && m_board[p] ? new Piece(m_board[p]) : 0;
+    return valid(p) && m_board[p] ? &m_board[p] : 0;
   }
   const Piece* operator[](const Point& p) const { return get(p); }
   void set(const Point& p, Piece* piece) {

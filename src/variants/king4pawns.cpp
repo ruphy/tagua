@@ -25,7 +25,7 @@ public:
                      bool bk, bool bq, const Point& ep);
   virtual King4PawnsPosition* clone() const { return new King4PawnsPosition(*this); }
 
-#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = new Piece(color, type)
+#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(color, type)
   virtual void setup() {
     // 4 pawns
     for (int i = 2; i <= 5; i++)

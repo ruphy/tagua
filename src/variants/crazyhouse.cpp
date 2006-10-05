@@ -123,7 +123,7 @@ void CrazyhousePosition::move(const Move& move) {
 
     // set promoted flag
     if (move.type() == Move::Promotion) {
-      m_board[move.to]->setPromoted(true);
+      m_board[move.to].setPromoted(true);
     }
   }
 
@@ -134,10 +134,10 @@ void CrazyhousePosition::move(const Move& move) {
 }
 
 void CrazyhousePosition::executeCaptureOn(const Point& point) {
-  Piece* piece = m_board[point];
+  Piece piece = m_board[point];
   if (piece) {
-    Piece downgraded( Piece::oppositeColor(piece->color()),
-                piece->promoted() ? PAWN : piece->type());
+    Piece downgraded( Piece::oppositeColor(piece.color()),
+                piece.promoted() ? PAWN : piece.type());
     m_pool[downgraded]++;
   }
   Base::executeCaptureOn(point);

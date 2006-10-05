@@ -35,10 +35,11 @@ Textual::Textual(QWidget *parent)
   setMetaRefreshEnabled(false);
   setPluginsEnabled(false);
 
-  QFile file(data_dir()+"scripts/movelist_textual.html");
+  QFile file(data_dir()+"/scripts/movelist_textual.html");
   file.open(QIODevice::ReadOnly);
   QTextStream stream(&file);
   QString html = stream.readAll();
+  //std::cout << "Using HTML:"<< std::endl<<html<<std::endl;
 
   begin();
   write(html);
@@ -47,6 +48,7 @@ Textual::Textual(QWidget *parent)
 }
 
 static void clear_node(DOM::Node n) {
+  if(!n.isNull())
   while(1) {
     DOM::Node f = n.firstChild();
     if(f.isNull())
@@ -129,9 +131,11 @@ void Textual::remove(const Index& index) {
     }
   }
   else {
-    DOM::Element mv = document.getElementById("mv_"+index);
-    if(!mv.isNull())
-      clear_from(mv);
+    DOM::Element rm = document.getElementById("nm_"+index);
+    if(rm.isNull())
+      rm = document.getElementById("mv_"+index);
+    if(!rm.isNull())
+      clear_from(rm);
   }
   if(m_curr_selected >= index)
     m_curr_selected = Index(-1);
@@ -203,8 +207,10 @@ void Textual::setMove(const Index& index, int turn, const QString& move,
 
   if(!index.nested.size()) {
     parent = document.body();
-    if(parent.isNull())
+    if(parent.isNull()) {
       std::cout << "QUEEEEEEEEE!!!!!!!" << std::endl;
+      return;
+    }
   }
   else if(index.atVariationStart()) {
     QString var_id = "vc_" + istr;

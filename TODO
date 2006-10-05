@@ -29,14 +29,16 @@ FEATURES:
 CURRENT RELEASE:
 
 [DONE] * Set up a decent installation system, maybe with a cool one-click windows (linux?) installer.
-* Improve default highlighting script.
+[MOSTLY DONE] * Improve default highlighting script.
 [DONE] * Add support for multiple ICS interactions.
 [MOSTLY DONE] * More robust ICS support: do not crash when testing invalid moves.
 [DONE] * About dialog.
-* Choose an icon for the application.
+[DOME] * Choose an icon for the application.
 
 FUTURE RELEASES:
 
+* Pgn game list
+* Game print support, through khtml?
 * Ability to define a variant in some script language (ruby or lua or ...)
 * Complete support for chess engines or variant specific AI.
 * An advanced Edit Position mode, with the ability to edit a position for

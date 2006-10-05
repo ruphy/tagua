@@ -23,7 +23,7 @@ class ChessPiece;
 class ChessMove;
 template <typename T> class PointerGrid;
 template <typename M, typename P, typename B> class Position;
-typedef PointerGrid<ChessPiece> PieceGrid;
+typedef Grid<ChessPiece> PieceGrid;
 typedef Position<ChessMove, ChessPiece, PieceGrid> ChessPosition;
 
 struct ChessVariant {
