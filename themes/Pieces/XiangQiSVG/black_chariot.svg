@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
+   width="468pt"
+   height="468pt"
+   viewBox="0 0 468 468"
+   preserveAspectRatio="xMidYMid meet"
+   id="svg1693"
+   sodipodi:version="0.32"
+   inkscape:version="0.42+0.43pre2"
+   sodipodi:docbase="/home/monge/xiangqi/out"
+   sodipodi:docname="black_Chariot.svg">
+  <defs
+     id="defs1704" />
+  <sodipodi:namedview
+     inkscape:window-height="548"
+     inkscape:window-width="962"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base"
+     inkscape:zoom="0.63931624"
+     inkscape:cx="292.5"
+     inkscape:cy="292.5"
+     inkscape:window-x="310"
+     inkscape:window-y="0"
+     inkscape:current-layer="svg1693" />
+  <metadata
+     id="metadata1695">
+Created by potrace 1.7, written by Peter Selinger 2001-2005
+<rdf:RDF>
+  <cc:Work
+     rdf:about="">
+    <dc:format>image/svg+xml</dc:format>
+    <dc:type
+       rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+  </cc:Work>
+</rdf:RDF>
+</metadata>
+  <g
+     transform="translate(0,468) scale(0.720000,-0.720000)"
+     fill="#000000"
+     stroke="none"
+     id="g1697">
+    <path
+       d="M302 493 c3 -26 0 -28 -35 -31 -47 -4 -45 -27 3 -28 19 0 35 -5 38 -12 2 -8 -11 -12 -43 -12 -47 0 -47 0 -40 -27 4 -16 11 -44 14 -63 6 -32 9 -35 39 -32 17 2 32 -1 32 -6 0 -10 -70 -22 -126 -22 -36 0 -43 -10 -19 -30 11 -9 26 -9 65 -1 81 17 80 18 80 -44 0 -30 4 -55 9 -55 13 0 21 26 21 69 l0 38 82 7 c89 7 94 9 83 27 -5 8 -32 10 -87 7 -54 -3 -77 -1 -75 6 2 6 18 10 35 9 29 -3 31 0 47 53 20 71 10 89 -47 80 -21 -4 -38 -2 -38 3 0 5 18 12 41 16 49 9 47 30 -4 29 -31 -1 -36 2 -34 20 1 15 -4 22 -21 24 -21 3 -23 0 -20 -25z m88 -103 c0 -5 -4 -10 -9 -10 -5 0 -16 -3 -25 -6 -11 -4 -16 -1 -16 10 0 10 9 16 25 16 14 0 25 -4 25 -10z m-80 -9 c0 -12 -29 -23 -42 -15 -6 4 -5 10 3 15 18 11 39 11 39 0z m78 -43 c-7 -20 -48 -23 -48 -4 0 11 9 16 26 16 16 0 24 -5 22 -12z m-78 -8 c0 -5 -2 -10 -4 -10 -2 0 -11 -3 -20 -6 -11 -4 -16 -1 -16 10 0 9 8 16 20 16 11 0 20 -4 20 -10z"
+       id="path1701" />
+  </g>
+</svg>

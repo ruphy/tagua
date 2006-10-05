@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64px"
+   height="64px"
+   id="svg1318"
+   sodipodi:version="0.32"
+   inkscape:version="0.42+0.43pre2"
+   sodipodi:docbase="/nfs/home/monge/xiangqi/out"
+   sodipodi:docname="circle.svg">
+  <defs
+     id="defs1320" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.8890873"
+     inkscape:cx="32"
+     inkscape:cy="32"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:document-units="px"
+     inkscape:grid-bbox="true"
+     inkscape:grid-points="true"
+     showguides="true"
+     inkscape:guide-points="true"
+     inkscape:window-width="962"
+     inkscape:window-height="548"
+     inkscape:window-x="86"
+     inkscape:window-y="305" />
+  <metadata
+     id="metadata1323">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 32.179156,1.6791565 C 15.359835,1.6791565 1.6791565,15.359836 1.6791565,32.179157 C 1.6791565,48.998478 15.359835,62.679157 32.179156,62.679157 C 48.998477,62.679157 62.679156,48.998478 62.679156,32.179157 C 62.679156,15.359836 48.998477,1.6791565 32.179156,1.6791565 z M 32.179156,4.7291565 C 47.348235,4.7291565 59.629156,17.010078 59.629156,32.179157 C 59.629156,47.348236 47.348235,59.629157 32.179156,59.629157 C 17.010077,59.629157 4.7291565,47.348236 4.7291565,32.179157 C 4.7291565,17.010078 17.010077,4.7291565 32.179156,4.7291565 z "
+       id="path2205" />
+  </g>
+</svg>
