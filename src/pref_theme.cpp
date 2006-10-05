@@ -97,7 +97,7 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
 
   if(updated) {
     SettingArray themes = s.group("themes").newArray("theme");
-    
+
     for (int i = 0; i < allluafiles.size(); i++) {
       Settings s_theme = themes.append();
       s_theme["file-name"]     = allluafiles[i].file_name;
@@ -126,10 +126,8 @@ OptList PrefTheme::get_file_options(const QString& f) {
 
   boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptions()));
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
-  Settings entry = s_lua.insert(f); 
-//  settings.qSettings()->beginGroup("LuaSettings/"+QString::number(qHash(f)));
+  Settings entry = s_lua.insert(f);
   options_list_load_from_settings(*o, entry.group("options"));
-//  settings.qSettings()->endGroup();
 
   m_new_theme_options[f] = o;
   return *o;
@@ -152,15 +150,12 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_squares_opt_layout = new QHBoxLayout(widgetSquares);
   m_squares_opt_layout->setMargin(0);
 
-  QString themeDir; //= data_dir() + "/themes/"; FIXME
+  QString themeDir = data_dir() + "/themes/";
 
   MasterSettings s(".kboard_config_cache");
-//  s.qSettings()->beginGroup("Pieces");
+  std::cout << "searching lua files in " << themeDir+"Pieces" << std::endl;
   m_pieces_themes = to_theme_info_list(find_lua_files(themeDir+"Pieces"), s.group("pieces"));
-//  s.qSettings()->endGroup();
-//  s.qSettings()->beginGroup("Squares");
   m_squares_themes = to_theme_info_list(find_lua_files(themeDir+"Squares"), s.group("squares"));
-//  s.qSettings()->endGroup();
 
   const Variant::Variants& all = Variant::allVariants();
   for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)
@@ -253,7 +248,7 @@ void PrefTheme::variantChanged() {
   QString vproxy = vi->themeProxy();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(vname);
-  
+
   bool ck = vname != vproxy;
   checkSquares->setVisible(ck);
   checkPieces->setVisible(ck);
@@ -362,6 +357,7 @@ void PrefTheme::squaresThemeChecked(bool ck) {
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
   QString type = squares ? "square" : "piece";
+  QString subdir = squares ? "Squares" : "Pieces";
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(v);
@@ -371,12 +367,10 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
   if (var[type+"-theme"])
     return var[type+"-theme"].value<QString>();
 
-  QString themeDir; //= data_dir() + "/themes/";
+  QString themeDir = data_dir() + "/themes/";
 
   MasterSettings s(".kboard_config_cache.xml");
-//  s.qSettings()->beginGroup("Pieces");
-  ThemeInfoList themes = to_theme_info_list(find_lua_files(themeDir+type), s.group("pieces"));
-//  s.qSettings()->endGroup();
+  ThemeInfoList themes = to_theme_info_list(find_lua_files(themeDir+subdir), s.group("pieces"));
 
   int best = 0;
   QString retv;

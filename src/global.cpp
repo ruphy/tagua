@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -13,10 +13,10 @@
 
 QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
-    QFile f(m_filename);  
+    QFile f(m_filename);
     if (!f.open(QFile::ReadOnly | QFile::Text)) {
       std::cout << "Unable to open configuration file for reading." << std::endl;
-      
+
       // create a stub configuration file
       {
         QFile stub(m_filename);
@@ -29,31 +29,33 @@ QDomElement MasterSettings::node() const {
                   "<configuration>\n"
                   "</configuration>\n";
       }
-      
+
       // reopen it
       if (!f.open(QFile::ReadOnly | QFile::Text))
         exit(1);
     }
-    
+
     m_doc.setContent(&f);
     const_cast<QDomElement&>(m_node) = m_doc.documentElement();
     Q_ASSERT(!m_node.isNull());
     Q_ASSERT(!m_node.ownerDocument().isNull());
   }
-  
+
   return m_node;
 }
 
 MasterSettings::MasterSettings(const QString& filename)
 : m_filename(QDir(QDir::homePath()).filePath(filename)) { }
 
+MasterSettings::~MasterSettings() {
+  sync();
+}
+
 void MasterSettings::onChange(QObject* obj, const char* slot) {
   connect(this, SIGNAL(settingsChanged()), obj, slot);
 }
 
-void MasterSettings::changed() {
-  emit settingsChanged();
-  
+void MasterSettings::sync() {
   // store to file
   QFile f(m_filename);
   if (!f.open(QFile::WriteOnly | QFile::Text))
@@ -62,6 +64,12 @@ void MasterSettings::changed() {
     QTextStream stream(&f);
     stream << node().ownerDocument().toString();
   }
+
+}
+
+void MasterSettings::changed() {
+  emit settingsChanged();
+  sync();
 }
 
 MasterSettings settings(".kboardrc.xml");
