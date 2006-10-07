@@ -85,7 +85,7 @@ Preferences::Preferences(QWidget *parent)
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Engines");
   i->setHeader("Engines:");
-  i->setIcon(KIcon(icons+"/prefEngine.svg"));
+  i->setIcon(KIcon("brain.svg"));
   pagePref->show();
 }
 

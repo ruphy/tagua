@@ -196,7 +196,7 @@ void PrefTheme::apply() {
           it != m_new_theme_options.end(); ++it) {
     SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(it->first);
-    options_list_save_to_settings(*it->second, entry);
+    options_list_save_to_settings(*it->second, entry.group("options"));
   }
 }
 

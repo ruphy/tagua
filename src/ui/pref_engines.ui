@@ -32,7 +32,10 @@
        <number>6</number>
       </property>
       <item>
-       <layout class="QHBoxLayout" >
+       <widget class="QListWidget" name="m_engine_list" />
+      </item>
+      <item>
+       <layout class="QVBoxLayout" >
         <property name="margin" >
          <number>0</number>
         </property>
@@ -40,44 +43,31 @@
          <number>6</number>
         </property>
         <item>
-         <widget class="QListWidget" name="m_engines" />
+         <widget class="QPushButton" name="m_add_engine" >
+          <property name="text" >
+           <string/>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" >
-          <property name="margin" >
-           <number>0</number>
+         <widget class="QPushButton" name="m_remove_engine" >
+          <property name="text" >
+           <string/>
           </property>
-          <property name="spacing" >
-           <number>6</number>
+         </widget>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
           </property>
-          <item>
-           <widget class="QPushButton" name="m_add_engine" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="m_remove_engine" >
-            <property name="text" >
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer>
-            <property name="orientation" >
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" >
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+          <property name="sizeHint" >
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
         </item>
        </layout>
       </item>
@@ -91,8 +81,8 @@
      </property>
      <property name="sizeHint" >
       <size>
-       <width>20</width>
-       <height>40</height>
+       <width>382</width>
+       <height>16</height>
       </size>
      </property>
     </spacer>
@@ -213,7 +203,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>m_type</tabstop>
-  <tabstop>m_engines</tabstop>
   <tabstop>m_add_engine</tabstop>
   <tabstop>m_remove_engine</tabstop>
  </tabstops>

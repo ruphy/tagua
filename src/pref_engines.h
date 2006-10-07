@@ -12,6 +12,7 @@
 #define PREF_ENGINES_H
 
 #include "ui/ui_pref_engines.h"
+#include "engineinfo.h"
 #include <vector>
 
 class EngineInfo;
@@ -19,12 +20,24 @@ class EngineInfo;
 class PrefEngines : public QWidget
                   , public Ui::PrefEngines {
 Q_OBJECT
-  std::vector<EngineInfo*> m_engine_info;
+  std::map<QListWidgetItem*, EngineDetails> m_engines;
+  
+  EngineDetails& currentEngine();
 public:
   PrefEngines(QWidget* parent = 0);
   ~PrefEngines();
+  
+  QListWidgetItem* addEngine(const EngineDetails& details);
 public slots:
   void apply();
+  void setName(QListWidgetItem*);
+  void add();
+  void remove();
+  void changeEngine(QListWidgetItem* item);
+  
+  void setPath();
+  void setType();
+  void setWorkDir();
 };
 
 #endif // PREF_ENGINES_H

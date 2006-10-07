@@ -19,18 +19,62 @@
 class Engine;
 class UI;
 
+struct EngineDetails {
+  enum EngineType {
+    XBoard,
+    UCI,
+    KBoardText,
+    KBoardDBUS,
+    Unknown
+  };
+  
+  QString name;
+  QString path;
+  EngineType type;
+  QString workPath;
+  
+  EngineDetails(const QString& name, const QString& path, const EngineType& type)
+  : name(name), path(path), type(type) { }
+  EngineDetails() { }
+  
+  static QString typeName(EngineType t) {
+    switch (t) {
+    case XBoard:
+      return "xboard";
+    case UCI:
+      return "UCI";
+    case KBoardText:
+      return "kboard-text";
+    case KBoardDBUS:
+      return "kboard-dbus";
+    default:
+      return "unknown";
+    }
+  }
+  
+  static EngineType typeFromName(const QString& name) {
+    if (name == "xboard")
+      return XBoard;
+    else if (name == "UCI")
+      return UCI;
+    else if (name == "kboard-text")
+      return KBoardText;
+    else if (name == "kboard-dbus")
+      return KBoardDBUS;
+    else return Unknown;
+  }
+};
+
 class EngineInfo : public QObject {
 Q_OBJECT
-  QString m_name;
-  QString m_path;
-  QString m_type;
+  EngineDetails m_details;
   UI& m_ui;
   EntityToken m_token;
 protected:
   virtual boost::shared_ptr<Engine> engine();
 public:
-  EngineInfo(const QString& name, const QString& path, const QString& type, UI& ui);
-  QString m_workPath;
+  EngineInfo(const EngineDetails& details, UI& ui);
+  void setWorkPath(const QString& wp) { m_details.workPath = wp; }
 public slots:
   void playAsWhite();
   void playAsBlack();

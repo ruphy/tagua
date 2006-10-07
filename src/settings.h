@@ -173,6 +173,7 @@ public:
   Settings() { }
   virtual ~Settings() { }
   Settings(const QDomElement& node);
+  Settings(const Settings& other);
 
   SettingRef operator[](const QString& key);
   SettingConstRef operator[](const QString& key) const;

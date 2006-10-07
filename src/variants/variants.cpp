@@ -19,6 +19,7 @@
 #include "variants/connect4.h"
 #include "variants/chainreaction.h"
 #include "variants/dummy.h"
+#include "variants/shogi.h"
 
 bool Variant::s_initialized = false;
 
@@ -43,6 +44,7 @@ void Variant::initialize() {
   register_variant<Connect4Variant>();
   register_variant<ChainReactionVariant>();
   register_variant<DummyVariant>();
+//  register_variant<ShogiVariant>();
 
   s_initialized = true;
 }

@@ -39,7 +39,7 @@ void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
   OptList ol = m_lua_loader.getOptions();
-  if(options_list_load_from_settings(ol, entry)) {
+  if(options_list_load_from_settings(ol, entry.group("options"))) {
     for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
       it->second.m_cache.clear();
   }

@@ -32,6 +32,9 @@ void SettingRef::remove() {
 Settings::Settings(const QDomElement& node)
 : m_node(node) { }
 
+Settings::Settings(const Settings& other)
+: m_node(other.node()) { }
+
 SettingRef Settings::operator[](const QString& key) {
   return SettingRef(node(), key);
 }
@@ -62,6 +65,7 @@ void Settings::ensureExistence(QDomElement& node, QDomElement parent, const QStr
       parent.appendChild(node);
     }
   }
+  Q_ASSERT(!node.isNull());
 }
 
 bool Settings::flag(const QString& attr, bool def) const {
@@ -78,6 +82,7 @@ SettingGroup::SettingGroup(const QDomElement& parent, const QString& name)
 
 QDomElement SettingGroup::node() const {
   ensureExistence(const_cast<QDomElement&>(m_node), m_parent, m_name);
+  Q_ASSERT(!m_node.isNull());
   return m_node;
 }
 
@@ -126,6 +131,8 @@ void SettingArray::clear() {
 void Settings::dump() const {
   std::cout << "dumping" << std::endl;
   Q_ASSERT(!node().isNull());
-  Q_ASSERT(!node().ownerDocument().isNull());
-  std::cout << node().ownerDocument().toString() << std::endl;
+  
+  QDomDocument temp;
+  temp.appendChild(node().cloneNode());
+  std::cout << temp.toString() << std::endl;
 }

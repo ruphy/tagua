@@ -302,8 +302,9 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
     OptPtr _o = options[i];
     if(boost::shared_ptr<BoolOpt> o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      retv |= options_list_load_from_settings(o->m_sub_options, s.group("sub_options"));
-      bool newval = s[o->name()] | o->value();
+      Settings bool_group = s.group(o->name());
+      retv |= options_list_load_from_settings(o->m_sub_options, bool_group);
+      bool newval = bool_group.flag("value", o->value());
       retv |= (newval != o->value());
       o->setValue( newval );
     }
@@ -348,8 +349,9 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)
         l <<  o->m_options[i];
-      retv |= options_list_load_from_settings(l, s.group("options"));
-      int newval = s[o->name()] | o->selected();
+      Settings sel_group = s.group(o->name());
+      retv |= options_list_load_from_settings(l, sel_group.group("sel-options"));
+      int newval = sel_group["value"] | o->selected();
       retv |= (newval != o->selected());
       o->setSelected( newval );
     }
@@ -366,8 +368,9 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
     OptPtr _o = options[i];
     if(boost::shared_ptr<BoolOpt> o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      options_list_save_to_settings(o->m_sub_options, s.group("sub_options"));
-      s[o->name()] = o->value();
+      Settings bool_group = s.group(o->name());
+      options_list_save_to_settings(o->m_sub_options, bool_group);
+      bool_group.setFlag("value", o->value());
     }
     else if(boost::shared_ptr<IntOpt> o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
@@ -383,7 +386,9 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
     }
     else if(boost::shared_ptr<ColorOpt> o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
+      std::cout << "setting color of " << o->name() << std::endl;
       s[o->name()] = o->value();
+      s.dump();
     }
     else if(boost::shared_ptr<FontOpt> o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
@@ -398,8 +403,9 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)
         l <<  o->m_options[i];
-      options_list_save_to_settings(l, s.group("options"));
-      s[o->name()] = o->value();
+      Settings sel_group = s.group(o->name());
+      options_list_save_to_settings(l, sel_group.group("sel-options"));
+      sel_group["value"] = o->value();
     }
     else {
       std::cout << "options_list_load_from_settings: Error, unknown option of type "

@@ -32,24 +32,22 @@ void EngineInfo::analyze() {
     m_token = m_ui.addAnalysingEngine(engine());
 }
 
-EngineInfo::EngineInfo(const QString& name, const QString& path, const QString& type, UI& ui)
+EngineInfo::EngineInfo(const EngineDetails& details, UI& ui)
 : QObject(&ui)
-, m_name(name)
-, m_path(path) 
-, m_type(type)
+, m_details(details)
 , m_ui(ui) { }
 
 shared_ptr<Engine> EngineInfo::engine() {
   shared_ptr<Engine> res;
-  if (m_type == "xboard") 
-    res = shared_ptr<Engine>(new XBoardEngine(m_path, QStringList()));
+  if (m_details.type == EngineDetails::XBoard) 
+    res = shared_ptr<Engine>(new XBoardEngine(m_details.path, QStringList()));
   else {
-    std::cout << " --> Error in EngineInfo::engine, unknown engine type " << m_type << std::endl;
+    std::cout << " --> Error in EngineInfo::engine, unimplemented engine type " << m_details.type << std::endl;
     return shared_ptr<Engine>();
   }
   
   if (res)
-    res->setWorkingPath(m_workPath);
+    res->setWorkingPath(m_details.workPath);
   
   return res;
 }

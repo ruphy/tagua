@@ -44,3 +44,4 @@
 -- name = "Shogi"
 -- description = "Shogi SVG theme,\n  generate with potrace"
 -- variants = { "Chess[default]" }
+
