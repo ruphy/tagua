@@ -346,7 +346,6 @@ bool Image::drawGlyph(Context* ctx,
       p.drawPath(font_glyph->m_path);
     }
   }
-
   if(_fg.style() != Qt::NoBrush) {
     QBrush fg = _fg;
     QMatrix m = fg.matrix();

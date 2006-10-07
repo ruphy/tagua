@@ -483,7 +483,11 @@ int Wrapper<QBrush>::rotate(lua_State* l) {
   lua_pop(l, n);
 
   QMatrix m = brush->matrix();
-  m.rotate(r);
+//   printf("Rbefore:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
+  m = m * QMatrix().rotate(r);
+//   printf("Rafter:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   brush->setMatrix(m);
   return 0;
 }
@@ -498,8 +502,12 @@ int Wrapper<QBrush>::scale(lua_State* l) {
   lua_pop(l, n);
 
   QMatrix m = brush->matrix();
-  m.scale(x, y);
+//   printf("before:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
+  m = m * QMatrix().scale(x, y);
   brush->setMatrix(m);
+//   printf("after:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   return 0;
 }
 
@@ -508,13 +516,17 @@ int Wrapper<QBrush>::translate(lua_State* l) {
   if (n < 2 || n > 3) luaL_error(l, "Wrong argument count for Brush::translate");
 
   QBrush* brush = retrieve(l, 1, AssertOk);
-  if(n == 2) {
+  if(n == 3) {
     double x = lua_tonumber(l, 2);
     double y = lua_tonumber(l, 3);
     lua_pop(l, n);
 
     QMatrix m = brush->matrix();
-    m.translate(x, y);
+//   printf("before:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
+    m = m * QMatrix().translate(x, y);
+//   printf("after:\n");
+//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
     brush->setMatrix(m);
   }
   else {
@@ -522,7 +534,7 @@ int Wrapper<QBrush>::translate(lua_State* l) {
     lua_pop(l, n);
 
     QMatrix m = brush->matrix();
-    m.translate(point->x(), point->y());
+    m = m * QMatrix().translate(point->x(), point->y());
     brush->setMatrix(m);
   }
   return 0;

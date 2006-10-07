@@ -287,8 +287,15 @@ void GenericWrapper<T>::register_class(lua_State* l) {
 
 template<typename T>
 T* GenericWrapper<T>::retrieve(lua_State* l, int index, CheckStrenght check) {
+  StackCheck s(l);
+
   if(check != DontCheck) {
-    lua_getmetatable(l,index);
+    if(!lua_getmetatable(l,index)) {
+      if(check == AssertOk)
+        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
+                                                    Wrapper<T>::class_name());
+      return NULL;
+    }
     GenericWrapper<T>::push_meta_table(l);
 
     if(!lua_rawequal(l, -2, -1)) {
@@ -316,6 +323,8 @@ T* GenericWrapper<T>::retrieve(lua_State* l, int index, CheckStrenght check) {
 
 template<typename T>
 int GenericWrapper<T>::deallocate(lua_State* l) {
+  StackCheck s(l, -1);
+
   T* data = retrieve(l);
   lua_pop(l, 1);
   delete data;
@@ -324,12 +333,12 @@ int GenericWrapper<T>::deallocate(lua_State* l) {
 
 template<typename T>
 void GenericWrapper<T>::allocate(lua_State* l, T* x) {
+  StackCheck s(l, 1);
+
   // create userdata
   T** data = reinterpret_cast<T**>(
     lua_newuserdata(l, sizeof(T*)));
   *data = x;
-
-  StackCheck check(l);
 
   // set metatable
   push_meta_table(l);
@@ -338,7 +347,7 @@ void GenericWrapper<T>::allocate(lua_State* l, T* x) {
 
 template<typename T>
 void GenericWrapper<T>::create_prototype(lua_State* l, const char* prototype_name) {
-  StackCheck check(l);
+  StackCheck s(l);
 
   lua_newtable(l); // factory class
 
@@ -386,6 +395,8 @@ int GenericWrapper<T>::constructor_wrapper(lua_State* l) {
 
 template<typename T>
 void GenericWrapper<T>::push_meta_table(lua_State* l) {
+  StackCheck s(l, 1);
+
   lua_getglobal(l, Wrapper<T>::class_name());
   lua_pushstring(l, "object_meta_table");
   lua_rawget(l,-2);
@@ -454,8 +465,15 @@ void GenericWrapperByValue<T>::register_class(lua_State* l) {
 
 template<typename T>
 T* GenericWrapperByValue<T>::retrieve(lua_State* l, int index, CheckStrenght check) {
+  StackCheck s(l);
+
   if(check != DontCheck) {
-    lua_getmetatable(l,index);
+    if(!lua_getmetatable(l,index)) {
+      if(check == AssertOk)
+        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
+                                                    Wrapper<T>::class_name());
+      return NULL;
+    }
     GenericWrapperByValue<T>::push_meta_table(l);
 
     if(!lua_rawequal(l, -2, -1)) {
@@ -483,6 +501,8 @@ T* GenericWrapperByValue<T>::retrieve(lua_State* l, int index, CheckStrenght che
 
 template<typename T>
 int GenericWrapperByValue<T>::deallocate(lua_State* l) {
+  StackCheck s(l, -1);
+
   T* data = retrieve(l);
   lua_pop(l, 1);
   data->~T(); //placement delete
@@ -491,6 +511,8 @@ int GenericWrapperByValue<T>::deallocate(lua_State* l) {
 
 template<typename T>
 void GenericWrapperByValue<T>::allocate(lua_State* l, T x) {
+  StackCheck s(l, 1);
+
   // create userdata
   T* data = reinterpret_cast<T*>(
     lua_newuserdata(l, sizeof(T)));
@@ -505,6 +527,8 @@ void GenericWrapperByValue<T>::allocate(lua_State* l, T x) {
 
 template<typename T>
 void GenericWrapperByValue<T>::create(lua_State* l) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(); //placement new
   push_meta_table(l);
@@ -514,6 +538,8 @@ void GenericWrapperByValue<T>::create(lua_State* l) {
 template<typename T>
 template<typename A1>
 void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1); //placement new
   push_meta_table(l);
@@ -523,6 +549,8 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1) {
 template<typename T>
 template<typename A1, typename A2>
 void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2); //placement new
   push_meta_table(l);
@@ -532,6 +560,8 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2) 
 template<typename T>
 template<typename A1, typename A2, typename A3>
 void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2, const A3& a3) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3); //placement new
   push_meta_table(l);
@@ -542,6 +572,8 @@ template<typename T>
 template<typename A1, typename A2, typename A3, typename A4>
 void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2,
                                  const A3& a3, const A4& a4) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3, a4); //placement new
   push_meta_table(l);
@@ -552,6 +584,8 @@ template<typename T>
 template<typename A1, typename A2, typename A3, typename A4, typename A5>
 void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2, const A3& a3,
                                                 const A4& a4, const A5& a5) {
+  StackCheck s(l, 1);
+
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3, a4, a5); //placement new
   push_meta_table(l);
@@ -560,7 +594,7 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2, 
 
 template<typename T>
 void GenericWrapperByValue<T>::create_prototype(lua_State* l, const char* prototype_name) {
-  StackCheck check(l);
+  StackCheck s(l);
 
   lua_newtable(l); // factory class
 
@@ -608,6 +642,8 @@ int GenericWrapperByValue<T>::constructor_wrapper(lua_State* l) {
 
 template<typename T>
 void GenericWrapperByValue<T>::push_meta_table(lua_State* l) {
+  StackCheck s(l, 1);
+
   lua_getglobal(l, Wrapper<T>::class_name());
   lua_pushstring(l, "object_meta_table");
   lua_rawget(l,-2);

@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -94,7 +94,7 @@ public:
    * Scales the transformation matrix
    */
   void scale(double x, double y) {
-    m_draw_matrix.scale(x,y);
+    m_draw_matrix = m_draw_matrix * QMatrix().scale(x,y);
   }
 
 
@@ -102,7 +102,7 @@ public:
    * Rotates the transformation matrix
    */
   void rotate(double angle) {
-    m_draw_matrix.rotate(angle);
+    m_draw_matrix = m_draw_matrix * QMatrix().rotate(angle);
   }
 
 
@@ -110,7 +110,7 @@ public:
    * Translates the transformation matrix
    */
   void translate(double x, double y) {
-    m_draw_matrix.translate(x,y);
+    m_draw_matrix = m_draw_matrix * QMatrix().translate(x,y);
   }
 
 

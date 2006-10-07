@@ -75,7 +75,7 @@ void MasterSettings::changed() {
 MasterSettings settings(".kboardrc.xml");
 
 QString data_dir() {
-  return "/home/paolo/Projects/kboard/";
+  return "/home/monge/kboard/";
 }
 
 #include "global.moc"

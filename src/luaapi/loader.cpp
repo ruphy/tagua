@@ -125,6 +125,8 @@ struct Loader::create_image_data {
 };
 
 QImage Loader::getImage(const QString& key, int size) {
+  StackCheck s(m_state);
+
   create_image_data data(key, size);
   if(lua_cpcall(m_state, create_image_func, &data) != 0) {
     m_error = true;
@@ -136,6 +138,8 @@ QImage Loader::getImage(const QString& key, int size) {
 }
 
 OptList Loader::getOptList(const QString& l) {
+  StackCheck s(m_state);
+
   lua_getglobal(m_state, l.toAscii().constData());
   OptList *list = Wrapper<OptList>::retrieve(m_state, -1);
   lua_pop(m_state, 1);
@@ -147,6 +151,7 @@ OptList Loader::getOptions() {
 }
 
 QStringList Loader::getVariants() {
+  StackCheck s(m_state);
   QStringList retv;
 
   lua_getglobal(m_state, "variants");
@@ -165,6 +170,7 @@ QStringList Loader::getVariants() {
 }
 
 QString Loader::getName() {
+  StackCheck s(m_state);
   QString retv;
 
   lua_getglobal(m_state, "name");
@@ -175,6 +181,7 @@ QString Loader::getName() {
 }
 
 QString Loader::getDescription() {
+  StackCheck s(m_state);
   QString retv;
 
   lua_getglobal(m_state, "description");
