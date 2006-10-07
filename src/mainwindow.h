@@ -57,10 +57,10 @@ Q_OBJECT
   Console* console;
 
   QMenu* m_engine_menu;
-  QAction* m_promote_queen;
-  QAction* m_promote_rook;
-  QAction* m_promote_bishop;
-  QAction* m_promote_knight;
+  KAction* m_promote_queen;
+  KAction* m_promote_rook;
+  KAction* m_promote_bishop;
+  KAction* m_promote_knight;
   QActionGroup* m_promote_group;
 
   ChessTable* table();
@@ -78,7 +78,7 @@ Q_OBJECT
 //   QAction *mkAction(const QString& txt, QKeySequence shk, QObject *o,
 //                     const char *sl, QString name, QObject *par = NULL);
   void setupActions();
-  void addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
+  KAction* addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
   void updatePromotionType();
 
   bool openFile(const QString&);

@@ -100,11 +100,12 @@ ChessTable* MainWindow::table() {
   return qobject_cast<ChessTable*>(m_main->currentWidget());
 }
 
-void MainWindow::addPromotionAction(const QString& name, const QString& text, const char* uiSlot) {
+KAction* MainWindow::addPromotionAction(const QString& name, const QString& text, const char* uiSlot) {
   KAction* temp = new KAction(KIcon(name), text, actionCollection(), name);
   temp->setCheckable(true);
   connect(temp, SIGNAL(triggered(bool)), &ui(), uiSlot);
   m_promote_group->addAction(temp);
+  return temp;
 }
 
 void MainWindow::setupActions() {
@@ -117,10 +118,10 @@ void MainWindow::setupActions() {
 
   m_promote_group = new QActionGroup(this);
   
-  addPromotionAction("promoteQueen", i18n("Promote to &queen"), SLOT(promoteToQueen()));
-  addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
-  addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
-  addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
+  m_promote_queen = addPromotionAction("promoteQueen", i18n("Promote to &queen"), SLOT(promoteToQueen()));
+  m_promote_rook = addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
+  m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
+  m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
   
   temp = new KAction(KIcon("back"), i18n("&Back"), actionCollection(), "back");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(back()));
