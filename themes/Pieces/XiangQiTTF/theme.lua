@@ -15,13 +15,16 @@ function fromChar(char, white)
   return function(size)
     local i = Image(size,size)
     i:clear()
-    local g = LinearGradient(Point(0,0), Point(size,size))
-    g[0] =   "#ffeda2"
-    g[.75] = "#c0a870"
-    g[1] =   "#c0a870"
+    local g = RadialGradient(Point(size*0.5,size*0.5), size*0.5, Point(size*0.3,size*0.3))
+    g[0] = "#ffeda2"
+    g[1] = "#c0a870"
     i:draw_glyph(Rect(0,0,size,size), "XiangQi.ttf", "0x2c", "black", g, 0, true)
-    i:draw_glyph(Rect(0,0,size,size), "XiangQi.ttf", "0x2e", white and white_col2 or black_col2, g, 5, false)
-    i:draw_glyph(Rect(0,0,size,size), "XiangQi.ttf", char, white and white_col or black_col, "black", 0, false)
+    i:draw_glyph(Rect(0,0,size,size), "XiangQi.ttf", "0x2e",
+                                      white and white_col2 or black_col2,
+                                      "#fff3c8", 5, false)
+    i:draw_glyph(Rect(0,0,size,size), "XiangQi.ttf", char,
+                                      white and white_col or black_col,
+                                      "#fff3c8", 4, false)
     return i
   end
 end
@@ -41,6 +44,7 @@ theme.white_horse     = addShadow(fromChar("0x68", true))
 theme.white_chariot   = addShadow(fromChar("0x72", true))
 theme.white_soldier   = addShadow(fromChar("0x73", true))
 
+-- To be able to adapt this theme to chess too
 theme.black_bishop = theme.black_advisor
 theme.black_king   = theme.black_general
 theme.black_knight = theme.black_horse
