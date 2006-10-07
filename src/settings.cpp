@@ -133,6 +133,6 @@ void Settings::dump() const {
   Q_ASSERT(!node().isNull());
   
   QDomDocument temp;
-  temp.appendChild(node().cloneNode());
+  temp.appendChild(temp.importNode(node(), true));
   std::cout << temp.toString() << std::endl;
 }

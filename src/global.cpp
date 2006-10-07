@@ -14,28 +14,31 @@
 QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
     QFile f(m_filename);
-    if (!f.open(QFile::ReadOnly | QFile::Text)) {
+    if (!f.open(QFile::ReadOnly | QFile::Text) || !m_doc.setContent(&f)) {
       std::cout << "Unable to open configuration file for reading." << std::endl;
 
-      // create a stub configuration file
-      {
-        QFile stub(m_filename);
-        if (!stub.open(QFile::WriteOnly | QFile::Text)) {
-          std::cout << "Unable to write to configuration file." << std::endl;
-          exit(1);
-        }
-        QTextStream stream(&stub);
-        stream << "<?xml version=\"1.0\"?>\n"
-                  "<configuration>\n"
-                  "</configuration>\n";
-      }
+//       // create a stub configuration file
+//       {
+//         QFile stub(m_filename);
+//         if (!stub.open(QFile::WriteOnly | QFile::Text)) {
+//           std::cout << "Unable to write to configuration file." << std::endl;
+//           exit(1);
+//         }
+//         QTextStream stream(&stub);
+//         stream << "<?xml version=\"1.0\"?>\n"
+//                   "<configuration>\n"
+//                   "</configuration>\n";
+//       }
+// 
+//       // reopen it
+//       if (!f.open(QFile::ReadOnly | QFile::Text))
+//         exit(1);
 
-      // reopen it
-      if (!f.open(QFile::ReadOnly | QFile::Text))
-        exit(1);
+      m_doc.appendChild(m_doc.createElement("configuration"));
+      std::cout << m_doc.toString() << std::endl;
     }
+        
 
-    m_doc.setContent(&f);
     const_cast<QDomElement&>(m_node) = m_doc.documentElement();
     Q_ASSERT(!m_node.isNull());
     Q_ASSERT(!m_node.ownerDocument().isNull());
