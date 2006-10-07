@@ -55,8 +55,8 @@ public:
   typedef P Piece;
   typedef B Board;
 
-  Position();
-  Position(const OptList& l);
+  Position(int = 8, int = 8);
+  Position(const OptList& l, int = 8, int = 8);
   Position(Color turn,
                 bool castleWhiteKing, bool castleWhiteQueen,
                 bool castleBlackKing, bool castleBlackQueen,
@@ -183,9 +183,9 @@ std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 //FIXME: now the 8x8 dependent part is here
 
 template <typename M, typename P, typename B>
-Position<M, P, B>::Position()
+Position<M, P, B>::Position(int width, int height)
 : m_turn(WHITE)
-, m_board(8, 8)
+, m_board(width, height)
 , m_enPassantSquare(Point::invalid())
 , m_castleWhiteKing(true)
 , m_castleWhiteQueen(true)
@@ -193,9 +193,9 @@ Position<M, P, B>::Position()
 , m_castleBlackQueen(true) { }
 
 template <typename M, typename P, typename B>
-Position<M, P, B>::Position(const OptList&)
+Position<M, P, B>::Position(const OptList&, int width, int height)
 : m_turn(WHITE)
-, m_board(8, 8)
+, m_board(width, height)
 , m_enPassantSquare(Point::invalid())
 , m_castleWhiteKing(true)
 , m_castleWhiteQueen(true)
