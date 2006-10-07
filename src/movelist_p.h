@@ -58,7 +58,6 @@ public:
   double anim_time;
   QColor select_color;
   QColor comment_color;
-  QString piece_icons;
   QString icons;
 
   bool  use_mv_font;

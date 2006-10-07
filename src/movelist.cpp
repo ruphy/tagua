@@ -23,6 +23,7 @@
 #include <QTimer>
 #include <cmath>
 #include <iostream>
+#include <kstandarddirs.h>
 #include "global.h"
 #include "movelist_widget.h"
 #include "movelist_table.h"
@@ -413,7 +414,6 @@ void Settings::load() {
   (s["AnimateSmoothness"] |= 16) >> anim_smoothness;
   (s["SelectColor"] |= Qt::red) >> select_color;
   (s["CommentColor"] |= QColor(64,64,64) ) >> comment_color;
- // piece_icons = icons + "pieces/";
   if ((use_mv_font = (s["UseMoveFont"] |= true)))
     (s["MoveFont"] |= QApplication::font()) >> mv_font;
   else
@@ -450,7 +450,6 @@ void Settings::save() {
   s["AnimateSmoothness"] = anim_smoothness;
   s["SelectColor"]      = select_color;
   s["CommentColor"]     = comment_color;
-  s["PieceIconDir"]     = piece_icons;
   s["UseMoveFont"]      = use_mv_font;
   s["MoveFont"]         = mv_font;
   s["UseCommentFont"]   = use_comm_font;
@@ -1087,7 +1086,9 @@ QPixmap Widget::getPixmap(const QString& s, bool selected) {
   if(loaded_pixmaps.contains(k))
     return loaded_pixmaps[k];
 
-  QImage img(m_settings->piece_icons+"/"+s+".png");
+  QString iconFile = KStandardDirs::locate("appdata", "piece_icons/" + s + ".png");
+  QImage img(iconFile);
+  
   if(selected) {
     QPainter p(&img);
     p.setCompositionMode(QPainter::CompositionMode_SourceAtop );
