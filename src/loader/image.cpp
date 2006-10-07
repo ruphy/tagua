@@ -306,8 +306,8 @@ bool Image::drawGlyph(Context* ctx,
   if(_bg.style() != Qt::NoBrush && !(_bg.style() <= 14 && _bg.color().alpha()==0)) {
     QBrush bg = _bg;
     QMatrix m = bg.matrix();
-    m.scale(h/dest.width(), h/dest.height());
-    m.translate(-dest.x(), -dest.y());
+    m = m * QMatrix().translate(-dest.x(), -dest.y());
+    m = m * QMatrix().scale(h/dest.width(), h/dest.height());
     bg.setMatrix(m);
 
     if(draw_inner_bg) {
@@ -349,8 +349,8 @@ bool Image::drawGlyph(Context* ctx,
   if(_fg.style() != Qt::NoBrush) {
     QBrush fg = _fg;
     QMatrix m = fg.matrix();
-    m.scale(h/dest.width(), h/dest.height());
-    m.translate(-dest.x(), -dest.y());
+    m = m * QMatrix().translate(-dest.x(), -dest.y());
+    m = m * QMatrix().scale(h/dest.width(), h/dest.height());
     fg.setMatrix(m);
 
     p.setBrush( fg );

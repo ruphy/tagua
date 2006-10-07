@@ -276,7 +276,7 @@ void PrefTheme::variantChanged() {
   QString pth = m_new_piece_themes.count(vname) ? m_new_piece_themes[vname]
           : (var["piece-theme"] | QString()).value();
   QString sth = m_new_square_themes.count(vname) ? m_new_square_themes[vname]
-          : (var["square-them"] | QString()).value();
+          : (var["square-theme"] | QString()).value();
   update_list_view(listPieces, m_pieces_themes, vproxy, pth);
   update_list_view(listSquares, m_squares_themes, vproxy, sth);
 }
@@ -356,16 +356,18 @@ void PrefTheme::squaresThemeChecked(bool ck) {
 }
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
-  QString type = squares ? "square" : "piece";
+  QString deftag = squares ? "use-def-squares" : "use-def-pieces";
+  QString tag = squares ? "square-theme" : "piece-theme";
   QString subdir = squares ? "Squares" : "Pieces";
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(v);
   if (v != vi->themeProxy() &&
-      (var[QString("use-def-")+type+"s"] | true))
+      (var[deftag] | true) )
     v = vi->themeProxy();
-  if (var[type+"-theme"])
-    return var[type+"-theme"].value<QString>();
+
+  if (var[tag])
+    return var[tag].value<QString>();
 
   QString themeDir = data_dir() + "/themes/";
 
@@ -388,7 +390,7 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
   }
 
   if (!retv.isEmpty())
-    var[type+"-theme"] = retv;
+    var[tag] = retv;
   return retv;
 }
 

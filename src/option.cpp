@@ -386,9 +386,7 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
     }
     else if(boost::shared_ptr<ColorOpt> o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
-      std::cout << "setting color of " << o->name() << std::endl;
       s[o->name()] = o->value();
-      s.dump();
     }
     else if(boost::shared_ptr<FontOpt> o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
