@@ -96,6 +96,8 @@ public:
       retv.m_drop = CrazyhousePiece(INVALID_COLOR, INVALID_TYPE);
     return retv;
   }
+
+  void dump() const;
 };
 
 template <typename MoveTest>

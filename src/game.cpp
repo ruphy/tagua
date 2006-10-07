@@ -19,6 +19,7 @@
   #include <boost/variant.hpp>
 #endif
 #ifndef NO_PGN
+#include "variants/variants.h"
 #include "pgnparser.h"
 #include "kboard.h"
 #endif //NO_PGN
@@ -848,32 +849,62 @@ QString Game::pgn() const {
 #ifndef NO_PGN
 /** loads a pgn in the current game */
 void Game::load(const PGN& pgn) {
-  load(position(Index(0)), pgn);
+  std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
+  VariantInfo *vi;
+
+  if(var == pgn.m_tags.end())
+    vi = Variant::variant("Chess");
+  else if(!(vi = Variant::variant(var->second))) {
+    std::cout << " --> Error, no such variant " << var->second << std::endl;
+    return;
+  }
+  std::cout << "Fine, loaded variant " << vi->name() << std::endl;
+
+  std::map<QString, QString>::const_iterator fen = pgn.m_tags.find("FEN");
+  PositionPtr pos;
+
+  if(var == pgn.m_tags.end()) {
+    pos = vi->createPosition();
+    pos->setup();
+  }
+  else if( !(pos = vi->createPositionFromFEN(fen->second))) {
+    std::cout << " --> Error, wrong fen " << fen->second << std::endl;
+    return;
+  }
+
+  //TODO: what about options? FEN rules?
+
+  load(pos, pgn);
 }
 
 /** loads a pgn in the current game */
 void Game::load(PositionPtr pos, const PGN& pgn) {
   current = Index(0);
   undo_history.clear();
+  undo_pos = 0;
 
-  Entry* fe = fetch(Index(0));
-  int old_history_size = history.size();
-  std::vector<int> v_ids;
+  if(history.size()) {
+    Entry* fe = &history[0];
+    int old_history_size = history.size();
+    std::vector<int> v_ids;
 
-  while(history.size()>1)
-    history.pop_back();
-  for(Variations::const_iterator it = fe->variations.begin();
-          it != fe->variations.end(); ++it)
-    v_ids.push_back(it->first);
-  fe->variations.clear();
-  fe->vcomments.clear();
+    while(history.size()>1)
+      history.pop_back();
+    for(Variations::const_iterator it = fe->variations.begin();
+            it != fe->variations.end(); ++it)
+      v_ids.push_back(it->first);
+    fe->variations.clear();
+    fe->vcomments.clear();
 
-  for(int i=0;i<(int)v_ids.size();i++)
-    onRemoved(Index(0).next(v_ids[i]));
-  if(old_history_size>1)
-    onRemoved(Index(1));
-  v_ids.clear();
-  history[0].position = pos;
+    for(int i=0;i<(int)v_ids.size();i++)
+      onRemoved(Index(0).next(v_ids[i]));
+    if(old_history_size>1)
+      onRemoved(Index(1));
+    v_ids.clear();
+    history[0].position = pos;
+  }
+  else
+    history.push_back( Entry(MovePtr(), pos) );
 
   QString vcomment;
   std::vector<Index> var_stack;
@@ -907,24 +938,22 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
 
       int n = current.totalNumMoves()+1;
       if(var_start) {
-        if(!pm->number)
+        if(!pm->m_number)
           current = current.prev();
-        else if(pm->number>n+1)
+        else if(pm->m_number>n+1)
           std::cout << " --> Error, too far variation!!!" << std::endl;
         else {
-          if(pm->number<n)
+          if(pm->m_number<n)
             std::cout << " --> Warning, too near variation..." << std::endl;
-          current = current.prev(n + 1 - pm->number);
+          current = current.prev(n + 1 - pm->m_number);
         }
       }
-      else if(pm->number && pm->number!=n+1)
+      else if(pm->m_number && pm->m_number!=n+1)
         std::cout << " --> Warning, move number mismatch..." << std::endl;
 
       PositionPtr pos = position();
-      MovePtr m = pos->getMove(*pm);
+      MovePtr m = pos->getMove(pm->m_move);
 
-      //std::cout << "processed " << pm->from.toString(8) << pm->to.toString(8)
-        //                  << " = " << m.get() << std::endl;
       if(!m || !pos->testMove(m))
         break;
 

@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -28,7 +28,7 @@ class GraphicalInfo;
 
 /**
   * @brief A controller to edit or play games.
-  * 
+  *
   * EditGameController is used to play games, either locally or
   * on an ICS server. A pair of entities @code m_players, representing
   * the two players, is mantained as well as a set of additional entities,
@@ -58,7 +58,7 @@ protected:
   boost::shared_ptr<Entity> m_players[2];
   std::set<boost::shared_ptr<Entity> > m_entities;
 public:
-  EditGameController(ChessTable*, VariantInfo*, 
+  EditGameController(ChessTable*, VariantInfo*,
     AbstractPosition::Ptr startingPos = AbstractPosition::Ptr());
   virtual void setPromotionType(int);
 
@@ -68,12 +68,12 @@ public:
   bool addICSPlayer(int side, int game_number, const boost::shared_ptr<ICSConnection>& connection);
   bool setExaminationMode(int game_number, const boost::shared_ptr<ICSConnection>& connection);
   bool setObserveMode(int game_number, const boost::shared_ptr<ICSConnection>& connection);
-  
-  virtual void loadPGN(const QString&);
-  
+
+  virtual void loadPGN(const PGN&);
+
   virtual void createCtrlAction();
   virtual void destroyCtrlAction();
-  
+
   virtual boost::shared_ptr<Controller> end();
   virtual void detach();
 };

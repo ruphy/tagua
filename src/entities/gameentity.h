@@ -38,7 +38,7 @@ public:
   /**
     * Load the content of a PGN inside the game.
     */
-  virtual void loadPGN(const QString& pgn);
+  virtual void loadPGN(const PGN& pgn);
 
   virtual void executeMove(AbstractMove::Ptr move);
   virtual void addPremove(const NormalUserMove& m);

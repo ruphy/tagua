@@ -97,7 +97,7 @@ public:
 
   virtual void handleMoveList(const class PGN&) { }
   virtual QString save() { return ""; }
-  virtual void loadPGN(const QString&) { }
+  virtual void loadPGN(const PGN&) { }
 
   virtual AbstractPosition::Ptr currentPosition() const;
 

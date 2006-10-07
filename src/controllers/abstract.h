@@ -24,6 +24,7 @@ class ChessTable;
 class GenericGame;
 class UserEntity;
 class Engine;
+class PGN;
 
 /**
   * @b Controller is the base abstract class for all controllers in KBoard.
@@ -48,7 +49,7 @@ public:
     * to be terminated.
     */
   virtual boost::shared_ptr<Controller> end() { return shared_from_this(); }
-  
+
   /**
     * Detach from resources without disposing them.
     */
@@ -149,7 +150,7 @@ public:
   /**
     * Load game from a PGN.
     */
-  virtual void loadPGN(const QString&);
+  virtual void loadPGN(const PGN&);
 
   /**
     * Create a CTRL Action.

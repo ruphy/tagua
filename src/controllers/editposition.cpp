@@ -200,7 +200,7 @@ public:
   , m_undo_history(undo_history) { }
 
   virtual QString save() const { return ""; }
-  virtual void loadPGN(const QString&) { }
+  virtual void loadPGN(const PGN&) { }
 
   virtual AbstractMove::Ptr testMove(const NormalUserMove& m) const {
     return AbstractMove::Ptr(new EditAction(m));

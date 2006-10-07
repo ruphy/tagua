@@ -37,7 +37,9 @@ CURRENT RELEASE:
 
 FUTURE RELEASES:
 
+* Better support for variants in pgn games
 * Pgn game list
+* Fix examination variant upgrade
 * Game print support, through khtml?
 * Ability to define a variant in some script language (ruby or lua or ...)
 * Complete support for chess engines or variant specific AI.

@@ -12,6 +12,7 @@
 #define PGNPARSER_H
 
 #include <vector>
+#include <map>
 #include <iosfwd>
 #ifdef Q_CC_MSVC
   #pragma warning( push )
@@ -28,13 +29,12 @@ class QRegExp;
 
 class PGN {
 public:
-  class Move : public AlgebraicNotation {
+  class Move {
   public:
-    int number;
-    Move(int n, const QString& s, int& offset, int y)
-      : AlgebraicNotation(s, offset, y), number(n) { }
-    Move(int n, const QString& s, int y)
-      : AlgebraicNotation(s, y), number(n) { }
+    int m_number;
+    QString m_move;
+    Move(int n, const QString& s)
+      : m_number(n), m_move(s) { }
   };
   class BeginVariation {};
   class EndVariation {};
@@ -46,13 +46,14 @@ private:
   bool m_valid;
 
   static QRegExp number, begin_var, end_var, comment, comment2,
-                                wsPattern, tag, result, time, eol, move_tag;
+                   wsPattern, tag, result, time, eol, move_tag, move;
 
   static bool tryRegExp(QRegExp& re, const QString& str, int& offset);
-  bool parse(const QString& pgn, int ysize);
+  bool parse(const QString& pgn);
 public:
   std::vector<Entry> m_entries;
-  explicit PGN(const QString&, int ysize);
+  std::map<QString, QString> m_tags;
+  explicit PGN(const QString&);
   inline bool valid() const { return m_valid; }
   inline uint size() const { return m_entries.size(); }
   const Entry* operator[](int index) const { return &m_entries[index]; }

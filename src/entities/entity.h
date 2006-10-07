@@ -14,6 +14,8 @@
 #include "stdio.h"
 #include "usermove.h"
 
+class PGN;
+
 class Entity {
 protected:
   bool m_premove : 1;

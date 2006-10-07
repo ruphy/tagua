@@ -40,8 +40,9 @@ AlgebraicNotation::AlgebraicNotation(const QString& str, int ysize)
 , promotion(-1)
 , castling(NoCastling)
 , drop(false) {
-    int offset = 0;
-    init(str, offset, ysize);
+
+  int offset = 0;
+  init(str, offset, ysize);
 }
 
 AlgebraicNotation::AlgebraicNotation(const QString& str, int& offset, int ysize)
@@ -51,7 +52,8 @@ AlgebraicNotation::AlgebraicNotation(const QString& str, int& offset, int ysize)
 , promotion(-1)
 , castling(NoCastling)
 , drop(false) {
-    init(str, offset, ysize);
+
+  init(str, offset, ysize);
 }
 
 void AlgebraicNotation::init(const QString& str, int& offset, int ysize) {

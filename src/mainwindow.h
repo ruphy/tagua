@@ -68,13 +68,13 @@ Q_OBJECT
   UI& ui() { return m_ui; }
   void createTab(ChessTable*, const boost::shared_ptr<Controller>&,
                  const QString& label, int index = -1);
-// 
+//
   QDir m_iconDir;
   std::vector<EngineInfo*> m_engines;
 
   boost::shared_ptr<QConnect> quickConnectDialog;
   NewGame* newGameDialog;
-// 
+//
 //   QAction *mkAction(const QString& txt, QKeySequence shk, QObject *o,
 //                     const char *sl, QString name, QObject *par = NULL);
   void setupActions();
@@ -104,12 +104,12 @@ public slots:
   void icsConnect();
   void icsDisconnect();
 // //  void receivedCommand(const QString&);
-// 
+//
   void onEstablishConnection();
   void onHostLookup();
   void onConnectionError(int);
   void onHostFound();
-// 
+//
   void sendLogin();
   void sendBlankPassword();
   void prompt();
@@ -118,6 +118,7 @@ public slots:
 
   void editPosition();
   void setupGame(const GameInfo*, const PositionInfo&);
+  void setupPGN(const QString& s);
   void setupExaminedGame(const GameInfo*, const PositionInfo&);
   void setupObservedGame(const GameInfo*, const PositionInfo&);
   void newGame();
@@ -127,7 +128,7 @@ public slots:
   void flipView();
   void toggleConsole();
   void toggleMoveList();
- 
+
   void displayMessage(const QString& msg);
   void displayErrorMessage(ErrorCode);
   void flash();

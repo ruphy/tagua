@@ -17,6 +17,7 @@
 #include "kboard.h"
 #include "movefactory.h"
 #include "moveserializer.h"
+#include "algebraicnotation.h"
 
 template <typename V> class WrappedPiece;
 template <typename V> class WrappedMove;
@@ -227,6 +228,13 @@ public:
       return AbstractMove::Ptr(new WrappedMove<Variant>(res));
     else
       return AbstractMove::Ptr();
+  }
+
+  virtual AbstractMove::Ptr getMove(const QString& san) const {
+    AlgebraicNotation move(san, size().y); //FIXME
+    if(!move.valid())
+      return AbstractMove::Ptr();
+    return getMove(move);
   }
 
   virtual QString state() const {

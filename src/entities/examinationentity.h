@@ -32,7 +32,7 @@ public:
                     int, const boost::shared_ptr<ICSConnection>&, AgentGroup*);
 
   virtual QString save() const;
-  virtual void loadPGN(const QString&);
+  virtual void loadPGN(const PGN&);
 
   virtual AbstractMove::Ptr testMove(const NormalUserMove&) const;
   virtual AbstractMove::Ptr testMove(const DropUserMove&) const;

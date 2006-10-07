@@ -69,7 +69,7 @@ public:
   /**
     * Load the content of a PGN inside the game.
     */
-  virtual void loadPGN(const QString& pgn) = 0;
+  virtual void loadPGN(const PGN& pgn) = 0;
 
   virtual AbstractMove::Ptr testMove(const NormalUserMove& m) const = 0;
   virtual AbstractMove::Ptr testMove(const DropUserMove& m) const = 0;

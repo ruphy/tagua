@@ -99,7 +99,7 @@ void UI::pgnPaste() {
 }
 
 void UI::pgnPaste(const QString& pgn) {
-  controller()->loadPGN(pgn);
+  //controller()->loadPGN(pgn);
 }
 
 void UI::promoteToQueen() {

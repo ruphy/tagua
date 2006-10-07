@@ -280,7 +280,7 @@ EditGameController::Role EditGameController::setUserLiberties() {
   }
 }
 
-void EditGameController::loadPGN(const QString& pgn) {
+void EditGameController::loadPGN(const PGN& pgn) {
   end();
   m_view->resetClock();
   entity()->loadPGN(pgn);
@@ -317,6 +317,3 @@ shared_ptr<Controller> EditGameController::end() {
 
   return Controller::end();
 }
-
-
-

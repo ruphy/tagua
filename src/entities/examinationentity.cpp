@@ -32,9 +32,8 @@ QString ExaminationEntity::save() const {
   return m_game->pgn();
 }
 
-void ExaminationEntity::loadPGN(const QString& pgn) {
-  PGN p(pgn, m_game->position(0)->size().y);
-  m_game->load(p);
+void ExaminationEntity::loadPGN(const PGN& pgn) {
+  m_game->load(pgn);
 }
 
 AbstractMove::Ptr ExaminationEntity::testMove(const NormalUserMove&) const {

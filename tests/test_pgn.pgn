@@ -102,3 +102,28 @@ Qc7 25. Rg4 Qxd8 26. Reg5 Qd1+ 27. Kf2 Nxg4+ 28. Rxg4 g6 29. Bxf7+ Kxf7 30. Rf4+
 d7) b7 32. c4 d7 33. b5 c6 34. a6 c6 35. b3 d6 36. b3 e6 37. e3 d7 38. e4 d8
 39. e4 b7 40. f3 e8 41. b5 (41. e4)
 
+[Event "Edited CRAZYHOUSE game"]
+[Site "fucklandia"]
+[Date "2006.10.07"]
+[Round "-"]
+[White "-"]
+[Black "-"]
+[Result "*"]
+[Variant "crazyhouse"]
+[FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBKQBNR w kq - 0 1"]
+[SetUp "1"]
+
+{--------------
+r n b q k b n r
+p p p p p p p p
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+. . . . . . . .
+P P P P P P P P
+R N B K Q B N R
+white to play
+--------------}
+1. e4 d5 2. exd5 Qxd5 3. P@e3 P@e4 4. Nf3 exf3 5. gxf3 N@c4
+6.P@e4 Qxe4 7. fxe4 P@f3 8. Q@g4
+*

@@ -55,7 +55,7 @@ QString Controller::save() {
   return entity()->save();
 }
 
-void Controller::loadPGN(const QString& pgn) {
+void Controller::loadPGN(const PGN& pgn) {
   entity()->loadPGN(pgn);
 }
 

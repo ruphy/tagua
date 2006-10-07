@@ -20,6 +20,7 @@ QRegExp PGN::comment2("^;[^\\n]*\\n");
 QRegExp PGN::wsPattern("^\\s+");
 QRegExp PGN::tag("^\\[(\\S+)\\s+\"((?:[^\"]|\\\\\")*)\"\\]");
 QRegExp PGN::move_tag("^\\$(\\d+)");
+QRegExp PGN::move("^[^$\\{\\(\\[\\s][^\\{\\(\\[\\s]*");
 QRegExp PGN::result("^(?:\\*|1-0|0-1|1/2-1/2)");
 QRegExp PGN::time("^\\([\\d:.]*\\)");
 QRegExp PGN::eol("(?:[ \t]\r?\n\r?|\r?\n\r?[ \t]|\r?\n\r?)");
@@ -33,7 +34,7 @@ bool PGN::tryRegExp(QRegExp& re, const QString& str, int& offset) {
 }
 
 #define IGNORE(re) if (tryRegExp((re), pgn, offset)) continue;
-bool PGN::parse(const QString& pgn, int ysize) {
+bool PGN::parse(const QString& pgn) {
   int offset = 0;
 
   while (offset < pgn.length()) {
@@ -47,8 +48,14 @@ bool PGN::parse(const QString& pgn, int ysize) {
     }
 
     IGNORE(comment2);
-    IGNORE(tag);
     IGNORE(time);
+
+    // read comment
+    if (tag.indexIn(pgn, offset, QRegExp::CaretAtOffset) != -1) {
+      m_tags[tag.cap(1)] = tag.cap(2);
+      offset += tag.matchedLength();
+      continue;
+    }
 
     // read comment
     if (comment.indexIn(pgn, offset, QRegExp::CaretAtOffset) != -1) {
@@ -87,9 +94,9 @@ bool PGN::parse(const QString& pgn, int ysize) {
     }
 
     // read move
-    Move move(num, pgn, offset, ysize);
-    if (move.valid()) {
-      m_entries.push_back(move);
+    if (move.indexIn(pgn, offset, QRegExp::CaretAtOffset) != -1) {
+      m_entries.push_back(Move(num, move.cap(0)));
+      offset += move.matchedLength();
       continue;
     }
 
@@ -102,6 +109,6 @@ bool PGN::parse(const QString& pgn, int ysize) {
 }
 #undef IGNORE
 
-PGN::PGN(const QString& str, int ysize) {
-  m_valid = parse(str, ysize);
+PGN::PGN(const QString& str) {
+  m_valid = parse(str);
 }

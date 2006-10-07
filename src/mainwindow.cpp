@@ -40,6 +40,7 @@
 #include "qconnect.h"
 #include "global.h"
 #include "flash.h"
+#include "pgnparser.h"
 #include "pref_highlight.h"
 #include "pref_clock.h"
 #include "pref_preferences.h"
@@ -57,7 +58,7 @@ MainWindow::MainWindow()
   setObjectName("kboard_main");
   m_main = new KTabWidget(this);
   setCentralWidget(m_main);
-  
+
   m_movelist_stack = new QStackedWidget;
 
   connect(m_main, SIGNAL(currentChanged(int)),
@@ -113,16 +114,16 @@ void MainWindow::setupActions() {
   KAction* temp;
 
   KStdAction::openNew(this, SLOT(newGame()), actionCollection(), "new");
-  KStdAction::open(this, SLOT(loadGame()), actionCollection(), "load"); 
+  KStdAction::open(this, SLOT(loadGame()), actionCollection(), "load");
   KStdAction::quit(this, SLOT(quit()), actionCollection(), "quit");
 
   m_promote_group = new QActionGroup(this);
-  
+
   m_promote_queen = addPromotionAction("promoteQueen", i18n("Promote to &queen"), SLOT(promoteToQueen()));
   m_promote_rook = addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
-  
+
   temp = new KAction(KIcon("back"), i18n("&Back"), actionCollection(), "back");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(back()));
   temp = new KAction(KIcon("forward"), i18n("&Forward"), actionCollection(), "forward");
@@ -134,10 +135,10 @@ void MainWindow::setupActions() {
 
   temp = new KAction(KIcon("connect_creating"), i18n("&Connect"), actionCollection(), "connect");
   connect(temp, SIGNAL(triggered(bool)), this, SLOT(icsConnect()));
-  
+
   temp = new KAction(KIcon("connect_no"), i18n("&Disconnect"), actionCollection(), "disconnect");
   connect(temp, SIGNAL(triggered(bool)), this, SLOT(icsDisconnect()));
-  
+
   KStdAction::undo(&ui(), SLOT(undo()), actionCollection(), "undo");
   KStdAction::redo(&ui(), SLOT(redo()), actionCollection(), "redo");
   KStdAction::copy(&ui(), SLOT(pgnCopy()), actionCollection(), "pgnCopy");
@@ -145,16 +146,16 @@ void MainWindow::setupActions() {
 
   temp = new KAction(KIcon("edit"), i18n("&Edit position"), actionCollection(), "editPosition");
   connect(temp, SIGNAL(triggered(bool)), this, SLOT(editPosition()));
-  
+
   temp = new KAction(KIcon("editdelete"), i18n("&Clear board"), actionCollection(), "clearBoard");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(clearBoard())); 
+  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(clearBoard()));
 
   temp = new KAction(KIcon("contents"), i18n("&Set starting position"), actionCollection(), "setStartingPosition");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(setStartingPosition()));
 
   temp = new KAction(i18n("&Copy position"), actionCollection(), "copyPosition");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(copyPosition()));
-  
+
   temp = new KAction(i18n("&Paste position"), actionCollection(), "pastePosition");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(pastePosition()));
 
@@ -163,10 +164,10 @@ void MainWindow::setupActions() {
   temp = new KAction(KIcon("openterm"), i18n("Toggle &console"), actionCollection(), "toggleConsole");
   connect(temp, SIGNAL(triggered(bool)), this, SLOT(toggleConsole()));
   temp = new KAction(KIcon("view_text"), i18n("Toggle &move list"), actionCollection(), "toggleMoveList");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(toggleMoveList())); 
-  
+  connect(temp, SIGNAL(triggered(bool)), this, SLOT(toggleMoveList()));
+
   temp = new KAction(KIcon("configure"), i18n("&Configure KBoard..."), actionCollection(), "configure");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(preferences())); 
+  connect(temp, SIGNAL(triggered(bool)), this, SLOT(preferences()));
 }
 
 void MainWindow::updatePromotionType() {
@@ -341,6 +342,29 @@ void MainWindow::setupObservedGame(const GameInfo* g, const PositionInfo& style1
   }
 }
 
+void MainWindow::setupPGN(const QString& s) {
+  PGN pgn(s);
+
+  std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
+  VariantInfo *variant;
+
+  if(var == pgn.m_tags.end())
+    variant = Variant::variant("Chess");
+  else if(!(variant = Variant::variant(var->second))) {
+    std::cout << " --> MainWindow::setupPGN: Error, no such variant " << var->second << std::endl;
+    return;
+  }
+
+  shared_ptr<EditGameController> controller(new EditGameController(
+                                              table(), variant));
+  ui().setController(controller);
+  controller->loadPGN(pgn);
+
+//   table()->setPlayers(gameInfo->white(), gameInfo->black());
+//   m_main->setTabText(m_main->currentIndex(),
+//     QString("FICS Game - %1 vs %2").arg(style12.whitePlayer)
+//                                     .arg(style12.blackPlayer));
+}
 
 bool MainWindow::openFile(const QString& filename) {
   QFileInfo info(filename);
@@ -367,7 +391,8 @@ bool MainWindow::openFile(const QString& filename) {
   codec = QTextCodec::codecForLocale();
   stream.setCodec(codec);
 
-  ui().pgnPaste(stream.readAll());
+  setupPGN(stream.readAll());
+  //ui().pgnPaste(stream.readAll());
   return true;
 }
 
@@ -475,7 +500,7 @@ void MainWindow::testConnect() {
     QString host = (s_ics["icsHost"] | "freechess.org");
     quint16 port = (s_ics["icsPort"] | 5000);
     createConnection(username, password, host, port, QString(), QString() );
-  } 
+  }
   else icsConnect();
 }
 

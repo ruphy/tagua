@@ -31,9 +31,8 @@ QString GameEntity::save() const {
   return m_game->pgn();
 }
 
-void GameEntity::loadPGN(const QString& pgn) {
-  PGN p(pgn, m_game->position(0)->size().y);
-  m_game->load(p);
+void GameEntity::loadPGN(const PGN& pgn) {
+  m_game->load(pgn);
 }
 
 AbstractPosition::Ptr GameEntity::doMove(AbstractMove::Ptr move) const {

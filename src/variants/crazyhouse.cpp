@@ -161,6 +161,13 @@ CrazyhouseMove CrazyhousePosition::getMove(const AlgebraicNotation& san, bool& o
     return Base::getMove(san, ok);
 }
 
+void CrazyhousePosition::dump() const {
+  Base::dump();
+
+  for(Pool::const_iterator i = m_pool.begin(); i != m_pool.end(); ++i)
+    std::cout << i->first.color() << "." << i->first.type() << " " << i->second <<std::endl;
+}
+
 bool CrazyhousePosition::operator==(const CrazyhousePosition& pos) const {
   return pool() == pos.pool() && Base::operator==(pos);
 }

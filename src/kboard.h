@@ -67,7 +67,7 @@ public:
   virtual bool equals(AbstractPiece::Ptr other) const = 0;
 
   /**
-    * Piece comapre. Return true if less than other.
+    * Piece compare. Return true if less than other.
     */
   virtual bool less(AbstractPiece::Ptr other) const = 0;
 
@@ -260,6 +260,11 @@ public:
     * Return a move from an algebraic notation, or a null pointer.
     */
   virtual AbstractMove::Ptr getMove(const class AlgebraicNotation&) const = 0;
+
+  /**
+    * Return a move from an algebraic notation, or a null pointer.
+    */
+  virtual AbstractMove::Ptr getMove(const QString&) const = 0;
 
   /**
     * Return a string representing the current state of the position.

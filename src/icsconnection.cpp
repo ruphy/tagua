@@ -313,7 +313,7 @@ void ICSConnection::process(QString str) {
           p->setPool(m_move_list_pool_info->m_pool);
         }
 
-        PGN pgn(m_move_list, p->size().y);
+        PGN pgn(m_move_list);
         if (!pgn.valid())
           std::cout << "parse error on move list" << std::endl;
         else
