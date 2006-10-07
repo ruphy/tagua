@@ -1,7 +1,7 @@
 SplineFontDB: 1.0
-FontName: Untitled1
-FullName: Untitled1
-FamilyName: Untitled1
+FontName: KBoard_Shogi
+FullName: KBoard_Shogi
+FamilyName: KBoard_Shogi
 Weight: Medium
 Copyright: Created by Io with FontForge 1.0 (http://fontforge.sf.net)
 Comments: 2006-10-6: Created.
@@ -11,13 +11,20 @@ UnderlinePosition: -100
 UnderlineWidth: 50
 Ascent: 816
 Descent: 208
-NeedsXUIDChange: 1
-XUID: [1021 306 260876167 7676014]
+XUID: [1021 306 260876167 15891889]
+FSType: 8
+CreationTime: 1160099864
+ModificationTime: 1160235398
+PfmFamily: 17
+TTFWeight: 500
+TTFWidth: 5
+LineGap: 92
+VLineGap: 0
 OS2TypoAscent: 0
 OS2TypoAOffset: 1
 OS2TypoDescent: 0
 OS2TypoDOffset: 1
-OS2TypoLinegap: 0
+OS2TypoLinegap: 92
 OS2WinAscent: 0
 OS2WinAOffset: 1
 OS2WinDescent: 0
@@ -27,13 +34,16 @@ HheadAOffset: 1
 HheadDescent: 0
 HheadDOffset: 1
 OS2Vendor: 'PfEd'
+LangName: 1033 
 Encoding: UnicodeBmp
 UnicodeInterp: none
+NameList: Adobe Glyph List
 DisplaySize: -48
 AntiAlias: 1
 FitToEm: 1
 WinInfo: 0 17 10
 OnlyBitmaps: 1
+TeXData: 1 0 0 346030 173015 115343 0 1048576 115343 783286 444596 497025 792723 393216 433062 380633 303038 157286 324010 404750 52429 2506097 1059062 262144
 BeginChars: 65536 16
 StartChar: p
 Encoding: 112 112 0
@@ -1217,7 +1227,7 @@ EndChar
 StartChar: plus
 Encoding: 43 43 14
 Width: 1024
-Flags: WO
+Flags: W
 TeX: 112 0 0 0
 Fore
 0 848 m 1
@@ -1231,7 +1241,6 @@ StartChar: comma
 Encoding: 44 44 15
 Width: 1024
 VWidth: 16000
-Flags: HO
 TeX: 99 0 0 0
 Fore
 335.872 695.168 m 0

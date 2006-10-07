@@ -1,10 +1,10 @@
 import("../../Pieces/common.lua")
 
 options = OptList {
-    ColorOpt("square", "Square color", "white"),
+    ColorOpt("square", "Square color", "#EBD6A0"),
     BoolOpt("useborder", "Use border", true, OptList {
-        ColorOpt("border", "Border color", "black"),
-        IntOpt("bwidth", "Border width", 2, 1, 10)
+        ColorOpt("border", "Border color", "#9C8755"),
+        IntOpt("bwidth", "Border width", 3, 1, 10)
     })
 }
 
