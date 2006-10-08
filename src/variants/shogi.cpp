@@ -36,9 +36,9 @@ public:
   , m_promoted(false) { }
   ShogiPiece(ShogiPiece::Color color, ShogiPiece::Type type, bool promoted = false);
   ShogiPiece(const ShogiPiece& other);
-  
+
   void promote() { m_promoted = true; }
-  
+
   bool operator<(const ShogiPiece& p) const {
     if (m_promoted == p.m_promoted)
       if (m_color == p.m_color)
@@ -48,30 +48,30 @@ public:
     else
       return m_promoted < p.m_promoted;
   }
-  
+
   QString name() const;
   static QString typeName(ShogiPiece::Type t);
   bool valid() const { return m_color != INVALID_COLOR && m_type != INVALID_TYPE; }
   operator bool() const { return valid(); }
   bool operator!() const { return !valid(); }
-  
+
   bool operator==(const ShogiPiece& p) const {
     return m_promoted == p.m_promoted &&
            m_color == p.m_color &&
            m_type == p.m_type;
   }
-  
+
   bool operator!=(const ShogiPiece& p) const {
     return !(operator==(p));
   }
-  
+
   static Type getType(const QString& t);
   static QString typeSymbol(ShogiPiece::Type t);
-  
+
   bool canMove(const class ShogiPosition&, const Point&, const Point&) const;
   Color color() const { return m_color; }
   Type type() const { return m_type; }
-  
+
   static Color oppositeColor(Color c) { return c == WHITE ? BLACK : WHITE; }
   Point direction() const { return Point(0, m_color == WHITE ? 1 : -1); }
 };
@@ -137,12 +137,12 @@ public:
   ShogiMove();
   ShogiMove(const Point& from, const Point& to, bool promote);
   ShogiMove(const ShogiPiece& piece, const Point& to);
-  
+
   static ShogiMove createDropMove(const ShogiPiece& piece, const Point& to);
   QString toString(int) const;
-  
+
   bool operator==(const ShogiMove& other) const;
-  
+
   const ShogiPiece& dropped() const { return m_dropped; }
   bool promote() const { return m_promote; }
   bool valid() const { return to.valid(); }
@@ -201,12 +201,12 @@ public:
   ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >& opts);
   virtual ShogiPosition* clone() const { return new ShogiPosition(*this); }
   virtual ~ShogiPosition() { }
-  
+
   virtual void setup();
-  
+
   bool testMove(Move&) const;
   bool pseudolegal(Move& m) const;
-   
+
   virtual void addToPool(const Piece& p, int n) { m_pool[p] += n; }
   virtual void removeFromPool(const Piece& p, int n) {
     if((m_pool[p] -= n) <= 0)
@@ -214,30 +214,31 @@ public:
   }
   Pool& pool() { return m_pool; }
   const Pool& pool() const { return m_pool; }
-  
+
   const ShogiPiece* get(const Point& p) const;
-  ShogiPiece* get(const Point& p); 
+  ShogiPiece* get(const Point& p);
   void set(const Point& p, Piece* piece);
+
   ShogiPiece operator[](const Point& p) const { return m_board[p]; }
-   
+
   Piece::Color turn() const { return m_turn; }
   void setTurn(Piece::Color turn) { m_turn = turn; }
   Piece::Color previousTurn() const { return Piece::oppositeColor(m_turn); }
   void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
-  
+
   void move(const ShogiMove& m);
-  
+
   void fromFEN(const QString&, bool& ok) { ok = false; }
   QString fen(int, int) const { return ""; }
   bool operator==(const ShogiPosition& p) const;
-  
+
   static Move getVerboseMove(Piece::Color turn, const VerboseNotation& m);
   Move getMove(const AlgebraicNotation&, bool& ok) const;
   boost::shared_ptr<ShogiPiece> moveHint(const ShogiMove& m) const;
-  
+
   Point size() const { return Point(9,9); }
   void dump() const { }
-  
+
   bool promotionZone(Piece::Color color, const Point& p);
   PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
 };
@@ -248,24 +249,25 @@ ShogiPosition::ShogiPosition()
 
 ShogiPosition::ShogiPosition(const ShogiPosition& other)
 : m_turn(other.m_turn)
-, m_board(other.m_board) { }
+, m_board(other.m_board)
+, m_pool(other.m_pool) { }
 
 ShogiPosition::ShogiPosition(Piece::Color turn, bool, bool, bool, bool, const Point&)
-: m_turn(turn) 
+: m_turn(turn)
 , m_board(9, 9) { }
 
 ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
 : m_turn(ShogiPiece::BLACK)
 , m_board(9,9) { }
 
-bool ShogiPiece::canMove(const ShogiPosition& pos, 
+bool ShogiPiece::canMove(const ShogiPosition& pos,
                          const Point& from, const Point& to) const {
   if (!from.valid()) return false;
   if (!to.valid()) return false;
   if (from == to) return false;
   if (pos[to].color() == m_color) return false;
   Point delta = to - from;
-  
+
   if (!m_promoted) {
     switch (m_type) {
     case KING:
@@ -366,7 +368,7 @@ boost::shared_ptr<ShogiPiece> ShogiPosition::moveHint(const ShogiMove& m) const 
 }
 
 bool ShogiPosition::promotionZone(Piece::Color color, const Point& p) {
-  return color == ShogiPiece::WHITE ? p.y >= 6 : p.y <= 2; 
+  return color == ShogiPiece::WHITE ? p.y >= 6 : p.y <= 2;
 }
 
 #define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(ShogiPiece::color, ShogiPiece::type)
@@ -415,23 +417,29 @@ bool ShogiPosition::pseudolegal(Move& m) const {
     if (dropped.type() == Piece::PAWN) {
       if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
       for (int i = 0; i < 9; i++)
-        if (ShogiPiece other = m_board[Point(m.to.x, i)]) 
+        if (ShogiPiece other = m_board[Point(m.to.x, i)])
           if (other.color() == m_turn && other.type() == Piece::PAWN) return false;
     }
     else if (dropped.type() == Piece::LANCE)
       if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
-    
+
     return true;
   }
   else {
-    const Piece& p = m_board[m.from]; 
+    const Piece& p = m_board[m.from];
     return p.canMove(*this, m.from, m.to);
   }
 }
 
 void ShogiPosition::move(const ShogiMove& m) {
-  if (m.dropped())
+  if (m.dropped()) {
+    Q_ASSERT(m_pool.count(m.dropped()));
+    Q_ASSERT(!m_board[m.to]);
+
     m_board[m.to] = m.dropped();
+    if(!--m_pool[m.dropped()])
+      m_pool.erase(m.dropped());
+  }
   else {
     if (Piece captured = m_board[m.to]) {
       std::cout << "adding to pool" << std::endl;
@@ -441,13 +449,13 @@ void ShogiPosition::move(const ShogiMove& m) {
     m_board[m.to] = m_board[m.from];
     m_board[m.from] = Piece();
   }
-  
+
   if (promotionZone(m_turn, m.to) && m.promote()) {
     Piece::Type type = m_board[m.to].type();
     if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
       m_board[m.to].promote();
   }
-  
+
   switchTurn();
 }
 
@@ -513,7 +521,7 @@ public:
   static void forallPieces(PieceFunction& f);
   static QStringList borderCoords(){
     return QStringList() << "i" << "h" << "g" << "f" << "e" << "d" << "c" << "b" << "a"
-                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1"; 
+                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1";
   }
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
