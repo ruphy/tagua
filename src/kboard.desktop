@@ -7,6 +7,7 @@ Type=Application
 DocPath=kboard/kboard.html
 Comment=A KDE chessboard
 Comment[bg]=Шах за KDE
+Comment[de]=Ein KDE Schachbrett
 Comment[es]=Un tablero de ajedrez para KDE
 Comment[ga]=Clár fichille KDE
 Comment[nl]=Een KDE-schaakbord
