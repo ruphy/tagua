@@ -119,9 +119,9 @@ void ChessTable::layout(bool force_reload) {
     m_background->setSize(size());
 
   int b = m_board->marginSize();
-  int sq_size = std::max(0, std::min(int((width()-3*b)/(m_board->gridSize().x+2.2)),
-                        (m_board->gridSize().y == 0 ? 100000 :
-                        (height()-80-3*b)/m_board->gridSize().y)) );
+  Point gs = m_board->gridSize();
+  int sq_size = std::max(0, std::min(int((width()-3*b)/(gs.x+2.2)),
+                        (gs.y == 0 ? 100000 : (height()-80-3*b)/gs.y)) );
   m_board->moveTo(b,80+2*b);
   m_board->onResize( sq_size, force_reload);
 
@@ -131,16 +131,16 @@ void ChessTable::layout(bool force_reload) {
   int x = !!m_board->flipped();
   m_pools[x]->m_flipped = false;
   m_pools[x]->setGridWidth(3);
-  m_pools[x]->moveTo(sq_size*8+2*b+b/2, 80+b+b/2);
+  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, 80+b+b/2);
   m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
 
   x = !x;
   m_pools[x]->m_flipped = true;
   m_pools[x]->setGridWidth(3);
-  m_pools[x]->moveTo(sq_size*8+2*b+b/2, 80+sq_size*8+b*2+b/2);
+  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, 80+sq_size*gs.y+b*2+b/2);
   m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
 
-  m_info->moveTo(sq_size*8+4*b, 80+sq_size*4+b+b/2);
+  m_info->moveTo(sq_size*gs.x+4*b, 80+sq_size*gs.y/2+b+b/2);
 }
 
 void ChessTable::resizeEvent(QResizeEvent* /*e*/) {

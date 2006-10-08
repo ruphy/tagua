@@ -165,7 +165,7 @@ void GraphicalInfo::updatePool(AbstractPosition::PoolPtr pool) {
     }
     else if (oldit == curr->end() || (newit != pool->end()
             && newit->first->less(oldit->first) )) {
-      printf("adding %d, %d\n", newit->first->color(), newit->first->type());
+      printf("adding %d, %d - %d\n", newit->first->color(), newit->first->type(), newit->second);
       addToPool(newit->first, newit->second);
       ++newit;
     }
@@ -184,11 +184,12 @@ void GraphicalInfo::updatePool(AbstractPosition::PoolPtr pool) {
 void GraphicalInfo::addToPool(AbstractPiece::Ptr piece, int n) {
   PiecePool *pool = m_view->pool(!piece->color());
   QPixmap px = pool->m_loader(piece->name());
-
+  
   for(int i=0;i<n;i++) {
     SpritePtr s = SpritePtr( new PieceSprite( px, pool->piecesGroup(), QPoint() ) );
     pool->addPiece(Element(piece, s));
   }
+  
   m_pos->addToPool(piece, n);
 }
 
