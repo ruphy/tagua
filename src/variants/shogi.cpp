@@ -38,6 +38,7 @@ public:
   ShogiPiece(const ShogiPiece& other);
 
   void promote() { m_promoted = true; }
+  bool promoted() { return m_promoted; }
 
   bool operator<(const ShogiPiece& p) const {
     if (m_promoted == p.m_promoted)
@@ -121,8 +122,27 @@ ShogiPiece::Type ShogiPiece::getType(const QString&) {
   return KING; // FIXME
 }
 
-QString ShogiPiece::typeSymbol(ShogiPiece::Type) {
-  return "P"; // FIXME
+QString ShogiPiece::typeSymbol(ShogiPiece::Type t) {
+  switch (t) {
+  case KING:
+    return "K";
+  case GOLD:
+    return "G";
+  case SILVER:
+    return "S";
+  case KNIGHT:
+    return "N";
+  case LANCE:
+    return "L";
+  case ROOK:
+    return "R";
+  case BISHOP:
+    return "B";
+  case PAWN:
+    return "p";
+  default:
+    return "?";
+  }
 }
 
 // ------------------------------
@@ -130,6 +150,7 @@ QString ShogiPiece::typeSymbol(ShogiPiece::Type) {
 class ShogiMove {
   ShogiPiece m_dropped;
   bool m_promote;
+  template<typename T> friend class MoveSerializer;
 public:
   Point from;
   Point to;
@@ -160,7 +181,7 @@ ShogiMove::ShogiMove(const Point& from, const Point& to, bool promote)
 
 ShogiMove::ShogiMove(const ShogiPiece& piece, const Point& to)
 : m_dropped(piece)
-, m_promote(true)
+, m_promote(false)
 , from(Point::invalid())
 , to(to) { }
 
@@ -194,6 +215,7 @@ private:
   Grid<Piece> m_board;
   Pool m_pool;
 public:
+  template<typename T> friend class MoveSerializer;
   ShogiPosition();
   ShogiPosition(const ShogiPosition&);
   ShogiPosition(Piece::Color turn, bool wk, bool wq,
@@ -239,7 +261,7 @@ public:
   Point size() const { return Point(9,9); }
   void dump() const { }
 
-  bool promotionZone(Piece::Color color, const Point& p);
+  static bool promotionZone(Piece::Color color, const Point& p);
   PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
 };
 
@@ -441,10 +463,8 @@ void ShogiPosition::move(const ShogiMove& m) {
       m_pool.erase(m.dropped());
   }
   else {
-    if (Piece captured = m_board[m.to]) {
-      std::cout << "adding to pool" << std::endl;
-      addToPool(Piece(captured.color(), captured.type(), false), 1);
-    }
+    if (Piece captured = m_board[m.to])
+      addToPool(Piece(Piece::oppositeColor(captured.color()), captured.type(), false), 1);
 
     m_board[m.to] = m_board[m.from];
     m_board[m.from] = Piece();
@@ -461,9 +481,48 @@ void ShogiPosition::move(const ShogiMove& m) {
 
 template <>
 class MoveSerializer<ShogiPosition> {
+  const ShogiMove&     m_move;
+  const ShogiPosition& m_ref;
 public:
-  MoveSerializer(const ShogiMove&, const ShogiPosition&) { }
-  QString SAN() const { return ""; }
+  MoveSerializer(const ShogiMove& m, const ShogiPosition& r)
+    : m_move(m), m_ref(r) { }
+  QString SAN() const {
+    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    bool ambiguous = false;
+    if(!m_move.m_dropped)
+    for(Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
+      if(i==m_move.from || m_ref.m_board[i] != p)
+        continue;
+      ShogiMove mv(i, m_move.to, false);
+      if(m_ref.testMove(mv)) {
+        ambiguous = true;
+        break;
+      }
+    }
+    QString retv;
+    if(p.promoted())
+      retv += "+";
+    retv += ShogiPiece::typeSymbol(p.type());
+    if(ambiguous) {
+      retv += QString::number(m_move.from.y+1);
+      retv += QString((8-m_move.from.x)+'a');
+    }
+    if(m_move.m_dropped)
+      retv += "*";
+    else if(m_ref.m_board[m_move.to])
+      retv += "x";
+    else
+      retv += "-";
+    retv += QString::number(m_move.to.y+1);
+    retv += QString((8-m_move.to.x)+'a');
+    if(ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
+      if(m_move.m_promote)
+        retv += "+";
+      else
+        retv += "=";
+    }
+    return retv;
+  }
 };
 
 class ShogiAnimator : protected CrazyhouseAnimator {
