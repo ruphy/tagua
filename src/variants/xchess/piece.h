@@ -25,6 +25,7 @@ class PieceSprite;
 class ChessPiece {
 public:
   typedef PieceType Type;
+  typedef Type PromotionType;
   typedef PieceColor Color;
 protected:
   typedef ChessMove Move;

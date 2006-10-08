@@ -44,7 +44,7 @@ void Variant::initialize() {
   register_variant<Connect4Variant>();
   register_variant<ChainReactionVariant>();
   register_variant<DummyVariant>();
-//  register_variant<ShogiVariant>();
+  register_variant<ShogiVariant>();
 
   s_initialized = true;
 }

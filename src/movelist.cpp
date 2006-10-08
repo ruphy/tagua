@@ -399,10 +399,6 @@ void Entry::doUpdate () {
 //BEGIN Settings---------------------------------------------------------------
 
 void Settings::load() {
-//  icons = data_dir() + "/icons/";
-
-//  settings.qSettings()->beginGroup("MoveList");
-
   ::Settings s = settings.group("MoveList");
 
   (s["AnimationsEnabled"] |= true) >> anim_enabled;

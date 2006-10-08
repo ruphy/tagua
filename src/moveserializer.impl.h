@@ -26,8 +26,8 @@ template <typename Pos>
 QString MoveSerializerBase<Pos>::SAN() const {
   Q_ASSERT(m_move.valid());
 
-  const Piece* piece = m_ref[m_move.from];
-  const Piece* captured = m_ref[m_move.to];
+  const Piece* piece = m_ref.get(m_move.from);
+  const Piece* captured = m_ref.get(m_move.to);
 
   if (!piece) {
     m_ref.dump();

@@ -32,4 +32,4 @@ theme.selection = fromPixmap("square_select.png")
 
 name = "Shogi"
 description = "Shogi-like squares"
-variants = { "Chess" }
+variants = { "Shogi[default]", "Chess" }

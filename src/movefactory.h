@@ -19,7 +19,7 @@ template <typename Variant>
 struct MoveFactory {
   static typename Variant::Move createNormalMove(const NormalUserMove& move) {
     return typename Variant::Move(move.from, move.to,
-            static_cast<typename Variant::Piece::Type>(move.promotionType));
+            static_cast<typename Variant::Piece::PromotionType>(move.promotionType));
   }
   static typename Variant::Move createDropMove(const DropUserMove& move) {
     WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(move.m_piece.get());

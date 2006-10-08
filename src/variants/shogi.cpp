@@ -1,10 +1,10 @@
-#if 0
 #include "shogi.h"
 #include "xchess/animator.h"
 #include "xchess/piece.h"
 #include "xchess/move.h"
 #include "highlevel.h"
 #include "moveserializer.impl.h"
+#include "crazyhouse_p.h"
 
 class ShogiPiece {
 public:
@@ -20,7 +20,7 @@ public:
     INVALID_TYPE
   };
   typedef ChessPiece::Color Color;
-  
+  typedef bool PromotionType;
 private:
   Color m_color;
   Type m_type;
@@ -49,13 +49,13 @@ public:
   operator bool() const { return valid(); }
   bool operator!() const { return !valid(); }
   
-  bool operator==(const ShogiPiece& p) {
+  bool operator==(const ShogiPiece& p) const {
     return m_promoted == p.m_promoted &&
            m_color == p.m_color &&
            m_type == p.m_type;
   }
   
-  bool operator!=(const ShogiPiece& p) {
+  bool operator!=(const ShogiPiece& p) const {
     return !(operator==(p));
   }
   
@@ -110,38 +110,176 @@ QString ShogiPiece::typeName(ShogiPiece::Type t) {
   }
 }
 
-ShogiPiece::Type ShogiPiece::getType(const QString& t) {
+ShogiPiece::Type ShogiPiece::getType(const QString&) {
   return KING; // FIXME
 }
 
-QString ShogiPiece::typeSymbol(ShogiPiece::Type t) {
+QString ShogiPiece::typeSymbol(ShogiPiece::Type) {
   return "P"; // FIXME
 }
 
 // ------------------------------
 
-class ShogiPosition : public Position<ChessMove, ShogiPiece, Grid<ShogiPiece> > {
-  typedef Position<ChessMove, ShogiPiece, Grid<ShogiPiece> > BasePosition;
+class ShogiMove {
+  ShogiPiece m_dropped;
+  bool m_promote;
+public:
+  Point from;
+  Point to;
+
+  ShogiMove();
+  ShogiMove(const Point& from, const Point& to, bool promote);
+  ShogiMove(const ShogiPiece& piece, const Point& to);
+  
+  static ShogiMove createDropMove(const ShogiPiece& piece, const Point& to);
+  QString toString(int) const;
+  
+  bool operator==(const ShogiMove& other) const;
+  
+  const ShogiPiece& dropped() const { return m_dropped; }
+  bool promote() const { return m_promote; }
+  bool valid() const { return to.valid(); }
+};
+
+ShogiMove::ShogiMove()
+: m_promote(false)
+, from(Point::invalid())
+, to(Point::invalid()) { }
+
+ShogiMove::ShogiMove(const Point& from, const Point& to, bool promote)
+: m_promote(promote)
+, from(from)
+, to(to) { }
+
+ShogiMove::ShogiMove(const ShogiPiece& piece, const Point& to)
+: m_dropped(piece)
+, m_promote(false)
+, from(Point::invalid())
+, to(to) { }
+
+ShogiMove ShogiMove::createDropMove(const ShogiPiece& piece, const Point& to) {
+  return ShogiMove(piece, to);
+}
+
+QString ShogiMove::toString(int) const {
+  return "";
+}
+
+bool ShogiMove::operator==(const ShogiMove& other) const {
+  if (m_dropped)
+    return m_dropped == other.m_dropped
+        && to == other.to;
+  else
+    return m_promote == other.m_promote
+        && to == other.to
+        && from == other.from;
+}
+
+// ------------------------------
+
+class ShogiPosition {
 public:
   typedef ShogiPiece Piece;
+  typedef ShogiMove Move;
+  typedef std::map<ShogiPiece, int> Pool;
+private:
+  Piece::Color m_turn;
+  Grid<Piece> m_board;
+  Pool m_pool;
+public:
   ShogiPosition();
-  ShogiPosition(const BasePosition&);
+  ShogiPosition(const ShogiPosition&);
   ShogiPosition(Piece::Color turn, bool wk, bool wq,
                                           bool bk, bool bq, const Point& ep);
+  ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >& opts);
   virtual ShogiPosition* clone() const { return new ShogiPosition(*this); }
+  virtual ~ShogiPosition() { }
   
   virtual void setup();
+  
+  bool testMove(Move&) const { return true; }
+   
+  virtual void addToPool(const Piece& p, int n) { m_pool[p] += n; }
+  virtual void removeFromPool(const Piece& p, int n) {
+    if((m_pool[p] -= n) <= 0)
+      m_pool.erase(p);
+  }
+  Pool& pool() { return m_pool; }
+  const Pool& pool() const { return m_pool; }
+  
+  const ShogiPiece* get(const Point& p) const;
+  ShogiPiece* get(const Point& p); 
+  void set(const Point& p, Piece* piece);
+   
+  Piece::Color turn() const { return m_turn; }
+  void setTurn(Piece::Color turn) { m_turn = turn; }
+  Piece::Color previousTurn() const { return Piece::oppositeColor(m_turn); }
+  void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
+  
+  void move(const ShogiMove& m);
+  
+  void fromFEN(const QString&, bool& ok) { ok = false; }
+  QString fen(int, int) const { return ""; }
+  bool operator==(const ShogiPosition& p) const;
+  
+  static Move getVerboseMove(Piece::Color turn, const VerboseNotation& m);
+  Move getMove(const AlgebraicNotation&, bool& ok) const;
+  boost::shared_ptr<ShogiPiece> moveHint(const ShogiMove& m) const;
+  
+  Point size() const { return Point(9,9); }
+  void dump() const { }
 };
 
 ShogiPosition::ShogiPosition()
-: BasePosition(9, 9) { }
+: m_turn(WHITE)
+, m_board(9,9) { }
 
-ShogiPosition::ShogiPosition(const BasePosition& other)
-: BasePosition(other) { }
+ShogiPosition::ShogiPosition(const ShogiPosition& other)
+: m_turn(other.m_turn)
+, m_board(other.m_board) { }
 
-ShogiPosition::ShogiPosition(Piece::Color turn, bool wk, bool wq,
-                               bool bk, bool bq, const Point& ep)
-: BasePosition(turn, wk, wq, bk, bq, ep) { }
+ShogiPosition::ShogiPosition(Piece::Color turn, bool, bool, bool, bool, const Point&)
+: m_turn(turn) 
+, m_board(9, 9) { }
+
+ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
+: m_turn(WHITE)
+, m_board(9,9) { }
+
+ShogiPosition::Move ShogiPosition::getVerboseMove(Piece::Color, const VerboseNotation&) {
+  return Move();
+}
+
+ShogiPosition::Move ShogiPosition::getMove(const AlgebraicNotation&, bool& ok) const {
+  ok = false;
+  return Move();
+}
+
+const ShogiPiece* ShogiPosition::get(const Point& p) const {
+  return m_board.valid(p) && m_board[p] ? &m_board[p] : 0;
+}
+
+ShogiPiece* ShogiPosition::get(const Point& p) {
+  return m_board.valid(p) && m_board[p] ? &m_board[p] : 0;
+}
+
+void ShogiPosition::set(const Point& p, ShogiPiece* piece) {
+  if (!m_board.valid(p)) return;
+  if (piece)
+    m_board[p] = *piece;
+  else
+    m_board[p] = Piece();
+}
+
+bool ShogiPosition::operator==(const ShogiPosition& p) const {
+  return m_turn == p.m_turn
+      && m_board == p.m_board;
+}
+
+boost::shared_ptr<ShogiPiece> ShogiPosition::moveHint(const ShogiMove& m) const {
+  if (m.dropped()) return boost::shared_ptr<ShogiPiece>(new ShogiPiece(m.dropped()));
+  else return boost::shared_ptr<ShogiPiece>();
+}
 
 #define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(color, ShogiPiece::type)
 void ShogiPosition::setup() {
@@ -159,6 +297,8 @@ void ShogiPosition::setup() {
   SET_PIECE(6,0, BLACK, SILVER);
   SET_PIECE(7,0, BLACK, KNIGHT);
   SET_PIECE(8,0, BLACK, LANCE);
+  SET_PIECE(1,1, BLACK, ROOK);
+  SET_PIECE(7,1, BLACK, BISHOP);
 
   SET_PIECE(0,8, WHITE, ROOK);
   SET_PIECE(1,8, WHITE, KNIGHT);
@@ -169,15 +309,64 @@ void ShogiPosition::setup() {
   SET_PIECE(6,8, WHITE, GOLD);
   SET_PIECE(7,8, WHITE, KNIGHT);
   SET_PIECE(8,8, WHITE, LANCE);
+  SET_PIECE(1,7, WHITE, BISHOP);
+  SET_PIECE(7,7, WHITE, ROOK);
+
 
   m_turn = WHITE;
-  m_enPassantSquare = Point::invalid();
-  m_castleWhiteKing = true;
-  m_castleWhiteQueen = true;
-  m_castleBlackKing = true;
-  m_castleBlackQueen = true;
 }
 #undef SET_PIECE
+
+void ShogiPosition::move(const ShogiMove& m) {
+  if (m.dropped())
+    m_board[m.to] = m.dropped();
+  else {
+    m_board[m.to] = m_board[m.from];
+    m_board[m.from] = Piece();
+  }
+  
+  switchTurn();
+}
+
+template <>
+class MoveSerializer<ShogiPosition> {
+public:
+  MoveSerializer(const ShogiMove&, const ShogiPosition&) { }
+  QString SAN() const { return ""; }
+};
+
+class ShogiAnimator {
+  CrazyhouseAnimator m_animator; 
+protected:
+  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+public:
+  ShogiAnimator(PointConverter* converter, GraphicalPosition* position);
+  virtual ~ShogiAnimator(){}
+  virtual AnimationPtr warp(AbstractPosition::Ptr);
+  virtual AnimationPtr forward(AbstractPosition::Ptr, const ShogiMove& move);
+  virtual AnimationPtr back(AbstractPosition::Ptr, const ShogiMove& move);
+};
+
+ShogiAnimator::ShogiAnimator(PointConverter* converter, GraphicalPosition* position)
+: m_animator(converter, position) { }
+
+ShogiAnimator::AnimationPtr ShogiAnimator::warp(AbstractPosition::Ptr pos) {
+  return m_animator.warp(pos);
+}
+
+ShogiAnimator::AnimationPtr ShogiAnimator::forward(AbstractPosition::Ptr pos, const ShogiMove& move) {
+  if (move.dropped())
+    return m_animator.forward(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
+  else
+    return m_animator.forward(pos, CrazyhouseMove(move.from, move.to));
+}
+
+ShogiAnimator::AnimationPtr ShogiAnimator::back(AbstractPosition::Ptr pos, const ShogiMove& move) {
+  if (move.dropped())
+    return m_animator.back(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
+  else
+    return m_animator.back(pos, CrazyhouseMove(move.from, move.to));
+}
 
 
 class ShogiVariantInfo {
@@ -185,12 +374,12 @@ public:
   typedef ShogiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ChessAnimator Animator;
+  typedef ShogiAnimator Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h" << "i"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9";
+    return QStringList() << "i" << "h" << "g" << "f" << "e" << "d" << "c" << "b" << "a"
+                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1"; 
   }
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
@@ -213,5 +402,3 @@ VariantInfo* ShogiVariant::info() {
     static_shogi_variant = new WrappedVariantInfo<ShogiVariantInfo>;
   return static_shogi_variant;
 }
-
-#endif

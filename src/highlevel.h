@@ -336,10 +336,6 @@ public:
     return static_cast<int>(m_piece.color());
   }
 
-  virtual int id() const {
-    return m_piece.id();
-  }
-
   virtual QString name() const {
     return m_piece.name();
   }

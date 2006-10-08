@@ -22,6 +22,8 @@
 
 #include <iostream>
 #include <boost/scoped_ptr.hpp>
+#include <kstandarddirs.h>
+#include <kglobal.h>
 #include "common.h"
 #include "global.h"
 
@@ -66,13 +68,17 @@ void ConsoleOutput::operator()(const QString& text) {
 
 LuaConsoleHighlighter::LuaConsoleHighlighter()
 : m_display(0) {
-  QString luaHighlightingFile, luaHighlightingLibrary;
-  Settings hl = settings.group("highlighting");
-  (hl["lua"]     |= data_dir() + "/scripts/highlighting.lua") >> luaHighlightingFile;
-  (hl["library"] |= data_dir() + "/scripts/hllib.lua") >> luaHighlightingLibrary;
-
+  KStandardDirs* dirs = KGlobal::dirs();
+  
+  QString luaHighlightingLibrary = dirs->locate("appdata", "scripts/hllib.lua");
+  std::cout << "lua lib: " << luaHighlightingLibrary << std::endl;
   m_api.runFile(qPrintable(luaHighlightingLibrary));
-  m_api.runFile(qPrintable(luaHighlightingFile));
+  
+  QStringList highlighting = dirs->findAllResources("appdata", "highlighting/*.lua", true);
+  foreach (QString f, highlighting) {
+    std::cout << "lua highlighting file: " << f << std::endl;
+    m_api.runFile(qPrintable(f));
+  }
 }
 
 void LuaConsoleHighlighter::setDisplay(QTextEdit* display) {

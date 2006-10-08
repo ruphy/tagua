@@ -90,7 +90,7 @@ public:
     * (type, color) pair. Used to store
     * pixmaps.
     */
-  virtual int id() const = 0;
+//  virtual int id() const = 0;
 
   /**
     * Return a unique key for the piece.

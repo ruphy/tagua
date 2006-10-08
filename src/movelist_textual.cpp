@@ -18,6 +18,7 @@
 #include <dom/html_element.h>
 #include <dom/dom_element.h>
 #include <dom/dom_text.h>
+#include <kstandarddirs.h>
 #include "global.h"
 #include "movelist_p.h"
 #include "movelist_textual.h"
@@ -35,7 +36,7 @@ Textual::Textual(QWidget *parent)
   setMetaRefreshEnabled(false);
   setPluginsEnabled(false);
 
-  QFile file(data_dir()+"/scripts/movelist_textual.html");
+  QFile file(KStandardDirs::locate("appdata", "/scripts/movelist_textual.html"));
   file.open(QIODevice::ReadOnly);
   QTextStream stream(&file);
   QString html = stream.readAll();

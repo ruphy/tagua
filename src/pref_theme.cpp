@@ -13,6 +13,7 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
+#include <kstandarddirs.h>
 #include "global.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"
@@ -150,12 +151,17 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_squares_opt_layout = new QHBoxLayout(widgetSquares);
   m_squares_opt_layout->setMargin(0);
 
-  QString themeDir = data_dir() + "/themes/";
+//  QString themeDir = data_dir() + "/themes/";
 
   MasterSettings s(".kboard_config_cache");
-  std::cout << "searching lua files in " << themeDir+"Pieces" << std::endl;
-  m_pieces_themes = to_theme_info_list(find_lua_files(themeDir+"Pieces"), s.group("pieces"));
-  m_squares_themes = to_theme_info_list(find_lua_files(themeDir+"Squares"), s.group("squares"));
+  
+  KStandardDirs* dirs = KGlobal::dirs();
+  m_pieces_themes = to_theme_info_list(
+    dirs->findAllResources("appdata", "themes/Pieces/*.lua", true),
+    s.group("pieces"));
+  m_squares_themes = to_theme_info_list(
+    dirs->findAllResources("appdata", "themes/Squares/*.lua", true),
+    s.group("squares"));
 
   const Variant::Variants& all = Variant::allVariants();
   for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)

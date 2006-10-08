@@ -54,31 +54,30 @@ Preferences::Preferences(QWidget *parent)
 : QDialog(parent) {
 
   setupUi(this);
-  setWindowIcon(QIcon(data_dir()+"/icons/kboard.svg"));
+  setWindowIcon(KIcon("kboard.svg"));
   connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
 
   pagePref->hide();
   PrefBase *b;
   KPageWidgetItem *i;
-  QString icons = data_dir() + "/icons/";
 
   b = new PrefWrapper<PrefBoard>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Board");
   i->setHeader("Board preferences:");
-  i->setIcon(KIcon(icons+"/prefBoard.svg"));
+  i->setIcon(KIcon("prefBoard.svg"));
 
   b = new PrefWrapper<PrefMoveList>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Move list");
   i->setHeader("Move list preferences:");
-  i->setIcon(KIcon(icons+"/prefMoveList.svg"));
+  i->setIcon(KIcon("prefMoveList.svg"));
 
   b = new PrefWrapper<PrefTheme>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Theme");
   i->setHeader("Pieces & squares theme:");
-  i->setIcon(KIcon(icons+"/prefTheme.svg"));
+  i->setIcon(KIcon("prefTheme.svg"));
   pagePref->show();
   
   b = new PrefWrapper<PrefEngines>(this);
