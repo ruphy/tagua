@@ -324,11 +324,11 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1" >
-       <widget class="KColorButton" name="colorBorder" />
-      </item>
       <item row="1" column="1" >
        <widget class="KColorButton" name="colorBorderText" />
+      </item>
+      <item row="0" column="1" >
+       <widget class="KColorButton" name="colorBorder" />
       </item>
       <item row="2" column="1" >
        <widget class="KFontRequester" native="1" name="fontBorder" >
@@ -346,12 +346,12 @@
   <customwidget>
    <class>KColorButton</class>
    <extends>QPushButton</extends>
-   <header>kdewidgets.h</header>
+   <header>kcolorbutton.h</header>
   </customwidget>
   <customwidget>
    <class>KFontRequester</class>
    <extends>QWidget</extends>
-   <header>kdewidgets.h</header>
+   <header>kfontrequester.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

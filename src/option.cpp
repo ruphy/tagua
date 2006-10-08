@@ -77,7 +77,7 @@ void OptLineEdit::setOpt(const QString& s) {
 }
 
 OptUrlRequester::OptUrlRequester(boost::shared_ptr<UrlOpt> opt, OptionWidget *owner, QWidget *parent)
-: UrlRequester(parent)
+: KUrlRequester(parent)
 , m_owner(owner)
 , m_opt(opt) {
   setUrl(m_opt->value());

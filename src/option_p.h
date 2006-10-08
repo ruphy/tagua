@@ -16,8 +16,9 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QRadioButton>
-#include "urlrequester.h"
-#include "kdewidgets.h"
+#include "kurlrequester.h"
+#include "kcolorbutton.h"
+#include "kfontrequester.h"
 #include "option.h"
 
 class OptCheckBox : public QCheckBox {
@@ -69,7 +70,7 @@ private slots:
   void setOpt(const QString&);
 };
 
-class OptUrlRequester : public UrlRequester {
+class OptUrlRequester : public KUrlRequester {
   Q_OBJECT
   OptionWidget *m_owner;
   boost::shared_ptr<UrlOpt> m_opt;
