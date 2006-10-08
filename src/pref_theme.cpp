@@ -37,20 +37,6 @@ public:
   , last_modified(t) {}
 };
 
-QStringList PrefTheme::find_lua_files(const QDir& d) {
-  QStringList files = d.entryList(QStringList()<<"*.lua", QDir::Files);
-  QStringList dirs = d.entryList(QDir::AllDirs | QDir::NoDotAndDotDot);
-
-  QStringList retv;
-  for(int i=0;i<files.size();i++)
-    retv << d.filePath(files[i]);
-
-  for(int i=0;i<dirs.size();i++)
-    retv += find_lua_files(d.filePath(dirs[i]));
-
-  return retv;
-}
-
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
   std::map<QString, ThemeInfo> cache;
 
@@ -151,10 +137,8 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_squares_opt_layout = new QHBoxLayout(widgetSquares);
   m_squares_opt_layout->setMargin(0);
 
-//  QString themeDir = data_dir() + "/themes/";
-
   MasterSettings s(".kboard_config_cache");
-  
+
   KStandardDirs* dirs = KGlobal::dirs();
   m_pieces_themes = to_theme_info_list(
     dirs->findAllResources("appdata", "themes/Pieces/*.lua", true),
@@ -362,9 +346,10 @@ void PrefTheme::squaresThemeChecked(bool ck) {
 }
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
-  QString deftag = squares ? "use-def-squares" : "use-def-pieces";
   QString tag = squares ? "square-theme" : "piece-theme";
-  QString subdir = squares ? "Squares" : "Pieces";
+  QString deftag = squares ? "use-def-squares" : "use-def-pieces";
+  QString group = squares ? "squares" : "pieces";
+  QString pattern = squares ? "themes/Squares/*.lua" : "themes/Pieces/*.lua";
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(v);
@@ -375,10 +360,9 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
   if (var[tag])
     return var[tag].value<QString>();
 
-  QString themeDir = data_dir() + "/themes/";
-
   MasterSettings s(".kboard_config_cache.xml");
-  ThemeInfoList themes = to_theme_info_list(find_lua_files(themeDir+subdir), s.group("pieces"));
+  KStandardDirs* dirs = KGlobal::dirs();
+  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", pattern, true), s.group(group));
 
   int best = 0;
   QString retv;

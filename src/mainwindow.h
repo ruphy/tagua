@@ -12,10 +12,8 @@
 #define MAINWINDOW_H
 
 #include <map>
-#ifdef HAVE_KDE
-  #include <kapplication.h>
-  #include <kmainwindow.h>
-#endif
+#include <kapplication.h>
+#include <kmainwindow.h>
 
 #include <QApplication>
 #include <QMainWindow>
@@ -25,9 +23,7 @@
 #include "ui.h"
 #include "common.h"
 
-#ifdef HAVE_KDE
-  class KConfig;
-#endif
+class KConfig;
 class ChessTable;
 class ICSConnection;
 class Console;

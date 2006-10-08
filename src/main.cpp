@@ -8,87 +8,17 @@
   (at your option) any later version.
 */
 
-#if 0
-
-#include <kapplication.h>
-#include <dcopclient.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
-#include <klocale.h>
-
-#include "mainwindow.h"
-#include "piecepool.h"
-
-static const char description[] =
-    I18N_NOOP("A KDE generic chess interface");
-
-static const char version[] = "0.1";
-
-static KCmdLineOptions options[] =
-{
-    { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-    KCmdLineLastOption
-};
-
-int main(int argc, char **argv)
-{
-    KAboutData about("kboard", I18N_NOOP("kboard"), version, description,
-                     KAboutData::License_Custom, "(C) 2005 Paolo Capriotti", 0, 0, "p.capriotti@gmail.com");
-    about.addAuthor( "Paolo Capriotti", 0, "p.capriotti@gmail.com" );
-    KCmdLineArgs::init(argc, argv, &about);
-    KCmdLineArgs::addCmdLineOptions(options);
-    KApplication app;
-
-    // register ourselves as a dcop client
-    app.dcopClient()->registerAs(app.name(), false);
-
-    // see if we are starting with session management
-    if (app.isRestored())
-    {
-        RESTORE(MainWindow);
-    }
-    else
-    {
-        // no session.. just start up normally
-//        KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
-/*        if (args->count() == 0)
-        {*/
-//            kboard *widget = new kboard;
-#if 1
-            MainWindow* widget = new MainWindow;
-#else
-                PiecePoolWidget* widget = new PiecePoolWidget(0);
-                widget->setup();
-                widget->show();
-#endif
-            widget->show();
-//         }
-//         else
-//         {
-//             int i = 0;
-//             for (; i < args->count(); i++)
-//             {
-//                 MainWindow* widget = new MainWindow;
-// //                widget->load(args->url(i));
-//             }
-//         }
-//         args->clear();
-     }
-
-    return app.exec();
-}
-
-#else
-
 #include <kapplication.h>
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
+#include <kglobal.h>
+#include <kstandarddirs.h>
+#include <kiconloader.h>
 #include <klocale.h>
 
 #include "mainwindow.h"
 #include "crash.h"
 #include "common.h"
-
 
 static const char description[] =
     I18N_NOOP("A generic board game interface");
@@ -129,6 +59,10 @@ int main(int argc, char **argv) {
   installCrashHander();
   atexit(trap);
 
+  KGlobal::dirs()->addResourceDir("appdata", "data");
+  KGlobal::dirs()->addResourceDir("icon", "data/pics");
+  KGlobal::iconLoader()->reconfigure( app.aboutData()->appName(), KGlobal::dirs() );
+
 //   QString locale = QLocale::system().name();
 //
 //   QTranslator translator;
@@ -141,4 +75,3 @@ int main(int argc, char **argv) {
   return app.exec();
 }
 
-#endif

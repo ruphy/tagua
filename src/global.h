@@ -37,8 +37,6 @@ signals:
   void settingsChanged();
 };
 
-QString data_dir();
-
 extern MasterSettings settings;
 
 #endif // GLOBAL_H

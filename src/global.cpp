@@ -29,7 +29,7 @@ QDomElement MasterSettings::node() const {
 //                   "<configuration>\n"
 //                   "</configuration>\n";
 //       }
-// 
+//
 //       // reopen it
 //       if (!f.open(QFile::ReadOnly | QFile::Text))
 //         exit(1);
@@ -37,7 +37,7 @@ QDomElement MasterSettings::node() const {
       m_doc.appendChild(m_doc.createElement("configuration"));
       std::cout << m_doc.toString() << std::endl;
     }
-        
+
 
     const_cast<QDomElement&>(m_node) = m_doc.documentElement();
     Q_ASSERT(!m_node.isNull());
@@ -76,10 +76,6 @@ void MasterSettings::changed() {
 }
 
 MasterSettings settings(".kboardrc.xml");
-
-QString data_dir() {
-  return "/home/monge/kboard/";
-}
 
 #include "global.moc"
 

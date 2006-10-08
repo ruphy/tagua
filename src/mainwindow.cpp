@@ -397,23 +397,18 @@ bool MainWindow::openFile(const QString& filename) {
 }
 
 void MainWindow::loadGame() {
-#if HAVE_KDE
-    KUrl url = KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Open PGN file"));
+  KUrl url = KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Open PGN file"));
 
-    if(url.isEmpty())
-      return;
+  if(url.isEmpty())
+    return;
 
-    QString tmp_file;
-    if (KIO::NetAccess::download(url, tmp_file, this)) {
-      openFile(tmp_file);
-      KIO::NetAccess::removeTempFile(tmp_file);
-    }
-    else
-      KMessageBox::error(this, KIO::NetAccess::lastErrorString());
-#else
-    QString f = QFileDialog::getOpenFileName(this, QString::null, i18n("Open PGN file") );
-    openFile(f);
-#endif
+  QString tmp_file;
+  if (KIO::NetAccess::download(url, tmp_file, this)) {
+    openFile(tmp_file);
+    KIO::NetAccess::removeTempFile(tmp_file);
+  }
+  else
+    KMessageBox::error(this, KIO::NetAccess::lastErrorString());
 }
 
 void MainWindow::createConnection(const QString& username, const QString& password,

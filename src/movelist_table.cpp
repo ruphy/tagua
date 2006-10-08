@@ -15,6 +15,7 @@
 #include <QScrollArea>
 #include <QToolButton>
 #include <QScrollBar>
+#include <kicon.h>
 #include "global.h"
 #include "movelist_textual.h"
 #include "movelist_notifier.h"
@@ -36,9 +37,8 @@ Table::Table(QWidget* w)
   vbox->setMargin(1);
   vbox->setSpacing(1);
 
-  QString icons = data_dir() + "/icons/";
   QToolButton *b1 = new QToolButton(this);
-  m_undo = new QAction(QIcon(icons+"undo.png"), "&Undo", this);
+  m_undo = new QAction(KIcon("undo"), "&Undo", this);
   m_undo->setShortcut(Qt::CTRL+Qt::Key_Z);
   connect(m_undo, SIGNAL(triggered()), this, SLOT(onUndo()));
   b1->setDefaultAction(m_undo);
@@ -46,7 +46,7 @@ Table::Table(QWidget* w)
   hbox->addWidget(b1);
 
   QToolButton *b2 = new QToolButton(this);
-  m_redo = new QAction(QIcon(icons+"redo.png"), "Re&do", this);
+  m_redo = new QAction(KIcon("redo"), "Re&do", this);
   m_redo->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
   connect(m_redo, SIGNAL(triggered()), this, SLOT(onRedo()));
   b2->setDefaultAction(m_redo);

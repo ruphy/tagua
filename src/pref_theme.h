@@ -42,7 +42,6 @@ Q_OBJECT
   QWidget *m_squares_opt_widget;
 
   OptList              get_file_options(const QString&);
-  static QStringList   find_lua_files(const QDir& d);
   static ThemeInfoList to_theme_info_list(const QStringList& files, const Settings& s);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);

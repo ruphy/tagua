@@ -10,11 +10,7 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
-#ifdef HAVE_KDE
 #include <kicon.h>
-#else // HAVE_KDE
-#include <QIcon>
-#endif // HAVE_KDE
 #include "global.h"
 #include "pref_board.h"
 #include "pref_movelist.h"
@@ -54,7 +50,7 @@ Preferences::Preferences(QWidget *parent)
 : QDialog(parent) {
 
   setupUi(this);
-  setWindowIcon(KIcon("kboard.svg"));
+  setWindowIcon(KIcon("kboard"));
   connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
 
   pagePref->hide();
@@ -65,26 +61,26 @@ Preferences::Preferences(QWidget *parent)
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Board");
   i->setHeader("Board preferences:");
-  i->setIcon(KIcon("prefBoard.svg"));
+  i->setIcon(KIcon("prefBoard"));
 
   b = new PrefWrapper<PrefMoveList>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Move list");
   i->setHeader("Move list preferences:");
-  i->setIcon(KIcon("prefMoveList.svg"));
+  i->setIcon(KIcon("prefMoveList"));
 
   b = new PrefWrapper<PrefTheme>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Theme");
   i->setHeader("Pieces & squares theme:");
-  i->setIcon(KIcon("prefTheme.svg"));
+  i->setIcon(KIcon("prefTheme"));
   pagePref->show();
-  
+
   b = new PrefWrapper<PrefEngines>(this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Engines");
   i->setHeader("Engines:");
-  i->setIcon(KIcon("brain.svg"));
+  i->setIcon(KIcon("brain"));
   pagePref->show();
 }
 
