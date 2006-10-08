@@ -68,11 +68,12 @@ public:
   static Type getType(const QString& t);
   static QString typeSymbol(ShogiPiece::Type t);
   
-  bool canMove(const class ShogiPosition&, const Point&, const Point&) const { return true; }
+  bool canMove(const class ShogiPosition&, const Point&, const Point&) const;
   Color color() const { return m_color; }
   Type type() const { return m_type; }
   
   static Color oppositeColor(Color c) { return c == WHITE ? BLACK : WHITE; }
+  Point direction() const { return Point(0, m_color == WHITE ? 1 : -1); }
 };
 
 ShogiPiece::ShogiPiece(ShogiPiece::Color color, ShogiPiece::Type type, bool promoted)
@@ -203,7 +204,8 @@ public:
   
   virtual void setup();
   
-  bool testMove(Move&) const { return true; }
+  bool testMove(Move&) const;
+  bool pseudolegal(Move& m) const;
    
   virtual void addToPool(const Piece& p, int n) { m_pool[p] += n; }
   virtual void removeFromPool(const Piece& p, int n) {
@@ -216,6 +218,7 @@ public:
   const ShogiPiece* get(const Point& p) const;
   ShogiPiece* get(const Point& p); 
   void set(const Point& p, Piece* piece);
+  ShogiPiece operator[](const Point& p) const { return m_board[p]; }
    
   Piece::Color turn() const { return m_turn; }
   void setTurn(Piece::Color turn) { m_turn = turn; }
@@ -236,6 +239,7 @@ public:
   void dump() const { }
   
   bool promotionZone(Piece::Color color, const Point& p);
+  PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
 };
 
 ShogiPosition::ShogiPosition()
@@ -253,6 +257,78 @@ ShogiPosition::ShogiPosition(Piece::Color turn, bool, bool, bool, bool, const Po
 ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
 : m_turn(ShogiPiece::BLACK)
 , m_board(9,9) { }
+
+bool ShogiPiece::canMove(const ShogiPosition& pos, 
+                         const Point& from, const Point& to) const {
+  if (!from.valid()) return false;
+  if (!to.valid()) return false;
+  if (from == to) return false;
+  if (pos[to].color() == m_color) return false;
+  Point delta = to - from;
+  
+  if (!m_promoted) {
+    switch (m_type) {
+    case KING:
+      return abs(delta.x) <= 1 && abs(delta.y) <= 1;
+    case GOLD:
+      return (delta.x == 0 && abs(delta.y) == 1)
+          || (delta.y == 0 && abs(delta.x) == 1)
+          || (delta.y == direction().y && abs(delta.x) <= 1);
+    case SILVER:
+      return (abs(delta.x) == abs(delta.y) && abs(delta.x) == 1)
+          || (delta.y == direction().y && abs(delta.x) <= 1);
+    case ROOK:
+      {
+        PathInfo path = pos.path(from, to);
+        return path.parallel() && path.clear();
+      }
+    case BISHOP:
+      {
+          PathInfo path = pos.path(from, to);
+          return path.diagonal() && path.clear();
+      }
+    case KNIGHT:
+      {
+        return abs(delta.x) == 1 && delta.y == direction().y * 2;
+      }
+    case LANCE:
+      {
+        PathInfo path = pos.path(from, to);
+        return delta.x == 0 && path.clear() && (delta.y * direction().y > 0);
+      }
+    case PAWN:
+      return delta.x == 0 && delta.y == direction().y;
+    default:
+      return false;
+    }
+  }
+  else {
+    switch (m_type) {
+    case SILVER:
+    case PAWN:
+    case LANCE:
+    case KNIGHT:
+      return (delta.x == 0 && abs(delta.y) == 1)
+          || (delta.y == 0 && abs(delta.x) == 1)
+          || (delta.y == direction().y && abs(delta.x) <= 1);
+    case ROOK:
+      {
+        if (abs(delta.x) <= 1 && abs(delta.y) <= 1) return true;
+        PathInfo path = pos.path(from, to);
+        return path.parallel() && path.clear();
+      }
+    case BISHOP:
+      {
+          if (abs(delta.x) <= 1 && abs(delta.y) <= 1) return true;
+          PathInfo path = pos.path(from, to);
+          return path.diagonal() && path.clear();
+      }
+    default:
+      return false;
+    }
+  }
+}
+
 
 ShogiPosition::Move ShogiPosition::getVerboseMove(Piece::Color, const VerboseNotation&) {
   return Move();
@@ -329,6 +405,30 @@ void ShogiPosition::setup() {
 }
 #undef SET_PIECE
 
+bool ShogiPosition::testMove(Move& m) const {
+  return pseudolegal(m);
+}
+
+bool ShogiPosition::pseudolegal(Move& m) const {
+  if (ShogiPiece dropped = m.dropped()) {
+    if (m_board[m.to]) return false;
+    if (dropped.type() == Piece::PAWN) {
+      if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
+      for (int i = 0; i < 9; i++)
+        if (ShogiPiece other = m_board[Point(m.to.x, i)]) 
+          if (other.color() == m_turn && other.type() == Piece::PAWN) return false;
+    }
+    else if (dropped.type() == Piece::LANCE)
+      if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
+    
+    return true;
+  }
+  else {
+    const Piece& p = m_board[m.from]; 
+    return p.canMove(*this, m.from, m.to);
+  }
+}
+
 void ShogiPosition::move(const ShogiMove& m) {
   if (m.dropped())
     m_board[m.to] = m.dropped();
@@ -343,7 +443,9 @@ void ShogiPosition::move(const ShogiMove& m) {
   }
   
   if (promotionZone(m_turn, m.to) && m.promote()) {
-    m_board[m.to].promote();
+    Piece::Type type = m_board[m.to].type();
+    if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
+      m_board[m.to].promote();
   }
   
   switchTurn();
