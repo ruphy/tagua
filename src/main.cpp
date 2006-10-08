@@ -59,8 +59,11 @@ int main(int argc, char **argv) {
   installCrashHander();
   atexit(trap);
 
-  KGlobal::dirs()->addResourceDir("appdata", "data");
-  KGlobal::dirs()->addResourceDir("icon", "data/pics");
+  QString data_dir = qgetenv("KBOARD_DATA");
+  if (data_dir.isEmpty()) data_dir = "data";
+  
+  KGlobal::dirs()->addResourceDir("appdata", data_dir);
+  KGlobal::dirs()->addResourceDir("icon", data_dir + "/pics");
   KGlobal::iconLoader()->reconfigure( app.aboutData()->appName(), KGlobal::dirs() );
 
 //   QString locale = QLocale::system().name();

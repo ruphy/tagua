@@ -19,7 +19,11 @@ public:
     PAWN,
     INVALID_TYPE
   };
-  typedef ChessPiece::Color Color;
+  enum Color {
+    BLACK,
+    WHITE,
+    INVALID_COLOR
+  };
   typedef bool PromotionType;
 private:
   Color m_color;
@@ -32,6 +36,8 @@ public:
   , m_promoted(false) { }
   ShogiPiece(ShogiPiece::Color color, ShogiPiece::Type type, bool promoted = false);
   ShogiPiece(const ShogiPiece& other);
+  
+  void promote() { m_promoted = true; }
   
   bool operator<(const ShogiPiece& p) const {
     if (m_promoted == p.m_promoted)
@@ -66,7 +72,7 @@ public:
   Color color() const { return m_color; }
   Type type() const { return m_type; }
   
-  static Color oppositeColor(Color c) { return ChessPiece::oppositeColor(c); }
+  static Color oppositeColor(Color c) { return c == WHITE ? BLACK : WHITE; }
 };
 
 ShogiPiece::ShogiPiece(ShogiPiece::Color color, ShogiPiece::Type type, bool promoted)
@@ -82,7 +88,7 @@ ShogiPiece::ShogiPiece(const ShogiPiece& other)
 QString ShogiPiece::name() const {
   QString res = m_color == WHITE ? "white_" : "black_";
   if (m_promoted)
-    res += "p";
+    res += "p_";
   res += typeName(m_type);
   return res;
 }
@@ -142,7 +148,7 @@ public:
 };
 
 ShogiMove::ShogiMove()
-: m_promote(false)
+: m_promote(true)
 , from(Point::invalid())
 , to(Point::invalid()) { }
 
@@ -153,7 +159,7 @@ ShogiMove::ShogiMove(const Point& from, const Point& to, bool promote)
 
 ShogiMove::ShogiMove(const ShogiPiece& piece, const Point& to)
 : m_dropped(piece)
-, m_promote(false)
+, m_promote(true)
 , from(Point::invalid())
 , to(to) { }
 
@@ -228,10 +234,12 @@ public:
   
   Point size() const { return Point(9,9); }
   void dump() const { }
+  
+  bool promotionZone(Piece::Color color, const Point& p);
 };
 
 ShogiPosition::ShogiPosition()
-: m_turn(WHITE)
+: m_turn(ShogiPiece::BLACK)
 , m_board(9,9) { }
 
 ShogiPosition::ShogiPosition(const ShogiPosition& other)
@@ -243,7 +251,7 @@ ShogiPosition::ShogiPosition(Piece::Color turn, bool, bool, bool, bool, const Po
 , m_board(9, 9) { }
 
 ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
-: m_turn(WHITE)
+: m_turn(ShogiPiece::BLACK)
 , m_board(9,9) { }
 
 ShogiPosition::Move ShogiPosition::getVerboseMove(Piece::Color, const VerboseNotation&) {
@@ -281,39 +289,43 @@ boost::shared_ptr<ShogiPiece> ShogiPosition::moveHint(const ShogiMove& m) const 
   else return boost::shared_ptr<ShogiPiece>();
 }
 
-#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(color, ShogiPiece::type)
+bool ShogiPosition::promotionZone(Piece::Color color, const Point& p) {
+  return color == ShogiPiece::WHITE ? p.y >= 6 : p.y <= 2; 
+}
+
+#define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(ShogiPiece::color, ShogiPiece::type)
 void ShogiPosition::setup() {
   for (int i = 0; i < 9; i++) {
-    SET_PIECE(i, 2, BLACK, PAWN);
-    SET_PIECE(i, 6, WHITE, PAWN);
+    SET_PIECE(i, 2, WHITE, PAWN);
+    SET_PIECE(i, 6, BLACK, PAWN);
   }
 
-  SET_PIECE(0,0, BLACK, LANCE);
-  SET_PIECE(1,0, BLACK, KNIGHT);
-  SET_PIECE(2,0, BLACK, SILVER);
-  SET_PIECE(3,0, BLACK, GOLD);
-  SET_PIECE(4,0, BLACK, KING);
-  SET_PIECE(5,0, BLACK, GOLD);
-  SET_PIECE(6,0, BLACK, SILVER);
-  SET_PIECE(7,0, BLACK, KNIGHT);
-  SET_PIECE(8,0, BLACK, LANCE);
-  SET_PIECE(1,1, BLACK, ROOK);
-  SET_PIECE(7,1, BLACK, BISHOP);
+  SET_PIECE(0,0, WHITE, LANCE);
+  SET_PIECE(1,0, WHITE, KNIGHT);
+  SET_PIECE(2,0, WHITE, SILVER);
+  SET_PIECE(3,0, WHITE, GOLD);
+  SET_PIECE(4,0, WHITE, KING);
+  SET_PIECE(5,0, WHITE, GOLD);
+  SET_PIECE(6,0, WHITE, SILVER);
+  SET_PIECE(7,0, WHITE, KNIGHT);
+  SET_PIECE(8,0, WHITE, LANCE);
+  SET_PIECE(1,1, WHITE, ROOK);
+  SET_PIECE(7,1, WHITE, BISHOP);
 
-  SET_PIECE(0,8, WHITE, ROOK);
-  SET_PIECE(1,8, WHITE, KNIGHT);
-  SET_PIECE(2,8, WHITE, SILVER);
-  SET_PIECE(3,8, WHITE, GOLD);
-  SET_PIECE(4,8, WHITE, KING);
-  SET_PIECE(5,8, WHITE, SILVER);
-  SET_PIECE(6,8, WHITE, GOLD);
-  SET_PIECE(7,8, WHITE, KNIGHT);
-  SET_PIECE(8,8, WHITE, LANCE);
-  SET_PIECE(1,7, WHITE, BISHOP);
-  SET_PIECE(7,7, WHITE, ROOK);
+  SET_PIECE(0,8, BLACK, LANCE);
+  SET_PIECE(1,8, BLACK, KNIGHT);
+  SET_PIECE(2,8, BLACK, SILVER);
+  SET_PIECE(3,8, BLACK, GOLD);
+  SET_PIECE(4,8, BLACK, KING);
+  SET_PIECE(5,8, BLACK, GOLD);
+  SET_PIECE(6,8, BLACK, SILVER);
+  SET_PIECE(7,8, BLACK, KNIGHT);
+  SET_PIECE(8,8, BLACK, LANCE);
+  SET_PIECE(1,7, BLACK, BISHOP);
+  SET_PIECE(7,7, BLACK, ROOK);
 
 
-  m_turn = WHITE;
+  m_turn = ShogiPiece::BLACK;
 }
 #undef SET_PIECE
 
@@ -321,8 +333,17 @@ void ShogiPosition::move(const ShogiMove& m) {
   if (m.dropped())
     m_board[m.to] = m.dropped();
   else {
+    if (Piece captured = m_board[m.to]) {
+      std::cout << "adding to pool" << std::endl;
+      addToPool(Piece(captured.color(), captured.type(), false), 1);
+    }
+
     m_board[m.to] = m_board[m.from];
     m_board[m.from] = Piece();
+  }
+  
+  if (promotionZone(m_turn, m.to) && m.promote()) {
+    m_board[m.to].promote();
   }
   
   switchTurn();
@@ -335,10 +356,11 @@ public:
   QString SAN() const { return ""; }
 };
 
-class ShogiAnimator {
-  CrazyhouseAnimator m_animator; 
+class ShogiAnimator : protected CrazyhouseAnimator {
 protected:
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+  virtual boost::shared_ptr<MovementAnimation>
+    createMovementAnimation(const Element& element, const QPoint& destination);
 public:
   ShogiAnimator(PointConverter* converter, GraphicalPosition* position);
   virtual ~ShogiAnimator(){}
@@ -347,25 +369,35 @@ public:
   virtual AnimationPtr back(AbstractPosition::Ptr, const ShogiMove& move);
 };
 
+boost::shared_ptr<MovementAnimation>
+ShogiAnimator::createMovementAnimation(const Element& element, const QPoint& destination) {
+  if (element.piece()->type() == static_cast<int>(ShogiPiece::KNIGHT))
+    return boost::shared_ptr<MovementAnimation>(new KnightMovementAnimation(element.sprite(),
+                                                       destination, m_anim_rotate, 1.0));
+  else
+    return boost::shared_ptr<MovementAnimation>(new MovementAnimation(element.sprite(),
+                                                                destination, 1.0));
+}
+
 ShogiAnimator::ShogiAnimator(PointConverter* converter, GraphicalPosition* position)
-: m_animator(converter, position) { }
+: CrazyhouseAnimator(converter, position) { }
 
 ShogiAnimator::AnimationPtr ShogiAnimator::warp(AbstractPosition::Ptr pos) {
-  return m_animator.warp(pos);
+  return CrazyhouseAnimator::warp(pos);
 }
 
 ShogiAnimator::AnimationPtr ShogiAnimator::forward(AbstractPosition::Ptr pos, const ShogiMove& move) {
   if (move.dropped())
-    return m_animator.forward(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
+    return CrazyhouseAnimator::forward(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
   else
-    return m_animator.forward(pos, CrazyhouseMove(move.from, move.to));
+    return CrazyhouseAnimator::forward(pos, CrazyhouseMove(move.from, move.to));
 }
 
 ShogiAnimator::AnimationPtr ShogiAnimator::back(AbstractPosition::Ptr pos, const ShogiMove& move) {
   if (move.dropped())
-    return m_animator.back(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
+    return CrazyhouseAnimator::back(pos, CrazyhouseMove(CrazyhousePiece(WHITE, KING), move.to));
   else
-    return m_animator.back(pos, CrazyhouseMove(move.from, move.to));
+    return CrazyhouseAnimator::back(pos, CrazyhouseMove(move.from, move.to));
 }
 
 

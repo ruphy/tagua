@@ -186,7 +186,7 @@ CrazyhouseAnimator::CrazyhouseAnimator(PointConverter* converter, GraphicalPosit
 }
 
 CrazyhouseAnimator::AnimationPtr CrazyhouseAnimator::warp(AbstractPosition::Ptr final) {
-  //std::cout << "Crazy warp!!!" << std::endl;
+  std::cout << "Crazy warp!!!" << std::endl;
   m_position->updatePool(final->pool());
 
   return ChessAnimator::warp(final);
