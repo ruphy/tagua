@@ -5,7 +5,7 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    version="1.0"
    width="468pt"
@@ -14,13 +14,13 @@
    preserveAspectRatio="xMidYMid meet"
    id="svg1447"
    sodipodi:version="0.32"
-   inkscape:version="0.44"
-   sodipodi:docbase="/home/maurizio/kboard/themes/Pieces/ShogiSVG"
+   inkscape:version="0.42.2"
+   sodipodi:docbase="/nfs/home/monge/kboard/data/themes/Pieces/ShogiSVG"
    sodipodi:docname="nude_tile.svg">
   <defs
      id="defs1464" />
   <sodipodi:namedview
-     inkscape:window-height="700"
+     inkscape:window-height="774"
      inkscape:window-width="1111"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
@@ -28,8 +28,8 @@
      bordercolor="#666666"
      pagecolor="#ffffff"
      id="base"
-     inkscape:zoom="0.63931624"
-     inkscape:cx="292.5"
+     inkscape:zoom="0.90412970"
+     inkscape:cx="292.50000"
      inkscape:cy="291.71791"
      inkscape:window-x="82"
      inkscape:window-y="114"
@@ -47,12 +47,11 @@ Created by potrace 1.7, written by Peter Selinger 2001-2005
 </rdf:RDF>
 </metadata>
   <g
-     transform="translate(0,468) scale(0.468000,-0.468000)"
+     transform="matrix(0.497170,0.000000,0.000000,-0.497170,-14.58509,481.1668)"
      id="g1451"
-     stroke="none"
-     fill="#000000">
+     style="fill:#000000;stroke:none">
     <path
-       d="M328 882 c-87 -38 -160 -71 -163 -74 -5 -5 -85 -710 -85 -750 0 -17 19 -18 420 -18 401 0 420 1 420 18 0 51 -81 747 -87 752 -14 12 -321 140 -335 140 -7 -1 -84 -31 -170 -68z m342 -25 l145 -63 8 -60 c4 -32 22 -195 40 -361 l33 -303 -396 0 -396 0 33 303 c18 166 36 329 40 361 l8 60 155 67 c85 38 162 66 170 64 8 -3 80 -33 160 -68z"
+       d="M 328.00000,882.00000 C 241.00000,844.00000 168.00000,811.00000 165.00000,808.00000 C 160.00000,803.00000 80.000000,98.000000 80.000000,58.000000 C 80.000000,41.000000 99.000000,40.000000 500.00000,40.000000 C 901.00000,40.000000 920.00000,41.000000 920.00000,58.000000 C 920.00000,109.00000 839.00000,805.00000 833.00000,810.00000 C 819.00000,822.00000 512.00000,950.00000 498.00000,950.00000 C 491.00000,949.00000 414.00000,919.00000 328.00000,882.00000 z M 670.00000,857.00000 L 815.00000,794.00000 L 823.00000,734.00000 C 827.00000,702.00000 845.00000,539.00000 863.00000,373.00000 L 896.00000,70.000000 L 500.00000,70.000000 L 104.00000,70.000000 L 137.00000,373.00000 C 155.00000,539.00000 173.00000,702.00000 177.00000,734.00000 L 185.00000,794.00000 L 340.00000,861.00000 C 425.00000,899.00000 502.00000,927.00000 510.00000,925.00000 C 518.00000,922.00000 590.00000,892.00000 670.00000,857.00000 z "
        id="path1453" />
   </g>
 </svg>

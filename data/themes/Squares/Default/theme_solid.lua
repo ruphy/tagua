@@ -23,4 +23,4 @@ theme.selection = fromPixmap("square_select.png")
 
 name = "Custom Color"
 description = "Squares with a solid custom color."
-variants = { "Chess" }
+variants = { "Chess", "Shogi", "XiangQi" }
