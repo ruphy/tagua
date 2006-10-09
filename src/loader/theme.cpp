@@ -17,6 +17,21 @@
 
 namespace Loader {
 
+PixmapOrMap Theme::to_pixmap_map(const ::LuaApi::ImageOrMap& m) {
+  if(const QImage *i = boost::get<QImage>(&m)) {
+    return PixmapOrMap(QPixmap::fromImage(*i));
+  }
+  else if(const ::LuaApi::ImageMap *i = boost::get< ::LuaApi::ImageMap>(&m)) {
+    PixmapMap p;
+    for(::LuaApi::ImageMap::const_iterator it = i->begin(); it != i->end(); ++it) {
+      p[it->first] = QPixmap::fromImage(it->second);
+    }
+    return PixmapOrMap(p);
+  }
+  else
+    return PixmapOrMap();
+}
+
 Theme::Theme(const QString& lua_file)
 : m_file(lua_file)
 , m_context()
@@ -38,7 +53,7 @@ Theme::~Theme() {
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
-  OptList ol = m_lua_loader.getOptions();
+  OptList ol = m_lua_loader.getOptList("options");
   if(options_list_load_from_settings(ol, entry.group("options"))) {
     for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
       it->second.m_cache.clear();
@@ -60,21 +75,21 @@ void Theme::unrefSize(int size) {
     m_cache.erase(size);
 }
 
-QPixmap Theme::getPixmap(const QString& key, int size) {
+PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
   if(m_lua_loader.error())
-    return QPixmap();
+    return PixmapOrMap();
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
     std::cout << " --> Error in Theme::getPixmap, size not referenced " << size << std::endl;
-    return QPixmap();
+    return PixmapOrMap();
   }
 
   SizeCache::Cache::iterator pix = it->second.m_cache.find(key);
   if(pix != it->second.m_cache.end())
     return pix->second;
 
-  QPixmap retv = QPixmap::fromImage(m_lua_loader.getImage(key, size));
+  PixmapOrMap retv = to_pixmap_map(m_lua_loader.getImageMap(key, size));
   if(m_lua_loader.error()) {
     std::cout << "SCRIPT RUN ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;
     m_lua_loader.clearError();
@@ -82,6 +97,13 @@ QPixmap Theme::getPixmap(const QString& key, int size) {
 
   it->second.m_cache[key] = retv;
   return retv;
+}
+
+QPixmap Theme::getPixmap(const QString& key, int size) {
+  PixmapOrMap p = getPixmapMap(key, size);
+  if(QPixmap *px = boost::get<QPixmap>(&p))
+    return *px;
+  return QPixmap();
 }
 
 #include "theme.moc"

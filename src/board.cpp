@@ -38,7 +38,7 @@ Board::Board(Canvas::Abstract* parent)
 
   m_tags = BoardTagsPtr(new BoardTags);
 
-  m_canvas_background = new Canvas::TiledPixmap(this);
+  m_canvas_background = new Canvas::Group(this);
   m_canvas_background->lower();
   m_canvas_background->show();
 
@@ -49,6 +49,11 @@ Board::Board(Canvas::Abstract* parent)
 }
 
 Board::~Board() {
+  delete m_pieces_group;
+
+  while(!m_canvas_background->items()->isEmpty())
+    delete m_canvas_background->items()->first();
+  delete m_canvas_background;
 }
 
 void Board::mySettingsChanged() {
@@ -64,6 +69,28 @@ void Board::mySettingsChanged() {
 void Board::settingsChanged() {
   PieceGroup::settingsChanged();
   mySettingsChanged();
+}
+
+void Board::updateBackground() {
+  while(!m_canvas_background->items()->isEmpty())
+    delete m_canvas_background->items()->first();
+
+  Loader::PixmapOrMap bg = m_tags_loader.getPixmapMap("background");
+  if(const QPixmap* p = boost::get<QPixmap>(&bg)) {
+    Canvas::TiledPixmap *t = new Canvas::TiledPixmap(*p, boardRect().size(), QPoint(),
+                                    true, m_canvas_background);
+    t->show();
+  }
+  else if(const Loader::PixmapMap* p = boost::get<Loader::PixmapMap>(&bg)) {
+    for(Loader::PixmapMap::const_iterator it = p->begin(); it != p->end(); ++it) {
+      printf("Adding %d,%d,%d,%d\n", it->first.left(), it->first.top(),
+                                    it->first.width(), it->first.height());
+      Canvas::TiledPixmap *t = new Canvas::TiledPixmap(it->second, it->first.size(),
+                                      QPoint(), true, m_canvas_background);
+      t->moveTo(it->first.topLeft());
+      t->show();
+    }
+  }
 }
 
 boost::shared_ptr<Canvas::Pixmap> Board::addTag(const QString& name, Point pt, bool over) {
@@ -297,8 +324,7 @@ void Board::onResize(int new_size, bool force_reload) {
   m_tags_loader.setSize(m_square_size);
 
   // update canvas background
-  m_canvas_background->setSize(QSize(boardSizeX(), boardSizeY()));
-  m_canvas_background->setPixmap(m_tags_loader("background"));
+  updateBackground();
 
   // update the sprites
   updateSprites();

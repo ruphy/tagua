@@ -70,13 +70,13 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
       updated = true;
       LuaApi::Loader l(NULL);
       l.runFile(files[i]);
-      QString name = l.getName();
+      QString name = l.getString("name");
       if(name.isEmpty()) {
         allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
         continue;
       }
 
-      ThemeInfo t(files[i], name, l.getDescription(), l.getVariants(), lm);
+      ThemeInfo t(files[i], name, l.getString("description"), l.getStringList("variants"), lm);
       retv << t;
       allluafiles << t;
     }
@@ -111,7 +111,7 @@ OptList PrefTheme::get_file_options(const QString& f) {
   LuaApi::Loader l(NULL);
   l.runFile(f);
 
-  boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptions()));
+  boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptList("options")));
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(f);
   options_list_load_from_settings(*o, entry.group("options"));

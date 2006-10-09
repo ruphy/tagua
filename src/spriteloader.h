@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -13,6 +13,7 @@
 
 #include <QPixmap>
 #include <QString>
+#include "loader/theme.h"
 
 /**
   * @class SpriteLoader <spriteloader.h>
@@ -64,6 +65,9 @@ public:
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
   QPixmap operator()(const QString& id);
+
+  /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
+  ::Loader::PixmapOrMap getPixmapMap(const QString& id);
 };
 
 #endif // SPRITELOADER_H

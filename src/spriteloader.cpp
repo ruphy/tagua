@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -97,5 +97,15 @@ QPixmap SpriteLoader::operator()(const QString& id) {
     initialize();
 
   return m_loader->getPixmap(id, m_size);
+}
+
+::Loader::PixmapOrMap SpriteLoader::getPixmapMap(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return ::Loader::PixmapOrMap();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getPixmapMap(id, m_size);
 }
 

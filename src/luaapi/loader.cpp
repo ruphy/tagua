@@ -124,6 +124,16 @@ struct Loader::create_image_data {
   }
 };
 
+struct Loader::create_image_map_data {
+  const QString& key;
+  int size;
+  ImageOrMap out;
+  create_image_map_data(const QString& _key, int _size)
+    : key(_key)
+    , size(_size) {
+  }
+};
+
 QImage Loader::getImage(const QString& key, int size) {
   StackCheck s(m_state);
 
@@ -137,8 +147,21 @@ QImage Loader::getImage(const QString& key, int size) {
   return data.out;
 }
 
-OptList Loader::getOptList(const QString& l) {
+ImageOrMap Loader::getImageMap(const QString& key, int size) {
   StackCheck s(m_state);
+
+  create_image_map_data data(key, size);
+  if(lua_cpcall(m_state, create_image_map_func, &data) != 0) {
+    m_error = true;
+    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
+    lua_pop(m_state, 1);
+    return ImageMap();
+  }
+  return data.out;
+}
+
+OptList Loader::getOptList(const QString& l) {
+  StackCheck check(m_state);
 
   lua_getglobal(m_state, l.toAscii().constData());
   OptList *list = Wrapper<OptList>::retrieve(m_state, -1);
@@ -146,15 +169,11 @@ OptList Loader::getOptList(const QString& l) {
   return list ? *list : OptList();
 }
 
-OptList Loader::getOptions() {
-  return getOptList("options");
-}
-
-QStringList Loader::getVariants() {
-  StackCheck s(m_state);
+QStringList Loader::getStringList(const QString& s) {
+  StackCheck check(m_state);
   QStringList retv;
 
-  lua_getglobal(m_state, "variants");
+  lua_getglobal(m_state, s.toAscii().constData());
   if(lua_isstring(m_state, -1))
     retv << QString(lua_tostring(m_state, -1));
   else if(lua_istable(m_state, -1)) {
@@ -169,22 +188,11 @@ QStringList Loader::getVariants() {
   return retv;
 }
 
-QString Loader::getName() {
-  StackCheck s(m_state);
+QString Loader::getString(const QString& s) {
+  StackCheck check(m_state);
   QString retv;
 
-  lua_getglobal(m_state, "name");
-  if(lua_isstring(m_state, -1))
-    retv = QString(lua_tostring(m_state, -1));
-  lua_pop(m_state, 1);
-  return retv;
-}
-
-QString Loader::getDescription() {
-  StackCheck s(m_state);
-  QString retv;
-
-  lua_getglobal(m_state, "description");
+  lua_getglobal(m_state, s.toAscii().constData());
   if(lua_isstring(m_state, -1))
     retv = QString(lua_tostring(m_state, -1));
   lua_pop(m_state, 1);
@@ -206,6 +214,42 @@ int Loader::create_image_func(lua_State *l) {
   data->out = retv->m_image;
   lua_pop(l, 1);
 
+  return 0;
+}
+
+int Loader::create_image_map_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_image_map_data* data = reinterpret_cast<create_image_map_data*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+
+  if(::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1)) {
+     data->out = img->m_image;
+  }
+  else {
+    ImageMap m;
+    lua_pushnil(l);
+    while (lua_next(l, -2) != 0) {
+      QRectF *rect = Wrapper<QRectF>::retrieve(l, -2, AssertOk);
+      ::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
+
+      QRect r = rect->toRect();
+      printf("Fetching %d,%d,%d,%d\n", r.left(), r.top(),
+                                    r.width(), r.height());
+      m[rect->toRect()] = img->m_image;
+
+      lua_pop(l, 1);
+    }
+    data->out = m;
+  }
+
+  lua_pop(l, 1);
   return 0;
 }
 

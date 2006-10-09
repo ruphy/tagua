@@ -104,7 +104,7 @@ private:
   Canvas::Group *m_pieces_group;
 
   /** the canvas item that is used as background of the board */
-  Canvas::TiledPixmap *m_canvas_background;
+  Canvas::Group *m_canvas_background;
 
   /** all the tags on the board */
   BoardTagsPtr m_tags;
@@ -147,6 +147,9 @@ private:
 
   /** the text items for the border */
   std::vector<boost::shared_ptr<Canvas::Item> > m_border_items;
+
+  /** this internal function updates the background after the board has been resized  */
+  void updateBackground();
 
   /** this internal function updates the border after the board has been resized  */
   void updateBorder();

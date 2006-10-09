@@ -19,13 +19,16 @@
 
 namespace Loader {
 
+typedef std::map<QRect, QPixmap, ::LuaApi::RectLess> PixmapMap;
+typedef boost::variant<QPixmap, PixmapMap> PixmapOrMap;
+
 class Theme : public QObject {
 Q_OBJECT
   QString m_file;
 public:
   class SizeCache {
   public:
-    typedef std::map<QString, QPixmap> Cache;
+    typedef std::map<QString, PixmapOrMap> Cache;
     int m_ref_count;
     Cache m_cache;
 
@@ -39,6 +42,8 @@ private:
   LuaApi::Loader m_lua_loader;
   Cache m_cache;
 
+  static PixmapOrMap to_pixmap_map(const ::LuaApi::ImageOrMap& m);
+
 public:
   Theme(const QString& lua_file);
   ~Theme();
@@ -47,6 +52,7 @@ public:
   void unrefSize(int size);
 
   QPixmap getPixmap(const QString& key, int size);
+  PixmapOrMap getPixmapMap(const QString& key, int size);
 private slots:
   void onSettingsChanged();
 };
