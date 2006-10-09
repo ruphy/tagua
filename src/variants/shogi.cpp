@@ -517,7 +517,8 @@ public:
       retv += "-";
     retv += QString::number(m_move.to.y+1);
     retv += QString((8-m_move.to.x)+'a');
-    if(ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
+    if(!p.promoted() && !m_move.dropped() &&
+            ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
       if(m_move.m_promote)
         retv += "+";
       else
