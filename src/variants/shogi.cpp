@@ -440,7 +440,7 @@ bool ShogiPosition::pseudolegal(Move& m) const {
       if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
       for (int i = 0; i < 9; i++)
         if (ShogiPiece other = m_board[Point(m.to.x, i)])
-          if (other.color() == m_turn && other.type() == Piece::PAWN) return false;
+          if (other.color() == m_turn && other.type() == Piece::PAWN && !other.promoted()) return false;
     }
     else if (dropped.type() == Piece::LANCE)
       if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
@@ -463,14 +463,16 @@ void ShogiPosition::move(const ShogiMove& m) {
       m_pool.erase(m.dropped());
   }
   else {
-    if (Piece captured = m_board[m.to])
-      addToPool(Piece(Piece::oppositeColor(captured.color()), captured.type(), false), 1);
+    if (Piece captured = m_board[m.to]) {
+      addToPool(Piece(Piece::oppositeColor(captured.color()),
+                      captured.type(), false), 1);
+    }
 
     m_board[m.to] = m_board[m.from];
     m_board[m.from] = Piece();
   }
 
-  if (promotionZone(m_turn, m.to) && m.promote()) {
+  if (m.promote() && (promotionZone(m_turn, m.to) | promotionZone(m_turn, m.from))) {
     Piece::Type type = m_board[m.to].type();
     if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
       m_board[m.to].promote();
