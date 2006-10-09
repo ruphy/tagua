@@ -262,6 +262,7 @@ public:
   void dump() const { }
 
   static bool promotionZone(Piece::Color color, const Point& p);
+  static bool stuckPiece(const Piece& piece, const Point& to);
   PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
 };
 
@@ -433,18 +434,29 @@ bool ShogiPosition::testMove(Move& m) const {
   return pseudolegal(m);
 }
 
+bool ShogiPosition::stuckPiece(const ShogiPiece& piece, const Point& p) {
+  if (piece.type() == Piece::PAWN || piece.type() == Piece::PAWN)
+    if (p.y == (piece.color() == Piece::WHITE ? 0 : 8)) return true;
+  else if (piece.type() == Piece::KNIGHT) {
+    if (piece.color() == Piece::WHITE) {
+      if (p.y >= 7) return true;
+    }
+    else if (piece.color() == Piece::BLACK) {
+      if (p.y <= 1) return true;
+    }
+  }
+  return false;
+}
+
 bool ShogiPosition::pseudolegal(Move& m) const {
   if (ShogiPiece dropped = m.dropped()) {
     if (m_board[m.to]) return false;
+    if (stuckPiece(dropped, m.to)) return false;
     if (dropped.type() == Piece::PAWN) {
-      if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
       for (int i = 0; i < 9; i++)
         if (ShogiPiece other = m_board[Point(m.to.x, i)])
           if (other.color() == m_turn && other.type() == Piece::PAWN && !other.promoted()) return false;
     }
-    else if (dropped.type() == Piece::LANCE)
-      if (m.to.y == (m_turn == Piece::WHITE ? 0 : 8)) return false;
-
     return true;
   }
   else {
@@ -472,10 +484,12 @@ void ShogiPosition::move(const ShogiMove& m) {
     m_board[m.from] = Piece();
   }
 
-  if (m.promote() && (promotionZone(m_turn, m.to) | promotionZone(m_turn, m.from))) {
-    Piece::Type type = m_board[m.to].type();
-    if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
-      m_board[m.to].promote();
+  if (promotionZone(m_turn, m.to) | promotionZone(m_turn, m.from)) {
+    if (m.promote() || stuckPiece(m_board[m.to], m.to)) {
+      Piece::Type type = m_board[m.to].type();
+      if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
+        m_board[m.to].promote();
+    }
   }
 
   switchTurn();
@@ -606,3 +620,21 @@ VariantInfo* ShogiVariant::info() {
     static_shogi_variant = new WrappedVariantInfo<ShogiVariantInfo>;
   return static_shogi_variant;
 }
+
+
+template <>
+struct MoveFactory<ShogiVariantInfo> {
+  static ShogiMove createNormalMove(const NormalUserMove& move) {
+    return ShogiMove(move.from, move.to, move.promotionType >= 0);
+  }
+  static ShogiMove createDropMove(const ShogiPiece& dropped, const Point& to) {
+    return ShogiMove(dropped, to);
+  }
+
+  static NormalUserMove toNormal(const ShogiMove& move) {
+    return NormalUserMove(move.from, move.to);
+  }
+};
+
+
+

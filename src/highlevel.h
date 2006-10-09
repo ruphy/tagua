@@ -476,8 +476,15 @@ public:
       MoveFactory<Variant>::createNormalMove(move)));
   }
   virtual AbstractMove::Ptr createDropMove(const DropUserMove& move) {
-    return AbstractMove::Ptr(new WrappedMove<Variant>(
-      MoveFactory<Variant>::createDropMove(move)));
+    WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(move.m_piece.get());
+    if (piece) {
+      return AbstractMove::Ptr(new WrappedMove<Variant>(
+        MoveFactory<Variant>::createDropMove(piece->inner(), move.m_to)));
+    }
+    else {
+      MISMATCH(move.m_piece.get(), WrappedPiece<Variant>);
+      return AbstractMove::Ptr();
+    }
   }
 
   virtual AbstractMove::Ptr getVerboseMove(int turn, const VerboseNotation& m) const {

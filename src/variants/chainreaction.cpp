@@ -426,8 +426,8 @@ struct MoveFactory<ChainReactionVariantInfo> {
   static ChainReactionMove createNormalMove(const NormalUserMove& move) {
     return move.to;
   }
-  static ChainReactionMove createDropMove(const DropUserMove& move) {
-    return move.m_to;
+  static ChainReactionMove createDropMove(const ChainReactionPiece& piece, const Point& to) {
+    return to;
   }
   static NormalUserMove toNormal(const ChainReactionMove& m) {
     return NormalUserMove(Point::invalid(), m);

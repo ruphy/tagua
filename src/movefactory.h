@@ -21,9 +21,8 @@ struct MoveFactory {
     return typename Variant::Move(move.from, move.to,
             static_cast<typename Variant::Piece::PromotionType>(move.promotionType));
   }
-  static typename Variant::Move createDropMove(const DropUserMove& move) {
-    WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(move.m_piece.get());
-    return Variant::Move::createDropMove(piece->inner(), move.m_to);
+  static typename Variant::Move createDropMove(const typename Variant::Piece& piece, const Point& to) {
+    return Variant::Move::createDropMove(piece, to);
   }
 
   static NormalUserMove toNormal(const typename Variant::Move& move) {

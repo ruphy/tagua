@@ -22,6 +22,7 @@
   </Menu>
   <Menu name="gameMenu">
    <text>&amp;Game</text>
+   <Action name="doPromotion" />
    <Menu name="promotionType">
     <text>&amp;Promote to</text>
     <Action name="promoteQueen"/>

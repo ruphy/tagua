@@ -95,6 +95,7 @@ MainWindow::MainWindow()
 
   setupActions();
   setupGUI();
+  updatePromotionType();
 }
 
 ChessTable* MainWindow::table() {
@@ -123,6 +124,10 @@ void MainWindow::setupActions() {
   m_promote_rook = addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
+  
+  m_do_promotion = new KAction(KIcon("favorites"), i18n("Do &promotion"), actionCollection(), "doPromotion");
+  m_do_promotion->setCheckable(true);
+  connect(m_do_promotion, SIGNAL(triggered(bool)), &ui(), SLOT(setDoPromotion(bool)));
 
   temp = new KAction(KIcon("back"), i18n("&Back"), actionCollection(), "back");
   connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(back()));
@@ -193,6 +198,9 @@ void MainWindow::updatePromotionType() {
       m_promote_group->setEnabled(false);
     }
   }
+  
+  std::cout << "do promotion: " << m_ui.doPromotion() << std::endl;
+  m_do_promotion->setChecked(m_ui.doPromotion());
 }
 
 void MainWindow::readSettings() { }

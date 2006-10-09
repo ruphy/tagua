@@ -58,6 +58,8 @@ Q_OBJECT
   KAction* m_promote_bishop;
   KAction* m_promote_knight;
   QActionGroup* m_promote_group;
+  
+  KAction* m_do_promotion;
 
   ChessTable* table();
   UI m_ui;

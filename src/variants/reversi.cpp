@@ -354,8 +354,8 @@ struct MoveFactory<ReversiVariantInfo> {
   static ReversiMove createNormalMove(const NormalUserMove& move) {
     return move.to;
   }
-  static ReversiMove createDropMove(const DropUserMove& move) {
-    return move.m_to;
+  static ReversiMove createDropMove(const ReversiPiece& p, const Point& to) {
+    return to;
   }
   static NormalUserMove toNormal(const ReversiMove& m) {
     return NormalUserMove(Point::invalid(), m);

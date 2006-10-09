@@ -55,12 +55,16 @@ public slots:
   void pgnPaste();
   void pgnPaste(const QString&);
 
-  // promotion
+  // promotion type
   void promoteToQueen();
   void promoteToRook();
   void promoteToBishop();
   void promoteToKnight();
   int promotionType() const;
+  
+  // do promotion
+  void setDoPromotion(bool);
+  bool doPromotion() const;
 
   // editing
   void clearBoard();

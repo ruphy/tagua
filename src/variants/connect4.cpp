@@ -312,8 +312,8 @@ struct MoveFactory<Connect4VariantInfo> {
   static Connect4Move createNormalMove(const NormalUserMove& move) {
     return move.to;
   }
-  static Connect4Move createDropMove(const DropUserMove& move) {
-    return move.m_to;
+  static Connect4Move createDropMove(const Connect4Piece& piece, const Point& to) {
+    return to;
   }
   static NormalUserMove toNormal(const Connect4Move& m) {
     return NormalUserMove(Point::invalid(), m);

@@ -96,6 +96,9 @@ public:
     * @sa setPromotionType.
     */
   virtual int promotionType() const;
+  
+  virtual void setDoPromotion(bool);
+  virtual bool doPromotion() const;
 
   /**
     * Change turn. Used for example in edit position mode.
