@@ -431,18 +431,46 @@ void ShogiPosition::setup() {
 #undef SET_PIECE
 
 bool ShogiPosition::testMove(Move& m) const {
-  return pseudolegal(m);
+  if (!pseudolegal(m))
+    return false;
+  
+  ShogiPosition tmp(*this);
+  tmp.move(m);
+  
+  // find king position
+  Point king_pos = Point::invalid();
+  ShogiPiece king(m_turn, ShogiPiece::KING);
+  for (Point i = tmp.m_board.first(); i <= tmp.m_board.last(); i = tmp.m_board.next(i)) {
+    if (ShogiPiece p = tmp[i])
+      if (p == king) {
+        king_pos = i;
+        break;
+      }
+  }
+  if (!king_pos.valid()) return false;
+  
+  // check if the king can be captured
+  for (Point i = tmp.m_board.first(); i <= tmp.m_board.last(); i = tmp.m_board.next(i)) {
+    if (ShogiPiece p = tmp[i])
+      if (p.color() == tmp.turn() && p.canMove(tmp, i, king_pos)) return false;
+  }
+  
+  return true;
 }
 
 bool ShogiPosition::stuckPiece(const ShogiPiece& piece, const Point& p) {
-  if (piece.type() == Piece::PAWN || piece.type() == Piece::PAWN)
-    if (p.y == (piece.color() == Piece::WHITE ? 0 : 8)) return true;
+  if (piece.type() == Piece::PAWN) {
+    if (p.y == (piece.color() == Piece::WHITE ? 8 : 0))
+      return true;
+  }
   else if (piece.type() == Piece::KNIGHT) {
     if (piece.color() == Piece::WHITE) {
-      if (p.y >= 7) return true;
+      if (p.y >= 7)
+        return true;
     }
-    else if (piece.color() == Piece::BLACK) {
-      if (p.y <= 1) return true;
+    else {
+      if (p.y <= 1)
+        return true;
     }
   }
   return false;
@@ -461,7 +489,7 @@ bool ShogiPosition::pseudolegal(Move& m) const {
   }
   else {
     const Piece& p = m_board[m.from];
-    return p.canMove(*this, m.from, m.to);
+    return p && p.canMove(*this, m.from, m.to);
   }
 }
 
@@ -505,35 +533,35 @@ public:
   QString SAN() const {
     ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
     bool ambiguous = false;
-    if(!m_move.m_dropped)
-    for(Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
-      if(i==m_move.from || m_ref.m_board[i] != p)
+    if (!m_move.m_dropped)
+    for (Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
+      if (i==m_move.from || m_ref.m_board[i] != p)
         continue;
       ShogiMove mv(i, m_move.to, false);
-      if(m_ref.testMove(mv)) {
+      if (m_ref.testMove(mv)) {
         ambiguous = true;
         break;
       }
     }
     QString retv;
-    if(p.promoted())
+    if (p.promoted())
       retv += "+";
     retv += ShogiPiece::typeSymbol(p.type());
-    if(ambiguous) {
+    if (ambiguous) {
       retv += QString::number(m_move.from.y+1);
       retv += QString((8-m_move.from.x)+'a');
     }
-    if(m_move.m_dropped)
+    if (m_move.m_dropped)
       retv += "*";
-    else if(m_ref.m_board[m_move.to])
+    else if (m_ref.m_board[m_move.to])
       retv += "x";
     else
       retv += "-";
     retv += QString::number(m_move.to.y+1);
     retv += QString((8-m_move.to.x)+'a');
-    if(!p.promoted() && !m_move.dropped() &&
+    if (!p.promoted() && !m_move.dropped() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
-      if(m_move.m_promote)
+      if (m_move.m_promote)
         retv += "+";
       else
         retv += "=";
