@@ -645,8 +645,8 @@ public:
       retv += "+";
     retv += ShogiPiece::typeSymbol(p.type());
     if (ambiguous) {
-      retv += QString::number(m_move.from.x+1);
-      retv += QString(m_move.to.y+'a');
+      retv += QString::number(9-m_move.from.x);
+      retv += QString(m_move.from.y+'a');
     }
     if (m_move.m_dropped)
       retv += "*";
@@ -654,7 +654,7 @@ public:
       retv += "x";
     else
       retv += "-";
-    retv += QString::number(m_move.to.x+1);
+    retv += QString::number(9-m_move.to.x);
     retv += QString(m_move.to.y+'a');
     if (!p.promoted() && !m_move.dropped() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
@@ -675,7 +675,7 @@ public:
     else
       retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
     if (ambiguous) {
-      retv += MovePart(QString::number(m_move.from.x+1));
+      retv += MovePart(QString::number(9-m_move.from.x));
       retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
     }
     QString mmm;
@@ -685,7 +685,7 @@ public:
       mmm += "x";
     else
       mmm += "-";
-    mmm += QString::number(m_move.to.x+1);
+    mmm += QString::number(9-m_move.to.x);
     retv += MovePart(mmm);
     retv += MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine);
     if (!p.promoted() && !m_move.dropped() &&
