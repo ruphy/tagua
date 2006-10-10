@@ -523,53 +523,6 @@ void ShogiPosition::move(const ShogiMove& m) {
   switchTurn();
 }
 
-template <>
-class MoveSerializer<ShogiPosition> {
-  const ShogiMove&     m_move;
-  const ShogiPosition& m_ref;
-public:
-  MoveSerializer(const ShogiMove& m, const ShogiPosition& r)
-    : m_move(m), m_ref(r) { }
-  QString SAN() const {
-    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
-    bool ambiguous = false;
-    if (!m_move.m_dropped)
-    for (Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
-      if (i==m_move.from || m_ref.m_board[i] != p)
-        continue;
-      ShogiMove mv(i, m_move.to, false);
-      if (m_ref.testMove(mv)) {
-        ambiguous = true;
-        break;
-      }
-    }
-    QString retv;
-    if (p.promoted())
-      retv += "+";
-    retv += ShogiPiece::typeSymbol(p.type());
-    if (ambiguous) {
-      retv += QString::number(m_move.from.y+1);
-      retv += QString((8-m_move.from.x)+'a');
-    }
-    if (m_move.m_dropped)
-      retv += "*";
-    else if (m_ref.m_board[m_move.to])
-      retv += "x";
-    else
-      retv += "-";
-    retv += QString::number(m_move.to.y+1);
-    retv += QString((8-m_move.to.x)+'a');
-    if (!p.promoted() && !m_move.dropped() &&
-            ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
-      if (m_move.m_promote)
-        retv += "+";
-      else
-        retv += "=";
-    }
-    return retv;
-  }
-};
-
 class ShogiAnimator : protected CrazyhouseAnimator {
 protected:
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
@@ -616,7 +569,16 @@ ShogiAnimator::AnimationPtr ShogiAnimator::back(AbstractPosition::Ptr pos, const
 
 
 class ShogiVariantInfo {
+  static QStringList numbers;
 public:
+  static QStringList& getNumbers() {
+    if (numbers.empty())
+      numbers << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03) 
+              << QChar(0x516d) << QChar(0x4e94) << QChar(0x56db) 
+              << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
+    return numbers;
+  }
+
   typedef ShogiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
@@ -626,7 +588,7 @@ public:
   static QStringList borderCoords(){
     return QStringList()
                          << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1"
-                        << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03) << QChar(0x516d) << QChar(0x4e94) << QChar(0x56db) << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
+                        << getNumbers();
   }
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
@@ -634,6 +596,7 @@ public:
   static const char *m_theme_proxy;
 };
 
+QStringList ShogiVariantInfo::numbers;
 const char *ShogiVariantInfo::m_name = "Shogi";
 const char *ShogiVariantInfo::m_theme_proxy = "Shogi";
 
@@ -649,6 +612,54 @@ VariantInfo* ShogiVariant::info() {
     static_shogi_variant = new WrappedVariantInfo<ShogiVariantInfo>;
   return static_shogi_variant;
 }
+
+
+template <>
+class MoveSerializer<ShogiPosition> {
+  const ShogiMove&     m_move;
+  const ShogiPosition& m_ref;
+public:
+  MoveSerializer(const ShogiMove& m, const ShogiPosition& r)
+    : m_move(m), m_ref(r) { }
+  QString SAN() const {
+    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    bool ambiguous = false;
+    if (!m_move.m_dropped)
+    for (Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
+      if (i==m_move.from || m_ref.m_board[i] != p)
+        continue;
+      ShogiMove mv(i, m_move.to, false);
+      if (m_ref.testMove(mv)) {
+        ambiguous = true;
+        break;
+      }
+    }
+    QString retv;
+    if (p.promoted())
+      retv += "+";
+    retv += ShogiPiece::typeSymbol(p.type());
+    if (ambiguous) {
+      retv += QString::number(m_move.from.x+1);
+      retv += QString(m_move.to.y+'a');
+    }
+    if (m_move.m_dropped)
+      retv += "*";
+    else if (m_ref.m_board[m_move.to])
+      retv += "x";
+    else
+      retv += "-";
+    retv += QString::number(m_move.to.x+1);
+    retv += QString(m_move.to.y+'a');
+    if (!p.promoted() && !m_move.dropped() &&
+            ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
+      if (m_move.m_promote)
+        retv += "+";
+      else
+        retv += "=";
+    }
+    return retv;
+  }
+};
 
 
 template <>
