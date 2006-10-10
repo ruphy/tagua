@@ -596,8 +596,12 @@ public:
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static QStringList borderCoords(){
-    return QStringList() << "i" << "h" << "g" << "f" << "e" << "d" << "c" << "b" << "a"
-                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1";
+    return QStringList()
+                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1"
+                  << QString(QChar(0x4e5d)) << QString(QChar(0x516b)) << QString(QChar(0x4e03))
+                  << QString(QChar(0x529b)) << QString(QChar(0x4e94)) << QString(QChar(0x56db))
+                  << QString(QChar(0x4e09)) << QString(QChar(0x4e8c)) << QString(QChar(0x4e00));
+                        //<< "i" << "h" << "g" << "f" << "e" << "d" << "c" << "b" << "a";
   }
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
