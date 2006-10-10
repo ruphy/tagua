@@ -139,7 +139,7 @@ QString ShogiPiece::typeSymbol(ShogiPiece::Type t) {
   case BISHOP:
     return "B";
   case PAWN:
-    return "p";
+    return "P";
   default:
     return "?";
   }
@@ -670,7 +670,10 @@ public:
     ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
     bool ambiguous = isAmbiguous();
     DecoratedMove retv;
-    retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
+    if(p.type() == ShogiPiece::KING)
+      retv += MovePart(p.color() == ShogiPiece::BLACK?"king1":"king2", MovePart::Figurine);
+    else
+      retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
     if (ambiguous) {
       retv += MovePart(QString::number(m_move.from.x+1));
       retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
