@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -19,6 +19,7 @@
 #include <QString>
 #include <QColor>
 #include "index.h"
+#include "decoratedmove.h"
 #include "canvas/item.h"
 
 namespace MoveList {
@@ -31,21 +32,6 @@ typedef std::vector<EntryPtr> History;
 typedef std::map<int, History> Variations;
 typedef std::map<int, BracePtr> Braces;
 typedef std::map<int, CommentPtr> VComments;
-
-enum MovePartTag {
-  MoveText,
-  MovePixmap
-};
-
-class MovePart {
-public:
-  MovePartTag tag;
-  QString str;
-  MovePart(MovePartTag t, const QString& s)
-    : tag(t)
-    , str(s) {
-  }
-};
 
 class Settings {
 public:
@@ -193,7 +179,7 @@ public:
   int  height;
   int  childs_height;
   int  move_turn;
-  std::vector<MovePart> move;
+  DecoratedMove move;
   Index index;
   bool needs_update;
 
@@ -210,9 +196,7 @@ public:
   virtual QRect rect () const;
   virtual bool canStop() { return time_highlight==-1 && FancyItem::canStop(); }
 
-  int calcWidth();
-
-  Entry(int turn, const std::vector<MovePart>& m, const Index& i, Canvas::Abstract* c = NULL)
+  Entry(int turn, const DecoratedMove& m, const Index& i, Canvas::Abstract* c = NULL)
     : FancyItem(c)
     , expanded(true)
     , hide_next(false)

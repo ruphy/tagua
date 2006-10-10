@@ -16,6 +16,7 @@
 #include <boost/variant.hpp>
 #include <QDir>
 #include <QImage>
+#include "loader/image.h"
 #include "option.h"
 
 class lua_State;
@@ -62,6 +63,7 @@ public:
   bool runFile(const QString& file, bool set_dir = true);
   QImage getImage(const QString& key, int size);
   ImageOrMap getImageMap(const QString& key, int size);
+  ::Loader::Glyph getGlyph(const QString& key);
   QStringList getStringList(const QString&);
   QString getString(const QString&);
   OptList getOptList(const QString&);

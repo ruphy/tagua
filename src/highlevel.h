@@ -290,6 +290,19 @@ public:
     }
   }
 
+  virtual DecoratedMove toDecoratedMove(boost::shared_ptr<AbstractPosition> _pos) const {
+    WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+
+    if (pos) {
+      MoveSerializer<Position> serializer(m_move, pos->inner());
+      return serializer.toDecoratedMove();
+    }
+    else {
+      MISMATCH(*_pos.get(),WrappedPosition<Variant>);
+      return DecoratedMove();
+    }
+  }
+
   virtual QString toString(AbstractPosition::Ptr _pos) const {
     WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
 

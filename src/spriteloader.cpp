@@ -109,3 +109,13 @@ QPixmap SpriteLoader::operator()(const QString& id) {
   return m_loader->getPixmapMap(id, m_size);
 }
 
+::Loader::Glyph SpriteLoader::getGlyph(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return ::Loader::Glyph();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getGlyph(id, m_size);
+}
+

@@ -15,6 +15,7 @@
 #include "global.h"
 #include "graphicalinfo.h"
 #include "movelist_table.h"
+#include "decoratedmove.h"
 #include "entities/userentity.h"
 #include <iostream>
 
@@ -95,8 +96,8 @@ void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
   for(int i=at;i<(int)vec->size();i++) {
     Entry* e = &(*vec)[i];
     PositionPtr prev = position(index.prev());
-    QString mv = (e->move && prev) ? e->move->SAN(prev) :
-                  e->position ? "(-)" : "???";
+    DecoratedMove mv = (e->move && prev) ? e->move->toDecoratedMove(prev) :
+                  DecoratedMove() << MovePart(e->position ? "(-)" : "???");
     int turn = prev ? prev->turn() : (index.totalNumMoves()+1)%2;
     //mv += " " + QString::number(turn);
     m_movelist->setMove(index, turn, mv, e->comment, confirm_promotion);
@@ -132,8 +133,8 @@ void GraphicalGame::onEntryChanged(const Index& at, int propagate) {
     AbstractPosition::Ptr last_pos;
     if (pe) last_pos = pe->position;
 
-    QString mv = (e->move && last_pos) ? e->move->SAN(last_pos) :
-                                          e->position ? "(-)" : "???";
+    DecoratedMove mv = (e->move && last_pos) ? e->move->toDecoratedMove(last_pos) :
+                    DecoratedMove() << MovePart(e->position ? "(-)" : "???");
     int turn = last_pos ? last_pos->turn() : (at.totalNumMoves()+1)%2;
     m_movelist->setMove(at, turn, mv, e->comment);
     if(at == current && e->position)

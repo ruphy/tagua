@@ -433,10 +433,10 @@ void ShogiPosition::setup() {
 bool ShogiPosition::testMove(Move& m) const {
   if (!pseudolegal(m))
     return false;
-  
+
   ShogiPosition tmp(*this);
   tmp.move(m);
-  
+
   // find king position
   Point king_pos = Point::invalid();
   ShogiPiece king(m_turn, ShogiPiece::KING);
@@ -448,13 +448,13 @@ bool ShogiPosition::testMove(Move& m) const {
       }
   }
   if (!king_pos.valid()) return false;
-  
+
   // check if the king can be captured
   for (Point i = tmp.m_board.first(); i <= tmp.m_board.last(); i = tmp.m_board.next(i)) {
     if (ShogiPiece p = tmp[i])
       if (p.color() == tmp.turn() && p.canMove(tmp, i, king_pos)) return false;
   }
-  
+
   return true;
 }
 
@@ -573,8 +573,8 @@ class ShogiVariantInfo {
 public:
   static QStringList& getNumbers() {
     if (numbers.empty())
-      numbers << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03) 
-              << QChar(0x516d) << QChar(0x4e94) << QChar(0x56db) 
+      numbers << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03)
+              << QChar(0x516d) << QChar(0x4e94) << QChar(0x56db)
               << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
     return numbers;
   }
@@ -618,10 +618,7 @@ template <>
 class MoveSerializer<ShogiPosition> {
   const ShogiMove&     m_move;
   const ShogiPosition& m_ref;
-public:
-  MoveSerializer(const ShogiMove& m, const ShogiPosition& r)
-    : m_move(m), m_ref(r) { }
-  QString SAN() const {
+  bool isAmbiguous() const {
     ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
     bool ambiguous = false;
     if (!m_move.m_dropped)
@@ -634,6 +631,15 @@ public:
         break;
       }
     }
+    return ambiguous;
+  }
+public:
+  MoveSerializer(const ShogiMove& m, const ShogiPosition& r)
+    : m_move(m), m_ref(r) { }
+
+  QString SAN() const {
+    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    bool ambiguous = isAmbiguous();
     QString retv;
     if (p.promoted())
       retv += "+";
@@ -656,6 +662,35 @@ public:
         retv += "+";
       else
         retv += "=";
+    }
+    return retv;
+  }
+
+  DecoratedMove toDecoratedMove() const {
+    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    bool ambiguous = isAmbiguous();
+    DecoratedMove retv;
+    retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
+    if (ambiguous) {
+      retv += MovePart(QString::number(m_move.from.x+1));
+      retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
+    }
+    QString mmm;
+    if (m_move.m_dropped)
+      mmm += "*";
+    else if (m_ref.m_board[m_move.to])
+      mmm += "x";
+    else
+      mmm += "-";
+    mmm += QString::number(m_move.to.x+1);
+    retv += MovePart(mmm);
+    retv += MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine);
+    if (!p.promoted() && !m_move.dropped() &&
+            ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
+      if (m_move.m_promote)
+        retv += MovePart("+");
+      else
+        retv += MovePart("=");
     }
     return retv;
   }

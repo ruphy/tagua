@@ -70,6 +70,14 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
       updated = true;
       LuaApi::Loader l(NULL);
       l.runFile(files[i]);
+
+      if(l.error()) {
+        allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
+        std::cout << " --> Error loading " << files[i] << std::endl
+              << l.errorString() << std::endl;
+        continue;
+      }
+
       QString name = l.getString("name");
       if(name.isEmpty()) {
         allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
@@ -345,11 +353,13 @@ void PrefTheme::squaresThemeChecked(bool ck) {
     m_new_use_def_squares[vi->name()] = ck;
 }
 
-QString PrefTheme::getBestTheme(VariantInfo* vi, bool squares) {
-  QString tag = squares ? "square-theme" : "piece-theme";
-  QString deftag = squares ? "use-def-squares" : "use-def-pieces";
-  QString group = squares ? "squares" : "pieces";
-  QString pattern = squares ? "themes/Squares/*.lua" : "themes/Pieces/*.lua";
+QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
+  QString group = type == Pieces ? "pieces" :
+                  type == Squares ? "squares" : "figurines";
+  QString pattern = type == Pieces ? "themes/Pieces/*.lua" :
+                  type == Squares ? "themes/Squares/*.lua" : "themes/Figurines/*.lua";
+  QString tag = group + "-theme";
+  QString deftag = "use-def-" + group;
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(v);

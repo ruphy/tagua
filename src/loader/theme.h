@@ -29,8 +29,10 @@ public:
   class SizeCache {
   public:
     typedef std::map<QString, PixmapOrMap> Cache;
+    typedef std::map<QString, Glyph> Cache2;
     int m_ref_count;
     Cache m_cache;
+    Cache2 m_cache2;
 
     SizeCache()
       : m_ref_count(0) {}
@@ -53,6 +55,7 @@ public:
 
   QPixmap getPixmap(const QString& key, int size);
   PixmapOrMap getPixmapMap(const QString& key, int size);
+  Glyph getGlyph(const QString& key, int size);
 private slots:
   void onSettingsChanged();
 };

@@ -400,5 +400,33 @@ Image Image::createShadow(double radius,
 
 //END Image--------------------------------------------------------------------
 
-} //end namespace Loader
+//BEGIN Glyph------------------------------------------------------------------
 
+Glyph::Glyph(Context* ctx, const QString& file, QChar c)
+  : m_font_valid(false)
+  , m_char(c) {
+  if(ctx) {
+    FontPtr ff;
+    if(FontPtr *f = ctx->get<FontPtr>(file))
+      ff = *f;
+    else {
+      std::cout << "LOAD " << file << std::endl;
+      int font_id = QFontDatabase::addApplicationFont(file);
+      if(font_id != -1) {
+        ff = FontPtr(new Font(font_id) );
+      }
+      ctx->put(file, ff);
+    }
+    if(ff)
+      m_font = ff->m_font;
+  }
+}
+
+Glyph::Glyph(QChar c)
+  : m_font_valid(false)
+  , m_char(c) {
+}
+
+//END Glyph--------------------------------------------------------------------
+
+} //end namespace Loader

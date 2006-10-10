@@ -50,6 +50,7 @@
 #include "usermove.h"
 #include "index.h"
 #include "option.h"
+#include "decoratedmove.h"
 #include "kboard_fwd.h"
 
 /**
@@ -142,6 +143,11 @@ public:
     * Return a compact SAN representation for the move.
     */
   virtual QString SAN(boost::shared_ptr<AbstractPosition> ref) const = 0;
+
+  /**
+    * Return a decorated representation for the move.
+    */
+  virtual DecoratedMove toDecoratedMove(boost::shared_ptr<AbstractPosition> ref) const = 0;
 
   /**
     * Return the move in coordinate notation.

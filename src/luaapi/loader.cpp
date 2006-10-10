@@ -54,6 +54,7 @@ Loader::Loader(::Loader::Context *ctx)
   Wrapper<QConicalGradient>::register_class(l);
   Wrapper<QBrush>::register_class(l);
   Wrapper< ::Loader::Image>::register_class(l);
+  Wrapper< ::Loader::Glyph>::register_class(l);
 
   Wrapper<OptList>::register_class(l);
   Wrapper<BoolOptList>::register_class(l);
@@ -158,6 +159,20 @@ ImageOrMap Loader::getImageMap(const QString& key, int size) {
     return ImageMap();
   }
   return data.out;
+}
+
+::Loader::Glyph Loader::getGlyph(const QString& l) {
+  StackCheck check(m_state);
+
+  lua_getglobal(m_state, l.toAscii().constData());
+  ::Loader::Glyph *g = Wrapper< ::Loader::Glyph>::retrieve(m_state, -1);
+  lua_pop(m_state, 1);
+  if(!g) {
+    std::cout << "Error looking up " << l << std::endl;
+    return ::Loader::Glyph();
+  }
+  std::cout << "Looking up " << l << " " << g->m_char.unicode() << std::endl;
+  return *g;
 }
 
 OptList Loader::getOptList(const QString& l) {

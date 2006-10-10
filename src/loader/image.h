@@ -12,6 +12,7 @@
 #define LOADER__IMAGE_H
 
 #include <QColor>
+#include <QFont>
 #include <QMatrix>
 #include <QBrush>
 #include <QImage>
@@ -250,6 +251,14 @@ public:
                      const QPointF& offset = QPointF() );
 };
 
+class Glyph {
+public:
+  bool m_font_valid;
+  QFont m_font;
+  QChar m_char;
+  Glyph(Context* ctx, const QString&, QChar);
+  Glyph(QChar = QChar());
+};
 
 } //end namespace Loader
 

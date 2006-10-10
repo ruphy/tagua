@@ -20,6 +20,8 @@
 #include <map>
 #include <vector>
 #include "index.h"
+#include "decoratedmove.h"
+#include "spriteloader.h"
 #include "canvas/widget.h"
 
 namespace MoveList {
@@ -33,7 +35,6 @@ typedef std::map<int, History> Variations;
 typedef std::map<int, BracePtr> Braces;
 typedef std::map<int, CommentPtr> VComments;
 
-class MovePart;
 class Notifier;
 class Table;
 class Settings;
@@ -78,6 +79,7 @@ private:
   QHash<QString, QPixmap> loaded_pixmaps;
   Table *owner_table;
   Settings *m_settings;
+  SpriteLoader m_loader;
 
   History* fetchRef(const Index& ix, int* idx = NULL);
   EntryPtr fetch(const Index& ix);
@@ -100,11 +102,9 @@ private:
   virtual void mousePressEvent ( QMouseEvent * event );
   virtual void mouseReleaseEvent ( QMouseEvent * event );
 
+
 private slots:
   void doLayout();
-
-public slots:
-  void settingsChanged();
 
 public:
   Widget(QWidget *parent = NULL, Table *o = NULL);
@@ -112,6 +112,10 @@ public:
 
   Notifier* getNotifier();
   void setNotifier(Notifier* n, bool detach_prev=true);
+
+  void settingsChanged();
+
+  void setLoaderBasePath(const QString& p){ m_loader.setBasePath(p); }
 
   /** Clears all the moves */
   void reset();
@@ -134,7 +138,7 @@ public:
   void setVComment(const Index& index, int v, const QString& comment);
 
   /** Sets the move at the given index */
-  void setMove(const Index& index, int turn, const std::vector<MovePart>& move,
+  void setMove(const Index& index, int turn, const DecoratedMove& move,
                                   const QString& comment = QString());
 
   /** Sets the move at the given index */

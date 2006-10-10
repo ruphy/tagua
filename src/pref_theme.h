@@ -57,7 +57,13 @@ public:
   PrefTheme(QWidget *parent = 0);
   ~PrefTheme();
 
-  static QString getBestTheme(VariantInfo* vi, bool squares = false);
+  enum ThemeType {
+    Pieces,
+    Squares,
+    Figurines
+  };
+
+  static QString getBestTheme(VariantInfo* vi, ThemeType type = Pieces);
 
   void apply();
 };

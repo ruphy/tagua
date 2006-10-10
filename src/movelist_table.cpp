@@ -73,6 +73,16 @@ Table::Table(QWidget* w)
   }
 }
 
+void Table::settingsChanged() {
+  if(m_movelist) m_movelist->settingsChanged();
+  if(m_movelist_textual) m_movelist_textual->settingsChanged();
+}
+
+void Table::setLoaderBasePath(const QString& p) {
+  if(m_movelist) m_movelist->setLoaderBasePath(p);
+  if(m_movelist_textual) m_movelist_textual->setLoaderBasePath(p);
+}
+
 void Table::onUndo() {
   if(m_movelist->notifier)
     if(m_movelist) m_movelist->notifier->onUserUndo();
@@ -94,7 +104,7 @@ void Table::setVComment(const Index& index, int v, const QString& comment, bool 
   if(m_movelist_textual) m_movelist_textual->setVComment(index, v, comment);
 }
 
-void Table::setMove(const Index& index, int turn, const std::vector<MovePart>& move,
+void Table::setMove(const Index& index, int turn, const DecoratedMove& move,
                                 const QString& comment, bool confirm_promotion) {
   if(!confirm_promotion)
     if(m_movelist) m_movelist->setMove(index, turn, move, comment);

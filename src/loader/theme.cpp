@@ -106,6 +106,32 @@ QPixmap Theme::getPixmap(const QString& key, int size) {
   return QPixmap();
 }
 
+Glyph Theme::getGlyph(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return Glyph();
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    std::cout << " --> Error in Theme::getGlyph, size not referenced " << size << std::endl;
+    return Glyph();
+  }
+
+  SizeCache::Cache2::iterator pix = it->second.m_cache2.find(key);
+  if(pix != it->second.m_cache2.end())
+    return pix->second;
+
+  Glyph retv = m_lua_loader.getGlyph(key);
+  retv.m_font.setPointSize(size);
+
+  if(m_lua_loader.error()) {
+    std::cout << "SCRIPT RUN ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;
+    m_lua_loader.clearError();
+  }
+
+  it->second.m_cache2[key] = retv;
+  return retv;
+}
+
 #include "theme.moc"
 
 } //end namespace Loader

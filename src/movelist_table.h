@@ -48,6 +48,9 @@ namespace MoveList {
 
     Table(QWidget* p = NULL);
 
+    void settingsChanged();
+
+    void setLoaderBasePath(const QString& p);
 
     /** Sets the move comment at the given index */
     void setComment(const Index& index, const QString& comment);
@@ -56,7 +59,7 @@ namespace MoveList {
     void setVComment(const Index& index, int v, const QString& comment, bool confirm_promotion = false);
 
     /** Sets the move at the given index */
-    void setMove(const Index& index, int turn, const std::vector<MovePart>& move,
+    void setMove(const Index& index, int turn, const DecoratedMove& move,
                                     const QString& comment = QString(), bool confirm_promotion = false);
 
     /** Sets the move at the given index */

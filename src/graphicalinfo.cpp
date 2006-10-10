@@ -16,6 +16,7 @@
 #include "piecesprite.h"
 #include "animation.h"
 #include "pref_theme.h"
+#include "movelist_table.h"
 #include "global.h"
 
 using namespace boost;
@@ -66,13 +67,19 @@ void GraphicalInfo::settingsChanged() {
   m_animator = m_variant->createAnimator(m_board->converter(), this);
 
   QString theme = PrefTheme::getBestTheme(m_variant);
-  QString sqtheme = PrefTheme::getBestTheme(m_variant, true);
+  QString sqtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Squares);
+  QString figtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Figurines);
+  std::cout << "P " << theme << std::endl;
+  std::cout << "S " << sqtheme << std::endl;
+  std::cout << "F " << figtheme << std::endl;
 
   m_board->loader()->setBasePath( theme );
   m_board->tagsLoader()->setBasePath( sqtheme );
 
   m_view->pool(0)->loader()->setBasePath( theme );
   m_view->pool(1)->loader()->setBasePath( theme );
+
+  m_view->moveListTable()->setLoaderBasePath( figtheme );
 
   //clear board and pool, forcing reload
   m_view->settingsChanged();
@@ -184,12 +191,12 @@ void GraphicalInfo::updatePool(AbstractPosition::PoolPtr pool) {
 void GraphicalInfo::addToPool(AbstractPiece::Ptr piece, int n) {
   PiecePool *pool = m_view->pool(!piece->color());
   QPixmap px = pool->m_loader(piece->name());
-  
+
   for(int i=0;i<n;i++) {
     SpritePtr s = SpritePtr( new PieceSprite( px, pool->piecesGroup(), QPoint() ) );
     pool->addPiece(Element(piece, s));
   }
-  
+
   m_pos->addToPool(piece, n);
 }
 

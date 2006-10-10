@@ -442,6 +442,10 @@ public:
   MoveSerializer(const ChainReactionMove& m, const ChainReactionPosition& ref)
   : m_move(m), m_ref(ref) { }
 
+  DecoratedMove toDecoratedMove() const {
+    return DecoratedMove() << SAN();
+  }
+
   virtual QString SAN() const {
     return m_move.toString(m_ref.size().y);
   }

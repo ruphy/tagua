@@ -155,7 +155,7 @@ void Textual::select(const Index& index) {
   m_curr_selected = index;
 }
 
-void Textual::setMove(const Index& index, int turn, const std::vector<MovePart>& move,
+void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
                                                           const QString& comment) {
 }
 

@@ -25,6 +25,7 @@
 #include <iostream>
 #include <kstandarddirs.h>
 #include "global.h"
+#include "pref_theme.h"
 #include "movelist_widget.h"
 #include "movelist_table.h"
 #include "movelist_notifier.h"
@@ -328,20 +329,6 @@ void Comment::doUpdate () {
 
 //BEGIN Entry------------------------------------------------------------------
 
-int Entry::calcWidth() {
-  Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
-  int w = MARGIN_LEFT + MARGIN_RIGHT;
-
-  for(int i=0;i<(int)move.size();i++) {
-    if(move[i].tag == MoveText)
-      w += (selected ? m->m_settings->sel_mv_fmetrics
-              : m->m_settings->mv_fmetrics).boundingRect(move[i].str).right();
-    else if(move[i].tag == MovePixmap)
-      w += m->getPixmap(move[i].str).width();
-  }
-  return w;
-}
-
 void Entry::paint (QPainter *p) {
   Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
   if(curr_highlight != 0) {
@@ -349,21 +336,26 @@ void Entry::paint (QPainter *p) {
     p->setPen(QColor(64,96,128, curr_highlight));
     p->drawRect(rect().adjusted(0,0,-1,-1));
   }
-  p->setFont(selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font);
   p->setPen(selected ? m->m_settings->select_color : Qt::black);
   int x = pos().x()+MARGIN_LEFT;
   int y = pos().y()+MARGIN_TOP+m->m_settings->mv_fmetrics.ascent();
 
+  p->setRenderHint(QPainter::TextAntialiasing);
+  QFont tf = selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font;
+
   for(int i=0;i<(int)move.size();i++) {
-    if(move[i].tag == MoveText) {
-      p->drawText(QPoint(x, y), move[i].str);
+    if(move[i].m_type == MovePart::Text) {
+      p->setFont(selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font);
+      p->drawText(QPoint(x, y), move[i].m_string);
       x += (selected ? m->m_settings->sel_mv_fmetrics
-              : m->m_settings->mv_fmetrics).boundingRect(move[i].str).right();
+              : m->m_settings->mv_fmetrics).boundingRect(move[i].m_string).right();
     }
-    else if(move[i].tag == MovePixmap) {
-      QPixmap px = m->getPixmap(move[i].str, selected);
-      p->drawPixmap(QPoint(x, y-px.height()), px);
-      x += px.width();
+    else if(move[i].m_type == MovePart::Figurine) {
+      ::Loader::Glyph g = m->m_loader.getGlyph(move[i].m_string);
+      p->setFont(g.m_font_valid ? g.m_font : tf);
+      p->drawText(QPoint(x, y), g.m_char);
+      QFontMetrics fi(g.m_font_valid ? g.m_font : tf);
+      x += fi.boundingRect(g.m_char).right();
     }
   }
 }
@@ -377,14 +369,19 @@ void Entry::doUpdate () {
     return;
 
   Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
+  QFont tf = selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font;
 
   width = MARGIN_LEFT + MARGIN_RIGHT;
   for(int i=0;i<(int)move.size();i++) {
-    if(move[i].tag == MoveText)
+    if(move[i].m_type == MovePart::Text)
       width += (selected ? m->m_settings->sel_mv_fmetrics
-              : m->m_settings->mv_fmetrics).boundingRect(move[i].str).right();
-    else if(move[i].tag == MovePixmap)
-      width += m->getPixmap(move[i].str).width();
+              : m->m_settings->mv_fmetrics).boundingRect(move[i].m_string).right();
+    else if(move[i].m_type == MovePart::Figurine) {
+      ::Loader::Glyph g = m->m_loader.getGlyph(move[i].m_string);
+      QFontMetrics fi(g.m_font_valid ? g.m_font : tf);
+      width += fi.boundingRect(g.m_char).right();
+      //width += m->m_loader(move[i].m_string).width();
+    }
   }
 
   height = m->entry_size;
@@ -476,8 +473,6 @@ Widget::Widget(QWidget *parent, Table *o)
   setMouseTracking(true);
   settingsChanged();
   reset();
-
-  settings.onChange(this, SLOT(settingsChanged()));
 }
 
 Widget::~Widget() {
@@ -492,8 +487,8 @@ void Widget::reset() {
     comment_editor = NULL;
   }
 
-  std::vector<MovePart> mv;
-  mv.push_back(MovePart(MoveText, QString("Mainline:")));
+  DecoratedMove mv;
+  mv.push_back(MovePart(QString("Mainline:")));
   history.clear();
   history.push_back( EntryPtr(new Entry(-1, mv, Index(0), this)) );
 
@@ -545,7 +540,7 @@ void Widget::settingsChanged() {
   entry_size = m_settings->mv_fmetrics.height()+MARGIN_TOP+MARGIN_BOTTOM;
   owner_table->m_scroll_area->setMinimumSize( entry_size*9, entry_size*12);
 
-  loaded_pixmaps.clear();
+  m_loader.setSize(m_settings->mv_font.pointSize());
 
   layout();
 }
@@ -1084,7 +1079,7 @@ QPixmap Widget::getPixmap(const QString& s, bool selected) {
 
   QString iconFile = KStandardDirs::locate("appdata", "piece_icons/" + s + ".png");
   QImage img(iconFile);
-  
+
   if(selected) {
     QPainter p(&img);
     p.setCompositionMode(QPainter::CompositionMode_SourceAtop );
@@ -1153,9 +1148,9 @@ void Widget::setVComment(const Index& index, int v, const QString& comment) {
 
 void Widget::setMove(const Index& index,
           int turn, const QString& move, const QString& comment) {
-  std::vector<MovePart> mv;
-#if 0
-  mv.push_back(MovePart(MoveText, move));
+  DecoratedMove mv;
+#if 1
+  mv.push_back(MovePart(move));
 #else
   //TODO: move this code in some other place, it really should not stay here
   QRegExp reg("[KQRBNP]");
@@ -1173,7 +1168,7 @@ void Widget::setMove(const Index& index,
 }
 
 void Widget::setMove(const Index& index,
-          int turn, const std::vector<MovePart>& move, const QString& comment) {
+          int turn, const DecoratedMove& move, const QString& comment) {
   EntryPtr e = fetch(index);
   if(e) {
     e->move_turn = turn;

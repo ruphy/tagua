@@ -14,6 +14,8 @@
 #include <vector>
 #include <QWidget>
 #include <khtml_part.h>
+#include "decoratedmove.h"
+#include "spriteloader.h"
 #include "movelist_notifier.h"
 
 class KHTMLPart;
@@ -32,6 +34,10 @@ Q_OBJECT
 public:
   Textual(QWidget *parent = NULL);
 
+  void settingsChanged() {}
+
+  void setLoaderBasePath(const QString& /*p*/){ }
+
   /** Sets the move comment at the given index */
   void setComment(const Index& index, const QString& comment);
 
@@ -39,7 +45,7 @@ public:
   void setVComment(const Index& index, int v, const QString& comment);
 
   /** Sets the move at the given index */
-  void setMove(const Index& index, int turn, const std::vector<MovePart>& move,
+  void setMove(const Index& index, int turn, const DecoratedMove& move,
                                   const QString& comment = QString());
 
   /** Sets the move at the given index */

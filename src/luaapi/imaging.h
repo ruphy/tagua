@@ -194,6 +194,18 @@ public:
 
 //END Wrapper<Image> ----------------------------------------------------------
 
+//BEGIN Wrapper<Glyph> --------------------------------------------------------
+
+template<>
+class Wrapper<Loader::Glyph> : public GenericWrapper<Loader::Glyph> {
+public:
+  static const char* class_name();
+  static void create_index_table(lua_State* l);
+  static int constructor(lua_State* l);
+};
+
+//END Wrapper<Glyph> ----------------------------------------------------------
+
 } //end namespace LuaApi
 
 

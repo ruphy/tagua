@@ -63,6 +63,8 @@ public:
   EditAction(const UserMove& move)
   : m_move(move) { }
   virtual QString SAN(boost::shared_ptr<AbstractPosition>) const { return QString(); }
+  virtual DecoratedMove toDecoratedMove(boost::shared_ptr<AbstractPosition>) const {
+                                                                return DecoratedMove(); }
   virtual QString toString(boost::shared_ptr<AbstractPosition>) const { return QString(); }
   virtual NormalUserMove toUserMove() const {
     return apply_visitor(ConvertToNormalUserMove(), m_move);

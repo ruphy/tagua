@@ -68,6 +68,9 @@ public:
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
   ::Loader::PixmapOrMap getPixmapMap(const QString& id);
+
+  /** looks up a font + char */
+  ::Loader::Glyph getGlyph(const QString& id);
 };
 
 #endif // SPRITELOADER_H

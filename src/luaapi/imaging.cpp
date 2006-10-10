@@ -854,5 +854,46 @@ int Wrapper<Image>::createShadow(lua_State* l) {
 
 //END Wrapper<Image> ----------------------------------------------------------
 
+//BEGIN Wrapper<Glyph> ------------------------------------------------------
+
+const char* Wrapper<Glyph>::class_name() {
+  return "Glyph";
+}
+
+void Wrapper<Glyph>::create_index_table(lua_State* /*l*/) {
+
+}
+
+int Wrapper<Glyph>::constructor(lua_State* l) {
+  const int n = lua_gettop(l);
+
+  Glyph* res;
+  switch(n) {
+  case 1: {
+    unsigned int c = strtoul(lua_tostring(l, 1), NULL, 0);
+    res = new Glyph(c);
+    }
+    break;
+  case 2: {
+    Context* context = retrieve_context(l);
+    const char* f = lua_tostring(l, 1);
+    unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
+    res = new Glyph(context, file_path(l, f), c);
+    }
+    break;
+  default:
+    res = 0;
+    luaL_error(l, "Wrong argument count for Point constructor");
+    break;
+  }
+
+  lua_pop(l, n);
+
+  allocate(l, res);
+  return 1;
+}
+
+//END Wrapper<QPointF> --------------------------------------------------------
+
 } //end namespace LuaApi
 

@@ -72,4 +72,40 @@ QString MoveSerializerBase<Pos>::SAN() const {
   return res + checkSuffix();
 }
 
+template <typename Pos>
+DecoratedMove MoveSerializerBase<Pos>::toDecoratedMove() const {
+  static QRegExp reg("[KQRBNP]");
+  QString move = SAN();
+  DecoratedMove mv;
+  int x = 0;
+  while(reg.indexIn(move, x) != -1) {
+    if(reg.pos() > x)
+      mv.push_back(MovePart(move.mid(x, reg.pos()-x)));
+    switch(move[reg.pos()].toAscii()) {
+      case 'K':
+        mv.push_back(MovePart("king", MovePart::Figurine));
+        break;
+      case 'Q':
+        mv.push_back(MovePart("queen", MovePart::Figurine));
+        break;
+      case 'R':
+        mv.push_back(MovePart("rook", MovePart::Figurine));
+        break;
+      case 'B':
+        mv.push_back(MovePart("bishop", MovePart::Figurine));
+        break;
+      case 'N':
+        mv.push_back(MovePart("knight", MovePart::Figurine));
+        break;
+      case 'P':
+        mv.push_back(MovePart("pawn", MovePart::Figurine));
+        break;
+    }
+    x = reg.pos() + reg.matchedLength();
+  }
+  if(x<move.length())
+    mv.push_back(MovePart(move.mid(x)));
+  return mv;
+}
+
 #endif // MOVESERIALIZER_IMPL_H

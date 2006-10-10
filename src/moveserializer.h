@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -12,11 +12,13 @@
 #define MOVESERIALIZER_H
 
 #include <QString>
+#include "decoratedmove.h"
 
 class AbstractMoveSerializer {
 public:
   virtual ~AbstractMoveSerializer() { }
   virtual QString SAN() const = 0;
+  virtual DecoratedMove toDecoratedMove() const = 0;
 };
 
 template <typename Pos>
@@ -49,6 +51,7 @@ public:
   virtual ~MoveSerializerBase() { }
 
   virtual QString SAN() const;
+  virtual DecoratedMove toDecoratedMove() const;
 };
 
 template <typename Pos>

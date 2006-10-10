@@ -124,6 +124,10 @@ public:
   MoveSerializer(const DummyMove& m, const DummyPosition& r)
   : m_move(m), m_ref(r) { }
 
+  DecoratedMove toDecoratedMove() const {
+    return DecoratedMove() << SAN();
+  }
+
   virtual QString SAN() const {
     if(m_move.m_drop.valid())
       return CrazyhousePiece::typeSymbol(m_move.m_drop.type()) + "@" + m_move.to.toString(8);
