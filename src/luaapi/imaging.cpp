@@ -676,7 +676,7 @@ int Wrapper<Image>::translate(lua_State* l) {
 
 int Wrapper<Image>::clear(lua_State* l) {
   const int n = lua_gettop(l);
-  if (n < 1 || n > 2) luaL_error(l, "Wrong argument count for Image::fill_rect");
+  if (n < 1 || n > 2) luaL_error(l, "Wrong argument count for Image::clear");
 
   Image* img = retrieve(l, 1, AssertOk);
 
@@ -694,7 +694,7 @@ int Wrapper<Image>::clear(lua_State* l) {
 
 int Wrapper<Image>::setPaintOver(lua_State* l) {
   const int n = lua_gettop(l);
-  if (n != 2) luaL_error(l, "Wrong argument count for Image::rotate");
+  if (n != 2) luaL_error(l, "Wrong argument count for Image::set_paint_over");
 
   Image* img = retrieve(l, 1, AssertOk);
   bool p = lua_toboolean(l, 2);
@@ -883,7 +883,7 @@ int Wrapper<Glyph>::constructor(lua_State* l) {
     break;
   default:
     res = 0;
-    luaL_error(l, "Wrong argument count for Point constructor");
+    luaL_error(l, "Wrong argument count for Glyph constructor");
     break;
   }
 
