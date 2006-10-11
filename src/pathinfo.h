@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -22,14 +22,15 @@ public:
   };
 private:
   Direction m_direction;
-  bool m_clear;
+  int m_num_obstacles;
 public:
 
-  PathInfo(Direction direction, bool clear);
+  PathInfo(Direction direction, int num_obstacles);
 
   bool parallel() const { return m_direction == Horizontal || m_direction == Vertical; }
   bool diagonal() const { return m_direction == Diagonal1 || m_direction == Diagonal2; }
-  bool clear() const { return m_clear; }
+  bool clear() const { return m_num_obstacles == 0; }
+  int numObstacles() const { return m_num_obstacles; }
   bool valid() const { return m_direction != Undefined; }
 };
 

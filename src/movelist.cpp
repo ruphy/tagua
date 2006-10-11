@@ -405,7 +405,7 @@ void Settings::load() {
   (s["AnimateSpeed"] |= 16) >> anim_speed;
   anim_time = DEFAULT_ANIMATION_TIME*pow(5.0, 1.0 - anim_speed/16.0);
   (s["AnimateSmoothness"] |= 16) >> anim_smoothness;
-  (s["SelectColor"] |= Qt::red) >> select_color;
+  (s["SelectColor"] |= QColor(Qt::red)) >> select_color;
   (s["CommentColor"] |= QColor(64,64,64) ) >> comment_color;
   if ((use_mv_font = (s["UseMoveFont"] |= true)))
     (s["MoveFont"] |= QApplication::font()) >> mv_font;

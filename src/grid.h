@@ -112,19 +112,18 @@ public:
     else
       direction = PathInfo::Undefined;
 
-    bool clear = true;
+    int num_obs = 0;
     if (direction != PathInfo::Undefined) {
       Point step = delta.normalizeInfinity();
       Point position = from;
       while ((position += step) != to) {
         if((*this)[position].operator!())
           continue;
-        clear = false;
-        break;
+        num_obs++;
       }
     }
 
-    return PathInfo(direction, clear);
+    return PathInfo(direction, num_obs);
   }
 };
 

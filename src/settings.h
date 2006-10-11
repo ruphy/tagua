@@ -31,7 +31,7 @@ struct SettingConversionBase {
   static typename ReturnType<T>::type getValue(const QDomElement&, const QDomText& text) {
     return text.data();
   }
-  
+
   static void setValue(QDomElement, QDomText text, const T& val) {
     text.setData(val);
   }
@@ -45,7 +45,7 @@ struct SettingConversion<char[n]> : public SettingConversionBase<char[n]> {
   static const char* getValue(const QDomElement&, const QDomText& text) {
     return qPrintable(text.data());
   }
-  
+
   static void setValue(QDomElement, QDomText text, const char* val) {
     text.setData(val);
   }
@@ -56,7 +56,7 @@ struct SettingConversion<int> {
   static int getValue(const QDomElement&, const QDomText& text) {
     return text.data().toInt();
   }
-  
+
   static void setValue(QDomElement, QDomText text, int val) {
     text.setData(QString::number(val));
   }
@@ -68,10 +68,10 @@ struct SettingConversion<QColor> {
     int r = e.attribute("r", "0").toInt();
     int g = e.attribute("g", "0").toInt();
     int b = e.attribute("b", "0").toInt();
-    
+
     return QColor(r, g, b);
   }
-  
+
   static void setValue(QDomElement e, QDomText, const QColor& val) {
     e.setAttribute("r", val.red());
     e.setAttribute("g", val.green());
@@ -89,7 +89,7 @@ struct SettingConversion<QFont> {
     res.fromString(text.data());
     return res;
   }
-  
+
   static void setValue(QDomElement, QDomText text, const QFont& font) {
     text.setData(font.toString());
   }
@@ -98,9 +98,9 @@ struct SettingConversion<QFont> {
 template <>
 struct SettingConversion<bool> {
   static bool getValue(const QDomElement&, const QDomText& text) {
-    return text.data().toLower() == "true"; 
+    return text.data().toLower() == "true";
   }
-  
+
   static void setValue(QDomElement, QDomText text, bool val) {
     text.setData(val ? "true" : "false");
   }
@@ -136,7 +136,7 @@ protected:
   virtual QDomElement element() const { return m_parent.firstChildElement(m_key); }
 public:
   SettingRef(const QDomElement& node, const QString& key);
-  
+
   void remove();
   template <typename T> typename ReturnType<T>::wrapper operator|=(const T& val);
   template <typename T> typename ReturnType<T>::wrapper operator=(const T& val);
@@ -156,7 +156,7 @@ class TypedSettingRef {
 public:
   TypedSettingRef(const T& value)
   : m_value(value) { }
-  
+
   operator typename ReturnType<T>::type() const { return value(); }
   template <typename U> void operator>>(U& out) const { out = m_value; }
   typename ReturnType<T>::type value() const { return m_value; }
@@ -177,16 +177,16 @@ public:
 
   SettingRef operator[](const QString& key);
   SettingConstRef operator[](const QString& key) const;
-  
+
   class SettingGroup group(const QString& name) const;
   template <typename T> SettingMap<T> map(const QString& element, const QString& key) const;
   template <typename T> SettingMap<T> newMap(const QString& element, const QString& key) const;
   class SettingArray array(const QString& element) const;
   class SettingArray newArray(const QString& element) const;
-  
+
   bool flag(const QString& attr, bool def) const;
   void setFlag(const QString& attr, bool val);
-  
+
   static void ensureExistence(QDomElement& node, QDomElement parent, const QString& name);
   void dump() const;
 };
@@ -195,10 +195,10 @@ class SettingGroup : public Settings {
   QString m_name;
   QDomElement m_parent;
 protected:
-  virtual QDomElement node() const; 
+  virtual QDomElement node() const;
 public:
   SettingGroup(const QDomElement& parent, const QString& name);
-  
+
   operator bool() const { return !m_node.isNull(); }
   void remove();
 };
@@ -215,10 +215,10 @@ public:
   SettingMap(const QDomElement& node, const QString& element, const QString& key);
   virtual ~SettingMap() { }
   uint size() const { return m_map.size(); }
-  
+
   Settings get(const Key& index) const;
   Settings insert(const Key& index);
-  
+
   void clear();
 };
 
@@ -235,15 +235,15 @@ public:
   SettingArray(const QDomElement& node, const QString& element);
   virtual ~SettingArray() { }
   uint size() const { return m_array.size(); }
-  
+
   Settings get(int index) const;
   Settings insert(int index);
   Settings append();
   void clear();
-  
+
   const_iterator begin() const { return m_array.begin(); }
   const_iterator end() const { return m_array.end(); }
-  
+
   operator bool() const { return !m_node.isNull(); }
 };
 
@@ -261,7 +261,7 @@ typename ReturnType<T>::type SettingRefBase::value() const {
   return value(T());
 }
 
-template <typename T> 
+template <typename T>
 typename ReturnType<T>::wrapper SettingRefBase::operator|(const T& val) const {
   return value(val);
 }
@@ -275,7 +275,7 @@ template <typename T>
 typename ReturnType<T>::wrapper SettingRef::operator|=(const T& val) {
   if (element().isNull())
     return operator=(val);
-  return val;
+  return value(val);
 }
 
 template <typename T>
@@ -287,12 +287,12 @@ typename ReturnType<T>::wrapper SettingRef::operator=(const T& val) {
   return val;
 }
 
-template <typename T> 
+template <typename T>
 SettingMap<T> Settings::map(const QString& element, const QString& key) const {
   return SettingMap<T>(node(), element, key);
 }
 
-template <typename T> 
+template <typename T>
 SettingMap<T> Settings::newMap(const QString& element, const QString& key) const {
   SettingMap<T> res(node(), element, key);
   res.clear();
@@ -310,11 +310,11 @@ SettingMap<Key>::SettingMap(const QDomElement& node, const QString& element, con
     QDomNodeList elements = m_node.elementsByTagName(m_element);
     for (int i = 0; i < elements.size(); i++) {
       QDomElement el = elements.item(i).toElement();
-      
+
       // find the key inside el
       QDomElement key_element = el.firstChildElement(m_key);
       Key k = SettingConstRef(key_element).value<Key>();
-      
+
       // insert the corresponding Settings object into the map
       m_map[k] = el;
     }
@@ -340,7 +340,7 @@ Settings SettingMap<Key>::insert(const Key& key) {
     node().appendChild(el);
     Settings res = el;
     m_map[key] = res;
-    
+
     res[m_key] = key;
     return res;
   }

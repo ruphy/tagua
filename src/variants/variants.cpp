@@ -20,6 +20,7 @@
 #include "variants/chainreaction.h"
 #include "variants/dummy.h"
 #include "variants/shogi.h"
+#include "variants/xiangqi.h"
 
 bool Variant::s_initialized = false;
 
@@ -45,6 +46,7 @@ void Variant::initialize() {
   register_variant<ChainReactionVariant>();
   register_variant<DummyVariant>();
   register_variant<ShogiVariant>();
+  register_variant<XiangQiVariant>();
 
   s_initialized = true;
 }
@@ -63,23 +65,3 @@ const Variant::Variants& Variant::allVariants(){
 
   return s_registered;
 }
-
-// VariantInfo* Variant::variant(Code code) {
-//   switch (code) {
-//   case Chess:
-//     return ChessVariant::info();
-//   case Crazyhouse:
-//     return CrazyhouseVariant::info();
-//   case Atomic:
-//     return AtomicVariant::info();
-//   case King4Pawns:
-//     return King4PawnsVariant::info();
-//   case Progressive:
-//     return ProgressiveVariant::info();
-//   case Reversi:
-//     return ReversiVariant::info();
-//   default:
-//     return 0;
-//   }
-// }
-
