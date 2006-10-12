@@ -300,7 +300,7 @@ bool XiangQiPiece::canMove(const XiangQiPosition& pos,
   case ELEPHANT:
     return (abs(delta.x) == 2) && (abs(delta.y) == 2)
             && !pos[Point((to.x+from.x)/2, (to.y+from.y)/2)]
-            && (m_color == RED ? to.y > 5 : to.y < 6);
+            && (m_color == RED ? to.y > 4 : to.y < 5);
   case HORSE:
     return (delta.x*delta.x + delta.y*delta.y) == 5
             && !pos[Point((to.x+from.x*2+1)/3, (to.y+from.y*2+1)/3)];
@@ -318,7 +318,7 @@ bool XiangQiPiece::canMove(const XiangQiPosition& pos,
   case SOLDIER:
     return (delta.x == 0 && delta.y == direction().y)
           || (abs(delta.x) == 1 && delta.y == 0 &&
-             (m_color == RED ? to.y < 6 : to.y > 5));
+             (m_color == RED ? to.y < 5 : to.y > 4));
   default:
     return false;
   }
@@ -428,7 +428,8 @@ public:
     int num = 1;
     for(int i=0;i<10;i++) {
       Point f(m_move.from.x, i);
-      if(f != m_move.from && m_ref[f] == p) {
+      Point t(m_move.to-m_move.from+f);
+      if(f != m_move.from && m_ref[f] == p && m_ref.m_board.valid(t)) {
         XiangQiMove m(f, m_move.to-m_move.from+f, false);
         if(m_ref.testMove(m)) {
           order = ((i < m_move.to.y) != (p.color() == XiangQiPiece::RED)) ? -1 : 1;
@@ -466,7 +467,8 @@ public:
     int num = 1;
     for(int i=0;i<10;i++) {
       Point f(m_move.from.x, i);
-      if(f != m_move.from && m_ref[f] == p) {
+      Point t(m_move.to-m_move.from+f);
+      if(f != m_move.from && m_ref[f] == p && m_ref.m_board.valid(t)) {
         XiangQiMove m(f, m_move.to-m_move.from+f, false);
         if(m_ref.testMove(m)) {
           order = ((i < m_move.to.y) != (p.color() == XiangQiPiece::RED)) ? -1 : 1;
@@ -476,7 +478,9 @@ public:
     }
 
     DecoratedMove retv;
-    MovePart piece("");
+    MovePart piece( (QString()) );
+
+    std::cout << "num = " << num << "  order = " << order << std::endl;
     if(num >= 4 && (order == 0 || order == num-1)) //4/5 pawns case
       piece = MovePart((order==0) ? "rear" : "front", MovePart::Figurine);
     else
