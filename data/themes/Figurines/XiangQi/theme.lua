@@ -1,8 +1,8 @@
 import("../../Pieces/common.lua")
 
 function Fig(char)
-  --return Glyph("../../Pieces/AlphaTTF/Alpha.ttf", char)
-  return Glyph(char)
+  return Glyph("wt.ttf", char)
+  -- return Glyph(char)
 end
 
 rn_1 = Fig("0x4e00")
@@ -42,10 +42,10 @@ red_soldier     = Fig("0x5175")
 
 advances  = Fig("0x9032")
 retreats  = Fig("0x9000")
-traverses = Fig("0x003f") --FIXME
+traverses = Fig("0x5E73")
 
 front     = Fig("0x524d")
-rear      = Fig("0x003f") --FIXME
+rear      = Fig("0x540e")
 
 name = "XiangQi"
 description = "XiangQi figurines."
