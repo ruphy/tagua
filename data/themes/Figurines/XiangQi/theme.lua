@@ -1,7 +1,7 @@
 import("../../Pieces/common.lua")
 
 function Fig(char)
-  return Glyph("wt.ttf", char)
+  return Glyph("wt011.ttf", char)
   -- return Glyph(char)
 end
 
