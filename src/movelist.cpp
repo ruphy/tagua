@@ -396,36 +396,30 @@ void Entry::doUpdate () {
 //BEGIN Settings---------------------------------------------------------------
 
 void Settings::load() {
-  ::Settings s = settings.group("MoveList");
+  ::Settings s = settings.group("move-list");
+  ::Settings s_anim = s.group("animations");
 
-  (s["AnimationsEnabled"] |= true) >> anim_enabled;
-  (s["AnimateMoving"] |= true) >> anim_moving;
-  (s["AnimateHideShow"] |= true) >> anim_hideshow;
-  (s["AnimateHighlight"] |= true) >> anim_highlight;
-  (s["AnimateSpeed"] |= 16) >> anim_speed;
+  anim_enabled = s.group("animations").flag("enabled", true);
+  anim_moving = s_anim.group("moving").flag("enabled", true);
+  anim_hideshow = s_anim.group("hideshow").flag("enabled", true);
+  anim_highlight = s_anim.group("highlight").flag("enabled", true);
+  anim_speed = s_anim["speed"] | 16;
   anim_time = DEFAULT_ANIMATION_TIME*pow(5.0, 1.0 - anim_speed/16.0);
-  (s["AnimateSmoothness"] |= 16) >> anim_smoothness;
-  (s["SelectColor"] |= QColor(Qt::red)) >> select_color;
-  (s["CommentColor"] |= QColor(64,64,64) ) >> comment_color;
-  if ((use_mv_font = (s["UseMoveFont"] |= true)))
-    (s["MoveFont"] |= QApplication::font()) >> mv_font;
-  else
-    mv_font = QApplication::font();
+  anim_smoothness = s_anim["smoothness"] | 16;
+  select_color =  s["select-color"] | QColor(Qt::red);
+  comment_color = s["comment-color"] | QColor(64,64,64);
+  mv_font = QApplication::font();
+  std::cout << "before " << mv_font.pointSize() << " " << mv_font.toString() << std::endl;
+  mv_font.setPointSize(mv_font.pointSize()+2);
+  std::cout << "after " << mv_font.pointSize() << " " << mv_font.toString() << std::endl;
+  if ((use_mv_font = s.group("moves-font").flag("enabled", true)))
+    mv_font = s["moves-font"] | mv_font;
   sel_mv_font = mv_font;
   sel_mv_font.setBold(true);
-  if ((use_comm_font = (s["UseCommentFont"] |= true))) {
-    if(s["CommentFont"])
-      comm_font = s["CommentFont"].value<QFont>();
-    else {
-      comm_font = QApplication::font();
-      comm_font.setItalic(true);
-      s["CommentFont"] = comm_font;
-    }
-  }
-  else {
-    comm_font = QApplication::font();
-    comm_font.setItalic(true);
-  }
+  comm_font = QApplication::font();
+  comm_font.setItalic(true);
+  if ((use_comm_font = s.group("comment-font").flag("enabled", true)))
+    comm_font = s["CommentFont"] | comm_font;
   mv_fmetrics = QFontMetrics(mv_font);
   sel_mv_fmetrics = QFontMetrics(sel_mv_font);
   comm_fmetrics = QFontMetrics(comm_font);
@@ -434,19 +428,21 @@ void Settings::load() {
 }
 
 void Settings::save() {
-  ::Settings s = settings.group("MoveList");
-  s["AnimationsEnabled"] = anim_enabled;
-  s["AnimateMoving"]    = anim_moving;
-  s["AnimateHideShow"]  = anim_hideshow;
-  s["AnimateHighlight"] = anim_highlight;
-  s["AnimateSpeed"]     = anim_speed;
-  s["AnimateSmoothness"] = anim_smoothness;
-  s["SelectColor"]      = select_color;
-  s["CommentColor"]     = comment_color;
-  s["UseMoveFont"]      = use_mv_font;
-  s["MoveFont"]         = mv_font;
-  s["UseCommentFont"]   = use_comm_font;
-  s["CommentFont"]      = comm_font;
+  ::Settings s = settings.group("move-list");
+  ::Settings s_anim = s.group("animations");
+
+  s.group("animations").setFlag("enabled", anim_enabled);
+  s_anim.group("moving").setFlag("enabled", anim_moving);
+  s_anim.group("hideshow").setFlag("enabled", anim_hideshow);
+  s_anim.group("highlight").setFlag("enabled", anim_highlight);
+  s_anim["speed"]     = anim_speed;
+  s_anim["smoothness"] = anim_smoothness;
+  s["select-color"]      = select_color;
+  s["comment-color"]     = comment_color;
+  s.group("moves-font").flag("enabled", use_mv_font);
+  s["moves-font"]       = mv_font;
+  s.group("comment-font").flag("enabled", use_comm_font);
+  s["comment-font"]       = comm_font;
 }
 
 //END Settings-----------------------------------------------------------------
@@ -463,6 +459,7 @@ Widget::Widget(QWidget *parent, Table *o)
 , layout_style(0)
 , layout_goto_selected(false)
 , layout_width_changed(true)
+, layout_must_relayout(true)
 , notifier(NULL)
 , owner_table(o)
 , m_settings(new Settings) {
@@ -538,10 +535,11 @@ void Widget::settingsChanged() {
   setAnimationDelay( int(70.0*pow(10.0, -m_settings->anim_smoothness/32.0)) );
 
   entry_size = m_settings->mv_fmetrics.height()+MARGIN_TOP+MARGIN_BOTTOM;
-  owner_table->m_scroll_area->setMinimumSize( entry_size*9, entry_size*12);
+  owner_table->m_scroll_area->setMinimumSize(entry_size*6, entry_size*9);
 
   m_loader.setSize(m_settings->mv_font.pointSize());
 
+  layout_must_relayout = true;
   layout();
 }
 
@@ -796,6 +794,7 @@ void Widget::doLayout() {
   layout_time = mSecs();
   layout_pending = false;
   layout_max_width = 0;
+  //std::cout << "layout_must_relayout = " << layout_must_relayout << std::endl;
   int h = layoutHistory(history, BORDER_LEFT, BORDER_TOP, -1, 0, 0, true);
 
   QSize s(std::max(entry_size*7, layout_max_width+BORDER_RIGHT),
@@ -803,6 +802,7 @@ void Widget::doLayout() {
   setMinimumSize(s);
 
   layout_width_changed = false;
+  layout_must_relayout = false;
   if(layout_goto_selected) {
     EntryPtr e = fetch(curr_selected);
     if(e)
@@ -847,22 +847,6 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
     /* adjust the position if this is paired on the right  */
     bool draw_num = false;
 
-    /*if(layout_style==0) {
-      mv_num++;
-
-      if(i>0 && (mv_num%2==1) && array[i-1]->childs_height == 0) {
-        flow_y -= entry_size;
-        flow_x = std::max(flow_x + MIDDLE_PAD,
-                            at_x + int(MIN_COL_WIDTH*entry_size) );
-      }
-      else {
-        col_num = 0;
-        flow_x = at_x;
-        if(mv_num>=2)
-          draw_num = true;
-      }
-    }
-    else*/
     {
       if(e->move_turn != prev_turn) {
         mv_num++;
@@ -912,19 +896,21 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
 
     /* update the number */
     if(draw_num) {
-      if(!e->number) {
-        e->number = TextPtr(new Text(e.get(), 0, this));
+      TextPtr& n = e->number;
+      if(!n) {
+        n = TextPtr(new Text(e.get(), 0, this));
         if(layout_style==0)
-          e->number->text = QString::number((mv_num+1)/2)+(mv_num&1 ? "." : ". ...");
+          n->text = QString::number((mv_num+1)/2)+(mv_num&1 ? "." : ". ...");
         else
-          e->number->text = QString::number(mv_num)+
+          n->text = QString::number(mv_num)+
                   (sub_mv_num ? "+"+QString::number(sub_mv_num) : QString())+".";
-        e->number->needs_update = true;
+        n->needs_update = true;
       }
+      else if( !n->showing() || layout_must_relayout)
+        n->needs_update = true;
 
       /* Mh, the number should never change, only appear disappear.
          should this change, add here the code to enable number changes. */
-      TextPtr n = e->number;
       QPoint dest(flow_x, flow_y);
 
       if(n->pos() != dest)
@@ -949,6 +935,8 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
         e->goTo(dest);
       else
         e->moveTo(dest);
+    if( !e->showing() || layout_must_relayout)
+      e->needs_update = true;
     e->doUpdate();
     e->appear();
     e->childs_height = 0;
@@ -974,6 +962,8 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
         f->selected = sel;
         f->needs_update = true;
       }
+      else if( !f->showing() || layout_must_relayout)
+        f->needs_update = true;
 
       QPoint dest(flow_x, flow_y);
 
@@ -1009,7 +999,7 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
             c->moveTo(dest);
           c->needs_update = true;
         }
-        else if(layout_width_changed)
+        else if( !c->showing() || layout_width_changed || layout_must_relayout)
           c->needs_update = true;
         c->doUpdate();
         c->appear();
@@ -1030,6 +1020,8 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
         if(e->expanded && !e->hide_next) {
           QPoint dest(at_x + VAR_INDENTATION + COMMENT_INDENTATION, flow_y);
 
+          if( !c->showing() || layout_must_relayout)
+            c->needs_update = true;
           if(c->pos() != dest)
             if(c->visible())
               c->goTo(dest);

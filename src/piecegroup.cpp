@@ -37,16 +37,16 @@ PieceGroup::~PieceGroup()
 void PieceGroup::settingsChanged() {
   Settings s_anim = settings.group("animations");
   if (s_anim.flag("enabled", true)) {
-    (s_anim["fading"] |= true) >> m_anim_fade;
-    (s_anim["movement"] |= true) >> m_anim_movement;
+    m_anim_fade = s_anim["fading"].flag("enabled", true);
+    m_anim_movement = s_anim["movement"].flag("enabled", true);
   }
   else {
     m_anim_fade = false;
     m_anim_movement = false;
   }
 
-  int speed = (s_anim["AnimationsSpeed"] |= 16);
-  int smoothness = (s_anim["AnimationsSmoothness"] |= 16);
+  int speed = (s_anim["speed"] | 16);
+  int smoothness = (s_anim["smoothness"] | 16);
   m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );
   m_main_animation->setDelay( int(70.0*pow(10.0, -smoothness/32.0)) );
 }

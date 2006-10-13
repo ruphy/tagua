@@ -80,6 +80,7 @@ void GraphicalInfo::settingsChanged() {
   m_view->pool(1)->loader()->setBasePath( theme );
 
   m_view->moveListTable()->setLoaderBasePath( figtheme );
+  m_view->moveListTable()->settingsChanged();
 
   //clear board and pool, forcing reload
   m_view->settingsChanged();
@@ -90,15 +91,37 @@ void GraphicalInfo::setup(const shared_ptr<UserEntity>& entity) {
 }
 
 int GraphicalInfo::getIntSetting(const QString& key, int def_value) const {
-  return settings[key] | def_value;
+  QStringList l = key.split(".");
+  if(l.size()==0)
+    return def_value;
+
+  Settings s = settings;
+  for(int i=0;i<l.size()-1;i++)
+    s = s.group(l[i]);
+  return s[l[l.size()-1]] | def_value;
 }
 
 bool GraphicalInfo::getBoolSetting(const QString& key, bool def_value) const {
-  return settings[key] | def_value;
+  QStringList l = key.split(".");
+  if(l.size()==0)
+    return def_value;
+
+  SettingGroup s = settings.group(l[0]);
+  for(int i=1;i<l.size();i++)
+    s = s.group(l[i]);
+
+  return s.flag("enabled", def_value);
 }
 
 QString GraphicalInfo::getStringSetting(const QString& key, const QString& def_value) const {
-  return settings[key] | def_value;
+  QStringList l = key.split(".");
+  if(l.size()==0)
+    return def_value;
+
+  Settings s = settings;
+  for(int i=0;i<l.size()-1;i++)
+    s = s.group(l[i]);
+  return s[l[l.size()-1]] | def_value;
 }
 
 GraphicalInfo::SpritePtr GraphicalInfo::getSprite(const Point& p) const {
@@ -111,10 +134,8 @@ GraphicalInfo::SpritePtr GraphicalInfo::getSprite(const Point& p) const {
 GraphicalInfo::SpritePtr GraphicalInfo::setPiece(const Point& p,
                               AbstractPiece::Ptr piece, bool usedrop, bool show) {
   Q_ASSERT(piece);
-  if(!m_board->m_sprites.valid(p)) {
-    printf("que?!? %d %d\n", p.x, p.y);
+  if(!m_board->m_sprites.valid(p))
     return SpritePtr();
-  }
 
   m_pos->set(p, piece);
   QPixmap px = m_board->m_loader(piece->name());

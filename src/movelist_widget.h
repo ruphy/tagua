@@ -74,6 +74,7 @@ private:
   int  layout_time;
   bool layout_goto_selected;
   bool layout_width_changed;
+  bool layout_must_relayout;
 
   Notifier *notifier;
   QHash<QString, QPixmap> loaded_pixmaps;

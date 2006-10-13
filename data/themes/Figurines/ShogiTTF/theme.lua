@@ -1,8 +1,8 @@
 import("../../Pieces/common.lua")
 
 function Fig(char)
-  --return Glyph("../../Pieces/AlphaTTF/Alpha.ttf", char)
-  return Glyph(char)
+  return Glyph("mikachan.ttf", char)
+  --return Glyph(char)
 end
 
 num_9 = Fig("0x4e5d")

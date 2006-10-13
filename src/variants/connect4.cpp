@@ -200,11 +200,11 @@ Connect4Animator::Connect4Animator(PointConverter* converter, GraphicalPosition*
 , m_anim_explode(false)
 , m_anim_fade(false)
 , m_anim_rotate(false) {
-  if(position->getBoolSetting("AnimationsEnabled", true)) {
-    m_anim_movement = (bool)position->getBoolSetting("AnimateMovement", true);
-    m_anim_explode = (bool)position->getBoolSetting("AnimateExplode", true);
-    m_anim_fade = (bool)position->getBoolSetting("AnimateFade", true);
-    m_anim_rotate = (bool)position->getBoolSetting("AnimateTransform", true);
+  if(position->getBoolSetting("animations", true)) {
+    m_anim_movement = (bool)position->getBoolSetting("animations.movement", true);
+    m_anim_explode = (bool)position->getBoolSetting("animations.explode", true);
+    m_anim_fade = (bool)position->getBoolSetting("animations.fading", true);
+    m_anim_rotate = (bool)position->getBoolSetting("animations.transform", true);
   }
 }
 

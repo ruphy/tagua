@@ -70,9 +70,9 @@ GraphicalGame::~GraphicalGame() {
 }
 
 void GraphicalGame::settingsChanged() {
-  m_anim_sequence = m_graphical->getBoolSetting("AnimationsEnabled", true)
-                     && m_graphical->getBoolSetting("AnimationsSequence", true);
-  m_anim_sequence_max = m_graphical->getIntSetting("AnimationsSequenceMax", 10);
+  m_anim_sequence = m_graphical->getBoolSetting("animations", true)
+                     && m_graphical->getBoolSetting("animations.sequence", true);
+  m_anim_sequence_max = m_graphical->getIntSetting("animations.sequence.max", 10);
 }
 
 void GraphicalGame::onAdded(const Index& ix) {

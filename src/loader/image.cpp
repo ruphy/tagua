@@ -47,7 +47,8 @@ Font::Font(int id, int size)
 : m_id(id)
 , m_families(QFontDatabase::applicationFontFamilies(id))
 , m_font(m_families.empty()?QString():m_families[0], size) {
-
+  for(int i=0;i<m_families.size();i++)
+    std::cout << "Familiy[" << i << "] = " << m_families[i] << std::endl;
 }
 
 Font::Font(const QFont& font)
@@ -417,8 +418,10 @@ Glyph::Glyph(Context* ctx, const QString& file, QChar c)
       }
       ctx->put(file, ff);
     }
-    if(ff)
+    if(ff) {
+      m_font_valid = true;
       m_font = ff->m_font;
+    }
   }
 }
 

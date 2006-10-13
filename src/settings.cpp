@@ -5,7 +5,7 @@ SettingConstRef::SettingConstRef(const QDomElement& element)
 : m_element(element) {
   if (!m_element.isNull()) {
     if (m_element.firstChild().toText().isNull())
-      m_element.appendChild(m_element.ownerDocument().createTextNode(""));
+      m_element.appendChild(m_element.ownerDocument().createTextNode( QString() ));
   }
 }
 
@@ -15,10 +15,6 @@ SettingRefBase::operator bool() const {
 
 bool SettingRefBase::flag(const QString& attr, bool def) const {
   return element().attribute(attr, def ? "true" : "false") == "true";
-}
-
-void SettingRefBase::setFlag(const QString& attr, bool val) {
-  element().setAttribute(attr, val ? "true" : "false");
 }
 
 SettingRef::SettingRef(const QDomElement& parent, const QString& key)
@@ -69,6 +65,8 @@ void Settings::ensureExistence(QDomElement& node, QDomElement parent, const QStr
 }
 
 bool Settings::flag(const QString& attr, bool def) const {
+  //std::cout << "get flag " << node().isNull() << " " << attr << " = "
+    //<< node().attribute(attr, def ? "true" : "false") << std::endl;
   return node().attribute(attr, def ? "true" : "false") == "true";
 }
 
@@ -77,7 +75,7 @@ void Settings::setFlag(const QString& attr, bool val) {
 }
 
 SettingGroup::SettingGroup(const QDomElement& parent, const QString& name)
-: m_name(name) 
+: m_name(name)
 , m_parent(parent) { }
 
 QDomElement SettingGroup::node() const {
@@ -98,7 +96,7 @@ SettingArray::SettingArray(const QDomElement& node, const QString& element)
   for (int i = 0; i < elements.size(); i++)
     m_array[i] = elements.item(i).toElement();
 }
-  
+
 Settings SettingArray::get(int index) const {
   return m_array[index];
 }
@@ -130,8 +128,11 @@ void SettingArray::clear() {
 
 void Settings::dump() const {
   std::cout << "dumping" << std::endl;
-  Q_ASSERT(!node().isNull());
-  
+  if(node().isNull()) {
+    std:: cout << "<NULL NODE />" << std::endl;
+    return;
+  }
+
   QDomDocument temp;
   temp.appendChild(temp.importNode(node(), true));
   std::cout << temp.toString() << std::endl;

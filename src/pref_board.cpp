@@ -31,9 +31,9 @@ PrefBoard::PrefBoard(QWidget *parent)
       checkSequence->setChecked(s_sequence.flag("enabled", true));
       spinSequenceMax->setValue(s_sequence["max"] | 10);
     }
-  
-    sliderSpeed->setValue(s_anim["speed"] |= 16);
-    sliderSmoothness->setValue(s_anim["smoothness"] |= 16);
+
+    sliderSpeed->setValue(s_anim["speed"] | 16);
+    sliderSmoothness->setValue(s_anim["smoothness"] | 16);
   }
 
   {
@@ -52,20 +52,20 @@ void PrefBoard::apply() {
   {
     Settings s_anim = settings.group("animations");
     s_anim.setFlag("enabled", groupAnimations->isChecked());
-    s_anim["movement"].setFlag("enabled", checkMovements->isChecked());
-    s_anim["explode"].setFlag("enabled", checkExplosions->isChecked());
-    s_anim["fading"].setFlag("enabled", checkFading->isChecked());
-    s_anim["transform"].setFlag("enabled", checkTransformations->isChecked());
+    s_anim.group("movement").setFlag("enabled", checkMovements->isChecked());
+    s_anim.group("explode").setFlag("enabled", checkExplosions->isChecked());
+    s_anim.group("fading").setFlag("enabled", checkFading->isChecked());
+    s_anim.group("transform").setFlag("enabled", checkTransformations->isChecked());
     {
       Settings s_sequence = s_anim.group("sequence");
       s_sequence.setFlag("enabled", checkSequence->isChecked());
       s_sequence["max"] = spinSequenceMax->value();
     }
-    
+
     s_anim["speed"] = sliderSpeed->value();
     s_anim["smoothness"] = sliderSmoothness->value();
   }
-  
+
   {
     Settings s_border = settings.group("board-border");
     s_border.setFlag("visible", groupBorder->isChecked());

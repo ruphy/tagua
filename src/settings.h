@@ -118,7 +118,6 @@ public:
   template <typename T> void operator>>(T& out) const;
   operator bool() const;
   bool flag(const QString& attr, bool def) const;
-  void setFlag(const QString& attr, bool val);
 };
 
 class SettingConstRef : public SettingRefBase {

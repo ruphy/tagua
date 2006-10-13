@@ -455,7 +455,7 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
       if (!moved && s && s->pos() != converter()->toReal(m_drag_info->from)) {
         Q_ASSERT(s);
         QPoint real = converter()->toReal(m_drag_info->from);
-        if(!m_anim_movement)
+        if( (point == m_drag_info->from) ? !m_anim_movement : !m_anim_fade)
           enqueue(shared_ptr<Animation>(new InstantAnimation(s, real)));
         else if (point == m_drag_info->from)
           enqueue(shared_ptr<Animation>(new MovementAnimation(s, real)));

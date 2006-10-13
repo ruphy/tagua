@@ -36,7 +36,7 @@ a = %{
 #{selection.to_a.join("\n")}
   SelectInvert();
   DetachAndRemoveGlyphs();
-  SetFontNames("#{font_name}");
+  SetFontNames("#{font_name}", "#{font_name}", "#{font_name}");
   SetUniqueID(0);
   Generate("#{output_file}");
 }

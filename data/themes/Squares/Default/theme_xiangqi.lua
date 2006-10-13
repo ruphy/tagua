@@ -100,7 +100,7 @@ function theme.background(size)
   rltb:draw_line(Pt(size*0.5,size),Pt(size*0.5,0), border, bwidth)
   castle1:clear(square)
   castle1:fill_rect(Rect(0,0,size*3, size*0.5), table)
-  castle1:fill_rect(Rect(size*0.5,size*0.5,size*2, size*2), Color(0,0,0,32))
+  castle1:fill_rect(Rect(size*0.5,size*0.5,size*2, size*2), Color(0,0,128,32))
   castle1:draw_line(Pt(size*0.5,size*0.5),Pt(size*2.5,size*2.5), border, bwidth)
   castle1:draw_line(Pt(size*2.5,size*0.5),Pt(size*0.5,size*2.5), border, bwidth)
   castle1:draw_line(Pt(0,size*0.5),Pt(3*size,size*0.5), border, bwidth)
@@ -155,9 +155,11 @@ end
 function alone(color)
   return function(size)
     local i = Image(size,size)
-    local g = RadialGradient(Point(size*0.485,size*0.485), size*0.58)
+    local g = RadialGradient(Point(size*0.485,size*0.485), size*0.54)
     g[0] = Color(0,0,0,0)
-    g[0.8] = color
+    g[0.2] = Color(0,0,0,0)
+    g[0.78] = color
+    g[0.85] = color
     g[1] = Color(0,0,0,0)
     i:clear()
     i:fill_rect(Rect(0,0,size,size), g)
@@ -165,10 +167,10 @@ function alone(color)
   end
 end
 
-theme.validmove =    alone(Color(255,192,255,128))
-theme.highlighting = alone(Color(192,255,255,128))
-theme.premove =      alone(Color(0,0,255,128))
-theme.selection =    alone(Color(255,0,0,128))
+theme.validmove =    alone(Color(255,0,255,192))
+theme.highlighting = alone(Color(255,255,128,192))
+theme.premove =      alone(Color(0,0,255,192))
+theme.selection =    alone(Color(255,0,0,192))
 
 name = "XiangQi"
 description = "XiangQi squares"

@@ -172,7 +172,7 @@ void PrefTheme::apply() {
   for(std::map<QString, QString>::iterator it = m_new_piece_themes.begin();
                                             it != m_new_piece_themes.end(); ++it) {
     Settings var = variants.insert(it->first);
-    var["piece-theme"] = it->second;
+    var["pieces-theme"] = it->second;
   }
   for(std::map<QString, bool>::iterator it = m_new_use_def_pieces.begin();
                                             it != m_new_use_def_pieces.end(); ++it) {
@@ -182,7 +182,7 @@ void PrefTheme::apply() {
   for(std::map<QString, QString>::iterator it = m_new_square_themes.begin();
                                             it != m_new_square_themes.end(); ++it) {
     Settings var = variants.insert(it->first);
-    var["square-theme"] = it->second;
+    var["squares-theme"] = it->second;
   }
   for(std::map<QString, bool>::iterator it = m_new_use_def_squares.begin();
                                             it != m_new_use_def_squares.end(); ++it) {
@@ -272,9 +272,9 @@ void PrefTheme::variantChanged() {
   }
 
   QString pth = m_new_piece_themes.count(vname) ? m_new_piece_themes[vname]
-          : (var["piece-theme"] | QString()).value();
+          : (var["pieces-theme"] | QString()).value();
   QString sth = m_new_square_themes.count(vname) ? m_new_square_themes[vname]
-          : (var["square-theme"] | QString()).value();
+          : (var["squares-theme"] | QString()).value();
   update_list_view(listPieces, m_pieces_themes, vproxy, pth);
   update_list_view(listSquares, m_squares_themes, vproxy, sth);
 }

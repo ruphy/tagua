@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -29,12 +29,11 @@ ChessAnimator::ChessAnimator(PointConverter* converter, GraphicalPosition* posit
 , m_anim_explode(false)
 , m_anim_fade(false)
 , m_anim_rotate(false) {
-  if(position->getBoolSetting("AnimationsEnabled", true)) {
-    m_anim_movement = (bool)position->getBoolSetting("AnimateMovement", true);
-    //std::cout << "m_anim_movement = " << m_anim_movement << std::endl;
-    m_anim_explode = (bool)position->getBoolSetting("AnimateExplode", true);
-    m_anim_fade = (bool)position->getBoolSetting("AnimateFade", true);
-    m_anim_rotate = (bool)position->getBoolSetting("AnimateTransform", true);
+  if(position->getBoolSetting("animations", true)) {
+    m_anim_movement = (bool)position->getBoolSetting("animations.movement", true);
+    m_anim_explode = (bool)position->getBoolSetting("animations.explode", true);
+    m_anim_fade = (bool)position->getBoolSetting("animations.fading", true);
+    m_anim_rotate = (bool)position->getBoolSetting("animations.transform", true);
   }
 }
 
@@ -129,12 +128,12 @@ ChessAnimator::AnimationPtr ChessAnimator::forward(AbstractPosition::Ptr final,
 
   if(!m_anim_movement) {
     InstantAnimation* a = new InstantAnimation(piece.sprite(), m_converter->toReal(move.to));
-    conflict = a; 
+    conflict = a;
     mainAnimation = shared_ptr<InstantAnimation>(a);
   }
   else if (m_converter->toLogical(hotSpot) == move.to) {
     MovementAnimation* a = new MovementAnimation(piece.sprite(), m_converter->toReal(move.to));
-    conflict = a; 
+    conflict = a;
     mainAnimation = shared_ptr<MovementAnimation>(a);
   }
   else {
@@ -203,7 +202,7 @@ ChessAnimator::AnimationPtr ChessAnimator::forward(AbstractPosition::Ptr final,
         : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
       )
     );
-    
+
   }
 
   else if (move.type() == ChessMove::QueenSideCastling) {
@@ -284,15 +283,15 @@ ChessAnimator::AnimationPtr ChessAnimator::back(AbstractPosition::Ptr final,
   }
 
   else if (move.type() == ChessMove::Promotion) {
-    AbstractPiece::Ptr promotedPawn = final->get(move.from); 
+    AbstractPiece::Ptr promotedPawn = final->get(move.from);
 
     shared_ptr<PieceSprite> pawn = m_position->setPiece(move.from, promotedPawn, false, false);
     pawn->moveTo(m_converter->toReal(move.to));
-    
+
     // 'piece' is the promoted piece
     res->addPreAnimation(shared_ptr<Animation>(
       new PromotionAnimation(piece.sprite(), pawn)));
-      
+
     // add movement animation
     add_movement_animation = false;
     shared_ptr<Animation> movementAnimation;
@@ -309,7 +308,7 @@ ChessAnimator::AnimationPtr ChessAnimator::back(AbstractPosition::Ptr final,
         conflict = a.get();
         movementAnimation = a;
       }
-      
+
       conflict->setSource(piece.sprite());
     }
     res->addPreAnimation(movementAnimation);

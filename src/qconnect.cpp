@@ -67,12 +67,12 @@ void QConnect::accept() {
     s_ics["password"].remove();
   s_ics["host"] = editHost->text();
   s_ics["port"] = spinPort->value();
-  
+
   {
     Settings s_timeseal = s_ics.group("timeseal");
     s_timeseal.setFlag("use", groupTimeseal->isChecked());
     s_timeseal["path"] = editTimeseal->text();
-    s_timeseal["command"].setFlag("use", chkTimesealCmd->isChecked());
+    s_timeseal.group("command").setFlag("use", chkTimesealCmd->isChecked());
     s_timeseal["command"] = editTimesealCmd->text();
   }
 

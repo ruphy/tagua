@@ -482,7 +482,7 @@ public:
 
     std::cout << "num = " << num << "  order = " << order << std::endl;
     if(num >= 4 && (order == 0 || order == num-1)) //4/5 pawns case
-      piece = MovePart((order==0) ? "rear" : "front", MovePart::Figurine);
+      piece = MovePart((order==0) ? "front" : "rear", MovePart::Figurine);
     else
       piece = MovePart(p.name(), MovePart::Figurine);
 
@@ -494,7 +494,7 @@ public:
                                                                         MovePart::Figurine);
     }
     else {
-      retv += MovePart((order<num/2) ? "rear" : "front", MovePart::Figurine);
+      retv += MovePart((order<num/2) ? "front" : "rear", MovePart::Figurine);
       retv += piece;
     }
 
