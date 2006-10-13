@@ -117,6 +117,7 @@ public:
 
   shared_ptr<Piece> moveHint(const Move& m) const;
   void dump() const { }
+  QStringList borderCoords() const;
 };
 
 Connect4Position::Connect4Position()
@@ -130,6 +131,17 @@ Connect4Position::Connect4Position(const OptList&)
 Connect4Position::Connect4Position(Piece::Color turn, bool, bool, bool, bool, const Point&)
 : m_board(7,7)
 , m_turn(turn) { }
+
+QStringList Connect4Position::borderCoords() const
+{
+  QStringList retv;
+  Point p = m_board.getSize();
+  for(int i=0; i<p.x; i++)
+    retv << QChar('a'+i);
+  for(int i=1; i<=p.y; i++)
+    retv += QString::number(i);
+  return retv + retv;
+}
 
 Connect4Move Connect4Position::getMove(const AlgebraicNotation& m, bool& ok) const {
   ok = true;
@@ -284,10 +296,6 @@ public:
 
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }
-  static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "";
-  }
   static OptList positionOptions() { return OptList(); }
 };
 

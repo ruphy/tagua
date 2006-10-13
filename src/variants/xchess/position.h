@@ -170,6 +170,7 @@ public:
   void dump() const;
   QString fen(int, int) const;
   void fromFEN(const QString& fen, bool&);
+  QStringList borderCoords() const;
 };
 
 //typedef Position<ChessMove, ChessPiece, PieceGrid> ChessPosition;
@@ -242,6 +243,18 @@ Position<M, P, B>::Position(const Position<M1, P1, B1>& other)
 template <typename M, typename P, typename B>
 Position<M, P, B>::~Position() {
 
+}
+
+template <typename M, typename P, typename B>
+QStringList Position<M, P, B>::borderCoords() const
+{
+  QStringList retv;
+  Point p = m_board.getSize();
+  for(int i=0; i<p.x; i++)
+    retv << QChar('a'+i);
+  for(int i=1; i<=p.y; i++)
+    retv += QString::number(i);
+  return retv + retv;
 }
 
 template <typename M, typename P, typename B>

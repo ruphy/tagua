@@ -264,6 +264,7 @@ public:
   static bool promotionZone(Piece::Color color, const Point& p);
   static bool stuckPiece(const Piece& piece, const Point& to);
   PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
+  QStringList borderCoords() const;
 };
 
 ShogiPosition::ShogiPosition()
@@ -282,6 +283,16 @@ ShogiPosition::ShogiPosition(Piece::Color turn, bool, bool, bool, bool, const Po
 ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
 : m_turn(ShogiPiece::BLACK)
 , m_board(9,9) { }
+
+QStringList ShogiPosition::borderCoords() const
+{
+  QStringList retv;
+  for(int i=9; i>0; i--)
+    retv += QString::number(i);
+  retv << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03) << QChar(0x516d)
+    << QChar(0x4e94) << QChar(0x56db) << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
+  return retv + retv;
+}
 
 bool ShogiPiece::canMove(const ShogiPosition& pos,
                          const Point& from, const Point& to) const {
@@ -569,14 +580,11 @@ ShogiAnimator::AnimationPtr ShogiAnimator::back(AbstractPosition::Ptr pos, const
 
 
 class ShogiVariantInfo {
-  static QStringList numbers;
 public:
-  static QStringList& getNumbers() {
-    if (numbers.empty())
-      numbers << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03)
+  static QStringList getNumbers() {
+    return QStringList() << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03)
               << QChar(0x516d) << QChar(0x4e94) << QChar(0x56db)
               << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
-    return numbers;
   }
 
   typedef ShogiPosition Position;
@@ -585,18 +593,12 @@ public:
   typedef ShogiAnimator Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
-  static QStringList borderCoords(){
-    return QStringList()
-                         << "9" << "8" << "7" << "6" << "5" << "4" << "3" << "2" << "1"
-                        << getNumbers();
-  }
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
   static const char *m_name;
   static const char *m_theme_proxy;
 };
 
-QStringList ShogiVariantInfo::numbers;
 const char *ShogiVariantInfo::m_name = "Shogi";
 const char *ShogiVariantInfo::m_theme_proxy = "Shogi";
 

@@ -185,6 +185,11 @@ public:
   virtual Point size() const = 0;
 
   /**
+    * Returns the text to be used for the border surrounding this position in a board
+    */
+  virtual QStringList borderCoords() const = 0;
+
+  /**
     * Create the starting piece setup.
     */
   virtual void setup() = 0;
@@ -358,7 +363,6 @@ public:
   virtual AbstractPiece::Ptr createPiece(int color, int type) = 0;
   virtual void forallPieces(class PieceFunction&) = 0;
   virtual int moveListLayout() const = 0;
-  virtual QStringList borderCoords() const = 0;
   virtual AbstractAnimator::Ptr createAnimator(PointConverter* converter,
                                            GraphicalPosition* position) = 0;
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove&) = 0;

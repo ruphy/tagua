@@ -263,6 +263,8 @@ public:
   void dump() const { }
 
   PathInfo path(const Point& from, const Point& to) const { return m_board.path(from, to); }
+
+  QStringList borderCoords() const;
 };
 
 XiangQiPosition::XiangQiPosition()
@@ -281,6 +283,20 @@ XiangQiPosition::XiangQiPosition(Piece::Color turn, bool, bool, bool, bool, cons
 XiangQiPosition::XiangQiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
 : m_turn(XiangQiPiece::BLACK)
 , m_board(9,10) { }
+
+QStringList XiangQiPosition::borderCoords() const
+{
+  QStringList retv;
+  for(int i=1; i<=9; i++)
+    retv += QString::number(i);
+  for(int i=0; i<10; i++)
+    retv += QString();
+  retv << QChar(0x4e5d)  << QChar(0x516b) << QChar(0x4e03) << QChar(0x516d)
+    << QChar(0x4e94) << QChar(0x56db) << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
+  for(int i=0; i<10; i++)
+    retv += QString();
+  return retv;
+}
 
 bool XiangQiPiece::canMove(const XiangQiPosition& pos,
                          const Point& from, const Point& to) const {

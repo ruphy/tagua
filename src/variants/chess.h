@@ -36,10 +36,6 @@ struct ChessVariant {
   static const char *m_name;
   static const char *m_theme_proxy;
   static void forallPieces(class PieceFunction& f);
-  static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8";
-  }
   static int  moveListLayout(){ return 0; }
 
   static VariantInfo* static_chess_variant;

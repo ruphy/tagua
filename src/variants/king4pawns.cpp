@@ -89,10 +89,6 @@ public:
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 2; }
-  static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8";
-  }
   static const char *m_name;
   static const char *m_theme_proxy;
   static OptList positionOptions() { return OptList(); }

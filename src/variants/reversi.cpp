@@ -120,6 +120,7 @@ public:
 
   shared_ptr<Piece> moveHint(const Move& m) const;
   void dump() const { }
+  QStringList borderCoords() const;
 };
 
 ReversiPosition::ReversiPosition()
@@ -133,6 +134,17 @@ ReversiPosition::ReversiPosition(const OptList&)
 ReversiPosition::ReversiPosition(Piece::Color turn, bool, bool, bool, bool, const Point&)
 : m_board(8,8)
 , m_turn(turn) { }
+
+QStringList ReversiPosition::borderCoords() const
+{
+  QStringList retv;
+  Point p = m_board.getSize();
+  for(int i=0; i<p.x; i++)
+    retv << QChar('a'+i);
+  for(int i=1; i<=p.y; i++)
+    retv += QString::number(i);
+  return retv + retv;
+}
 
 ReversiMove ReversiPosition::getMove(const AlgebraicNotation& m, bool& ok) const {
   ok = true;
@@ -326,10 +338,6 @@ public:
 
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }
-  static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8";
-  }
   static OptList positionOptions() { return OptList(); }
 };
 
@@ -354,7 +362,7 @@ struct MoveFactory<ReversiVariantInfo> {
   static ReversiMove createNormalMove(const NormalUserMove& move) {
     return move.to;
   }
-  static ReversiMove createDropMove(const ReversiPiece& p, const Point& to) {
+  static ReversiMove createDropMove(const ReversiPiece& /*p*/, const Point& to) {
     return to;
   }
   static NormalUserMove toNormal(const ReversiMove& m) {

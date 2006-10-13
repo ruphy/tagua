@@ -129,6 +129,8 @@ public:
   shared_ptr<Piece> moveHint(const Move& m) const;
 
   void dump() const { }
+
+  QStringList borderCoords() const;
 };
 
 ChainReactionPosition::ChainReactionPosition()
@@ -143,6 +145,17 @@ ChainReactionPosition::ChainReactionPosition(const OptList& l)
 ChainReactionPosition::ChainReactionPosition(Piece::Color turn, bool, bool, bool, bool, const Point&)
 : m_board(9,9)
 , m_turn(turn) { }
+
+QStringList ChainReactionPosition::borderCoords() const
+{
+  QStringList retv;
+  Point p = m_board.getSize();
+  for(int i=0; i<p.x; i++)
+    retv << QChar('a'+i);
+  for(int i=1; i<=p.y; i++)
+    retv += QString::number(i);
+  return retv + retv;
+}
 
 ChainReactionMove ChainReactionPosition::getMove(const AlgebraicNotation& m, bool& ok) const {
   ok = true;
@@ -388,10 +401,6 @@ public:
 
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }
-  static QStringList borderCoords(){
-    return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h" << "i" << "j" << "k" << "l"
-                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8" << "9" << "10" << "11" << "12";
-  }
   static OptList positionOptions() { return OptList()
       << OptPtr(new IntOpt("width", "Board width:", 9, 2, 40))
       << OptPtr(new IntOpt("height", "Board height:", 9, 2, 40)); }
@@ -426,7 +435,7 @@ struct MoveFactory<ChainReactionVariantInfo> {
   static ChainReactionMove createNormalMove(const NormalUserMove& move) {
     return move.to;
   }
-  static ChainReactionMove createDropMove(const ChainReactionPiece& piece, const Point& to) {
+  static ChainReactionMove createDropMove(const ChainReactionPiece& /*piece*/, const Point& to) {
     return to;
   }
   static NormalUserMove toNormal(const ChainReactionMove& m) {

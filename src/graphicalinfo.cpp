@@ -41,7 +41,7 @@ GraphicalInfo::GraphicalInfo(ChessTable* view,
 
   m_board = view->board();
 
-  m_board->createGrid(m_pos->size(), m_variant->borderCoords());
+  m_board->createGrid(m_pos->size(), m_pos->borderCoords());
   m_board->reset();
 
   m_view->pool(0)->clear();

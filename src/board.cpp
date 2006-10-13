@@ -152,9 +152,11 @@ void Board::recreateBorder() {
     m_border_margins.push_back( boost::shared_ptr<Canvas::Rectangle>( item ));
   }
 
+  Point s = m_sprites.getSize();
   for(int w = 0; w<2; w++)
-  for(int i = 0;i<m_sprites.getSize().x;i++) {
-    QString l = m_border_coords.size()>i ? m_border_coords[i] : QString();
+  for(int i = 0;i<s.x;i++) {
+    int c = w ? i : i+s.x+s.y;
+    QString l = m_border_coords.size()>c ? m_border_coords[c] : QString();
     Canvas::Item *item = new Canvas::Text( l, m_border_text_color, m_border_font,
                                 Canvas::Text::HCenter, Canvas::Text::VBaseline, this);
     item->show();
@@ -162,9 +164,9 @@ void Board::recreateBorder() {
   }
 
   for(int w = 0; w<2; w++)
-  for(int i = 0;i<m_sprites.getSize().y;i++) {
-    QString n = m_border_coords.size()>i+m_sprites.getSize().x
-                        ? m_border_coords[i+m_sprites.getSize().x] : QString();
+  for(int i = 0;i<s.y;i++) {
+    int c = w ? i+s.x : i+2*s.x+s.y;
+    QString n = m_border_coords.size()>c ? m_border_coords[c] : QString();
     Canvas::Item *item = new Canvas::Text( n, m_border_text_color, m_border_font,
                 Canvas::Text::HCenter, Canvas::Text::VBaseline, this);
     item->show();

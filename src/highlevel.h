@@ -95,6 +95,10 @@ public:
     return inner().size();
   }
 
+  virtual QStringList borderCoords() const {
+    return inner().borderCoords();
+  }
+
   virtual PoolPtr pool() const {
     PoolPtr p = PoolPtr(new AbstractPool);
     for(typename Pool::const_iterator it = m_pos.pool().begin(); it != m_pos.pool().end(); ++it)
@@ -475,10 +479,6 @@ public:
   virtual int moveListLayout() const {
     return Variant::moveListLayout();
   }
-  virtual QStringList borderCoords() const {
-    return Variant::borderCoords();
-  }
-
   virtual AbstractAnimator::Ptr createAnimator(PointConverter* converter,
                                            GraphicalPosition* position) {
     return AbstractAnimator::Ptr(new WrappedAnimator<Variant>(
