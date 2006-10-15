@@ -121,7 +121,7 @@ Glyph Theme::getGlyph(const QString& key, int size) {
     return pix->second;
 
   Glyph retv = m_lua_loader.getGlyph(key);
-  retv.m_font.setPointSize(size);
+  retv.m_font.setPointSize(size+retv.m_delta);
 
   if(m_lua_loader.error()) {
     std::cout << "SCRIPT RUN ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;

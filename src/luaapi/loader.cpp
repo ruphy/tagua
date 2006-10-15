@@ -255,8 +255,6 @@ int Loader::create_image_map_func(lua_State *l) {
       ::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
 
       QRect r = rect->toRect();
-      printf("Fetching %d,%d,%d,%d\n", r.left(), r.top(),
-                                    r.width(), r.height());
       m[rect->toRect()] = img->m_image;
 
       lua_pop(l, 1);

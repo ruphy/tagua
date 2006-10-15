@@ -256,7 +256,8 @@ public:
   bool m_font_valid;
   QFont m_font;
   QChar m_char;
-  Glyph(Context* ctx, const QString&, QChar);
+  int m_delta;
+  Glyph(Context* ctx, const QString&, QChar, int = 0);
   Glyph(QChar = QChar());
 };
 

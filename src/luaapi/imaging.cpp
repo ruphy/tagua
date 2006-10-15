@@ -881,6 +881,14 @@ int Wrapper<Glyph>::constructor(lua_State* l) {
     res = new Glyph(context, file_path(l, f), c);
     }
     break;
+  case 3: {
+    Context* context = retrieve_context(l);
+    const char* f = lua_tostring(l, 1);
+    unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
+    int d = int(lua_tonumber(l, 3));
+    res = new Glyph(context, file_path(l, f), c, d);
+    }
+    break;
   default:
     res = 0;
     luaL_error(l, "Wrong argument count for Glyph constructor");

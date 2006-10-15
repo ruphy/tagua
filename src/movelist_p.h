@@ -175,8 +175,8 @@ public:
   bool expanded;
   bool hide_next;
   bool selected;
-  int  width;
-  int  height;
+  QRect m_rect;
+  int  m_ascent;
   int  childs_height;
   int  move_turn;
   DecoratedMove move;
@@ -201,8 +201,6 @@ public:
     , expanded(true)
     , hide_next(false)
     , selected(false)
-    , width(0)
-    , height(0)
     , move_turn(turn)
     , move(m)
     , index(i)

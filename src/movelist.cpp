@@ -338,30 +338,33 @@ void Entry::paint (QPainter *p) {
   }
   p->setPen(selected ? m->m_settings->select_color : Qt::black);
   int x = pos().x()+MARGIN_LEFT;
-  int y = pos().y()+MARGIN_TOP+m->m_settings->mv_fmetrics.ascent();
+  int y = pos().y()+MARGIN_TOP+m_ascent;
 
   p->setRenderHint(QPainter::TextAntialiasing);
   QFont tf = selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font;
+  QFontMetrics& fm = selected ? m->m_settings->sel_mv_fmetrics : m->m_settings->mv_fmetrics;
+  QRect r(0,0,0,0);
 
   for(int i=0;i<(int)move.size();i++) {
     if(move[i].m_type == MovePart::Text) {
-      p->setFont(selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font);
-      p->drawText(QPoint(x, y), move[i].m_string);
-      x += (selected ? m->m_settings->sel_mv_fmetrics
-              : m->m_settings->mv_fmetrics).boundingRect(move[i].m_string).right();
+      p->setFont(tf);
+      p->drawText(QPoint(x+r.width(), y), move[i].m_string);
+      QRect b = fm.boundingRect(move[i].m_string);
+      r |= b.translated(r.width()-b.x(), 0);
     }
     else if(move[i].m_type == MovePart::Figurine) {
       ::Loader::Glyph g = m->m_loader.getGlyph(move[i].m_string);
       p->setFont(g.m_font_valid ? g.m_font : tf);
-      p->drawText(QPoint(x, y), g.m_char);
+      p->drawText(QPoint(x+r.width(), y), g.m_char);
       QFontMetrics fi(g.m_font_valid ? g.m_font : tf);
-      x += fi.boundingRect(g.m_char).right();
+      QRect b = fi.boundingRect(g.m_char);
+      r |= b.translated(r.width()-b.x(), 0);
     }
   }
 }
 
 QRect Entry::rect () const {
-  return QRect(pos(), QSize(width, height));
+  return m_rect.translated(pos().x()+MARGIN_LEFT, pos().y()+MARGIN_TOP+m_ascent);
 }
 
 void Entry::doUpdate () {
@@ -370,21 +373,23 @@ void Entry::doUpdate () {
 
   Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
   QFont tf = selected ? m->m_settings->sel_mv_font : m->m_settings->mv_font;
+  QFontMetrics& fm = selected ? m->m_settings->sel_mv_fmetrics : m->m_settings->mv_fmetrics;
+  m_ascent = m->m_settings->mv_fmetrics.ascent();
+  m_rect = QRect(0,0,0,0);
 
-  width = MARGIN_LEFT + MARGIN_RIGHT;
   for(int i=0;i<(int)move.size();i++) {
-    if(move[i].m_type == MovePart::Text)
-      width += (selected ? m->m_settings->sel_mv_fmetrics
-              : m->m_settings->mv_fmetrics).boundingRect(move[i].m_string).right();
+    if(move[i].m_type == MovePart::Text) {
+      QRect b = fm.boundingRect(move[i].m_string);
+      m_rect |= b.translated(m_rect.width()-b.x(), 0);
+    }
     else if(move[i].m_type == MovePart::Figurine) {
       ::Loader::Glyph g = m->m_loader.getGlyph(move[i].m_string);
       QFontMetrics fi(g.m_font_valid ? g.m_font : tf);
-      width += fi.boundingRect(g.m_char).right();
-      //width += m->m_loader(move[i].m_string).width();
+      QRect b = fi.boundingRect(g.m_char);
+      m_rect |= b.translated(m_rect.width()-b.x(), 0);
     }
   }
-
-  height = m->entry_size;
+  m_rect = QRect(m_rect.x(),m_rect.y(),m_rect.width()+MARGIN_RIGHT,m_rect.height());
 
   needs_update = false;
   changed();
@@ -409,9 +414,6 @@ void Settings::load() {
   select_color =  s["select-color"] | QColor(Qt::red);
   comment_color = s["comment-color"] | QColor(64,64,64);
   mv_font = QApplication::font();
-  std::cout << "before " << mv_font.pointSize() << " " << mv_font.toString() << std::endl;
-  mv_font.setPointSize(mv_font.pointSize()+2);
-  std::cout << "after " << mv_font.pointSize() << " " << mv_font.toString() << std::endl;
   if ((use_mv_font = s.group("moves-font").flag("enabled", true)))
     mv_font = s["moves-font"] | mv_font;
   sel_mv_font = mv_font;
@@ -806,8 +808,8 @@ void Widget::doLayout() {
   if(layout_goto_selected) {
     EntryPtr e = fetch(curr_selected);
     if(e)
-      owner_table->m_scroll_area->ensureVisible( int(e->pos().x() + e->width*0.5),
-                                                 int(e->pos().y() + e->height*0.5) );
+      owner_table->m_scroll_area->ensureVisible( int(e->pos().x() + e->m_rect.width()*0.5),
+                                                 int(e->pos().y() + e->m_rect.height()*0.5) );
     layout_goto_selected = false;
   }
 }
@@ -940,7 +942,7 @@ int Widget::layoutHistory(History& array, int at_x, int at_y,
     e->doUpdate();
     e->appear();
     e->childs_height = 0;
-    flow_x += e->width;
+    flow_x += e->m_rect.width();
 
 
     /* Update the fregna. The fregna is visible if there are subvariations in this

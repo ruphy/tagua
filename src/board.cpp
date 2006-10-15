@@ -83,8 +83,6 @@ void Board::updateBackground() {
   }
   else if(const Loader::PixmapMap* p = boost::get<Loader::PixmapMap>(&bg)) {
     for(Loader::PixmapMap::const_iterator it = p->begin(); it != p->end(); ++it) {
-      printf("Adding %d,%d,%d,%d\n", it->first.left(), it->first.top(),
-                                    it->first.width(), it->first.height());
       Canvas::TiledPixmap *t = new Canvas::TiledPixmap(it->second, it->first.size(),
                                       QPoint(), true, m_canvas_background);
       t->moveTo(it->first.topLeft());

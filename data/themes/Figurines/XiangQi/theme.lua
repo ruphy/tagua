@@ -1,8 +1,7 @@
 import("../../Pieces/common.lua")
 
 function Fig(char)
-  return Glyph("wt011.ttf", char)
-  -- return Glyph(char)
+  return Glyph("ukai.ttf", char, 4)
 end
 
 rn_1 = Fig("0x4e00")
