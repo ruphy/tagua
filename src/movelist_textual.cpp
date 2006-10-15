@@ -20,6 +20,7 @@
 #include <dom/dom_text.h>
 #include <kstandarddirs.h>
 #include "global.h"
+#include "decoratedmove.h"
 #include "movelist_p.h"
 #include "movelist_textual.h"
 
@@ -29,6 +30,9 @@ Textual::Textual(QWidget *parent)
 : KHTMLPart(parent, parent, KHTMLPart::BrowserViewGUI)
 , m_curr_selected(-1)
 , m_layout_style(0) {
+
+  m_loader.setSize(12);
+
   connect(browserExtension(), SIGNAL(openUrlRequest(const KUrl&,const KParts::URLArgs&)),
                                                                     this, SLOT(onURL(const KUrl&)));
   setJScriptEnabled(false);
@@ -36,7 +40,9 @@ Textual::Textual(QWidget *parent)
   setMetaRefreshEnabled(false);
   setPluginsEnabled(false);
 
-  QFile file(KStandardDirs::locate("appdata", "/scripts/movelist_textual.html"));
+  QString fpath = KStandardDirs::locate("appdata", "scripts/movelist_textual.html");
+  //std::cout << "HTML file is:"<< fpath <<std::endl;
+  QFile file(fpath);
   file.open(QIODevice::ReadOnly);
   QTextStream stream(&file);
   QString html = stream.readAll();
@@ -155,12 +161,21 @@ void Textual::select(const Index& index) {
   m_curr_selected = index;
 }
 
-void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
-                                                          const QString& comment) {
-}
 
 void Textual::setMove(const Index& index, int turn, const QString& move,
                                             const QString& comment) {
+  DecoratedMove m;
+  m << MovePart(move);
+  setMove(index, turn, m, comment);
+}
+
+// void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
+//                                                           const QString& comment) {
+//   setMove(index, turn, move[0].m_string, comment);
+// }
+
+void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
+                                                          const QString& comment) {
   //std::cout << "i= " << index << std::endl;
   DOM::HTMLDocument document = htmlDocument();
   QString istr = (QString)index;
@@ -169,7 +184,10 @@ void Textual::setMove(const Index& index, int turn, const QString& move,
   DOM::Element this_cm = document.getElementById("cm_"+istr);
   if(!this_mv.isNull() && !this_cm.isNull()) {
     clear_node(this_mv);
-    this_mv.appendChild(document.createTextNode(move));
+    for(int i=0;i<move.size();i++) {
+      DOM::Text t = document.createTextNode(move[i].m_string);
+      this_mv.appendChild(t);
+    }
 
     clear_node(this_cm);
     if(!comment.isEmpty()) {
@@ -304,7 +322,27 @@ void Textual::setMove(const Index& index, int turn, const QString& move,
   mv_el.setAttribute("turn", QString::number(turn));
   mv_el.setAttribute("mvnum", QString::number(mv_num));
   mv_el.setAttribute("submvnum", QString::number(sub_mv_num));
-  mv_el.appendChild(document.createTextNode(move));
+  for(int i=0;i<move.size();i++) {
+    if(move[i].m_type == MovePart::Figurine) {
+      ::Loader::Glyph g = m_loader.getGlyph(move[i].m_string);
+      DOM::Element el = document.createElement("span");
+#if 1
+      std::cout << "size = " << QString("%1%").arg(g.m_font.pointSize()*100/12) << std::endl;
+      el.style().setProperty("font-size", QString("%1%").arg(g.m_font.pointSize()*100/12), "important");
+      el.style().setProperty("line-height", QString("%1%").arg(g.m_font.pointSize()*100/12), "important");
+#endif
+      std::cout << "familiy = " << g.m_font.family() << std::endl;
+      el.style().setProperty("font-weight", "normal", "important");
+      el.style().setProperty("font-family", g.m_font.family(), "important");
+      DOM::Text t = document.createTextNode(QString(g.m_char));
+      el.appendChild(t);
+      mv_el.appendChild(el);
+    }
+    else {
+      DOM::Text t = document.createTextNode(move[i].m_string);
+      mv_el.appendChild(t);
+    }
+  }
   parent.appendChild(mv_el);
 
   parent.appendChild(document.createTextNode(QString(" ")));

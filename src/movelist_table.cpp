@@ -14,6 +14,7 @@
 #include <QVBoxLayout>
 #include <QScrollArea>
 #include <QToolButton>
+#include <QTabWidget>
 #include <QScrollBar>
 #include <kicon.h>
 #include "global.h"
@@ -57,20 +58,20 @@ Table::Table(QWidget* w)
 
   vbox->addLayout(hbox);
 
-  m_scroll_area = new QScrollArea(this);
+  QTabWidget *tw = new QTabWidget(this);
+  tw->setTabPosition(QTabWidget::West);
+  vbox->addWidget(tw);
+
+  m_scroll_area = new QScrollArea(tw);
   m_movelist = new Widget(m_scroll_area, this);
   m_scroll_area->setFocusPolicy(Qt::NoFocus);
   m_scroll_area->setWidgetResizable(true);
   m_scroll_area->setWidget(m_movelist);
   m_scroll_area->resize(50,100);
-  vbox->addWidget(m_scroll_area);
+  tw->addTab(m_scroll_area, KIcon("prefMoveList"), "&List");
 
-  if(1)
-    m_movelist_textual = NULL;
-  else {
-    m_movelist_textual = new Textual(this);
-    vbox->addWidget(m_movelist_textual->widget());
-  }
+  m_movelist_textual = new Textual(tw);
+  tw->addTab(m_movelist_textual->widget(), KIcon("html"), "&Html");
 }
 
 void Table::settingsChanged() {

@@ -20,23 +20,23 @@
 
 class KHTMLPart;
 class KUrl;
+class MovePart;
 
 namespace MoveList {
-
-class MovePart;
 
 class Textual : public KHTMLPart {
 Q_OBJECT
   Index m_curr_selected;
   int   m_layout_style;
   Notifier *m_notifier;
+  SpriteLoader m_loader;
 
 public:
   Textual(QWidget *parent = NULL);
 
   void settingsChanged() {}
 
-  void setLoaderBasePath(const QString& /*p*/){ }
+  void setLoaderBasePath(const QString& p){ m_loader.setBasePath(p); }
 
   /** Sets the move comment at the given index */
   void setComment(const Index& index, const QString& comment);
