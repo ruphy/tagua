@@ -8,16 +8,17 @@
   (at your option) any later version.
 */
 
-#ifndef SHOGIVARIANT_H
-#define SHOGIVARIANT_H
+#ifndef VARIANTS__RUBY_H
+#define VARIANTS__RUBY_H
 
-#include "chess.h"
+#include "variants.h"
 
-class ShogiVariant {
+class RubyVariant {
 private:
-  static VariantInfo* static_shogi_variant;
+  static VariantInfo* static_ruby_variant;
 public:
   static VariantInfo* info();
 };
 
-#endif // SHOGIVARIANT_H
+
+#endif // VARIANTS__RUBY_H

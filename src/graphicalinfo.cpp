@@ -184,13 +184,11 @@ void GraphicalInfo::updatePool(AbstractPosition::PoolPtr pool) {
   while(oldit != curr->end() || newit != pool->end()) {
     if(newit == pool->end() || (oldit != curr->end()
             && oldit->first->less(newit->first) )) {
-      //printf("removing %d, %d\n", oldit->first->color(), oldit->first->type());
       removeFromPool(oldit->first, oldit->second);
       ++oldit;
     }
     else if (oldit == curr->end() || (newit != pool->end()
             && newit->first->less(oldit->first) )) {
-      //printf("adding %d, %d - %d\n", newit->first->color(), newit->first->type(), newit->second);
       addToPool(newit->first, newit->second);
       ++newit;
     }

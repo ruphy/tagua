@@ -170,6 +170,8 @@ void XBoardEngine::setBoard(AbstractPosition::Ptr pos, int halfmove, int fullmov
     sendCommand(QString("setboard %1").arg(pos->fen(halfmove, fullmove)));
   }
   else {
+  // this is pretty meaningless for generic variants
+  #if 0
     if (pos->turn() != 0) {
       sendCommand("new");
       sendCommand("a2a3");
@@ -188,6 +190,7 @@ void XBoardEngine::setBoard(AbstractPosition::Ptr pos, int halfmove, int fullmov
       }
     }
     sendCommand(".");
+  #endif
   }
 }
 

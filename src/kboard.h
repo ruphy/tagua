@@ -103,7 +103,7 @@ public:
     * Return the symbol used to identify the piece
     * in a move.
     */
-   virtual QString typeSymbol() const = 0;
+//    virtual QString typeSymbol() const = 0;
 
   /**
     * Return the name used to load the
