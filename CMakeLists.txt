@@ -88,6 +88,7 @@ ENDIF(0)
 # Qt4 / KDE4 stuff
 ADD_DEFINITIONS(-fexceptions)
 FIND_PACKAGE(KDE4 REQUIRED)
+INCLUDE(KDE4Defaults)
 
 INCLUDE(${QT_USE_FILE})
 
@@ -138,27 +139,32 @@ MESSAGE("* Ruby:")
 MESSAGE("    Includes: ${RUBY_INCLUDE_PATH}")
 
 
+#MESSAGE("data dir: ${DATA_INSTALL_DIR}")
+#SET(DATA_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/apps/kboard/)
 
-SET(DATA_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/kboard/)
-
-MACRO(INSTALL_LOCAL_DATA_DIR local_dir install_dir)
-  FILE(GLOB_RECURSE INST_FILES ${local_dir}/*)
+MACRO(INSTALL_LOCAL_DATA_DIR local_dir)
+  SET(abs_local_dir ${CMAKE_CURRENT_SOURCE_DIR}/data/${local_dir})
+  #MESSAGE("looking for files in ${abs_local_dir}")
+  FILE(GLOB_RECURSE INST_FILES ${abs_local_dir}/*)
   FOREACH(INST_FILE ${INST_FILES})
-#    MESSAGE("${PIECE_THEME_FILE}")
+    #MESSAGE("processing: ${INST_FILE}")
     STRING(REGEX MATCH "/\\.svn/" TEMP ${INST_FILE})
     IF(NOT TEMP)
-      FILE(RELATIVE_PATH REL_FILE ${CMAKE_CURRENT_BINARY_DIR}/${local_dir} ${INST_FILE})
+      FILE(RELATIVE_PATH REL_FILE ${abs_local_dir} ${INST_FILE})
       GET_FILENAME_COMPONENT(REL_DIR ${REL_FILE} PATH)
-#      MESSAGE("rel: ${REL_DIR}")
+      #MESSAGE("rel dir: ${REL_DIR}")
+      #MESSAGE("installing to: ${DATA_INSTALL_DIR}/${local_dir}/${REL_DIR}")
       INSTALL(FILES ${INST_FILE}
-        DESTINATION ${DATA_INSTALL_DIR}/${install_dir}/${REL_DIR})
+        DESTINATION ${DATA_INSTALL_DIR}/kboard/${local_dir}/${REL_DIR})
     ENDIF(NOT TEMP)
   ENDFOREACH(INST_FILE)
-ENDMACRO(INSTALL_LOCAL_DATA_DIR local_dir install_dir)
+ENDMACRO(INSTALL_LOCAL_DATA_DIR local_dir)
 
-INSTALL_LOCAL_DATA_DIR(theme themes)
-INSTALL_LOCAL_DATA_DIR(scripts scripts)
-INSTALL_LOCAL_DATA_DIR(icons icons)
+INSTALL_LOCAL_DATA_DIR(themes)
+INSTALL_LOCAL_DATA_DIR(scripts)
+INSTALL_LOCAL_DATA_DIR(highlighting)
+INSTALL_LOCAL_DATA_DIR(pics)
+INSTALL_LOCAL_DATA_DIR(piece_icons)
 
 ADD_DEFINITIONS("-DDATA_INSTALL_DIR=\"${DATA_INSTALL_DIR}\"")
 
