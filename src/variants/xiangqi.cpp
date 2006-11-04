@@ -494,7 +494,7 @@ public:
     }
 
     DecoratedMove retv;
-    MovePart piece( (QString()) );
+    MovePart piece = QString();
 
     std::cout << "num = " << num << "  order = " << order << std::endl;
     if(num >= 4 && (order == 0 || order == num-1)) //4/5 pawns case
