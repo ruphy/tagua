@@ -176,6 +176,10 @@ void MainWindow::setupActions() {
 }
 
 void MainWindow::updatePromotionType() {
+  // TODO: I'm removing this code because it causes a crash
+  // and I don't want to investigate further, since the promotion
+  // stuff needs to be changed completely.
+#if 0
   int ptype = m_ui.promotionType();
   if (ptype == 0)
     m_promote_group->setEnabled(false);
@@ -201,6 +205,7 @@ void MainWindow::updatePromotionType() {
   
   std::cout << "do promotion: " << m_ui.doPromotion() << std::endl;
   m_do_promotion->setChecked(m_ui.doPromotion());
+#endif
 }
 
 void MainWindow::readSettings() { }
