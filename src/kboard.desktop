@@ -6,6 +6,7 @@ Icon=kboard
 Type=Application
 DocPath=kboard/kboard.html
 Comment=A KDE chessboard
+Comment[ar]=لعبة الشطرنج لِــ KDE
 Comment[bg]=Шах за KDE
 Comment[da]=Et skakbræt for KDE
 Comment[de]=Ein KDE Schachbrett
