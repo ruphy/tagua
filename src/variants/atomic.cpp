@@ -12,7 +12,7 @@
 #include "highlevel.h"
 #include "xchess/position.h"
 #include "moveserializer.impl.h"
-#include "xchess/animator.h"
+#include "xchess/animator.impl.h"
 #include "graphicalposition.h"
 #include "pointconverter.h"
 #include "animation.h"
@@ -141,7 +141,7 @@ bool AtomicPosition::testMove(ChessMove& move) const {
   return move.status == ChessMove::Legal ? true : false;
 }
 
-
+#if 0
 class AtomicAnimator : public ChessAnimator {
 public:
   AtomicAnimator(PointConverter* converter, GraphicalPosition* position)
@@ -241,14 +241,14 @@ public:
     }
   }
 };
-
+#endif
 
 class AtomicVariantInfo {
 public:
   typedef AtomicPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef AtomicAnimator Animator;
+  typedef SimpleAnimator<AtomicVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }

@@ -98,7 +98,7 @@ void UI::pgnPaste() {
   pgnPaste(cb->text());
 }
 
-void UI::pgnPaste(const QString& pgn) {
+void UI::pgnPaste(const QString&) {
   //controller()->loadPGN(pgn);
 }
 

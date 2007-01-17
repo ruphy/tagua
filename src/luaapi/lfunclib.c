@@ -370,7 +370,7 @@ static int f_partial (lua_State *L) {
 }
 
 /* Building block */
-
+#if 0
 static int f_reorder_aux (lua_State *L) {
   const char *format = lua_tostring(L, lua_upvalueindex(1));
   int nups = lua_tointeger(L, lua_upvalueindex(2));
@@ -416,7 +416,7 @@ static int f_reorder_aux (lua_State *L) {
     }
   }
 }
-
+#endif
 
 
 /* Functions which take iterators and return iterators */

@@ -11,6 +11,7 @@
 #include "crazyhouse_p.h"
 #include "crazyhouse.h"
 #include "piecesprite.h"
+#include "xchess/animator.impl.h"
 
 //BEGIN CrazyhousePiece
 
@@ -178,6 +179,7 @@ bool CrazyhousePosition::operator==(const CrazyhousePosition& pos) const {
 #include "graphicalposition.h"
 #include "pointconverter.h"
 
+#if 0
 //BEGIN CrazyhouseAnimator
 
 
@@ -244,6 +246,8 @@ CrazyhouseAnimator::AnimationPtr CrazyhouseAnimator::back(AbstractPosition::Ptr 
 
 //END CrazyhouseAnimator
 
+#endif 
+
 //BEGIN CrazyhouseVariant
 
 
@@ -255,7 +259,7 @@ public:
   typedef CrazyhousePosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef CrazyhouseAnimator Animator;
+  typedef SimpleAnimator<CrazyhouseVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }

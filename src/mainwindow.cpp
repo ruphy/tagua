@@ -11,7 +11,8 @@
 #include "mainwindow.h"
 #include <boost/scoped_ptr.hpp>
 #include <kaction.h>
-#include <kstdaction.h>
+#include <kstandardaction.h>
+#include <kactioncollection.h>
 #include <kicon.h>
 #include <klocale.h>
 #include <kurl.h>
@@ -103,20 +104,28 @@ ChessTable* MainWindow::table() {
 }
 
 KAction* MainWindow::addPromotionAction(const QString& name, const QString& text, const char* uiSlot) {
-  KAction* temp = new KAction(KIcon(name), text, actionCollection(), name);
+  KAction* temp = new KAction(KIcon(name), text, this);
   temp->setCheckable(true);
   connect(temp, SIGNAL(triggered(bool)), &ui(), uiSlot);
   m_promote_group->addAction(temp);
+  actionCollection()->addAction(name, temp);
   return temp;
+}
+
+KAction* MainWindow::installRegularAction(const QString& name, const KIcon& icon, const QString& text, QObject* obj, const char* slot) {
+	KAction* temp = new KAction(icon, text, this);
+	actionCollection()->addAction(name, temp);
+	connect(temp, SIGNAL(triggered(bool)), obj, slot);
+	return temp;
 }
 
 void MainWindow::setupActions() {
 //  (void) new KAction(i18n("&New game..."), CTRL+Key_N, this, SLOT(newGame()), actionCollection(), "new");
   KAction* temp;
 
-  KStdAction::openNew(this, SLOT(newGame()), actionCollection(), "new");
-  KStdAction::open(this, SLOT(loadGame()), actionCollection(), "load");
-  KStdAction::quit(this, SLOT(quit()), actionCollection(), "quit");
+  KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
+  KStandardAction::open(this, SLOT(loadGame()), actionCollection());
+  KStandardAction::quit(this, SLOT(quit()), actionCollection());
 
   m_promote_group = new QActionGroup(this);
 
@@ -125,54 +134,33 @@ void MainWindow::setupActions() {
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
   
-  m_do_promotion = new KAction(KIcon("favorites"), i18n("Do &promotion"), actionCollection(), "doPromotion");
+  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), 
+  																			 i18n("Do &promotion"), &ui(), 
+  																			 SLOT(setDoPromotion(bool)));
   m_do_promotion->setCheckable(true);
-  connect(m_do_promotion, SIGNAL(triggered(bool)), &ui(), SLOT(setDoPromotion(bool)));
 
-  temp = new KAction(KIcon("back"), i18n("&Back"), actionCollection(), "back");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(back()));
-  temp = new KAction(KIcon("forward"), i18n("&Forward"), actionCollection(), "forward");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(forward()));
-  temp = new KAction(KIcon("start"), i18n("Be&gin"), actionCollection(), "begin");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(gotoFirst()));
-  temp = new KAction(KIcon("finish"), i18n("&End"), actionCollection(), "end");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(gotoLast()));
+	installRegularAction("back", KIcon("back"), i18n("&Back"), &ui(), SLOT(back()));
+	installRegularAction("forward", KIcon("forward"), i18n("&Forward"), &ui(), SLOT(forward()));
+	installRegularAction("begin", KIcon("start"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
+	installRegularAction("end", KIcon("finish"), i18n("&End"), &ui(), SLOT(gotoLast()));
+	installRegularAction("connect", KIcon("connect_creating"), i18n("&Connect"), this, SLOT(icsConnect()));
+	installRegularAction("disconnect", KIcon("connect_no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
-  temp = new KAction(KIcon("connect_creating"), i18n("&Connect"), actionCollection(), "connect");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(icsConnect()));
-
-  temp = new KAction(KIcon("connect_no"), i18n("&Disconnect"), actionCollection(), "disconnect");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(icsDisconnect()));
-
-  KStdAction::undo(&ui(), SLOT(undo()), actionCollection(), "undo");
-  KStdAction::redo(&ui(), SLOT(redo()), actionCollection(), "redo");
-  KStdAction::copy(&ui(), SLOT(pgnCopy()), actionCollection(), "pgnCopy");
-  KStdAction::paste(&ui(), SLOT(pgnPaste()), actionCollection(), "pgnPaste");
-
-  temp = new KAction(KIcon("edit"), i18n("&Edit position"), actionCollection(), "editPosition");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(editPosition()));
-
-  temp = new KAction(KIcon("editdelete"), i18n("&Clear board"), actionCollection(), "clearBoard");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(clearBoard()));
-
-  temp = new KAction(KIcon("contents"), i18n("&Set starting position"), actionCollection(), "setStartingPosition");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(setStartingPosition()));
-
-  temp = new KAction(i18n("&Copy position"), actionCollection(), "copyPosition");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(copyPosition()));
-
-  temp = new KAction(i18n("&Paste position"), actionCollection(), "pastePosition");
-  connect(temp, SIGNAL(triggered(bool)), &ui(), SLOT(pastePosition()));
-
-  temp = new KAction(KIcon("rotate"), i18n("&Flip view"), actionCollection(), "flip");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(flipView()));
-  temp = new KAction(KIcon("openterm"), i18n("Toggle &console"), actionCollection(), "toggleConsole");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(toggleConsole()));
-  temp = new KAction(KIcon("view_text"), i18n("Toggle &move list"), actionCollection(), "toggleMoveList");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(toggleMoveList()));
-
-  temp = new KAction(KIcon("configure"), i18n("&Configure KBoard..."), actionCollection(), "configure");
-  connect(temp, SIGNAL(triggered(bool)), this, SLOT(preferences()));
+  KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
+  KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
+  
+  installRegularAction("pgnCopy", KIcon("copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
+  installRegularAction("pgnPaste", KIcon("paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
+  installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
+  installRegularAction("clearBoard", KIcon("editdelete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
+  installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
+  		&ui(), SLOT(setStartingPosition()));
+	installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
+	installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
+	installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
+	installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
+	installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
+	installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
 }
 
 void MainWindow::updatePromotionType() {

@@ -30,7 +30,7 @@ struct ChessVariant {
   typedef ChessPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ChessAnimator Animator;
+  typedef GenericAnimator<ChessVariant> Animator;
 
   static const bool m_simple_moves = false;
   static const char *m_name;

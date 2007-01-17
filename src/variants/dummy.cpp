@@ -8,13 +8,13 @@
   (at your option) any later version.
 */
 
-#include "crazyhouse_p.h"
 #include "dummy.h"
 #include "piecesprite.h"
+#include "crazyhouse_p.h"
+#include "xchess/animator.impl.h"
 
 typedef CrazyhousePiece DummyPiece;
 typedef CrazyhouseMove DummyMove;
-typedef CrazyhouseAnimator DummyAnimator;
 
 //BEGIN DummyPosition
 
@@ -148,7 +148,7 @@ public:
   typedef DummyPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef DummyAnimator Animator;
+  typedef SimpleAnimator<DummyVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }

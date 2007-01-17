@@ -10,7 +10,7 @@
 
 #include "chainreaction.h"
 #include <map>
-#include "xchess/animator.h"
+#include "xchess/animator.impl.h"
 #include "xchess/piece.h"
 #include "xchess/move.h"
 #include "piecefunction.h"
@@ -21,8 +21,6 @@
 #include "piecegrid.h"
 
 using namespace boost;
-
-class ChainReactionAnimator;
 
 class ChainReactionPiece {
 public:
@@ -231,7 +229,7 @@ shared_ptr<ChainReactionPiece> ChainReactionPosition::moveHint(const Move& /*p*/
   return shared_ptr<Piece>(new Piece(m_turn, static_cast<Piece::Type>(-1)));
 }
 
-
+#if 0
 //BEGIN ChainReactionAnimator ---------------------------------------------------------------------
 
 class ChainReactionAnimator {
@@ -388,12 +386,14 @@ ChainReactionAnimator::AnimationPtr ChainReactionAnimator::back(AbstractPosition
 
 //END ChainReactionAnimator -----------------------------------------------------------------------
 
+#endif
+
 class ChainReactionVariantInfo {
 public:
   typedef ChainReactionPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ChainReactionAnimator Animator;
+  typedef class ChainReactionAnimator Animator;
 
   static const bool m_simple_moves = true;
   static const char *m_name;
@@ -460,3 +460,20 @@ public:
   }
 };
 
+class ChainReactionAnimator : public SimpleAnimator<ChainReactionVariantInfo> {
+  typedef SimpleAnimator<ChainReactionVariantInfo> Base;
+  typedef Base::Position Position;
+  typedef Base::Move Move;
+  typedef Base::GPosition GPosition;
+public:
+  ChainReactionAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position)
+  : Base(converter, position) { }
+
+  AnimationPtr forward(const Position& final, const Move&) {
+    return warp(final);
+  }
+  
+  AnimationPtr back(const Position& final, const Move&) {
+    return warp(final);
+  }
+};

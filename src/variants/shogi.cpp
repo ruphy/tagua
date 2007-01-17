@@ -14,6 +14,7 @@
 #include "xchess/move.h"
 #include "highlevel.h"
 #include "moveserializer.impl.h"
+#include "xchess/animator.impl.h"
 #include "crazyhouse_p.h"
 
 class ShogiPiece {
@@ -65,6 +66,17 @@ public:
   bool valid() const { return m_color != INVALID_COLOR && m_type != INVALID_TYPE; }
   operator bool() const { return valid(); }
   bool operator!() const { return !valid(); }
+
+  bool equals(const ShogiPiece* p) const {
+    if (valid()) {
+      if (p) 
+        return (*this) == (*p);
+      else
+        return false;
+    }
+    else
+      return !p;
+  }
 
   bool operator==(const ShogiPiece& p) const {
     return m_promoted == p.m_promoted &&
@@ -544,6 +556,7 @@ void ShogiPosition::move(const ShogiMove& m) {
   switchTurn();
 }
 
+#if 0
 class ShogiAnimator : protected CrazyhouseAnimator {
 protected:
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
@@ -587,7 +600,7 @@ ShogiAnimator::AnimationPtr ShogiAnimator::back(AbstractPosition::Ptr pos, const
   else
     return CrazyhouseAnimator::back(pos, CrazyhouseMove(move.from, move.to));
 }
-
+#endif
 
 class ShogiVariantInfo {
 public:
@@ -600,7 +613,7 @@ public:
   typedef ShogiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ShogiAnimator Animator;
+  typedef SimpleAnimator<ShogiVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }

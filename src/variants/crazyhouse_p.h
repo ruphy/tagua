@@ -153,13 +153,5 @@ public:
   }
 };
 
-class CrazyhouseAnimator : public ChessAnimator {
-public:
-  CrazyhouseAnimator(PointConverter* converter, GraphicalPosition* position);
-
-  virtual AnimationPtr warp(AbstractPosition::Ptr);
-  virtual AnimationPtr forward(AbstractPosition::Ptr, const CrazyhouseMove& move);
-  virtual AnimationPtr back(AbstractPosition::Ptr, const CrazyhouseMove& move);
-};
 
 #endif // CRAZYHOUSE_P_H

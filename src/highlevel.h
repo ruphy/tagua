@@ -60,6 +60,8 @@ template <typename V> class WrappedMove;
   *
   */
 
+template <typename V> class GenericGraphicalPosition;
+template <typename V> class WrappedGraphicalPosition;
 
 #ifdef Q_CC_GNU
   #define __FUNC__ __PRETTY_FUNCTION__
@@ -392,6 +394,7 @@ public:
 
 template <typename Variant>
 class WrappedAnimator : public AbstractAnimator {
+  typedef typename Variant::Position Position;
   typedef typename Variant::Animator Animator;
   typedef typename Variant::Move Move;
   typedef AbstractAnimator::AnimationPtr AnimationPtr;
@@ -403,28 +406,42 @@ public:
   WrappedAnimator(const Animator& animator)
   : m_animator(animator) { }
 
-  virtual AnimationPtr warp(AbstractPosition::Ptr pos) {
-    return m_animator.warp(pos);
-  }
-
-  virtual AnimationPtr forward(AbstractPosition::Ptr pos, AbstractMove::Ptr _move) {
-    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
-
-    if (move)
-      return m_animator.forward(pos, move->inner());
+  virtual AnimationPtr warp(AbstractPosition::Ptr _pos) {
+    WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+    if (pos)
+      return m_animator.warp(pos->inner());
     else {
-      MISMATCH(*_move.get(), WrappedMove<Variant>);
+      MISMATCH(*_pos.get(), WrappedPosition<Variant>);
       return AnimationPtr();
     }
   }
 
-  virtual AnimationPtr back(AbstractPosition::Ptr pos, AbstractMove::Ptr _move) {
+  virtual AnimationPtr forward(AbstractPosition::Ptr _pos, AbstractMove::Ptr _move) {
+    WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
     WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
 
-    if (move)
-      return m_animator.back(pos, move->inner());
+    if (move && pos)
+      return m_animator.forward(pos->inner(), move->inner());
     else {
-      MISMATCH(*_move.get(), WrappedMove<Variant>);
+      if (!move)
+        MISMATCH(*_move.get(), WrappedMove<Variant>);
+      if (!pos)
+        MISMATCH(*_pos.get(), WrappedPosition<Variant>);
+      return AnimationPtr();
+    }
+  }
+
+  virtual AnimationPtr back(AbstractPosition::Ptr _pos, AbstractMove::Ptr _move) {
+    WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+
+    if (move && pos)
+      return m_animator.back(pos->inner(), move->inner());
+    else {
+      if (!move)
+        MISMATCH(*_move.get(), WrappedMove<Variant>);
+      if (!pos)
+        MISMATCH(*_pos.get(), WrappedPosition<Variant>);
       return AnimationPtr();
     }
   }
@@ -481,8 +498,11 @@ public:
   }
   virtual AbstractAnimator::Ptr createAnimator(PointConverter* converter,
                                            GraphicalPosition* position) {
-    return AbstractAnimator::Ptr(new WrappedAnimator<Variant>(
-                              Animator(converter, position) ) );
+    return AbstractAnimator::Ptr(
+      new WrappedAnimator<Variant>(
+              Animator(converter, 
+                       boost::shared_ptr<GenericGraphicalPosition<Variant> >(
+                          new WrappedGraphicalPosition<Variant>(position)))));
   }
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove& move) {
     return AbstractMove::Ptr(new WrappedMove<Variant>(

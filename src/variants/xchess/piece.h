@@ -52,7 +52,7 @@ public:
   template <typename Pos>
   Move::Type canMove(const Pos& position, Point from, Point to) const;
 
-  bool equals(const ChessPiece& other) const;
+  bool equals(const ChessPiece* other) const;
   bool sameColor(const ChessPiece* other) const;
   int id() const;
   static Color colorFromId(int);
@@ -66,8 +66,8 @@ public:
   inline Point direction() const { return direction(color()); }
   static Point direction(Color color) { return Point(0, color == WHITE? -1 : 1); }
   inline int promotionRank() const { return color() == WHITE? 0 : 7; }
-  bool operator==(const ChessPiece& p) const { return equals(p); }
-  bool operator!=(const ChessPiece& p) const { return !equals(p); }
+  bool operator==(const ChessPiece& p) const;
+  bool operator!=(const ChessPiece& p) const { return !operator==(p); }
   bool operator!() const { return !valid(); }
   bool operator<(const ChessPiece& p) const {
                           return m_color != p.m_color ?

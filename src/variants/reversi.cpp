@@ -10,7 +10,7 @@
 
 #include "reversi.h"
 #include <map>
-#include "xchess/animator.h"
+#include "xchess/animator.impl.h"
 #include "xchess/piece.h"
 #include "xchess/move.h"
 #include "piecefunction.h"
@@ -21,8 +21,6 @@
 #include "piecegrid.h"
 
 using namespace boost;
-
-class ReversiAnimator;
 
 class ReversiPiece {
 public:
@@ -232,8 +230,11 @@ shared_ptr<ReversiPiece> ReversiPosition::moveHint(const ReversiMove& /*m*/) con
 
 //BEGIN ReversiAnimator ---------------------------------------------------------------------
 
+#if 0
+
 class ReversiAnimator {
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+
 
   PointConverter* m_converter;
   GraphicalPosition* m_position;
@@ -257,7 +258,7 @@ ReversiAnimator::ReversiAnimator(PointConverter* converter, GraphicalPosition* p
 , m_anim_explode(false)
 , m_anim_fade(false)
 , m_anim_rotate(false) {
-  if(position->getBoolSetting("animations", true)) {
+  if (position->getBoolSetting("animations", true)) {
     m_anim_movement = (bool)position->getBoolSetting("animations.movement", true);
     m_anim_explode = (bool)position->getBoolSetting("animations.explode", true);
     m_anim_fade = (bool)position->getBoolSetting("animations.fading", true);
@@ -323,6 +324,8 @@ ReversiAnimator::AnimationPtr ReversiAnimator::back(AbstractPosition::Ptr final,
   return warp(final);
 }
 
+#endif
+
 //END ReversiAnimator -----------------------------------------------------------------------
 
 class ReversiVariantInfo {
@@ -330,7 +333,7 @@ public:
   typedef ReversiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ReversiAnimator Animator;
+  typedef class ReversiAnimator Animator;
 
   static const bool m_simple_moves = true;
   static const char *m_name;
@@ -384,6 +387,24 @@ public:
 
   virtual QString SAN() const {
     return m_move.toString(m_ref.size().y);
+  }
+};
+
+class ReversiAnimator : public SimpleAnimator<ReversiVariantInfo> {
+  typedef SimpleAnimator<ReversiVariantInfo> Base;
+  typedef Base::Position Position;
+  typedef Base::Move Move;
+  typedef Base::GPosition GPosition;
+public:
+  ReversiAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position)
+  : Base(converter, position) { }
+
+  AnimationPtr forward(const Position& final, const Move&) {
+    return warp(final);
+  }
+  
+  AnimationPtr back(const Position& final, const Move&) {
+    return warp(final);
   }
 };
 

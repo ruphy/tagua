@@ -85,7 +85,7 @@ public:
   typedef King4PawnsPosition Position;
   typedef Position::Piece Piece;
   typedef Position::Move Move;
-  typedef ChessAnimator Animator;
+  typedef GenericAnimator<King4PawnsVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 2; }

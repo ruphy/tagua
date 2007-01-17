@@ -22,7 +22,7 @@
 
 using namespace boost;
 
-class Connect4Animator;
+//class Connect4Animator;
 
 class Connect4Piece {
 public:
@@ -184,7 +184,7 @@ shared_ptr<Connect4Piece> Connect4Position::moveHint(const Connect4Move& /*m*/) 
   return shared_ptr<Piece>(new Piece(m_turn));
 }
 
-
+#if 0
 //BEGIN Connect4Animator ---------------------------------------------------------------------
 
 class Connect4Animator {
@@ -282,13 +282,14 @@ Connect4Animator::AnimationPtr Connect4Animator::back(AbstractPosition::Ptr fina
 }
 
 //END Connect4Animator -----------------------------------------------------------------------
+#endif
 
 class Connect4VariantInfo {
 public:
   typedef Connect4Position Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef Connect4Animator Animator;
+  typedef GenericAnimator<Connect4VariantInfo> Animator;
 
   static const bool m_simple_moves = true;
   static const char *m_name;

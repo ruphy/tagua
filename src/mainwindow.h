@@ -41,6 +41,8 @@ class QDockWidget;
 class KTabWidget;
 class QStackedWidget;
 class QActionGroup;
+class KAction;
+class KIcon;
 
 class MainWindow : public KMainWindow {
 Q_OBJECT
@@ -77,6 +79,8 @@ Q_OBJECT
 //                     const char *sl, QString name, QObject *par = NULL);
   void setupActions();
   KAction* addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
+  KAction* installRegularAction(const QString& name, const KIcon& icon, const QString& text,
+  															QObject* obj, const char* slot);
   void updatePromotionType();
 
   bool openFile(const QString&);

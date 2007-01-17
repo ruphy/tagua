@@ -1,5 +1,5 @@
 #include "xiangqi.h"
-#include "xchess/animator.h"
+#include "xchess/animator.impl.h"
 #include "xchess/piece.h"
 #include "xchess/move.h"
 #include "highlevel.h"
@@ -56,6 +56,17 @@ public:
   bool valid() const { return m_color != INVALID_COLOR && m_type != INVALID_TYPE; }
   operator bool() const { return valid(); }
   bool operator!() const { return !valid(); }
+
+  bool equals(const XiangQiPiece* p) const {
+    if (valid()) {
+      if (p) 
+        return (*this) == (*p);
+      else
+        return false;
+    }
+    else
+      return !p;
+  }
 
   bool operator==(const XiangQiPiece& p) const {
     return m_promoted == p.m_promoted &&
@@ -532,6 +543,7 @@ public:
   }
 };
 
+#if 0
 class XiangQiAnimator : protected CrazyhouseAnimator {
 protected:
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
@@ -575,6 +587,7 @@ XiangQiAnimator::AnimationPtr XiangQiAnimator::back(AbstractPosition::Ptr pos, c
   else
     return CrazyhouseAnimator::back(pos, CrazyhouseMove(move.from, move.to));
 }
+#endif
 
 
 class XiangQiVariantInfo {
@@ -582,7 +595,7 @@ public:
   typedef XiangQiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef XiangQiAnimator Animator;
+  typedef SimpleAnimator<XiangQiVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static QStringList borderCoords(){

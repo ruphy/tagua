@@ -15,6 +15,7 @@
 #include "animation.h"
 #include "element.h"
 #include "random.h"
+#include "wrappedanimator.h"
 
 class AbstractPosition;
 class AbstractMove;
@@ -23,12 +24,65 @@ class PointConverter;
 class GraphicalPosition;
 class ChessMove;
 class ImageLoaderInfo;
+class ChessVariant;
 
-class ChessAnimator {
+/**
+  * A variant-agnostic animator. 
+  * Can be used as a base class for other specialized animators.
+  */
+template <typename Variant>
+class SimpleAnimator {
 protected:
   typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+  typedef GenericGraphicalPosition<Variant> GPosition;
+  typedef typename WrappedGraphicalPosition<Variant>::GElement GElement;
+  typedef typename Variant::Position Position;
+  typedef typename Variant::Piece Piece;
+  typedef typename Variant::Move Move;
+  
   PointConverter* m_converter;
-  GraphicalPosition* m_position;
+  boost::shared_ptr<GPosition> m_position;
+  Random m_random;
+  
+  bool m_anim_movement;
+  bool m_anim_explode;
+  bool m_anim_fade;
+  bool m_anim_rotate;
+  
+  virtual boost::shared_ptr<MovementAnimation>
+    createMovementAnimation(const GElement& element, const QPoint& destination);
+
+  virtual boost::shared_ptr<Animation> createCapture(const Point& p,
+                                                     const GElement& piece,
+                                                     const GElement& captured,
+                                                     const Position& pos);
+
+  virtual void finalizeBackAnimation(AnimationPtr,
+                                     const Position&,
+                                     const Move&) { }
+  virtual void finalizeForwardAnimation(AnimationPtr,
+                                        const Position&,
+                                        const Move&) { }
+public:
+  SimpleAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position);
+  virtual ~SimpleAnimator() { }
+  AnimationPtr warp(const Position&);
+  AnimationPtr forward(const Position&, const Move& move);
+  AnimationPtr back(const Position&, const Move& move);
+};
+
+template <typename Variant>
+class GenericAnimator {
+protected:
+  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+  typedef GenericGraphicalPosition<Variant> GPosition;
+  typedef typename WrappedGraphicalPosition<Variant>::GElement GElement;
+  typedef typename Variant::Position Position;
+  typedef typename Variant::Piece Piece;
+  typedef typename Variant::Move Move;
+  
+  PointConverter* m_converter;
+  boost::shared_ptr<GPosition> m_position;
   Random m_random;
 
   bool m_anim_movement;
@@ -37,25 +91,42 @@ protected:
   bool m_anim_rotate;
 
   virtual boost::shared_ptr<MovementAnimation>
-    createMovementAnimation(const Element& element, const QPoint& destination);
+    createMovementAnimation(const GElement& element, const QPoint& destination);
 
   virtual boost::shared_ptr<Animation> createCapture(const Point& p,
-                                                     const Element& piece,
-                                                     const Element& captured,
-                                                     AbstractPosition::Ptr pos);
+                                                     const GElement& piece,
+                                                     const GElement& captured,
+                                                     const Position& pos);
 
   virtual void finalizeBackAnimation(AnimationPtr,
-                                     AbstractPosition::Ptr,
-                                     const ChessMove&) { }
+                                     const Position&,
+                                     const Move&) { }
   virtual void finalizeForwardAnimation(AnimationPtr,
-                                        AbstractPosition::Ptr,
-                                        const ChessMove&) { }
+                                        const Position&,
+                                        const Move&) { }
 public:
-  ChessAnimator(PointConverter* converter, GraphicalPosition* position);
-  virtual ~ChessAnimator(){}
-  virtual AnimationPtr warp(AbstractPosition::Ptr);
-  virtual AnimationPtr forward(AbstractPosition::Ptr, const ChessMove& move);
-  virtual AnimationPtr back(AbstractPosition::Ptr, const ChessMove& move);
+  GenericAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position);
+  virtual ~GenericAnimator() { }
+  virtual AnimationPtr warp(const Position&);
+  virtual AnimationPtr forward(const Position&, const Move& move);
+  virtual AnimationPtr back(const Position&, const Move& move);
+};
+
+template <typename Variant>
+class GenericDropAnimator : public GenericAnimator<Variant> {
+  typedef GenericAnimator<Variant> Base;
+  typedef typename Base::AnimationPtr AnimationPtr;
+  typedef typename Base::Position Position;
+  typedef typename Base::Move Move;
+  typedef typename Base::Piece Piece;
+  typedef typename Base::GPosition GPosition;
+  typedef typename Base::GElement GElement;
+public:
+  GenericDropAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position);
+
+  virtual AnimationPtr warp(const Position&);
+  virtual AnimationPtr forward(const Position&, const Move& move);
+  virtual AnimationPtr back(const Position&, const Move& move);
 };
 
 #endif // ANIMATOR_H

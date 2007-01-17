@@ -11,6 +11,8 @@
 #ifndef VARIANTS__DUMMY_H
 #define VARIANTS__DUMMY_H
 
+class VariantInfo;
+
 class DummyVariant {
 private:
   static VariantInfo* static_dummy_variant;

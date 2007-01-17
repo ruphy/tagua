@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
   
   KGlobal::dirs()->addResourceDir("appdata", data_dir);
   KGlobal::dirs()->addResourceDir("icon", data_dir + "/pics");
-  KGlobal::iconLoader()->reconfigure( app.aboutData()->appName(), KGlobal::dirs() );
+  KIconLoader::global()->reconfigure(app.aboutData()->appName(), KGlobal::dirs());
 
 //   QString locale = QLocale::system().name();
 //

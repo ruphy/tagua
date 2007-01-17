@@ -12,7 +12,7 @@
 #define POINT_H
 
 #include <QPoint>
-#include <iosfwd>
+#include <iostream>
 
 struct Point {
   static Point invalid() { return Point(-1, -1); }

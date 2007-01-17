@@ -13,6 +13,7 @@
 #include "variants/chess.h"
 #include "variants/xchess/position.h"
 #include "moveserializer.impl.h"
+#include "xchess/animator.impl.h"
 #include "highlevel.h"
 
 class ProgressivePosition : public ChessPosition {
@@ -64,7 +65,7 @@ public:
   typedef ProgressivePosition Position;
   typedef Position::Piece Piece;
   typedef Position::Move Move;
-  typedef ChessAnimator Animator;
+  typedef SimpleAnimator<ProgressiveVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 4; }
