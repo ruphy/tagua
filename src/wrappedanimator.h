@@ -23,9 +23,10 @@ public:
   WrappedElement() { }
   WrappedElement(const Element& element)
   : m_inner(element) {
-    // type check
-    if (!dynamic_cast<WrappedPiece<Variant>*>(m_inner.piece().get()))
-      MISMATCH(m_inner.piece().get(), WrappedPiece<Variant>);
+  	if (m_inner.piece())
+			TYPECHECK(*m_inner.piece(), WrappedPiece<Variant>);
+//     if (!dynamic_cast<WrappedPiece<Variant>*>(m_inner.piece().get()))
+//       MISMATCH(m_inner.piece().get(), WrappedPiece<Variant>);
   }
   
   const typename Variant::Piece& piece() const {

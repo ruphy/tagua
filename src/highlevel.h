@@ -73,6 +73,8 @@ template <typename V> class WrappedGraphicalPosition;
                        << "     got type   " << prettyTypeName(typeid(x).name()) << std::endl \
                        << "     instead of " << prettyTypeName(typeid(y).name()) << std::endl \
                        << "     this is    " << prettyTypeName(typeid(*this).name()) << std::endl)
+                       
+#define TYPECHECK(x,y) if (typeid(x) != typeid(y)) MISMATCH(x,y); else { }
 
 template <typename Variant>
 class WrappedPosition : public AbstractPosition {
