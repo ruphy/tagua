@@ -13,6 +13,7 @@
 #include "common.h"
 #include "highlevel.h"
 #include "moveserializer.impl.h"
+#include "xchess/animator.impl.h"
 #include "piecefunction.h"
 
 const char *ChessVariant::m_name = "Chess";

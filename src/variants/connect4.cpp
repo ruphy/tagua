@@ -19,10 +19,11 @@
 #include "graphicalposition.h"
 #include "pointconverter.h"
 #include "piecegrid.h"
+#include "xchess/animator.impl.h"
 
 using namespace boost;
 
-//class Connect4Animator;
+class Connect4Animator;
 
 class Connect4Piece {
 public:
@@ -184,112 +185,12 @@ shared_ptr<Connect4Piece> Connect4Position::moveHint(const Connect4Move& /*m*/) 
   return shared_ptr<Piece>(new Piece(m_turn));
 }
 
-#if 0
-//BEGIN Connect4Animator ---------------------------------------------------------------------
-
-class Connect4Animator {
-  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
-
-  PointConverter* m_converter;
-  GraphicalPosition* m_position;
-  Random m_random;
-
-  bool m_anim_movement;
-  bool m_anim_explode;
-  bool m_anim_fade;
-  bool m_anim_rotate;
-public:
-  Connect4Animator(PointConverter* converter, GraphicalPosition* position);
-  AnimationPtr warp(AbstractPosition::Ptr);
-  AnimationPtr forward(AbstractPosition::Ptr, const Connect4Move& move);
-  AnimationPtr back(AbstractPosition::Ptr, const Connect4Move& move);
-};
-
-Connect4Animator::Connect4Animator(PointConverter* converter, GraphicalPosition* position)
-: m_converter(converter)
-, m_position(position)
-, m_anim_movement(false)
-, m_anim_explode(false)
-, m_anim_fade(false)
-, m_anim_rotate(false) {
-  if(position->getBoolSetting("animations", true)) {
-    m_anim_movement = (bool)position->getBoolSetting("animations.movement", true);
-    m_anim_explode = (bool)position->getBoolSetting("animations.explode", true);
-    m_anim_fade = (bool)position->getBoolSetting("animations.fading", true);
-    m_anim_rotate = (bool)position->getBoolSetting("animations.transform", true);
-  }
-}
-
-Connect4Animator::AnimationPtr Connect4Animator::warp(AbstractPosition::Ptr final) {
-  AnimationPtr res(new AnimationGroup);
-  for (Point i = m_position->first(); i <= m_position->last(); i = m_position->next(i)) {
-    QPoint real = m_converter->toReal(i);
-    Element p = m_position->getElement(i);
-    AbstractPiece::Ptr q = final->get(i);
-    shared_ptr<Animation> a;
-
-    if (p) {
-      shared_ptr<PieceSprite> sprite = p.sprite();
-      Q_ASSERT(sprite);
-
-      if (!p.piece()->equals(q)) {
-        shared_ptr<PieceSprite> sprite = p.sprite();
-
-        if (q) {
-          a = shared_ptr<Animation>(new PromotionAnimation( sprite,
-                                m_position->setPiece(i, q, false, false) ));
-        }
-        else {
-          // remove it
-          m_position->removeElement(i);
-          a = shared_ptr<Animation>(new CaptureAnimation(sprite));
-        }
-      }
-    }
-    else if (q) {
-      a = shared_ptr<Animation>(new DropAnimation( m_position->setPiece(i, q, false, false) ));
-    }
-
-    if (a) res->addPreAnimation(a);
-  }
-
-  return res;
-}
-
-Connect4Animator::AnimationPtr Connect4Animator::forward(AbstractPosition::Ptr final,
-                                                                const Connect4Move& m) {
-  AnimationPtr res(new AnimationGroup);
-
-  Point pt;
-  AbstractPiece::Ptr q;
-  for(int i=1;i<7;i++) {
-    pt = Point(m.x, i);
-    if( (q = final->get(pt)) )
-      break;
-  }
-  shared_ptr<PieceSprite> s = m_position->setPiece(pt, q, false, true);
-  res->addPreAnimation(shared_ptr<Animation>(new InstantAnimation(s,
-                                        m_converter->toReal(Point(pt.x, 0)))));
-  res->addPreAnimation(shared_ptr<Animation>(new MovementAnimation(s,
-                                        m_converter->toReal(pt))));
-
-  return res;
-}
-
-Connect4Animator::AnimationPtr Connect4Animator::back(AbstractPosition::Ptr final,
-                                                                const Connect4Move&) {
-  return warp(final);
-}
-
-//END Connect4Animator -----------------------------------------------------------------------
-#endif
-
 class Connect4VariantInfo {
 public:
   typedef Connect4Position Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef GenericAnimator<Connect4VariantInfo> Animator;
+  typedef Connect4Animator Animator;
 
   static const bool m_simple_moves = true;
   static const char *m_name;
@@ -343,6 +244,25 @@ public:
 
   virtual QString SAN() const {
     return m_move.toString(m_ref.size().y);
+  }
+};
+
+
+class Connect4Animator : public SimpleAnimator<Connect4VariantInfo> {
+  typedef SimpleAnimator<Connect4VariantInfo> Base;
+  typedef Base::Position Position;
+  typedef Base::Move Move;
+  typedef Base::GPosition GPosition;
+public:
+  Connect4Animator(PointConverter* converter, const boost::shared_ptr<GPosition>& position)
+  : Base(converter, position) { }
+
+  AnimationPtr forward(const Position& final, const Move&) {
+    return warp(final);
+  }
+  
+  AnimationPtr back(const Position& final, const Move&) {
+    return warp(final);
   }
 };
 

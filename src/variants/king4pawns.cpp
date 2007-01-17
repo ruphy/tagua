@@ -13,6 +13,7 @@
 #include "variants/chess.h"
 #include "variants/xchess/position.h"
 #include "moveserializer.impl.h"
+#include "xchess/animator.impl.h"
 #include "highlevel.h"
 
 class King4PawnsPosition : public ChessPosition {
@@ -85,7 +86,7 @@ public:
   typedef King4PawnsPosition Position;
   typedef Position::Piece Piece;
   typedef Position::Move Move;
-  typedef GenericAnimator<King4PawnsVariantInfo> Animator;
+  typedef SimpleAnimator<King4PawnsVariantInfo> Animator;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 2; }
