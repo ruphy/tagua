@@ -15,7 +15,7 @@ FEATURES:
   * [DONE] Theme: manage themes and theme options; choose default theme; associate themes with variants.
   * [DONE] Movelist: colors, fonts, animations and graphical effects preferences.
   * [PARTIALLY DONE] Clock: colors and fonts.
-  * Engine: List of engines, with type, command line options, working path, etc...
+  * [BROKEN] Engine: List of engines, with type, command line options, working path, etc...
 
 * GUI Tuning.
 

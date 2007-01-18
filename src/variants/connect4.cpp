@@ -20,10 +20,9 @@
 #include "pointconverter.h"
 #include "piecegrid.h"
 #include "xchess/animator.impl.h"
+#include "trivialanimator.h"
 
 using namespace boost;
-
-class Connect4Animator;
 
 class Connect4Piece {
 public:
@@ -190,7 +189,7 @@ public:
   typedef Connect4Position Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef Connect4Animator Animator;
+  typedef TrivialAnimator<Connect4VariantInfo> Animator;
 
   static const bool m_simple_moves = true;
   static const char *m_name;
@@ -244,25 +243,6 @@ public:
 
   virtual QString SAN() const {
     return m_move.toString(m_ref.size().y);
-  }
-};
-
-
-class Connect4Animator : public SimpleAnimator<Connect4VariantInfo> {
-  typedef SimpleAnimator<Connect4VariantInfo> Base;
-  typedef Base::Position Position;
-  typedef Base::Move Move;
-  typedef Base::GPosition GPosition;
-public:
-  Connect4Animator(PointConverter* converter, const boost::shared_ptr<GPosition>& position)
-  : Base(converter, position) { }
-
-  AnimationPtr forward(const Position& final, const Move&) {
-    return warp(final);
-  }
-  
-  AnimationPtr back(const Position& final, const Move&) {
-    return warp(final);
   }
 };
 
