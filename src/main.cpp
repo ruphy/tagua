@@ -64,14 +64,8 @@ int main(int argc, char **argv) {
   
   KGlobal::dirs()->addResourceDir("appdata", data_dir);
   KGlobal::dirs()->addResourceDir("icon", data_dir + "/pics");
-  KIconLoader::global()->reconfigure(app.aboutData()->appName(), KGlobal::dirs());
-
-//   QString locale = QLocale::system().name();
-//
-//   QTranslator translator;
-//   translator.load(QString("kboard_") + locale);
-//   app.installTranslator(&translator);
-
+  KIconLoader::global()->reconfigure(about.appName(), KGlobal::dirs());
+  
   MainWindow* widget = new MainWindow;
   widget->show();
 

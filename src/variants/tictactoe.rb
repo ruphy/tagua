@@ -107,4 +107,4 @@ end
 
 end
 
-KBoard.register TicTacToe
+KBoard.register "Tic Tac Toe", TicTacToe

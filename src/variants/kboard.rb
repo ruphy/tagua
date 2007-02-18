@@ -84,7 +84,7 @@ module GridAccess
   end
 end
 
-def self.register(var)
+def self.register(name, var)
 
 end
 

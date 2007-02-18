@@ -74,7 +74,7 @@ LuaConsoleHighlighter::LuaConsoleHighlighter()
   std::cout << "lua lib: " << luaHighlightingLibrary << std::endl;
   m_api.runFile(qPrintable(luaHighlightingLibrary));
   
-  QStringList highlighting = dirs->findAllResources("appdata", "highlighting/*.lua", true);
+  QStringList highlighting = dirs->findAllResources("appdata", "highlighting/*.lua", KStandardDirs::Recursive);
   foreach (QString f, highlighting) {
     std::cout << "lua highlighting file: " << f << std::endl;
     m_api.runFile(qPrintable(f));

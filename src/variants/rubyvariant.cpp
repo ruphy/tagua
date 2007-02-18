@@ -8,7 +8,7 @@
   (at your option) any later version.
 */
 
-#if 0
+
 #include "rubyutils.h"
 #include "rubyvariant.h"
 #include "kboard.h"
@@ -18,6 +18,16 @@
 #include "highlevel.h"
 #include "moveserializer.impl.h"
 #include "crazyhouse_p.h"
+#include "piecefunction.h"
+
+class RubyPosition;
+
+int value2int(VALUE val) {
+	if (rb_respond_to(val, rb_intern("to_i")))
+		return NUM2INT(rb_funcall(val, rb_intern("to_i"), 0));
+	else
+		return static_cast<int>(SYM2ID(val));
+}
 
 class RubyPiece : public AbstractPiece {
   VALUE m_piece; 
@@ -34,12 +44,18 @@ public:
   virtual int type() const;
 };
 
-class RubyMove {
+class RubyMove : public AbstractMove {
   VALUE m_move;
 public:
-  RubyMove(VALUE);
+  RubyMove(VALUE move) : m_move(move) { }
   
   VALUE inner() const { return m_move; }
+  
+	virtual QString SAN(AbstractPosition::Ptr ref) const;
+	virtual DecoratedMove toDecoratedMove(AbstractPosition::Ptr) const;
+	virtual QString toString(AbstractPosition::Ptr) const;
+	virtual NormalUserMove toUserMove() const;
+	virtual bool equals(AbstractMove::Ptr) const;
 };
 
 class RubyPool {
@@ -53,8 +69,12 @@ class RubyVariantInfo : public VariantInfo {
   VALUE m_piece;
   VALUE m_move;
   VALUE m_position;
+  
+  QString m_name;
 public:
-  virtual VALUE typeClass() { return m_type; }
+  VALUE typeValue(int type);
+  VALUE colorValue(int type);
+
   virtual AbstractPosition::Ptr createPosition();
   virtual AbstractPosition::Ptr createCustomPosition(const OptList& l);
 
@@ -83,6 +103,16 @@ public:
   virtual OptList positionOptions() const;
 };
 
+class RubyAnimator : public AbstractAnimator {
+	typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
+public:
+	RubyAnimator() { }
+  virtual AnimationPtr warp(AbstractPosition::Ptr) { return AnimationPtr(); }
+
+  virtual AnimationPtr forward(AbstractPosition::Ptr, AbstractMove::Ptr) { return AnimationPtr(); }
+  virtual AnimationPtr back(AbstractPosition::Ptr, AbstractMove::Ptr) { return AnimationPtr(); }
+};
+
 static VALUE pool_set_helper(VALUE arg, VALUE _pool) {
   AbstractPosition::AbstractPool* pool;
   Data_Get_Struct(_pool, AbstractPosition::AbstractPool, pool);
@@ -100,6 +130,7 @@ static VALUE execute_piece_function(VALUE arg, VALUE functor) {
   (*f)(piece.color(), piece.type());
   return Qnil;
 }
+
 
 RubyPiece::RubyPiece(VALUE piece)
 : m_piece(piece) { }
@@ -140,19 +171,13 @@ QString RubyPiece::name() const {
 
 int RubyPiece::color() const {
   VALUE color_value = rb_funcall(m_piece, rb_intern("color"), 0);
-  if (rb_respond_to(color_value, rb_intern("to_i")))
-    return NUM2INT(rb_funcall(color_value, rb_intern("to_i"), 0));
-  else
-    return static_cast<int>(SYM2ID(color_value));
+	return value2int(color_value);
 }
 
 int RubyPiece::type() const {
   if (rb_respond_to(m_piece, rb_intern("type"))) {
-    VALUE color_value = rb_funcall(m_piece, rb_intern("type"), 0);
-    if (rb_respond_to(color_value, rb_intern("to_i")))
-      return NUM2INT(rb_funcall(color_value, rb_intern("to_i"), 0));
-    else
-      return static_cast<int>(SYM2ID(color_value));
+    VALUE type_value = rb_funcall(m_piece, rb_intern("type"), 0);
+		return value2int(type_value);
   }
   else return -1;
 }
@@ -266,27 +291,17 @@ public:
 
   virtual int turn() const {
     VALUE turn_value = rb_funcall(m_pos, rb_intern("turn"), 0);
-    if (rb_respond_to(turn_value, rb_intern("to_i")))
-      return NUM2INT(rb_funcall(turn_value, rb_intern("to_i"), 0));
-    else
-      return static_cast<int>(SYM2ID(turn_value));
+		return value2int(turn_value);
   }
 
   virtual void setTurn(int turn) {
-    VALUE turn_value;
-    if (rb_respond_to(m_variant->typeClass(), rb_intern("from_i")))
-      turn_value = rb_funcall(m_variant->typeClass(), rb_intern("from_i"), 1, turn);
-    else
-      turn_value = ID2SYM(static_cast<ID>(turn));
+    VALUE turn_value = m_variant->colorValue(turn);
     rb_funcall(m_pos, rb_intern("turn="), 1, turn_value);
   }
 
   virtual int previousTurn() const {
     VALUE turn_value = rb_funcall(m_pos, rb_intern("previous_turn"), 0);
-    if (rb_respond_to(turn_value, rb_intern("to_i")))
-      return NUM2INT(rb_funcall(turn_value, rb_intern("to_i"), 0));
-    else
-      return static_cast<int>(SYM2ID(turn_value));
+    return value2int(turn_value);
   }
 
   virtual void switchTurn() {
@@ -344,6 +359,10 @@ public:
   virtual QString state() const {
     return ""; // TODO
   }
+  
+	virtual QStringList borderCoords() const {
+		return QStringList(); //TODO
+	}
 
   virtual QString fen(int /*halfmove*/, int /*fullmove*/) const {
     return "";
@@ -364,70 +383,141 @@ public:
 };
 
 
+QString RubyMove::SAN(AbstractPosition::Ptr ref) const {
+	if (RubyPosition* pos = dynamic_cast<RubyPosition*>(ref.get())) {
+		VALUE res = rb_funcall(m_move, rb_intern("san"), 1, pos->inner());
+		return StringValuePtr(res);
+	}
+	else {
+		MISMATCH(*ref.get(), RubyPosition);
+		return "";
+	}
+}
+
+DecoratedMove RubyMove::toDecoratedMove(AbstractPosition::Ptr ref) const {
+	// TODO
+	DecoratedMove res;
+	QString san = SAN(ref);
+	res.push_back(MovePart(san));
+	return res;
+}
+	
+QString RubyMove::toString(AbstractPosition::Ptr ref) const {
+	if (RubyPosition* pos = dynamic_cast<RubyPosition*>(ref.get())) {
+		VALUE res = rb_funcall(m_move, rb_intern("to_s"), 1, pos->inner());
+		return StringValuePtr(res);
+	}
+	else {
+		MISMATCH(*ref.get(), RubyPosition);
+		return "";
+	}
+}
+
+NormalUserMove RubyMove::toUserMove() const {
+	VALUE res = rb_funcall(m_move, rb_intern("to_user"), 0);
+	Point from = Ruby::value2point(rb_funcall(res, rb_intern("from"), 0));
+	Point to = Ruby::value2point(rb_funcall(res, rb_intern("to"), 0));
+	return NormalUserMove(from, to);
+}
+	
+bool RubyMove::equals(AbstractMove::Ptr other) const {
+	if (RubyMove* mv = dynamic_cast<RubyMove*>(other.get())) {
+		return RTEST(rb_funcall(m_move, rb_intern("=="), 1, mv->inner()));
+	}
+	else {
+		MISMATCH(*other, RubyMove);
+		return false;
+	}
+}
+
+
+VALUE RubyVariantInfo::typeValue(int type) {
+	if (rb_respond_to(m_type, rb_intern("from_i")))
+		return rb_funcall(m_type, rb_intern("from_i"), 1, type);
+	else
+		return ID2SYM(static_cast<ID>(type));
+}
+
+VALUE RubyVariantInfo::colorValue(int color) {
+	if (rb_respond_to(m_type, rb_intern("from_i")))
+		return rb_funcall(m_type, rb_intern("from_i"), 1, color);
+	else
+		return ID2SYM(static_cast<ID>(color));
+}
+
 AbstractPosition::Ptr RubyVariantInfo::createPosition() {
   VALUE pos = rb_funcall(m_position, rb_intern("new"), 0);
   return AbstractPosition::Ptr(
     new RubyPosition(pos, this));
 }
 
-AbstractPosition::Ptr RubyVariantInfo::createCustomPosition(const OptList& l) {
+AbstractPosition::Ptr RubyVariantInfo::createCustomPosition(const OptList&) {
   // TODO
   return createPosition();
 }
 
 AbstractPosition::Ptr RubyVariantInfo::createPositionFromFEN(const QString& fen) {
   if (rb_respond_to(m_position, rb_intern("from_fen"))) {
-    int ok;
-    VALUE pos = Ruby::pcall(&ok, m_position, rb_intern("from_fen"));
-    if (!ok) return AbstractPosition::Ptr();
+//     int ok;
+    VALUE pos = rb_funcall(m_position, rb_intern("from_fen"), 1, rb_str_new2(fen.toAscii()));
+//     if (!ok) return AbstractPosition::Ptr();
     return AbstractPosition::Ptr(new RubyPosition(pos, this));
   }
   
   return AbstractPosition::Ptr();
 }
 
-AbstractPosition::Ptr RubyVariantInfo::createChessboard(int turn,
-                            bool wk, bool wq, bool bk, bool bq,
-                            const Point& ep) {
+AbstractPosition::Ptr RubyVariantInfo::createChessboard(int /*turn*/,
+                            bool /*wk*/, bool /*wq*/, bool /*bk*/, bool /*bq*/,
+                            const Point& /*ep*/) {
   return AbstractPosition::Ptr();
 }
 
 AbstractPiece::Ptr RubyVariantInfo::createPiece(int color, int type) {
-  return AbstractPiece::Ptr();
-}
-
-void forallPieces(PieceFunction& f) {
-  VALUE functor = Data_Wrap_Struct(rb_cObject, 0, 0, &f);
-  rb_iterate(rb_each, m_piece, (VALUE(*)(...))execute_piece_function, functor);
-}
-
-int moveListLayout() const {
-  if (rb_respond_to(m_variant, rb_intern("movelist_layout")))
-    return NUM2INT(rb_funcall(m_variant, rb_intern("movelist_layout")));
+  if (rb_respond_to(m_piece, rb_intern("from_color_type"))) {
+  	VALUE piece = rb_funcall(m_piece, rb_intern("from_color_type"), 2, 
+  		colorValue(color), typeValue(type));
+		return AbstractPiece::Ptr(new RubyPiece(piece));
+  }
   else
+  	return AbstractPiece::Ptr();
+}
+
+void RubyVariantInfo::forallPieces(PieceFunction& f) {
+  VALUE functor = Data_Wrap_Struct(rb_cObject, 0, 0, &f);
+  VALUE piece_class = rb_funcall(m_piece, rb_intern("class"), 0);
+  rb_iterate(rb_each, piece_class, (VALUE(*)(...))execute_piece_function, functor);
+}
+
+int RubyVariantInfo::moveListLayout() const {
+//   if (rb_respond_to(m_variant, rb_intern("movelist_layout")))
+//     return NUM2INT(rb_funcall(m_variant, rb_intern("movelist_layout")));
+//   else
     return 0;
 }
 
-QStringList borderCoords() const {
+QStringList RubyVariantInfo::borderCoords() const {
   // TODO
   return QStringList() << "a" << "b" << "c" << "d" << "e" << "f" << "g" << "h"
                       << "1" << "2" << "3" << "4" << "5" << "6" << "7" << "8";
 }
 
-AbstractAnimator::Ptr createAnimator(PointConverter* converter,
-                                          GraphicalPosition* position) {
-  return AbstractAnimator::Ptr(new RubyAnimator(
-                            Animator(converter, position) ) );
+AbstractAnimator::Ptr RubyVariantInfo::createAnimator(PointConverter* /*converter*/,
+                                          GraphicalPosition* /*position*/) {
+	// TODO
+  return AbstractAnimator::Ptr(new RubyAnimator);
 }
-AbstractMove::Ptr createNormalMove(const NormalUserMove& move) {
-  return AbstractMove::Ptr(new RubyMove(
-    MoveFactory::createNormalMove(move)));
+
+AbstractMove::Ptr RubyVariantInfo::createNormalMove(const NormalUserMove& move) {
+	VALUE mv = rb_funcall(m_move, rb_intern("from_normal"), Ruby::point2value(move.from), Ruby::point2value(move.to));
+  return AbstractMove::Ptr(new RubyMove(mv));
 }
-AbstractMove::Ptr createDropMove(const DropUserMove& move) {
+
+AbstractMove::Ptr RubyVariantInfo::createDropMove(const DropUserMove& move) {
   RubyPiece* piece = dynamic_cast<RubyPiece*>(move.m_piece.get());
   if (piece) {
-    return AbstractMove::Ptr(new RubyMove(
-      MoveFactory::createDropMove(piece->inner(), move.m_to)));
+  	VALUE mv = rb_funcall(m_move, rb_intern("from_drop"), piece->inner(), Ruby::point2value(move.m_to));
+    return AbstractMove::Ptr(new RubyMove(mv));
   }
   else {
     MISMATCH(move.m_piece.get(), RubyPiece);
@@ -435,28 +525,45 @@ AbstractMove::Ptr createDropMove(const DropUserMove& move) {
   }
 }
 
-AbstractMove::Ptr getVerboseMove(int turn, const VerboseNotation& m) const {
-  Move res = Position::getVerboseMove(static_cast<typename Piece::Color>(turn), m);
-  return AbstractMove::Ptr(new RubyMove(res));
-}
-int type(const QString& str) {
-  return Piece::getType(str);
-}
-QString typeSymbol(int type) {
-  return Piece::typeSymbol(static_cast<typename Piece::Type>(type));
-}
-bool simpleMoves() {
-  return Variant::m_simple_moves;
-}
-QString name() const {
-  return Variant::m_name;
-}
-QString themeProxy() const {
-  return Variant::m_theme_proxy;
-}
-OptList positionOptions() const {
-  return Variant::positionOptions();
+AbstractMove::Ptr RubyVariantInfo::getVerboseMove(int /*turn*/, const VerboseNotation& /*m*/) const {
+//   Move res = Position::getVerboseMove(static_cast<typename Piece::Color>(turn), m);
+//   return AbstractMove::Ptr(new RubyMove(res));
+	// TODO
+	return AbstractMove::Ptr(new RubyMove(Qnil));
 }
 
-#endif
+int RubyVariantInfo::type(const QString& str) {
+	VALUE type_str = rb_str_new2(str.toAscii());
+	if (rb_respond_to(m_type, rb_intern("from_s"))) {
+  	VALUE res = rb_funcall(m_type, rb_intern("from_s"), type_str);
+  	return value2int(res);
+	}
+	else
+		return -1;
+}
+
+QString RubyVariantInfo::typeSymbol(int type) {
+	VALUE type_value = typeValue(type);
+	if (rb_respond_to(type_value, rb_intern("symbol"))) {
+		VALUE res = rb_funcall(type_value, rb_intern("symbol"), 0);
+		return StringValuePtr(res);
+	}
+	else
+		return "";
+}
+
+bool RubyVariantInfo::simpleMoves() {
+	//TODO
+  return false;
+}
+
+QString RubyVariantInfo::name() const {
+  return m_name;
+}
+QString RubyVariantInfo::themeProxy() const {
+  return "";
+}
+OptList RubyVariantInfo::positionOptions() const {
+  return OptList();
+}
 

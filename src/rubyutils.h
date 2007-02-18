@@ -18,9 +18,11 @@ namespace Ruby {
 Point value2point(VALUE);
 VALUE point2value(const Point&);
 
-// VALUE pcall(int* res, VALUE rcpt, ID id);
-// VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1);
-// VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2);
-// VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2, VALUE arg3);
+#if 0
+VALUE pcall(int* res, VALUE rcpt, ID id);
+VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1);
+VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2);
+VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2, VALUE arg3);
+#endif
 
 }

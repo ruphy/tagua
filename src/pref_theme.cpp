@@ -149,10 +149,10 @@ PrefTheme::PrefTheme(QWidget *parent)
 
   KStandardDirs* dirs = KGlobal::dirs();
   m_pieces_themes = to_theme_info_list(
-    dirs->findAllResources("appdata", "themes/Pieces/*.lua", true),
+    dirs->findAllResources("appdata", "themes/Pieces/*.lua", KStandardDirs::Recursive),
     s.group("pieces"));
   m_squares_themes = to_theme_info_list(
-    dirs->findAllResources("appdata", "themes/Squares/*.lua", true),
+    dirs->findAllResources("appdata", "themes/Squares/*.lua", KStandardDirs::Recursive),
     s.group("squares"));
 
   const Variant::Variants& all = Variant::allVariants();
@@ -372,7 +372,7 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
 
   MasterSettings s(".kboard_config_cache.xml");
   KStandardDirs* dirs = KGlobal::dirs();
-  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", pattern, true), s.group(group));
+  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", pattern, KStandardDirs::Recursive), s.group(group));
 
   int best = 0;
   QString retv;

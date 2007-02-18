@@ -29,7 +29,6 @@ VALUE point2value(const Point& p) {
     return Qnil;
 }
 
-#if 0
 static VALUE wrapped_call(VALUE* args) {
   VALUE rcpt = args[0];
   ID id = (ID)args[1];
@@ -39,12 +38,13 @@ static VALUE wrapped_call(VALUE* args) {
   return rb_funcall2(rcpt, id, argc, fun_args);
 }
 
+#if 0
 VALUE pcall(int* res, VALUE rcpt, ID id) {
   VALUE args[3];
   args[0] = rcpt;
   args[1] = (VALUE)id;
   args[2] = 0;
-  return rb_protect((VALUE(*)(VALUE))wrapped_call, args, res);
+  return rb_protect((VALUE(*)(VALUE))wrapped_call, (VALUE)args, res);
 }
 
 VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1) {
@@ -53,7 +53,7 @@ VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1) {
   args[1] = (VALUE)id;
   args[2] = 1;
   args[3] = arg1;
-  return rb_protect((VALUE(*)(...))wrapped_call, args, res); 
+  return rb_protect((VALUE(*)(...))wrapped_call, (VALUE)args, res); 
 }
 
 VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2) {
@@ -63,7 +63,7 @@ VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2) {
   args[2] = 2;
   args[3] = arg1;
   args[4] = arg2;
-  return rb_protect((VALUE(*)(...))wrapped_call, args, res);
+  return rb_protect((VALUE(*)(...))wrapped_call, (VALUE)args, res);
 }
 
 
@@ -75,7 +75,7 @@ VALUE pcall(int* res, VALUE rcpt, ID id, VALUE arg1, VALUE arg2, VALUE arg3) {
   args[3] = arg1;
   args[4] = arg2;
   args[5] = arg3;
-  return rb_protect((VALUE(*)(...))wrapped_call, args, res);
+  return rb_protect((VALUE(*)(...))wrapped_call, (VALUE)args, res);
 }
 #endif
 
