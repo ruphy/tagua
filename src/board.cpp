@@ -354,7 +354,7 @@ void Board::onMousePress(const QPoint& pos, int button) {
 
       if (piece && m_entity.lock()->movable(point)) {
           cancelSelection();
-          m_drag_info = DragInfoPtr(new DragInfo(point, piece,
+          m_drag_info = DragInfoPtr(new DragInfo(point, pos, piece,
                             m_entity.lock()->validTurn(point)) );
           piece->raise();
       }
@@ -475,7 +475,15 @@ void Board::onMouseMove(const QPoint& pos, int /*button*/) {
 
   if (m_drag_info) {
     Q_ASSERT(m_drag_info->sprite);
-    m_drag_info->sprite->moveTo(pos - QPoint(m_square_size / 2, m_square_size / 2) );
+    // check drag threshold
+    if (!m_drag_info->dragStarted) {
+      QPoint delta = pos - m_drag_info->real;
+      if (delta.x() * delta.x() + delta.y() * delta.y() > DragInfo::DRAG_THRESHOLD) {
+        m_drag_info->dragStarted = true;
+      }
+    }
+    if (m_drag_info->dragStarted)
+      m_drag_info->sprite->moveTo(pos - QPoint(m_square_size / 2, m_square_size / 2) );
 
     // highlight valid moves
     NormalUserMove move(m_drag_info->from,  point);

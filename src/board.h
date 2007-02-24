@@ -68,17 +68,23 @@ public:
 private:
   class DragInfo {
   public:
+    static const int DRAG_THRESHOLD = 100; // pixels ^ 2
     boost::shared_ptr<PieceSprite> sprite;
     Point from; // logical coordinates
+    QPoint real; /// real starting point, used to honour drag threshold
     bool dragging;
+    bool dragStarted;
     bool droppedOut;
     UserEntity::Action action;
 
-    DragInfo(Point from, const boost::shared_ptr<PieceSprite>& sprite,
-                                            UserEntity::Action action)
+    DragInfo(Point from, const QPoint& real, 
+             const boost::shared_ptr<PieceSprite>& sprite,
+             UserEntity::Action action)
     : sprite(sprite)
     , from(from)
+    , real(real)
     , dragging(false)
+    , dragStarted(false)
     , droppedOut(false)
     , action(action) {}
   };
