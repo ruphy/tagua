@@ -27,6 +27,7 @@ public:
   virtual double rotation(double /*t*/) const { return 0.0; }
 
   static double sigmoid(double t);
+  static double half_sigmoid(double t);
 };
 
 /**
@@ -78,6 +79,17 @@ public:
   }
 };
 
+template <typename Mov>
+class HalfSigmoidalMovement : public Mov {
+public:
+  HalfSigmoidalMovement(const QPoint& from, const QPoint& to, bool rotate = false)
+  : Mov(from, to, rotate) { }
+  
+  virtual QPoint pos(double t) const {
+    return Mov::pos(Movement::half_sigmoid(t));
+  }
+};
+
 //BEGIN MovementFactory
 
 //NOTE for Paolo: WTF?
@@ -95,7 +107,7 @@ template <typename Mov>
 class MovementFactory : public AbstractMovementFactory {
 public:
   virtual Mov* create(const QPoint& from, const QPoint& to) const {
-    return new SigmoidalMovement<Mov>(from, to);
+    return new HalfSigmoidalMovement<Mov>(from, to);
   }
 };
 

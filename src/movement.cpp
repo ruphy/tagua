@@ -23,6 +23,11 @@ double Movement::sigmoid(double t) {
 #endif
 }
 
+double Movement::half_sigmoid(double t) {
+  // use the second half of the sigmoid parameterization
+  return sigmoid(0.5 * (t + 1));
+}
+
 LinearMovement::LinearMovement(const QPoint& from, const QPoint& to, bool /*rotate*/)
 : m_from(from)
 , m_velocity(to - from) { }
