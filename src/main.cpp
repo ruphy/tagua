@@ -39,7 +39,6 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-
   KAboutData about("kboard", I18N_NOOP("KBoard"), version, description,
                     KAboutData::License_GPL,
                     "(C) 2006 Paolo Capriotti, Maurizio Monge",

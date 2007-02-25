@@ -9,6 +9,7 @@
 */
 
 #include "global.h"
+#include "common.h"
 #include <QTextStream>
 
 QDomElement MasterSettings::node() const {

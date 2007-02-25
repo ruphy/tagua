@@ -96,6 +96,11 @@ INCLUDE(${QT_USE_FILE})
 # Compile for debugging as default
 SET(CMAKE_BUILD_TYPE debug)
 
+IF(SETTINGS_DEBUG)
+  MESSAGE("Compiling with -D__SETTINGS_DEBUG")
+  ADD_DEFINITIONS(-D__SETTINGS_DEBUG)
+ENDIF(SETTINGS_DEBUG)
+
 # FIXME, i think this is not portable
 IF(1)
   ADD_DEFINITIONS(-Wall -ansi -pedantic -Wno-long-long) # -pg

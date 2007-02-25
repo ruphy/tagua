@@ -89,13 +89,14 @@ void GraphicalInfo::setup(const shared_ptr<UserEntity>& entity) {
 
 int GraphicalInfo::getIntSetting(const QString& key, int def_value) const {
   QStringList l = key.split(".");
-  if(l.size()==0)
+  if (l.size() == 0)
     return def_value;
 
   Settings s = settings;
-  for(int i=0;i<l.size()-1;i++)
+  for(int i = 0; i < l.size() - 1; i++) {
     s = s.group(l[i]);
-  return s[l[l.size()-1]] | def_value;
+  }
+  return s[l.last()] | def_value;
 }
 
 bool GraphicalInfo::getBoolSetting(const QString& key, bool def_value) const {

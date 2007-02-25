@@ -1,5 +1,34 @@
+/*
+Copyright 2006-2007 Paolo Capriotti <paolo.capriotti@kdemail.net>
+
+BSD License
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
 #include "settings.h"
-#include <iostream>
+#ifdef __SETTINGS_DEBUG
+#include <QFile>
+#include <QTextStream>
+#endif
 
 SettingConstRef::SettingConstRef(const QDomElement& element)
 : m_element(element) {
@@ -30,6 +59,11 @@ Settings::Settings(const QDomElement& node)
 
 Settings::Settings(const Settings& other)
 : m_node(other.node()) { }
+
+Settings& Settings::operator=(const Settings& other) {
+  m_node = other.node();
+  return *this;
+}
 
 SettingRef Settings::operator[](const QString& key) {
   return SettingRef(node(), key);
@@ -126,14 +160,19 @@ void SettingArray::clear() {
   }
 }
 
+#ifdef __SETTINGS_DEBUG
 void Settings::dump() const {
-  std::cout << "dumping" << std::endl;
-  if(node().isNull()) {
-    std:: cout << "<NULL NODE />" << std::endl;
+  QFile outf;
+  outf.open(stdout, QIODevice::WriteOnly);
+  QTextStream out(&outf);
+
+  if (node().isNull()) {
+    out << "<NULL NODE />" << endl;
     return;
   }
 
   QDomDocument temp;
   temp.appendChild(temp.importNode(node(), true));
-  std::cout << temp.toString() << std::endl;
+  out << temp.toString() << endl;
 }
+#endif

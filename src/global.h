@@ -37,6 +37,6 @@ signals:
   void settingsChanged();
 };
 
-extern MasterSettings settings;
+extern MasterSettings settings; // yes, I know global objects are evil
 
 #endif // GLOBAL_H
