@@ -21,6 +21,7 @@
 class ImageLoaderInfo;
 class ChessPiece;
 class ChessMove;
+class ChessAnimator;
 template <typename T> class PointerGrid;
 template <typename M, typename P, typename B> class Position;
 typedef Grid<ChessPiece> PieceGrid;
@@ -30,7 +31,7 @@ struct ChessVariant {
   typedef ChessPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef SimpleAnimator<ChessVariant> Animator;
+  typedef ChessAnimator Animator;
 
   static const bool m_simple_moves = false;
   static const char *m_name;

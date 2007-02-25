@@ -9,6 +9,7 @@
 */
 
 #include <QPainter>
+#include <boost/shared_ptr.hpp>
 #include "variants/chess.h"
 #include "common.h"
 #include "highlevel.h"
@@ -16,9 +17,34 @@
 #include "xchess/animator.impl.h"
 #include "piecefunction.h"
 
+using namespace boost;
+
 const char *ChessVariant::m_name = "Chess";
 const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
+
+class ChessAnimator : public SimpleAnimator<ChessVariant> {
+public:
+  ChessAnimator(PointConverter* converter,
+                               const shared_ptr<GPosition>& position)
+  : SimpleAnimator<ChessVariant>(converter, position) { }
+
+  shared_ptr<MovementAnimation> 
+    createMovementAnimation(const GElement& element, const QPoint& destination) {
+      std::cout << "creating movement animation" << std::endl;
+      if (element.piece().type() == KNIGHT) {
+        std::cout << "rotate = " << m_anim_rotate << std::endl;
+        return shared_ptr<MovementAnimation>(
+          new KnightMovementAnimation(element.sprite(),
+                                      destination, m_anim_rotate));
+      }
+      else {
+        return shared_ptr<MovementAnimation>(
+          new MovementAnimation(element.sprite(),
+                                destination, 1.0));
+      }
+  }
+};
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);

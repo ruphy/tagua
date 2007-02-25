@@ -36,18 +36,7 @@ void Variant::register_variant() {
 }
 
 void Variant::initialize() {
-  register_variant<ChessVariant>();
-  register_variant<CrazyhouseVariant>();
-  register_variant<AtomicVariant>();
-  register_variant<King4PawnsVariant>();
-  register_variant<ProgressiveVariant>();
-  register_variant<ReversiVariant>();
-  register_variant<Connect4Variant>();
-  register_variant<ChainReactionVariant>();
-  register_variant<DummyVariant>();
-  register_variant<ShogiVariant>();
-  register_variant<XiangQiVariant>();
-
+#include "variants-autogen"
   s_initialized = true;
 }
 
