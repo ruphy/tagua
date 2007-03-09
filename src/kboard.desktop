@@ -6,4 +6,5 @@ Icon=kboard
 Type=Application
 DocPath=kboard/kboard.html
 Comment=A KDE chessboard
+Comment[el]=Ένα σκάκι για το KDE
 Terminal=false
