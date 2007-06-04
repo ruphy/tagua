@@ -15,8 +15,7 @@
 
 namespace MoveList {
   class Widget;
-  class Table;
-
+  
   /**
     * @class Notifier <movelist_notifier.h>
     * @brief An observer class for user actions on the movelist.

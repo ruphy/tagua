@@ -23,7 +23,6 @@ struct null_deleter {
 };
 
 //class ChessPiece;
-class PieceSprite;
 
 template <typename T> class Grid;
 template <typename T> class PointerGrid;

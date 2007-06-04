@@ -20,11 +20,6 @@
 
 class PiecePool;
 class Player;
-class AlgebraicNotation;
-class ChessMove;
-class PGN;
-class Connection;
-class GameInfo;
 class Clock;
 class InfoDisplay;
 namespace MoveList {

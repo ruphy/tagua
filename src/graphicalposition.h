@@ -15,7 +15,6 @@
 #include "grid.h"
 
 class PieceSprite;
-class ImageLoader;
 namespace Canvas { class Abstract; }
 
 /**

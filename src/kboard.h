@@ -348,7 +348,6 @@ public:
   virtual AnimationPtr back(AbstractPosition::Ptr, AbstractMove::Ptr) = 0;
 };
 
-class SpriteCreator;
 class PointConverter;
 class GraphicalPosition;
 namespace PixmapLoader{ class Info; }

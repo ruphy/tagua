@@ -20,7 +20,6 @@
 
 class KHTMLPart;
 class KUrl;
-class MovePart;
 
 namespace MoveList {
 

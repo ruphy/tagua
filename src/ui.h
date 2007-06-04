@@ -18,10 +18,7 @@
 #include "kboard.h"
 #include <map>
 
-class GenericPosition;
 class Controller;
-class PositionInfo;
-class PGN;
 class Engine;
 
 class UI : public QObject {

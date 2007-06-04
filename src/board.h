@@ -25,14 +25,9 @@
 #include "piecegroup.h"
 
 class DragInfo;
-class AnimationInfo;
-class AnimationGroup;
 class Animation;
-class AlgebraicNotation;
 class BoardSprite;
-class PointConverter;
 class UserEntity;
-class MainAnimation;
 
 class BoardTags;
 typedef boost::shared_ptr<BoardTags> BoardTagsPtr;

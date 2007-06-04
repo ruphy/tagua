@@ -17,7 +17,6 @@ class QTextStream;
 class QIODevice;
 class QFile;
 class QHostInfo;
-class ChessMove;
 
 /**
   * @brief Manage a connection with a remote server.

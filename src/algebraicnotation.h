@@ -17,7 +17,6 @@
 
 class QRegExp;
 class QString;
-class GenericPosition;
 
 class AlgebraicNotation {
   friend std::ostream& operator<<(std::ostream& os, const AlgebraicNotation& move);

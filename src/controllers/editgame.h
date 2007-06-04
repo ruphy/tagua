@@ -20,7 +20,6 @@ class Entity;
 class Engine;
 class Agent;
 class ICSConnection;
-class ChessBoardWidget;
 class UserEntity;
 class GraphicalGame;
 class GraphicalInfo;

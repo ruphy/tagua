@@ -23,14 +23,9 @@
 #include "ui.h"
 #include "common.h"
 
-class KConfig;
 class ChessTable;
 class ICSConnection;
 class Console;
-class AlgebraicNotation;
-class Player;
-class HistLineEdit;
-class Configuration;
 class GameInfo;
 class PositionInfo;
 class Controller;

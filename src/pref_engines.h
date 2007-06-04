@@ -15,7 +15,6 @@
 #include "engineinfo.h"
 #include <vector>
 
-class EngineInfo;
 
 class PrefEngines : public QWidget
                   , public Ui::PrefEngines {

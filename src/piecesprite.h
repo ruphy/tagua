@@ -16,7 +16,6 @@
 #include <boost/weak_ptr.hpp>
 #include <QPixmap>
 
-class ChessPiece;
 class QPoint;
 class QImage;
 class Animation;

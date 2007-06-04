@@ -17,11 +17,7 @@
 #include "entitytoken.h"
 #include "kboard_fwd.h"
 
-class GenericPosition;
-class PositionInfo;
-class Connection;
 class ChessTable;
-class GenericGame;
 class UserEntity;
 class Engine;
 class PGN;

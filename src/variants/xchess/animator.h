@@ -17,14 +17,9 @@
 #include "random.h"
 #include "wrappedanimator.h"
 
-class AbstractPosition;
-class AbstractMove;
 class AnimationGroup;
 class PointConverter;
 class GraphicalPosition;
-class ChessMove;
-class ImageLoaderInfo;
-class ChessVariant;
 
 /**
   * A variant-agnostic animator. 

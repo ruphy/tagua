@@ -19,8 +19,6 @@
 #include "common.h"
 #include "pathinfo.h"
 
-class GenericPosition;
-class PieceSprite;
 
 class ChessPiece {
 public:

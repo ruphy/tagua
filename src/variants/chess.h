@@ -18,7 +18,6 @@
 #include "option.h"
 #include "piecegrid.h"
 
-class ImageLoaderInfo;
 class ChessPiece;
 class ChessMove;
 class ChessAnimator;

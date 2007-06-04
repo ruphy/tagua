@@ -15,7 +15,6 @@
 #include "piecetype.h"
 #include "moveserializer.h"
 
-class DropUserMove;
 
 class ChessMove {
 public:
