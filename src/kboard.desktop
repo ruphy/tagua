@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=kboard
+Name[xx]=xxkboardxx
 Exec=kboard %i %m -caption "%c"
 Icon=kboard
 Type=Application
@@ -19,4 +20,5 @@ Comment[nl]=Een KDE-schaakbord
 Comment[pt]=Um tabuleiro de xadrez para o KDE
 Comment[pt_BR]=A tabuleiro de xadrez para o KDE 
 Comment[sv]=Ett schackbräde för KDE
+Comment[xx]=xxA KDE chessboardxx
 Terminal=false
