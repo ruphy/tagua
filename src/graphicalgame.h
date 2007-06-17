@@ -20,6 +20,7 @@ class GraphicalInfo;
 class CtrlAction;
 class UserEntity;
 class GraphicalGame;
+namespace MoveList { class Table; }
 
 class GraphicalGameProxy : public QObject {
 Q_OBJECT

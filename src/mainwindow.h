@@ -12,7 +12,7 @@
 #define MAINWINDOW_H
 
 #include <map>
-#include <kapplication.h>
+#include <kxmlguiwindow.h>
 #include <kmainwindow.h>
 
 #include <QApplication>
@@ -39,7 +39,7 @@ class QActionGroup;
 class KAction;
 class KIcon;
 
-class MainWindow : public KMainWindow {
+class MainWindow : public KXmlGuiWindow {
 Q_OBJECT
   QDockWidget* movelist_dock;
   QDockWidget* console_dock;

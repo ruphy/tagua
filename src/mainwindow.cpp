@@ -55,7 +55,7 @@ MainWindow::~MainWindow() {
 }
 
 MainWindow::MainWindow()
-: KMainWindow(0) {
+: KXmlGuiWindow(0) {
   setObjectName("kboard_main");
   m_main = new KTabWidget(this);
   setCentralWidget(m_main);

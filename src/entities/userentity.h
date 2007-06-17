@@ -19,6 +19,8 @@
 #include "usermove.h"
 #include "agent.h"
 
+class PGN;
+
 class TurnTest {
 public:
   virtual ~TurnTest() { }

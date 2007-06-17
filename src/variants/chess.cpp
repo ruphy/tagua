@@ -28,12 +28,10 @@ public:
   ChessAnimator(PointConverter* converter,
                                const shared_ptr<GPosition>& position)
   : SimpleAnimator<ChessVariant>(converter, position) { }
-
+protected:
   shared_ptr<MovementAnimation> 
     createMovementAnimation(const GElement& element, const QPoint& destination) {
-      std::cout << "creating movement animation" << std::endl;
       if (element.piece().type() == KNIGHT) {
-        std::cout << "rotate = " << m_anim_rotate << std::endl;
         return shared_ptr<MovementAnimation>(
           new KnightMovementAnimation(element.sprite(),
                                       destination, m_anim_rotate));
@@ -44,6 +42,7 @@ public:
                                 destination, 1.0));
       }
   }
+  
 };
 
 void ChessVariant::forallPieces(PieceFunction& f) {
