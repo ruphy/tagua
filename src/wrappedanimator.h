@@ -72,6 +72,9 @@ public:
   virtual bool consistent() const = 0;
 };
 
+/**
+	* @brief A strongly typed wrapper aroung GraphicalPosition.
+  */
 template <typename Variant>
 class WrappedGraphicalPosition : public GenericGraphicalPosition<Variant> {
   typedef boost::shared_ptr<PieceSprite> SpritePtr;

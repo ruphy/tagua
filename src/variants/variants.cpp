@@ -36,6 +36,7 @@ void Variant::register_variant() {
 }
 
 void Variant::initialize() {
+// yes, this is a hack
 #include "variants-autogen"
   s_initialized = true;
 }
