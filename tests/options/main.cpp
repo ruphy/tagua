@@ -1,6 +1,7 @@
 
 #include <iostream>
-#include <QApplication>
+#include <kapplication.h>
+#include <kcmdlineargs.h>
 #include <QWidget>
 #include "common.h"
 #include "settings.h"
@@ -9,7 +10,7 @@
 
 
 OptList opts = OptList()
-    << OptPtr(new BoolOpt("teto", "Teto?", true))
+    << OptPtr(new BoolOpt("teto", "Is this C++?", true))
     << OptPtr(new BoolOpt("fufi", "Fufi?", true, OptList()
         << OptPtr(new BoolOpt("gni", "Gni gni?", true, OptList()
             << OptPtr(new ColorOpt("pappa", "Pappa?", Qt::red))
@@ -18,7 +19,7 @@ OptList opts = OptList()
         << OptPtr(new BoolOpt("gnu", "Gnu gnu?", false))
     ))
     << OptPtr(new IntOpt("ratta", "Ratta:", 5, 0, 10))
-    << OptPtr(new ComboOpt("schiatta", "Fai a Iazzi:", QStringList()
+    << OptPtr(new ComboOpt("schiatta", "Fai a Paolo:", QStringList()
         << "Incula" << "Impala" << "Spezza" << "Uccidi" << "Tortura" ))
     << OptPtr(new SelectOpt("affa", "Affanculo:", BoolOptList()
         << BoolOptPtr(new BoolOpt("ght", "Case1", true, OptList()
@@ -31,7 +32,8 @@ OptList opts = OptList()
     ));
 
 int main(int argc, char *argv[]) {
-  QApplication app(argc, argv);
+  KCmdLineArgs::init(argc, argv, argv[0], NULL, NULL, NULL);
+  KApplication app;
 
   LuaApi::Loader ja(NULL);
   //Settings sets("test.settings");

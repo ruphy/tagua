@@ -7,7 +7,7 @@
 -- }
 
 options = OptList {
-    BoolOpt("teto", "Teto?", true),
+    BoolOpt("teto", "Is this LUA?", true),
     BoolOpt("fufi", "Fufi?", true, OptList{
         BoolOpt("gni", "Gni gni?", true, OptList {
             ColorOpt("pappa", "Pappa?", "red"),
