@@ -25,12 +25,6 @@ static const char description[] =
 
 static const char version[] = "0.9.1";
 
-static KCmdLineOptions options[] =
-{
-//    { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-    KCmdLineLastOption
-};
-
 void trap() {
   printf("Press enter to quit.\n");
 
@@ -39,19 +33,21 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-  KAboutData about("kboard", I18N_NOOP("KBoard"), version, description,
+  KAboutData about("kboard", 0, ki18n("KBoard"), version, ki18n(description),
                     KAboutData::License_GPL,
-                    "(C) 2006 Paolo Capriotti, Maurizio Monge",
-                    0,
+                    ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge"),
+                    KLocalizedString(),
                     "http://kboard.sourceforge.net",
                     "p.capriotti@gmail.com");
-  about.addAuthor("Paolo Capriotti", 0, "p.capriotti@gmail.com");
-  about.addAuthor("Maurizio Monge", 0, "p.capriotti@gmail.com");
-  about.addCredit("Jani Huhtanen", I18N_NOOP("Gaussian blur code"), 0, 0);
-  about.addCredit("Marcin Jakubowski", I18N_NOOP("X11 taskbar flashing"), 0, 0);
-  about.addCredit("Rici Lake", I18N_NOOP("funclib lua library"), 0, 0);
+  about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
+  about.addAuthor(ki18n("Maurizio Monge"), KLocalizedString(), "p.capriotti@gmail.com");
+  about.addCredit(ki18n("Jani Huhtanen"), ki18n("Gaussian blur code"));
+  about.addCredit(ki18n("Marcin Jakubowski"), ki18n("X11 taskbar flashing"));
+  about.addCredit(ki18n("Rici Lake"), ki18n("funclib lua library"));
 
   KCmdLineArgs::init(argc, argv, &about);
+
+  KCmdLineOptions options;
   KCmdLineArgs::addCmdLineOptions(options);
   KApplication app;
 

@@ -32,7 +32,7 @@ OptList opts = OptList()
     ));
 
 int main(int argc, char *argv[]) {
-  KCmdLineArgs::init(argc, argv, argv[0], NULL, NULL, NULL);
+  KCmdLineArgs::init(argc, argv, argv[0], 0, KLocalizedString(), NULL);
   KApplication app;
 
   LuaApi::Loader ja(NULL);
