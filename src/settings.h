@@ -529,7 +529,7 @@ SettingMap<Key>::SettingMap(const QDomElement& node, const QString& element, con
 , m_element(element)
 , m_key(key) {
   if (!m_node.isNull()) {
-    // scan all elements all 'name' elements of node
+    // scan all 'name' elements of node
     QDomNodeList elements = m_node.elementsByTagName(m_element);
     for (int i = 0; i < elements.size(); i++) {
       QDomElement el = elements.item(i).toElement();
@@ -567,11 +567,13 @@ Settings SettingMap<Key>::insert(const Key& key) {
 
 template <typename Key>
 void SettingMap<Key>::clear() {
-  QDomNodeList children = node().childNodes();
-  while (children.size() > 0) {
-    QDomElement e = children.item(0).toElement();
+  QDomNode it = node().firstChild();
+  while (!it.isNull()) {
+    QDomNode nextit = it.nextSibling();
+    QDomElement e = it.toElement();
     if (!e.isNull() && e.tagName() == m_element)
       node().removeChild(e);
+    it = nextit;
   }
 }
 
