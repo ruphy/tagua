@@ -15,7 +15,7 @@
 
 #include "global.h"
 #include "board.h"
-#include "piecesprite.h"
+#include "sprite.h"
 #include "animation.h"
 #include "boardsprite.h"
 #include "pointconverter.h"
@@ -278,7 +278,7 @@ void Board::cancelPremove() {
 void Board::updateSprites() {
   // adjust piece positions
   for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
-    boost::shared_ptr<PieceSprite> p = m_sprites[i].sprite();
+    boost::shared_ptr<Sprite> p = m_sprites[i].sprite();
 
     if (p) {
       // drawing sprite
@@ -350,7 +350,7 @@ void Board::onMousePress(const QPoint& pos, int button) {
       doMove(m);
     }
     else {
-      shared_ptr<PieceSprite> piece = m_sprites[point].sprite();
+      shared_ptr<Sprite> piece = m_sprites[point].sprite();
 
       if (piece && m_entity.lock()->movable(point)) {
           cancelSelection();
@@ -451,7 +451,7 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
         }
       }
 
-      shared_ptr<PieceSprite> s = m_sprites[m_drag_info->from].sprite();
+      shared_ptr<Sprite> s = m_sprites[m_drag_info->from].sprite();
       if (!moved && s && s->pos() != converter()->toReal(m_drag_info->from)) {
         Q_ASSERT(s);
         QPoint real = converter()->toReal(m_drag_info->from);
@@ -568,7 +568,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
       }
 
       QPixmap pix = m_loader(piece->name());
-      boost::shared_ptr<PieceSprite> sprite = createSprite(pix, pt);
+      boost::shared_ptr<Sprite> sprite = createSprite(pix, pt);
       sprite->setOpacity(160);
       sprite->raise();
       sprite->show();

@@ -13,6 +13,7 @@
 
 #include <boost/shared_ptr.hpp>
 #include "piecegroup.h"
+#include "namedsprite.h"
 
 /**
   * @class PiecePool <piecepool.h>
@@ -24,7 +25,7 @@
   */
 class PiecePool : public PieceGroup {
 public:
-  typedef Grid<Element> PieceGrid;
+  typedef Grid<NamedSprite> PieceGrid;
 
 private:
   /** displayed m_sprites */
@@ -33,10 +34,10 @@ private:
   /** refrence board */
   class Board* m_board;
 
-  /** the pieces that is being dragged, if any */
-  Element m_dragged;
+  /** the piece that is being dragged, if any */
+  NamedSprite m_dragged;
 
-  /** in the number of pieces on the pool */
+  /** the number of pieces on the pool */
   int m_fill;
 
   /** internal, resizes the grid vector to hold x pieces */
@@ -54,19 +55,24 @@ private:
       board and we don't want a clone that is fading off */
   void clearDrag(bool fadeOff = true);
 
-  /** this internal function updates the sprites after the board has been resized  */
+  /** this internal function updates the sprite images after the board has been resized  */
   void updateSprites();
 
   /** fetch the sprite */
-  boost::shared_ptr<PieceSprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
+  boost::shared_ptr<Sprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
+
+  /** takes the named sprite */
+  NamedSprite takeNamedSprite(const Point& p);
 
 public:
-  friend class GraphicalInfo;
+  friend class GraphicalSystem;
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
   PiecePool(Board* b, Canvas::Abstract* parent);
   ~PiecePool();
+
+
 
   /** returns the number of pieces in the pool */
   int fill();
@@ -74,22 +80,22 @@ public:
   /** removes all the pieces */
   void clear();
 
+  /** adds a piece to the pool */
+  void insertSprite(int index, const NamedSprite& sprite);
+
+  /** \return the piece at the given index. */
+  SpritePtr getSprite(int index);
+
+  /** removes the piece at the given index from the pool and returns it. */
+  SpritePtr takeSprite(int index);
+
+
+
   /** sets the width of the grid (the fill will stay the same, and the
       grid height will be recalculated) */
   void setGridWidth(int w);
 
-  /** adds a piece to the pool */
-  void addPiece(Element p);
-
-  /** remove the piece at the given point from the pool and returns it. */
-  Element takePiece(Point p);
-
-  /** remove a piece with the given id from the pool and returns it.
-      If a piece of the pool is being dragged and it has the same id, it
-      will be the removed one. */
-  Element takePiece(AbstractPiece::Ptr ref);
-
-  /** returns the size of the grid */
+  /** \return the size of the grid */
   virtual Point gridSize() const { return m_sprites.getSize(); }
 
   /** piecesGroup overload */

@@ -8,25 +8,27 @@
   (at your option) any later version.
 */
 
-#ifndef POOLINFO_H
-#define POOLINFO_H
+#ifndef ELEMENT_H
+#define ELEMENT_H
 
-#include <boost/shared_ptr.hpp>
-#include <QRegExp>
-#include "index.h"
 #include "kboard.h"
-#include "icsgamedata.h"
 
-class PoolInfo {
+class PieceSprite;
+
+struct Element {
+  typedef boost::shared_ptr<PieceSprite> SpritePtr;
+private:
+  AbstractPiece::Ptr m_piece;
+  SpritePtr m_sprite;
 public:
-  bool  m_valid;
-  int   m_game_num;
-  Index m_pos_index;
-  AbstractPool::Ptr m_pool[2];
-  AbstractPiece::Ptr m_added_piece;
-  static QRegExp s_pattern;
-
-  PoolInfo(const std::map<int, ICSGameData>& games, const QString& s);
+  Element();
+  Element(AbstractPiece::Ptr piece, SpritePtr sprite);
+  
+  operator bool() const;
+  
+  AbstractPiece::Ptr piece() const;
+  SpritePtr sprite() const;
 };
 
-#endif //POOLINFO_H
+
+#endif // ELEMENT_H

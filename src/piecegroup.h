@@ -8,20 +8,19 @@
   (at your option) any later version.
 */
 
-#ifndef BOARD_H
-#define BOARD_H
+#ifndef PIECEGROUP_H
+#define PIECEGROUP_H
 
 #include <boost/shared_ptr.hpp>
 #include "canvas/group.h"
 #include "point.h"
 #include "grid.h"
 #include "animation.h"
-#include "piecesprite.h"
+#include "sprite.h"
 #include "mainanimation.h"
 #include "pointconverter.h"
 #include "spriteloader.h"
 #include "clickablecanvas.h"
-#include "element.h"
 
 class MainAnimation;
 class PointConverter;
@@ -73,14 +72,14 @@ protected:
   void adjustSprite(const Point&, bool smooth = false);
 
   /** enqueue a movement animation (convenience function) */
-  void animatePiece(const boost::shared_ptr<PieceSprite>& piece,
+  void animatePiece(const boost::shared_ptr<Sprite>& piece,
                                   const Point& to, double speed);
 
   /** fades in the sprite at a given point */
   void fadeIn(const Point&);
 
   /** returns the sprite at p */
-  virtual boost::shared_ptr<PieceSprite> spriteAt(const Point&) = 0;
+  virtual boost::shared_ptr<Sprite> spriteAt(const Point&) = 0;
 
 public:
   PieceGroup(Canvas::Abstract* parent);
@@ -132,9 +131,9 @@ public:
   virtual void settingsChanged();
   
   /** create a sprite from a pixmap */
-  virtual boost::shared_ptr<PieceSprite> createSprite(const QPixmap& pix, const Point& pos);
+  virtual boost::shared_ptr<Sprite> createSprite(const QPixmap& pix, const Point& pos);
 };
 
 //END PieceGroup
 
-#endif
+#endif //PIECEGROUP_H

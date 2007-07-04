@@ -16,14 +16,13 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <QPoint>
+#include "sprite.h"
 
-class PieceSprite;
 class Movement;
 class Random;
 
 class Animation : public boost::enable_shared_from_this<Animation> {
 protected:
-  typedef boost::shared_ptr<PieceSprite> Sprite;
   enum State {
     Active,
     Inactive,
@@ -41,15 +40,15 @@ public:
 class ConflictingAnimation {
 public:
   virtual ~ConflictingAnimation() { }
-  virtual void setTarget(const boost::shared_ptr<PieceSprite>&) = 0;
-  virtual void setSource(const boost::shared_ptr<PieceSprite>&) = 0;
+  virtual void setTarget(const SpritePtr&) = 0;
+  virtual void setSource(const SpritePtr&) = 0;
 };
 
 class ConcreteAnimation : public Animation {
 protected:
-  boost::shared_ptr<PieceSprite> m_piece;
+  SpritePtr m_piece;
 public:
-  ConcreteAnimation(const Sprite& piece);
+  ConcreteAnimation(const SpritePtr& piece);
   virtual void stop() { }
 };
 
@@ -57,7 +56,7 @@ class OneShotAnimation : public ConcreteAnimation {
 protected:
   virtual void shoot() = 0;
 public:
-  OneShotAnimation(const Sprite& piece);
+  OneShotAnimation(const SpritePtr& piece);
   virtual State animationAdvance(int);
   virtual void abort() { }
 };
@@ -65,20 +64,20 @@ public:
 class InstantAnimation : public OneShotAnimation
                        , public ConflictingAnimation {
   QPoint m_destination;
-  Sprite m_source;
+  SpritePtr m_source;
 public:
-  InstantAnimation(const Sprite& piece, const QPoint& destination);
+  InstantAnimation(const SpritePtr& piece, const QPoint& destination);
   virtual void shoot();
-  virtual void setTarget(const Sprite&) { }
-  virtual void setSource(const Sprite& source) { m_source = source; }
+  virtual void setTarget(const SpritePtr&) { }
+  virtual void setSource(const SpritePtr& source) { m_source = source; }
 };
 
 
 class MovementAnimation : public ConcreteAnimation
                         , public ConflictingAnimation {
 protected:
-  Sprite m_source;
-  Sprite m_target;
+  SpritePtr m_source;
+  SpritePtr m_target;
   QPoint m_destination;
   double m_speed;
   State m_state;
@@ -90,14 +89,14 @@ protected:
   virtual boost::shared_ptr<Movement> createMovement(const QPoint& from, const QPoint& to) const;
   void start();
 public:
-  MovementAnimation(const Sprite& piece, const QPoint& destination, double speed = 1.0);
+  MovementAnimation(const SpritePtr& piece, const QPoint& destination, double speed = 1.0);
   virtual ~MovementAnimation();
   virtual State animationAdvance(int msec);
   virtual void stop();
   virtual void abort();
 
-  virtual void setTarget(const Sprite& target);
-  virtual void setSource(const Sprite& source);
+  virtual void setTarget(const SpritePtr& target);
+  virtual void setSource(const SpritePtr& source);
 };
 
 class KnightMovementAnimation : public MovementAnimation {
@@ -105,7 +104,7 @@ protected:
   bool m_rotate;
   virtual boost::shared_ptr<Movement> createMovement(const QPoint& from, const QPoint& to) const;
 public:
-  KnightMovementAnimation(const Sprite& piece, const QPoint& destination,
+  KnightMovementAnimation(const SpritePtr& piece, const QPoint& destination,
                                               bool rotate, double speed = 1.0);
 };
 
@@ -113,7 +112,7 @@ class CaptureAnimation : public OneShotAnimation {
 protected:
   virtual void shoot();
 public:
-  CaptureAnimation(const Sprite& piece);
+  CaptureAnimation(const SpritePtr& piece);
 };
 
 class DropAnimation : public OneShotAnimation {
@@ -122,16 +121,16 @@ class DropAnimation : public OneShotAnimation {
 protected:
   virtual void shoot();
 public:
-  DropAnimation(const Sprite& piece);
-  DropAnimation(const Sprite& piece, const QPoint&);
+  DropAnimation(const SpritePtr& piece);
+  DropAnimation(const SpritePtr& piece, const QPoint&);
 };
 
 class PromotionAnimation : public OneShotAnimation {
 protected:
-  Sprite m_promoted;
+  SpritePtr m_promoted;
   virtual void shoot();
 public:
-  PromotionAnimation(const Sprite& piece, const Sprite& promoted);
+  PromotionAnimation(const SpritePtr& piece, const SpritePtr& promoted);
 };
 
 class DelayAnimation : public Animation {
@@ -156,7 +155,7 @@ class FadeAnimation : public ConcreteAnimation {
   int m_start;
   void start();
 public:
-  FadeAnimation(const Sprite& sprite, const QPoint& pos, int fadeFrom, int fadeTo);
+  FadeAnimation(const SpritePtr& sprite, const QPoint& pos, int fadeFrom, int fadeTo);
   virtual State animationAdvance(int msec);
   virtual void stop();
   virtual void abort();
@@ -168,7 +167,7 @@ class GrowAnimation : public ConcreteAnimation {
 
   void start();
 public:
-  GrowAnimation(const Sprite& sprite);
+  GrowAnimation(const SpritePtr& sprite);
   virtual State animationAdvance(int msec);
   virtual void stop();
   virtual void abort();
@@ -181,7 +180,7 @@ class ExplodeAnimation : public ConcreteAnimation {
   int m_start;
   void start();
 public:
-  ExplodeAnimation(const Sprite& sprite, Random& random);
+  ExplodeAnimation(const SpritePtr& sprite, Random& random);
   virtual State animationAdvance(int msec);
   virtual void stop();
   virtual void abort();
@@ -227,16 +226,16 @@ public:
 
 class TeleportAnimation : public AnimationGroup {
 public:
-  TeleportAnimation(const Sprite& sprite, const QPoint& from, const QPoint& to);
-  TeleportAnimation(const Sprite& sprite, const QPoint& to);
+  TeleportAnimation(const SpritePtr& sprite, const QPoint& from, const QPoint& to);
+  TeleportAnimation(const SpritePtr& sprite, const QPoint& to);
 };
 
 class CrossFadingAnimation : public AnimationGroup {
-  Sprite m_piece;
+  SpritePtr m_piece;
 protected:
   virtual void start();
 public:
-  CrossFadingAnimation(const Sprite& piece, const Sprite& promoted);
+  CrossFadingAnimation(const SpritePtr& piece, const SpritePtr& promoted);
 };
 
 class DelayedAnimationSet : public Animation {

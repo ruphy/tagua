@@ -13,17 +13,13 @@
 #include "game.h"
 #include "game_p.h"
 #include "global.h"
-#include "graphicalinfo.h"
+#include "graphicalsystem.h"
 #include "movelist_table.h"
 #include "decoratedmove.h"
 #include "entities/userentity.h"
 #include <iostream>
 
 using namespace GamePrivate; // is this ok?
-
-void GraphicalGameProxy::settingsChanged() {
-  m_game->settingsChanged();
-}
 
 class CtrlAction {
   Game* m_game;
@@ -43,7 +39,7 @@ public:
   }
 };
 
-GraphicalGame::GraphicalGame(GraphicalInfo* graphical,
+GraphicalGame::GraphicalGame(GraphicalSystem* graphical,
                              MoveList::Table* m)
 : Game()
 , m_graphical(graphical)
@@ -55,8 +51,7 @@ GraphicalGame::GraphicalGame(GraphicalInfo* graphical,
     m_movelist->setNotifier( static_cast<MoveList::Notifier*>(this) );
     m_movelist->show();
   }
-  m_proxy = new GraphicalGameProxy(this);
-  settings.onChange(m_proxy, SLOT(settingsChanged()));
+  settings.onChange(this, SLOT(settingsChanged()));
   settingsChanged();
 }
 
@@ -66,13 +61,15 @@ GraphicalGame::~GraphicalGame() {
 
     m_movelist->setNotifier(NULL, false);
   }
-  delete m_proxy;
 }
 
 void GraphicalGame::settingsChanged() {
+  //BROKEN
+  #if 0
   m_anim_sequence = m_graphical->getBoolSetting("animations", true)
                      && m_graphical->getBoolSetting("animations.sequence", true);
   m_anim_sequence_max = m_graphical->getIntSetting("animations.sequence.max", 10);
+  #endif
 }
 
 void GraphicalGame::onAdded(const Index& ix) {

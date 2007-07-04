@@ -42,8 +42,95 @@ protected:
                                 destination, 1.0));
       }
   }
-  
 };
+
+
+//BEGIN Dream code
+
+
+typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
+
+class ChessAnimator {
+  ChessGraphicalAPI* m_cinterface;
+public:
+  ChessAnimator(ChessGraphicalAPI* cinterface)
+    : m_cinterface(cinterface) {
+  }
+
+  AnimationPtr warp(const ChessPosition* final) {
+    const ChessPosition* current = m_cinterface->position();
+    AnimationPtr res(new AnimationGroup);
+
+    for (Point i = m_current->first(); i <= m_position->last(); i = m_position->next(i)) {
+      ChessPiece* c = current->get(i);
+      ChessPiece* f = final->get(i);
+
+      if( !c && f ) {
+        //current->set(i, f);
+        PieceSpritePtr sprite = m_cinterface->setSprite(i, *f, false, false);
+        res->addPreAnimation( shared_ptr<DropAnimation>(new DropAnimation(sprite)) );
+      }
+      else if (c && !f) {
+        //current->set(i, shared_ptr<ChessPiece>());
+        PieceSpritePtr old_sprite = m_cinterface->getSprite(i);
+        res->addPreAnimation( shared_ptr<CaptureAnimation>(new CaptureAnimation(sprite)) );
+      }
+      else if(!c.equals(f) ) {
+        current->set(i, f);
+        PieceSpritePtr old_sprite = m_cinterface->takeSprite(i);
+        res->addPreAnimation( shared_ptr<PromotionProAnimation>(new PromotionAnimation(sprite)) );
+      }
+    }
+  }
+
+  //TODO: implement pool update
+
+  return res;
+};
+
+
+
+typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
+
+class ChessAnimator {
+  ChessGraphicalAPI* m_cinterface;
+public:
+  ChessAnimator(ChessGraphicalAPI* cinterface)
+    : m_cinterface(cinterface) {
+  }
+
+  AnimationPtr warp(ChessPosition* final) {
+    ChessPosition* current = m_cinterface->position();
+    AnimationPtr res(new AnimationGroup);
+
+    for (Point i = m_current->first(); i <= m_position->last(); i = m_position->next(i)) {
+      ChessPiece* c = current->get(i);
+      ChessPiece* f = final->get(i);
+
+      if( !c && f ) {
+        current->set(i, f);
+        PieceSpritePtr sprite = m_cinterface->setSprite(i, *f, false, false);
+        res->addPreAnimation( shared_ptr<DropAnimation>(new DropAnimation(sprite)) );
+      }
+      else if (c && !f) {
+        current->set(i, shared_ptr<ChessPiece>());
+        PieceSpritePtr old_sprite = m_cinterface->getSprite(i);
+        res->addPreAnimation( shared_ptr<CaptureAnimation>(new CaptureAnimation(sprite)) );
+      }
+      else if(!c.equals(f) ) {
+        current->set(i, f);
+        PieceSpritePtr old_sprite = m_cinterface->takeSprite(i);
+        res->addPreAnimation( shared_ptr<PromotionProAnimation>(new PromotionAnimation(sprite)) );
+      }
+    }
+  }
+
+  return res;
+};
+
+
+//END Dream code
+
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);

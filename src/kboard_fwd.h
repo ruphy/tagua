@@ -11,16 +11,18 @@
 #ifndef __KBOARD_FWD_H__
 #define __KBOARD_FWD_H__
 
+#include <boost/shared_ptr.hpp>
+
 class AbstractMove;
 class AbstractPosition;
 class AbstractPiece;
 class AbstractAnimator;
 class VariantInfo;
 
-typedef boost::shared_ptr<class AbstractMove> MovePtr;
-typedef boost::shared_ptr<class AbstractPosition> PositionPtr;
-typedef boost::shared_ptr<class AbstractPiece> PiecePtr;
-typedef boost::shared_ptr<class AbstractAnimator> AnimatorPtr;
-typedef boost::shared_ptr<class VariantInfo> VariantPtr;
+typedef boost::shared_ptr<AbstractMove> MovePtr;
+typedef boost::shared_ptr<AbstractPosition> PositionPtr;
+typedef boost::shared_ptr<AbstractPiece> PiecePtr;
+typedef boost::shared_ptr<AbstractAnimator> AnimatorPtr;
+typedef boost::shared_ptr<VariantInfo> VariantPtr;
 
 #endif //__KBOARD_FWD_H__

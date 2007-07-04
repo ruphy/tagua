@@ -16,39 +16,29 @@
 #include "game.h"
 #include "movelist_notifier.h"
 
-class GraphicalInfo;
+class GraphicalSystem;
 class CtrlAction;
 class UserEntity;
 class GraphicalGame;
 namespace MoveList { class Table; }
 
-class GraphicalGameProxy : public QObject {
+class GraphicalGame : public QObject, public Game, public MoveList::Notifier {
 Q_OBJECT
-  friend class GraphicalGame;
-  GraphicalGame *m_game;
-  GraphicalGameProxy(GraphicalGame *i) : QObject(), m_game(i) {}
-
-public slots:
-  void settingsChanged();
-};
-
-class GraphicalGame : public Game, public MoveList::Notifier {
 
 private:
-  friend class GraphicalGameProxy;
-  GraphicalInfo*      m_graphical;
-  MoveList::Table*   m_movelist;
-  GraphicalGameProxy* m_proxy;
+  GraphicalSystem*    m_graphical;
+  MoveList::Table*    m_movelist;
   bool                m_anim_sequence;
   int                 m_anim_sequence_max;
 
   boost::shared_ptr<CtrlAction> m_ctrl;
   boost::weak_ptr<UserEntity> m_listener_entity;
 
+private slots:
   void settingsChanged();
 
 public:
-  GraphicalGame(GraphicalInfo* graphical, MoveList::Table* m);
+  GraphicalGame(GraphicalSystem* graphical, MoveList::Table* m);
   ~GraphicalGame();
 
   void onAddedInternal(const Index& i, bool confirm_promotion = false);
