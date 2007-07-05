@@ -58,20 +58,4 @@
   <Action name="forward" />
   <Action name="end" />
  </ToolBar>
- <!--
- <ActionProperties>
-  <Action icon="filenew" name="new" />
-  <Action icon="fileopen" name="load" />
-  <Action icon="filesave" name="save" />
-  <Action icon="exit" name="quit" />
-  <Action icon="player_start" name="begin" />
-  <Action icon="1leftarrow" name="back" />
-  <Action icon="player_pause" name="pause" />
-  <Action icon="1rightarrow" name="forward" />
-  <Action icon="player_end" name="end" />
-  <Action shortcut="F3" icon="connect_creating" name="connect" />
-  <Action icon="connect_no" name="disconnect" />
-  <Action icon="editpaste" name="pgnPaste" />
-  <Action icon="editcopy" name="pgnCopy" />
- </ActionProperties> -->
 </kpartgui>
