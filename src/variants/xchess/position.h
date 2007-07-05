@@ -101,13 +101,10 @@ public:
     return valid(p) && m_board[p] ? &m_board[p] : 0;
   }
   virtual const P* operator[](const Point& p) const { return get(p); }
-  inline void set(const Point& p, const P* piece) {
+  inline void set(const Point& p, const P& piece) {
     if(!valid(p))
       return;
-    if(piece)
-      m_board[p] = *piece;
-    else
-      m_board[p] = Piece();
+    m_board[p] = piece;
   }
   inline void removePiece(const Point& p) { set(p, 0); }
   inline void basicMovePiece(const M&);

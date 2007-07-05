@@ -33,9 +33,10 @@ VariantInfo* ChessVariant::static_chess_variant = 0;
 typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
 
 class ChessAnimator {
-  ChessGraphicalAPI* m_cinterface;
+  ChessGraphicalAPI::Ptr m_cinterface;
+
 public:
-  ChessAnimator(ChessGraphicalAPI* cinterface)
+  ChessAnimator(ChessGraphicalAPI::Ptr cinterface)
     : m_cinterface(cinterface) {
   }
 

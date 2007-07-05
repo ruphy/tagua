@@ -184,9 +184,9 @@ class WrappedPool : public AbstractPool {
   typedef typename Variant::Pool Pool;
   typedef typename Variant::Piece Piece;
 
-  Pool* m_pool;
+  Pool m_pool;
 public:
-  WrappedPosition(Pool* pool)
+  WrappedPool(Pool pool)
   : m_pool(pool) { }
 
   virtual int size() {
@@ -195,13 +195,13 @@ public:
 
   virtual int insert(int pref_index, AbstractPiece::Ptr _piece) {
     if (!_piece) {
-      return m_pool->insert(pref_index, 0);
+      return m_pool.insert(pref_index, Piece());
     }
     else {
       WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
 
       if (piece)
-        return m_pool->insert(p, new Piece(piece->inner()) );
+        return m_pool.insert(pref_index, Piece(piece->inner()) );
       else
         MISMATCH(*_piece.get(),WrappedPiece<Variant>);
     }
@@ -210,11 +210,19 @@ public:
   }
 
   virtual AbstractPiece::Ptr get(int index) {
-    
+    const Piece* piece = m_pool->get(index);
+    if (piece)
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+    else
+      return AbstractPiece::Ptr();
   }
 
   virtual AbstractPiece::Ptr take(int index) {
-    
+    const Piece* piece = m_pool->take(index);
+    if (piece)
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+    else
+      return AbstractPiece::Ptr();
   }
 };
 
@@ -256,13 +264,13 @@ public:
 
   virtual void set(const Point& p, AbstractPiece::Ptr _piece) {
     if (!_piece) {
-      m_pos.set(p, 0);
+      m_pos.set(p, Piece());
     }
     else {
       WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
 
       if (piece)
-        m_pos.set(p, new Piece(piece->inner()) );
+        m_pos.set(p, piece->inner() );
       else
         MISMATCH(*_piece.get(),WrappedPiece<Variant>);
     }
@@ -476,13 +484,11 @@ public:
   virtual int moveListLayout() const {
     return Variant::moveListLayout();
   }
-  virtual AbstractAnimator::Ptr createAnimator(PointConverter* converter,
-                                           GraphicalPosition* position) {
+  virtual AbstractAnimator::Ptr createAnimator(GraphicalAPI* graphical_api) {
     return AbstractAnimator::Ptr(
       new WrappedAnimator<Variant>(
-              Animator(converter, 
-                       boost::shared_ptr<GenericGraphicalPosition<Variant> >(
-                          new WrappedGraphicalPosition<Variant>(position)))));
+              Animator(UnwrappedGraphicalAPI<Variant>::Ptr(
+                    new UnwrappedGraphicalAPI<Variant>(graphical_api)))));
   }
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove& move) {
     return AbstractMove::Ptr(new WrappedMove<Variant>(

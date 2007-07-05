@@ -21,6 +21,8 @@ template <typename Variant>
 class UnwrappedGraphicalAPI {
   GraphicalAPI* m_graphical_api;
 public:
+  typedef boost::shared_ptr<UnwrappedGraphicalAPI> Ptr;
+
   UnwrappedGraphicalAPI(GraphicalAPI* interface)
     : m_graphical_api(interface) {
   }
