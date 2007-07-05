@@ -38,11 +38,18 @@ ENDMACRO(SETUP_SOURCES SRC UI)
 
 
 
+
+###############################################################################################
 # Boost stuff
+###############################################################################################
 FIND_PACKAGE(Boost)
 
 
+
+
+###############################################################################################
 # Lua stuff
+###############################################################################################
 IF(SYSTEM_LUA)
   INCLUDE(UsePkgConfig)
 
@@ -76,7 +83,11 @@ ELSE(SYSTEM_LUA)
 ENDIF(SYSTEM_LUA)
 
 
+
+
+###############################################################################################
 # X11
+###############################################################################################
 FIND_PACKAGE(X11)
 
 IF(0)
@@ -85,12 +96,38 @@ IF (X11_FOUND)
 ENDIF (X11_FOUND)
 ENDIF(0)
 
+
+
+
+###############################################################################################
 # Qt4 / KDE4 stuff
+###############################################################################################
 ADD_DEFINITIONS(-fexceptions)
 FIND_PACKAGE(KDE4 REQUIRED)
 INCLUDE(KDE4Defaults)
 
 INCLUDE(${QT_USE_FILE})
+
+
+
+
+###############################################################################################
+# system stuff
+###############################################################################################
+INCLUDE(CheckCXXSourceCompiles)
+
+CHECK_CXX_SOURCE_COMPILES(" int main() { __asm__(\"pxor %mm0, %mm0\") ; }" HAVE_X86_MMX)
+CHECK_CXX_SOURCE_COMPILES(" int main() { __asm__(\"xorps %xmm0, %xmm0\"); }" HAVE_X86_SSE)
+
+IF(HAVE_X86_MMX)
+  ADD_DEFINITIONS(-DHAVE_X86_MMX)
+ENDIF(HAVE_X86_MMX)
+
+IF(HAVE_X86_SSE)
+  ADD_DEFINITIONS(-DHAVE_X86_SSE)
+ENDIF(HAVE_X86_SSE)
+
+
 
 
 # Compile for debugging as default
@@ -100,6 +137,7 @@ IF(SETTINGS_DEBUG)
   MESSAGE("Compiling with -D__SETTINGS_DEBUG")
   ADD_DEFINITIONS(-D__SETTINGS_DEBUG)
 ENDIF(SETTINGS_DEBUG)
+
 
 # FIXME, i think this is not portable
 IF(1)
@@ -111,6 +149,8 @@ ENDIF(1)
 # directly by the cmake command line. The setting
 # is stored in the cache, so you just need to type
 #    cmake -DCMAKE_VERBOSE_MAKEFILE=1
+#     -or when compiling-
+#    make VERBOSE=1
 # once and for all.
 
 # Debug messages
@@ -142,6 +182,10 @@ MESSAGE("    CFlags:    ${LUA_CFLAGS}")
 
 MESSAGE("* Ruby:")
 MESSAGE("    Includes: ${RUBY_INCLUDE_PATH}")
+
+MESSAGE("* Host:")
+MESSAGE("    Have MMX: ${HAVE_X86_MMX}")
+MESSAGE("    Have SSE: ${HAVE_X86_SSE}")
 
 
 #MESSAGE("data dir: ${DATA_INSTALL_DIR}")
