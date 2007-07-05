@@ -11,6 +11,8 @@
 #ifndef UNWRAPPEDGRAPHICALAPI_H
 #define UNWRAPPEDGRAPHICALAPI_H
 
+#include "graphicalapi.h"
+
 /**
   * This class moves the interface that will be used by the animator to modify
   * kboard graphics into the variant's semantics.
@@ -22,6 +24,8 @@ public:
   UnwrappedGraphicalAPI(GraphicalAPI* interface)
     : m_graphical_api(interface) {
   }
+
+  virtual ~UnwrappedGraphicalAPI(){}
 
   virtual const PointConverter* converter() {
     return m_graphical_api->converter();
@@ -50,17 +54,21 @@ public:
     return m_graphical_api->takeSprite(p);
   }
 
-  virtual SpritePtr insertPoolSprite(int index, const AbstractPiece& piece) {
+  virtual int poolSize(int pool) {
+    return m_graphical_api->poolSize(pool);
+  }
+
+  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece& piece) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->insertPoolSprite(index, &wpiece);
+    return m_graphical_api->insertPoolSprite(pool, index, &wpiece);
   }
 
-  virtual SpritePtr getPoolSprite(int index) {
-    return m_graphical_api->getPoolSprite(index);
+  virtual SpritePtr getPoolSprite(int pool, int index) {
+    return m_graphical_api->getPoolSprite(pool, index);
   }
 
-  virtual SpritePtr takePoolSprite(int index) {
-    return m_graphical_api->takePoolSprite(index);
+  virtual SpritePtr takePoolSprite(int pool, int index) {
+    return m_graphical_api->takePoolSprite(pool, index);
   }
 };
 

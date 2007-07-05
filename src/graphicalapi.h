@@ -14,6 +14,7 @@
 #include <boost/shared_ptr.hpp>
 #include "kboard.h"
 #include "pointconverter.h"
+#include "sprite.h"
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 

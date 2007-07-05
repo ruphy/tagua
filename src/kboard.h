@@ -206,12 +206,19 @@ public:
   virtual AbstractPool::Ptr pool(int player);
 
   /**
-    * Return an id corresponding to the player
+    * \return an id corresponding to the player
     * who is in turn.
     */
   virtual int turn() const = 0;
+
+  /**
+    * Sets the player on move
+    */
   virtual void setTurn(int) = 0;
 
+  /**
+    * \return the player that just moved
+    */
   virtual int previousTurn() const = 0;
 
   /**
@@ -222,13 +229,13 @@ public:
   /**
     * Check move legality. Set move fields as needed.
     * Return whether the move is legal.
-    * This function should return immediately if @a m
+    * This function should return immediately if \a m
     * has already been tested.
     */
   virtual bool testMove(AbstractMove::Ptr m) const = 0;
 
   /**
-    * Execute move @a m. Assume that m is legal and tested.
+    * Execute move \a m. Assume that \a m is legal and tested.
     */
   virtual void move(AbstractMove::Ptr m) = 0;
 

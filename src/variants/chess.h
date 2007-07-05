@@ -21,6 +21,7 @@
 class ChessPiece;
 class ChessMove;
 class ChessAnimator;
+class VariantInfo;
 template <typename T> class PointerGrid;
 template <typename M, typename P, typename B> class Position;
 typedef Grid<ChessPiece> PieceGrid;

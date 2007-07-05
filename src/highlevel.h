@@ -21,6 +21,7 @@
 
 template <typename V> class WrappedPiece;
 template <typename V> class WrappedMove;
+template <typename V> class WrappedPosition;
 
 /**
   * @brief Wrap an high level position definition
@@ -60,9 +61,6 @@ template <typename V> class WrappedMove;
   *
   */
 
-template <typename V> class GenericGraphicalPosition;
-template <typename V> class WrappedGraphicalPosition;
-
 #ifdef Q_CC_GNU
   #define __FUNC__ __PRETTY_FUNCTION__
 #else
@@ -76,202 +74,44 @@ template <typename V> class WrappedGraphicalPosition;
                        
 #define TYPECHECK(x,y) if (typeid(x) != typeid(y)) MISMATCH(x,y); else { }
 
+
+
 template <typename Variant>
-class WrappedPosition : public AbstractPosition {
-  typedef typename Variant::Position Position;
-  typedef typename Variant::Move Move;
+class WrappedPiece : public AbstractPiece {
   typedef typename Variant::Piece Piece;
-  typedef typename Position::Pool Pool;
 
-  Position m_pos;
+  Piece m_piece;
 public:
-  const Position& inner() const { return m_pos; }
-  Position& inner() { return m_pos; }
+  const Piece& inner() const { return m_piece; }
 
-  WrappedPosition(const Position& pos)
-  : m_pos(pos) { }
+  WrappedPiece(const Piece& piece)
+  : m_piece(piece) { }
 
-  virtual QString variant() const {
-    return Variant::m_name;
-  }
-
-  virtual Point size() const {
-    return inner().size();
-  }
-
-  virtual QStringList borderCoords() const {
-    return inner().borderCoords();
-  }
-
-  virtual PoolPtr pool() const {
-    PoolPtr p = PoolPtr(new AbstractPool);
-    for(typename Pool::const_iterator it = m_pos.pool().begin(); it != m_pos.pool().end(); ++it)
-      (*p)[ AbstractPiece::Ptr(new WrappedPiece<Variant>(it->first)) ] = it->second;
-    return p;
-  }
-
-  virtual void addToPool(AbstractPiece::Ptr _piece, int n) {
-    WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
-
-    if (piece)
-      m_pos.addToPool(piece->inner(), n);
-    else
-      MISMATCH(*_piece.get(),WrappedPiece<Variant>);
-  }
-
-  virtual void removeFromPool(AbstractPiece::Ptr _piece, int n) {
-    WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
-
-    if (piece)
-      m_pos.removeFromPool(piece->inner(), n);
-    else
-      MISMATCH(*_piece.get(),WrappedPiece<Variant>);
-  }
-
-  virtual void copyPoolFrom(AbstractPosition::Ptr _other) {
-    WrappedPosition<Variant>* other = dynamic_cast<WrappedPosition<Variant>*>(_other.get());
+  virtual bool equals(AbstractPiece::Ptr _other) const {
+    if (!_other) return false;
+    WrappedPiece<Variant>* other = dynamic_cast<WrappedPiece<Variant>*>(_other.get());
 
     if (other)
-      m_pos.pool() = other->inner().pool();
-    else
-      MISMATCH(*_other.get(),WrappedPosition<Variant>);
-  }
-
-  virtual void setPool(PoolPtr pool) {
-    m_pos.pool().clear();
-
-    for(typename AbstractPool::iterator it = pool->begin(); it != pool->end(); ++it) {
-      WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(it->first.get());
-
-      if (piece)
-        m_pos.pool()[piece->inner()] += it->second;
-      else {
-        MISMATCH(*it->first.get(), WrappedPiece<Variant>);
-        return;
-      }
-    }
-  }
-
-  virtual AbstractPiece::Ptr get(const Point& p) const {
-    const Piece* piece = m_pos.get(p);
-    if (piece)
-      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
-    else
-      return AbstractPiece::Ptr();
-  }
-
-  virtual void set(const Point& p, AbstractPiece::Ptr _piece) {
-    if (!_piece) {
-      m_pos.set(p, 0);
-    }
+      return m_piece == other->inner();
     else {
-      WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
-
-      if (piece)
-        m_pos.set(p, new Piece(piece->inner()) );
-      else
-        MISMATCH(*_piece.get(),WrappedPiece<Variant>);
-    }
-  }
-
-  virtual int turn() const {
-    return static_cast<int>(m_pos.turn());
-  }
-
-  virtual void setTurn(int turn) {
-    m_pos.setTurn(static_cast<typename Piece::Color>(turn));
-  }
-
-  virtual int previousTurn() const {
-    return static_cast<int>(m_pos.previousTurn());
-  }
-
-  virtual void switchTurn() {
-    m_pos.switchTurn();
-  }
-
-  virtual bool testMove(AbstractMove::Ptr _move) const {
-    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
-
-    if (move)
-      return m_pos.testMove( const_cast<Move&>(move->inner()) );
-    else {
-      MISMATCH(*_move.get(),WrappedMove<Variant>);
+      MISMATCH(*_other.get(),WrappedPiece<Variant>);
       return false;
     }
   }
 
-  virtual void move(AbstractMove::Ptr _move) {
-    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
-
-    if (move)
-      m_pos.move(move->inner());
-    else
-      MISMATCH(*_move.get(),WrappedMove<Variant>);
+  virtual QString name() const {
+    return m_piece.name();
   }
 
-  virtual void setup() {
-    m_pos.setup();
+  virtual QString typeSymbol() const {
+    return Piece::typeSymbol(m_piece.type());
   }
 
-  virtual AbstractPosition::Ptr clone() const {
-    return AbstractPosition::Ptr(new WrappedPosition<Variant>(m_pos));
-  }
-
-  virtual bool equal(AbstractPosition::Ptr _other) const {
-    WrappedPosition<Variant>* other = dynamic_cast<WrappedPosition<Variant>*>(_other.get());
-
-    if(other)
-      return m_pos == other->inner();
-    else {
-      MISMATCH(*_other.get(),WrappedPosition<Variant>);
-      return false;
-    }
-  }
-
-  virtual AbstractMove::Ptr getMove(const AlgebraicNotation& san) const {
-    bool ok;
-    Move res = m_pos.getMove(san, ok);
-    if (ok)
-      return AbstractMove::Ptr(new WrappedMove<Variant>(res));
-    else
-      return AbstractMove::Ptr();
-  }
-
-  virtual AbstractMove::Ptr getMove(const QString& san) const {
-    AlgebraicNotation move(san, size().y); //FIXME
-    if(!move.valid())
-      return AbstractMove::Ptr();
-    return getMove(move);
-  }
-
-  virtual QString state() const {
-    return ""; // TODO
-  }
-
-  virtual QString fen(int halfmove, int fullmove) const {
-    return m_pos.fen(halfmove, fullmove);
-  }
-
-  virtual AbstractPiece::Ptr moveHint(AbstractMove::Ptr _move) const {
-    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
-
-    if (move) {
-      if(boost::shared_ptr<Piece> hint = m_pos.moveHint(move->inner()))
-        return AbstractPiece::Ptr(
-          new WrappedPiece<Variant>(Piece(*hint)));
-    }
-    else {
-      MISMATCH(*_move.get(),WrappedMove<Variant>);
-    }
-
-    return AbstractPiece::Ptr();
-  }
-
-  virtual void dump() const {
-    m_pos.dump();
+  virtual AbstractPiece::Ptr clone() const {
+    return AbstractPiece::Ptr(new WrappedPiece<Variant>(m_piece));
   }
 };
+
 
 template <typename Variant>
 class WrappedMove : public AbstractMove {
@@ -329,7 +169,7 @@ public:
   virtual bool equals(AbstractMove::Ptr _other) const {
     WrappedMove<Variant>* other = dynamic_cast<WrappedMove<Variant>*>(_other.get());
 
-    if (other)
+    if (!other)
       return m_move == other->inner();
     else {
       MISMATCH(*_other.get(),WrappedMove<Variant>);
@@ -338,61 +178,199 @@ public:
   }
 };
 
+
 template <typename Variant>
-class WrappedPiece : public AbstractPiece {
+class WrappedPool : public AbstractPool {
+  typedef typename Variant::Pool Pool;
   typedef typename Variant::Piece Piece;
 
-  Piece m_piece;
+  Pool* m_pool;
 public:
-  const Piece& inner() const { return m_piece; }
+  WrappedPosition(Pool* pool)
+  : m_pool(pool) { }
 
-  WrappedPiece(const Piece& piece)
-  : m_piece(piece) { }
-
-  virtual int type() const {
-    return static_cast<int>(m_piece.type());
+  virtual int size() {
+    return m_pool->size();
   }
 
-  virtual int color() const {
-    return static_cast<int>(m_piece.color());
-  }
-
-  virtual QString name() const {
-    return m_piece.name();
-  }
-
-  virtual QString typeSymbol() const {
-    return Piece::typeSymbol(m_piece.type());
-  }
-
-  virtual bool equals(AbstractPiece::Ptr _other) const {
-    if (!_other) return false;
-    WrappedPiece<Variant>* other = dynamic_cast<WrappedPiece<Variant>*>(_other.get());
-
-    if (other)
-      return m_piece == other->inner();
-    else {
-      MISMATCH(*_other.get(),WrappedPiece<Variant>);
-      return false;
+  virtual int insert(int pref_index, AbstractPiece::Ptr _piece) {
+    if (!_piece) {
+      return m_pool->insert(pref_index, 0);
     }
-  }
-
-  virtual bool less(AbstractPiece::Ptr _other) const {
-    if (!_other) return false;
-    WrappedPiece<Variant>* other = dynamic_cast<WrappedPiece<Variant>*>(_other.get());
-
-    if (other)
-      return m_piece < other->inner();
     else {
-      MISMATCH(*_other.get(),WrappedPiece<Variant>);
-      return false;
+      WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
+
+      if (piece)
+        return m_pool->insert(p, new Piece(piece->inner()) );
+      else
+        MISMATCH(*_piece.get(),WrappedPiece<Variant>);
     }
+    return m_pool->size();
+    
   }
 
-  virtual AbstractPiece::Ptr clone() const {
-    return AbstractPiece::Ptr(new WrappedPiece<Variant>(m_piece));
+  virtual AbstractPiece::Ptr get(int index) {
+    
+  }
+
+  virtual AbstractPiece::Ptr take(int index) {
+    
   }
 };
+
+
+template <typename Variant>
+class WrappedPosition : public AbstractPosition {
+  typedef typename Variant::Position Position;
+  typedef typename Variant::Move Move;
+  typedef typename Variant::Piece Piece;
+  typedef typename Variant::Pool Pool;
+
+  Position m_pos;
+public:
+  const Position& inner() const { return m_pos; }
+  Position& inner() { return m_pos; }
+
+  WrappedPosition(const Position& pos)
+  : m_pos(pos) { }
+
+  virtual Point size() const {
+    return QSize(200, 200);
+  }
+
+  virtual QStringList borderCoords() const {
+    return inner().borderCoords();
+  }
+
+  virtual void setup() {
+    m_pos.setup();
+  }
+
+  virtual AbstractPiece::Ptr get(const Point& p) const {
+    const Piece* piece = m_pos.get(p);
+    if (piece)
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+    else
+      return AbstractPiece::Ptr();
+  }
+
+  virtual void set(const Point& p, AbstractPiece::Ptr _piece) {
+    if (!_piece) {
+      m_pos.set(p, 0);
+    }
+    else {
+      WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
+
+      if (piece)
+        m_pos.set(p, new Piece(piece->inner()) );
+      else
+        MISMATCH(*_piece.get(),WrappedPiece<Variant>);
+    }
+  }
+
+  virtual AbstractPool::Ptr pool(int player) {
+    return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
+  }
+
+  virtual int turn() const {
+    return static_cast<int>(m_pos.turn());
+  }
+
+  virtual void setTurn(int turn) {
+    m_pos.setTurn(static_cast<typename Piece::Color>(turn));
+  }
+
+  virtual int previousTurn() const {
+    return static_cast<int>(m_pos.previousTurn());
+  }
+
+  virtual void switchTurn() {
+    m_pos.switchTurn();
+  }
+
+  virtual bool testMove(AbstractMove::Ptr _move) const {
+    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+
+    if (move)
+      return m_pos.testMove( const_cast<Move&>(move->inner()) );
+    else {
+      MISMATCH(*_move.get(),WrappedMove<Variant>);
+      return false;
+    }
+  }
+
+  virtual void move(AbstractMove::Ptr _move) {
+    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+
+    if (move)
+      m_pos.move(move->inner());
+    else
+      MISMATCH(*_move.get(),WrappedMove<Variant>);
+  }
+
+  virtual AbstractPosition::Ptr clone() const {
+    return AbstractPosition::Ptr(new WrappedPosition<Variant>(m_pos));
+  }
+
+  virtual bool equal(AbstractPosition::Ptr _other) const {
+    WrappedPosition<Variant>* other = dynamic_cast<WrappedPosition<Variant>*>(_other.get());
+
+    if(other)
+      return m_pos == other->inner();
+    else {
+      MISMATCH(*_other.get(),WrappedPosition<Variant>);
+      return false;
+    }
+  }
+
+  virtual AbstractMove::Ptr getMove(const AlgebraicNotation& san) const {
+    bool ok;
+    Move res = m_pos.getMove(san, ok);
+    if (ok)
+      return AbstractMove::Ptr(new WrappedMove<Variant>(res));
+    else
+      return AbstractMove::Ptr();
+  }
+
+  virtual AbstractMove::Ptr getMove(const QString& san) const {
+    AlgebraicNotation move(san, size().y); //FIXME
+    if(!move.valid())
+      return AbstractMove::Ptr();
+    return getMove(move);
+  }
+
+  virtual QString state() const {
+    return ""; // TODO
+  }
+
+  virtual QString fen(int halfmove, int fullmove) const {
+    return m_pos.fen(halfmove, fullmove);
+  }
+
+  virtual AbstractPiece::Ptr moveHint(AbstractMove::Ptr _move) const {
+    WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+
+    if (move) {
+      if(boost::shared_ptr<Piece> hint = m_pos.moveHint(move->inner()))
+        return AbstractPiece::Ptr(
+          new WrappedPiece<Variant>(Piece(*hint)));
+    }
+    else {
+      MISMATCH(*_move.get(),WrappedMove<Variant>);
+    }
+
+    return AbstractPiece::Ptr();
+  }
+
+  virtual QString variant() const {
+    return Variant::m_name;
+  }
+
+  virtual void dump() const {
+    m_pos.dump();
+  }
+};
+
 
 template <typename Variant>
 class WrappedAnimator : public AbstractAnimator {
