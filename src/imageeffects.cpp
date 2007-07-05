@@ -14,11 +14,21 @@
 #include <cmath>
 #include <QPainter>
 #include "imageeffects.h"
-#if defined(HAVE_X86_MMX) || defined(HAVE_X86_SSE)
-  #include <kcpuinfo.h>
-#endif
+
+#ifdef HAVE_X86_MMX
+#include <inttypes.h>
+#include <mmintrin.h>
+#include <kcpuinfo.h>
+#endif //HAVE_X86_MMX
+
+#if defined(__x86_64__) || defined(HAVE_X86_SSE)
+#include <inttypes.h>
+#include <xmmintrin.h>
+#include <kcpuinfo.h>
+#endif //defined(__x86_64__) || defined(HAVE_X86_SSE)
 
 
+#ifndef __x86_64__
 
 template<int aprec, int zprec>
 static inline void blurinner(unsigned char *bptr, int &zR,
@@ -139,10 +149,11 @@ static inline void blurcol(QImage & im, int col, int alpha)
 
 }
 
-#ifdef HAVE_X86_SSE
+#endif //__x86_64__
 
-#include <inttypes.h>
-#include <xmmintrin.h>
+
+
+#if defined(HAVE_X86_SSE) || defined(__x86_64__)
 
 union vec4i
 {
@@ -301,13 +312,11 @@ static void expblur_sse( QImage &img, int radius )
 
   return;
 }
-#endif //HAVE_X86_SSE
+#endif //defined(HAVE_X86_SSE) || defined(__x86_64__)
+
 
 
 #ifdef HAVE_X86_MMX
-
-#include <inttypes.h>
-#include <mmintrin.h>
 
 union vec4s
 {
@@ -400,15 +409,19 @@ static void expblur_mmx( QImage &img, int radius )
 namespace ImageEffects {
 
 void expBlur(QImage& img, int radius) {
-#ifdef HAVE_X86_SSE
-  if(KCPUInfo::haveExtension( KCPUInfo::IntelSSE ) )
-    return expblur_sse(img, radius);
-#endif
-#ifdef HAVE_X86_MMX
-  if(KCPUInfo::haveExtension( KCPUInfo::IntelMMX ) )
-    return expblur_mmx(img, radius);
-#endif
-  return expblur<15,7>(img, radius);
+#ifdef __x86_64__
+  return expblur_sse(img, radius);
+#else //__x86_64__
+  #ifdef HAVE_X86_SSE
+    if(KCPUInfo::haveExtension( KCPUInfo::IntelSSE ) )
+      return expblur_sse(img, radius);
+  #endif //HAVE_X86_SSE
+  #ifdef HAVE_X86_MMX
+    if(KCPUInfo::haveExtension( KCPUInfo::IntelMMX ) )
+      return expblur_mmx(img, radius);
+  #endif //HAVE_X86_MMX
+    return expblur<15,7>(img, radius);
+#endif //__x86_64__
 }
 
 QImage addShadow(const QImage& image, int r, QColor color,
