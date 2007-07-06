@@ -17,6 +17,8 @@
 #include <vector>
 #include <boost/variant.hpp>
 
+#if 0
+//BROKEN
 class VariantInfo;
 class GraphicalInfo;
 class EditPositionEntity;
@@ -102,5 +104,6 @@ public:
   virtual AbstractPosition::Ptr currentPosition() const;
 
 };
+#endif
 
 #endif // EDITPOSITIONCONTROLLER_H

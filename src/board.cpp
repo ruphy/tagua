@@ -17,7 +17,6 @@
 #include "board.h"
 #include "sprite.h"
 #include "animation.h"
-#include "boardsprite.h"
 #include "pointconverter.h"
 #include "entities/userentity.h"
 #include "mainanimation.h"
@@ -549,12 +548,12 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
     }
 
     m_hinting_pos = Point::invalid();
-    m_hinting = Element();
+    m_hinting = NamedSprite();
   }
   else {
     if(pt == m_hinting_pos) {
-      if(!piece->equals(m_hinting.piece())) {
-        m_hinting = Element(piece, m_hinting.sprite());
+      if(!(piece->name() == m_hinting.name())) {
+        m_hinting = NamedSprite(piece->name(), m_hinting.sprite());
         m_hinting.sprite()->setPixmap(m_loader(piece->name()));
       }
     }
@@ -574,7 +573,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
       sprite->show();
 
       m_hinting_pos = pt;
-      m_hinting = Element(piece, sprite);
+      m_hinting = NamedSprite(piece->name(), sprite);
 
       /*if(m_anim_fade)
         enqueue( boost::shared_ptr<Animation>(new FadeAnimation(m_hinting.sprite(),
@@ -612,6 +611,8 @@ void Board::flip(bool flipped)
 void Board::draggingOn(AbstractPiece::Ptr piece, const QPoint& point) {
   Point to = converter()->toLogical(point);
 
+  #if 0
+  //BROKEN
   if (m_sprites.valid(to))
   switch(m_entity.lock()->validTurn(piece->color())) {
     case UserEntity::Moving: {
@@ -631,6 +632,7 @@ void Board::draggingOn(AbstractPiece::Ptr piece, const QPoint& point) {
     default:
       break;
   }
+  #endif
 
   clearTags("validmove");
 }
@@ -643,6 +645,8 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
 
   clearTags("validmove");
 
+  #if 0
+  //BROKEN
   switch(m_entity.lock()->validTurn(piece->color())) {
 
     case UserEntity::Moving: {
@@ -667,6 +671,7 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
     default:
       break;
   }
+  #endif
   std::cout << "invalid move" << std::endl;
   emit error(InvalidMove);
   return false;

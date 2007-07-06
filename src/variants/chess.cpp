@@ -40,17 +40,17 @@ public:
     : m_cinterface(cinterface) {
   }
 
-  AnimationPtr warp(const ChessPosition* final) {
+  boost::shared_ptr<AnimationGroup> warp(const ChessPosition& final) {
     const ChessPosition* current = m_cinterface->position();
     boost::shared_ptr<AnimationGroup> res(new AnimationGroup);
 
     for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
-      const ChessPiece* c = current->get(i);
-      const ChessPiece* f = final->get(i);
+      ChessPiece c = current->get(i);
+      ChessPiece f = final.get(i);
 
       if( !c && f ) {
         //current->set(i, f);
-        SpritePtr sprite = m_cinterface->setSprite(i, *f, false, false);
+        SpritePtr sprite = m_cinterface->setSprite(i, f, false, false);
         res->addPreAnimation( shared_ptr<DropAnimation>(new DropAnimation(sprite)) );
       }
       else if (c && !f) {
@@ -58,17 +58,28 @@ public:
         SpritePtr old_sprite = m_cinterface->getSprite(i);
         res->addPreAnimation( shared_ptr<CaptureAnimation>(new CaptureAnimation(old_sprite)) );
       }
-      else if(c && !c->equals(f) ) {
+      else if(c && f && !(c == f) ) {
         //current->set(i, f);
         SpritePtr old_sprite = m_cinterface->takeSprite(i);
-        SpritePtr sprite = m_cinterface->setSprite(i, *f, false, false);
+        SpritePtr sprite = m_cinterface->setSprite(i, f, false, false);
         res->addPreAnimation( shared_ptr<PromotionAnimation>(new PromotionAnimation(old_sprite, sprite)) );
       }
     }
 
-    //TODO: implement pool update
+    //BROKEN: implement pool update
+
 
     return res;
+  }
+
+  boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& /*move*/) {
+    //BROKEN
+    return warp(final);
+  }
+
+  boost::shared_ptr<AnimationGroup> back(const ChessPosition& final, const ChessMove& /*move*/) {
+    //BROKEN
+    return warp(final);
   }
 };
 

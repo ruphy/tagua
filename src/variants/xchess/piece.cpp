@@ -28,26 +28,23 @@ ChessPiece* ChessPiece::clone() const {
   return new ChessPiece(*this);
 }
 
-bool ChessPiece::equals(const ChessPiece* other) const {
+bool ChessPiece::equals(const ChessPiece& other) const {
   if (other) {
     if (!valid())
       return false;
     else
-      return m_color == other->color() && m_type == other->type();
+      return m_color == other.color() && m_type == other.type();
   }
   else
     return !valid();
 }
 
 bool ChessPiece::operator==(const ChessPiece& other) const {
-  if (other.valid())
-    return equals(&other);
-  else
-    return equals(0);
+  return equals(other);
 }
 
-bool ChessPiece::sameColor(const ChessPiece* other) const {
-  return other && (m_color == other->color());
+bool ChessPiece::sameColor(const ChessPiece& other) const {
+  return other && (m_color == other.color());
 }
 
 int ChessPiece::id() const {

@@ -169,7 +169,7 @@ public:
   virtual bool equals(AbstractMove::Ptr _other) const {
     WrappedMove<Variant>* other = dynamic_cast<WrappedMove<Variant>*>(_other.get());
 
-    if (!other)
+    if (other)
       return m_move == other->inner();
     else {
       MISMATCH(*_other.get(),WrappedMove<Variant>);
@@ -190,7 +190,7 @@ public:
   : m_pool(pool) { }
 
   virtual int size() {
-    return m_pool->size();
+    return m_pool.size();
   }
 
   virtual int insert(int pref_index, AbstractPiece::Ptr _piece) {
@@ -202,25 +202,25 @@ public:
 
       if (piece)
         return m_pool.insert(pref_index, Piece(piece->inner()) );
-      else
+      else {
         MISMATCH(*_piece.get(),WrappedPiece<Variant>);
+        return -1;
+      }
     }
-    return m_pool->size();
-    
   }
 
   virtual AbstractPiece::Ptr get(int index) {
-    const Piece* piece = m_pool->get(index);
+    Piece piece = m_pool.get(index);
     if (piece)
-      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(piece));
     else
       return AbstractPiece::Ptr();
   }
 
   virtual AbstractPiece::Ptr take(int index) {
-    const Piece* piece = m_pool->take(index);
+    Piece piece = m_pool.take(index);
     if (piece)
-      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(piece));
     else
       return AbstractPiece::Ptr();
   }
@@ -243,7 +243,7 @@ public:
   : m_pos(pos) { }
 
   virtual Point size() const {
-    return QSize(200, 200);
+    return inner().size();
   }
 
   virtual QStringList borderCoords() const {
@@ -255,9 +255,9 @@ public:
   }
 
   virtual AbstractPiece::Ptr get(const Point& p) const {
-    const Piece* piece = m_pos.get(p);
+    Piece piece = m_pos.get(p);
     if (piece)
-      return AbstractPiece::Ptr(new WrappedPiece<Variant>(*piece));
+      return AbstractPiece::Ptr(new WrappedPiece<Variant>(piece));
     else
       return AbstractPiece::Ptr();
   }
@@ -435,6 +435,8 @@ public:
   }
 };
 
+#include "unwrapped_graphicalapi.h"
+
 template <typename Variant>
 class WrappedVariantInfo : public VariantInfo {
 public:
@@ -442,6 +444,7 @@ public:
   typedef typename Variant::Position Position;
   typedef typename Variant::Piece Piece;
   typedef typename Variant::Move Move;
+  typedef typename Variant::Pool Pool;
 
   virtual AbstractPosition::Ptr createPosition() {
     return AbstractPosition::Ptr(
@@ -487,7 +490,7 @@ public:
   virtual AbstractAnimator::Ptr createAnimator(GraphicalAPI* graphical_api) {
     return AbstractAnimator::Ptr(
       new WrappedAnimator<Variant>(
-              Animator(UnwrappedGraphicalAPI<Variant>::Ptr(
+              Animator(typename UnwrappedGraphicalAPI<Variant>::Ptr(
                     new UnwrappedGraphicalAPI<Variant>(graphical_api)))));
   }
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove& move) {

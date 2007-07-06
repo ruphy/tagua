@@ -34,9 +34,9 @@ public:
   }
 
   virtual const typename Variant::Position* position() {
-    const WrappedPosition<Variant> *p = dynamic_cast<const WrappedPosition<Variant>*>(m_graphical_api->position());
+    const WrappedPosition<Variant> *p = dynamic_cast<const WrappedPosition<Variant>*>(m_graphical_api->position().get());
     if(p)
-      return p->inner();
+      return &p->inner();
     else {
       MISMATCH(m_graphical_api->position(), WrappedPosition<Variant>);
       return NULL;
@@ -60,7 +60,7 @@ public:
     return m_graphical_api->poolSize(pool);
   }
 
-  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece& piece) {
+  virtual SpritePtr insertPoolSprite(int pool, int index, const typename Variant::Piece& piece) {
     WrappedPiece<Variant> wpiece(piece);
     return m_graphical_api->insertPoolSprite(pool, index, &wpiece);
   }

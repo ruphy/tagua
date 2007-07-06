@@ -12,6 +12,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <kglobal.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 #include <kiconloader.h>
 #include <klocale.h>
@@ -20,16 +21,9 @@
 #include "crash.h"
 #include "common.h"
 
-static const char description[] =
-    I18N_NOOP("A generic board game interface");
+static const char description[] = "A generic board game interface";
 
 static const char version[] = "0.9.1";
-
-static KCmdLineOptions options[] =
-{
-//    { "+[URL]", I18N_NOOP( "Document to open" ), 0 },
-    KCmdLineLastOption
-};
 
 void trap() {
   printf("Press enter to quit.\n");
@@ -39,18 +33,16 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-  KAboutData about("kboard", I18N_NOOP("KBoard"), version, description,
-                    KAboutData::License_GPL,
-                    "(C) 2006 Paolo Capriotti, Maurizio Monge",
-                    0,
-                    "http://kboard.sourceforge.net",
-                    "p.capriotti@gmail.com");
-  about.addAuthor("Paolo Capriotti", 0, "p.capriotti@gmail.com");
-  about.addAuthor("Maurizio Monge", 0, "p.capriotti@gmail.com");
-  about.addCredit("Jani Huhtanen", I18N_NOOP("Gaussian blur code"), 0, 0);
-  about.addCredit("Marcin Jakubowski", I18N_NOOP("X11 taskbar flashing"), 0, 0);
-  about.addCredit("Rici Lake", I18N_NOOP("funclib lua library"), 0, 0);
+  KAboutData about( "kboard", 0, ki18n("KBoard"),
+    version, ki18n(description), KAboutData::License_GPL,
+    ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge") );
+  about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
+  about.addAuthor(ki18n("Maurizio Monge"), KLocalizedString(), "p.capriotti@gmail.com");
+  about.addCredit(ki18n("Jani Huhtanen"), KLocalizedString(), I18N_NOOP("Gaussian blur code") );
+  about.addCredit(ki18n("Marcin Jakubowski"), KLocalizedString(), I18N_NOOP("X11 taskbar flashing") );
+  about.addCredit(ki18n("Rici Lake"), KLocalizedString(), I18N_NOOP("funclib lua library") );
 
+  KCmdLineOptions options;
   KCmdLineArgs::init(argc, argv, &about);
   KCmdLineArgs::addCmdLineOptions(options);
   KApplication app;

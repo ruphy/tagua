@@ -84,7 +84,7 @@ private slots:
   /**
     * \return how many sprites are contained in the pool
     */
-  virtual int poolSize(int pool) = 0;
+  virtual int poolSize(int pool);
 
   /**
     * \return the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)

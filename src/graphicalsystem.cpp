@@ -55,6 +55,14 @@ GraphicalSystem::GraphicalSystem(ChessTable* view,
 GraphicalSystem::~GraphicalSystem() {
 }
 
+const PointConverter* GraphicalSystem::converter() const {
+  return m_board->converter();
+}
+
+AbstractPosition::Ptr GraphicalSystem::position() const {
+  return m_pos;
+}
+
 void GraphicalSystem::settingsChanged() {
 
   /* recreate the animator to reload its settings */

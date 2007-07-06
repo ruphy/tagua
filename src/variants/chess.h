@@ -31,6 +31,7 @@ struct ChessVariant {
   typedef ChessPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
+  typedef Position::PoolReference Pool;
   typedef ChessAnimator Animator;
 
   static const bool m_simple_moves = false;

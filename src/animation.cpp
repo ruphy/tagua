@@ -67,7 +67,7 @@ void MovementAnimation::setSource(const SpritePtr& source) {
 boost::shared_ptr<Movement>
 MovementAnimation::createMovement(const QPoint& from, const QPoint& to) const {
   return boost::shared_ptr<Movement>(new SigmoidalMovement<LinearMovement>(from, to));
-// }
+}
 
 void MovementAnimation::start() {
 #ifdef ANIMATION_DEBUG
@@ -596,18 +596,18 @@ TeleportAnimation::TeleportAnimation(const SpritePtr& sprite,
                                      const QPoint& from, const QPoint& to)
   : AnimationGroup(1.0) {
 
-  const SpritePtr& copy(sprite->duplicate());
+  SpritePtr copy(sprite->duplicate());
   copy->show();
 
   addPreAnimation(AnimationPtr(new FadeAnimation(copy, from, 255, 0)));
   addPreAnimation(AnimationPtr(new FadeAnimation(sprite, to, 0, 255)));
 }
 
-TeleportAnimation::TeleportAnimation(const const SpritePtr&& sprite,
+TeleportAnimation::TeleportAnimation(const SpritePtr& sprite,
                                      const QPoint& to)
   : AnimationGroup(1.0) {
 
-  const SpritePtr& copy(sprite->duplicate());
+  SpritePtr copy(sprite->duplicate());
   copy->show();
 
   addPreAnimation(AnimationPtr(new FadeAnimation(copy, copy->pos(), 255, 0)));

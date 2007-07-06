@@ -89,12 +89,12 @@ std::vector<typename Pos::Move>& Generator<Pos, MoveTest>::generate() {
 
 template <typename Pos, typename MoveTest>
 void Generator<Pos, MoveTest>::generateFrom(const Point& p) {
-  const Piece* piece = m_pos[p];
-  if (piece && piece->color() == m_pos.turn()) {
-    switch (piece->type()) {
+  Piece piece = m_pos[p];
+  if (piece && piece.color() == m_pos.turn()) {
+    switch (piece.type()) {
     case PAWN:
       {
-        Point dir = Piece::direction(piece->color());
+        Point dir = Piece::direction(piece.color());
         addMove(p, p + dir);
         addMove(p, p + dir * 2);
         addMove(p, p + dir + Point(1, 0));

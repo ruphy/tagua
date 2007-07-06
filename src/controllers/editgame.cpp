@@ -10,7 +10,7 @@
 
 #include "editgame.h"
 #include "graphicalgame.h"
-#include "graphicalinfo.h"
+#include "graphicalsystem.h"
 #include "xboardengine.h"
 #include "entities/engineentity.h"
 #include "entities/gameentity.h"
@@ -80,7 +80,7 @@ EditGameController::EditGameController(ChessTable* view,
   }
   else position = startingPosition;
 
-  m_graphical = shared_ptr<GraphicalInfo>(new GraphicalInfo(m_view, position, m_variant));
+  m_graphical = shared_ptr<GraphicalSystem>(new GraphicalSystem(m_view, position, m_variant));
 
   m_game = shared_ptr<GraphicalGame>(new GraphicalGame(m_graphical.get(),
                                      m_view->moveListTable()));

@@ -111,8 +111,13 @@ Entity::Action GameEntity::validTurn(int turn) const {
 
 Entity::Action GameEntity::validTurn(const Point& point) const {
   AbstractPiece::Ptr piece = position()->get(point);
-  if (piece) return validTurn(piece->color());
-  else return NoAction;
+  //BROKEN
+  #if 0
+    if (piece) return validTurn(piece->color());
+    else return NoAction;
+  #else
+    return NoAction;
+  #endif
 }
 
 bool GameEntity::movable(const Point& point) const {

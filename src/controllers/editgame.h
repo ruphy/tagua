@@ -22,7 +22,7 @@ class Agent;
 class ICSConnection;
 class UserEntity;
 class GraphicalGame;
-class GraphicalInfo;
+class GraphicalSystem;
 
 
 /**
@@ -49,7 +49,7 @@ protected:
   virtual void onNavigation();
 
   boost::shared_ptr<UserEntity> m_entity;
-  boost::shared_ptr<GraphicalInfo> m_graphical;
+  boost::shared_ptr<GraphicalSystem> m_graphical;
   AgentGroup m_agents;
   VariantInfo* m_variant;
   boost::shared_ptr<GraphicalGame> m_game;

@@ -137,25 +137,25 @@ public:
   /**
     * \return the number of items in the pool
     */
-  virtual int size();
+  virtual int size() = 0;
 
   /**
     * Inserts a piece in the pool, preferably at the position \a pref_index.
     * But the pool can be unpredictable and the piece can be placed at an arbitrary position.
     * \return the position at which the item was placed.
     */
-  virtual int insert(int pref_index, AbstractPiece::Ptr piece);
+  virtual int insert(int pref_index, AbstractPiece::Ptr piece) = 0;
 
   /**
     * Gets the piece at the position \a index in the pool.
     */
-  virtual AbstractPiece::Ptr get(int index);
+  virtual AbstractPiece::Ptr get(int index) = 0;
 
   /**
     * Removes the piece at the position \a index in the pool.
     * \return the removed piece.
     */
-  virtual AbstractPiece::Ptr take(int index);
+  virtual AbstractPiece::Ptr take(int index) = 0;
 };
 
 
@@ -203,7 +203,7 @@ public:
   /**
     * \return an interface to modify the pool of the board relative to \a player
     */
-  virtual AbstractPool::Ptr pool(int player);
+  virtual AbstractPool::Ptr pool(int player) = 0;
 
   /**
     * \return an id corresponding to the player
