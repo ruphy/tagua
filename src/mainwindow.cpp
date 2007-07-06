@@ -153,12 +153,12 @@ void MainWindow::setupActions() {
   installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
   installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
   		&ui(), SLOT(setStartingPosition()));
-	installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
-	installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
-	installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
-	installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
-	installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
-	installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
+  installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
+  installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
+  installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
+  installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
+  installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
+  installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
 }
 
 void MainWindow::updatePromotionType() {
