@@ -134,17 +134,15 @@ void MainWindow::setupActions() {
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
   
-  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), 
-  																			 i18n("Do &promotion"), &ui(), 
-  																			 SLOT(setDoPromotion(bool)));
+  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), i18n("Do &promotion"), &ui(),SLOT(setDoPromotion(bool)));
   m_do_promotion->setCheckable(true);
 
-	installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
-	installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
-	installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
-	installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
-	installRegularAction("connect", KIcon("connection-estabilished"), i18n("&Connect"), this, SLOT(icsConnect()));
-	installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
+  installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
+  installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
+  installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
+  installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
+  installRegularAction("connect", KIcon("connection-estabilished"), i18n("&Connect"), this, SLOT(icsConnect()));
+  installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
