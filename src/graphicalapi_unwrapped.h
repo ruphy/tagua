@@ -43,16 +43,20 @@ public:
     }
   }
 
-  virtual SpritePtr setSprite(const Point& p, const typename Variant::Piece& piece, bool use_drop, bool show) {
+  virtual NamedSprite setPiece(const Point& p, const typename Variant::Piece& piece, bool use_drop, bool show) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->setSprite(p, &wpiece, use_drop, show);
+    return m_graphical_api->setPiece(p, &wpiece, use_drop, show);
   }
 
-  virtual SpritePtr getSprite(const Point& p) {
+  virtual void setSprite(const Point& p, const NamedSprite& s) {
+    m_graphical_api->setSprite(p, s);
+  }
+
+  virtual NamedSprite getSprite(const Point& p) {
     return m_graphical_api->getSprite(p);
   }
 
-  virtual SpritePtr takeSprite(const Point& p) {
+  virtual NamedSprite takeSprite(const Point& p) {
     return m_graphical_api->takeSprite(p);
   }
 

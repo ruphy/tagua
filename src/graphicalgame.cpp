@@ -65,15 +65,9 @@ GraphicalGame::~GraphicalGame() {
 }
 
 void GraphicalGame::settingsChanged() {
-  //BROKEN
   m_anim_sequence = settings.flag("animations", true)
                       && settings("animations").flag("sequence", true);
   m_anim_sequence_max = settings("animations")("sequence")[QString("max")] | 10;
-  #if 0
-  m_anim_sequence = m_graphical->getBoolSetting("animations", true)
-                     && m_graphical->getBoolSetting("animations.sequence", true);
-  m_anim_sequence_max = m_graphical->getIntSetting("animations.sequence.max", 10);
-  #endif
 }
 
 void GraphicalGame::onAdded(const Index& ix) {

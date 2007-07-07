@@ -89,26 +89,26 @@ void GraphicalSystem::setup(const shared_ptr<UserEntity>& entity) {
   m_view->setEntity(entity);
 }
 
-SpritePtr GraphicalSystem::getSprite(const Point& p) {
+NamedSprite GraphicalSystem::getSprite(const Point& p) {
   if (!m_board->m_sprites.valid(p))
-    return shared_ptr<Sprite>();
+    return NamedSprite();
 
-  return m_board->m_sprites[p].sprite();
+  return m_board->m_sprites[p];
 }
 
-SpritePtr GraphicalSystem::takeSprite(const Point& p) {
+NamedSprite GraphicalSystem::takeSprite(const Point& p) {
   if (!m_board->m_sprites.valid(p))
-    return shared_ptr<Sprite>();
+    return NamedSprite();
 
-  SpritePtr retv = m_board->m_sprites[p].sprite();
+  NamedSprite retv = m_board->m_sprites[p];
   m_board->m_sprites[p] = NamedSprite();
   return retv;
 }
 
-SpritePtr GraphicalSystem::setSprite(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
+NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
   Q_ASSERT(piece);
   if(!m_board->m_sprites.valid(p))
-    return SpritePtr();
+    return NamedSprite();
 
   QPixmap px = m_board->m_loader(piece->name());
 
@@ -121,10 +121,15 @@ SpritePtr GraphicalSystem::setSprite(const Point& p, const AbstractPiece* piece,
     s = m_board->createSprite(px, p);
     if (show) s->show();
   }
-  m_board->m_sprites[p] = NamedSprite(piece->name(), s);
-  return s;
+  return m_board->m_sprites[p] = NamedSprite(piece->name(), s);
 }
 
+void GraphicalSystem::setSprite(const Point& p, const NamedSprite& sprite) {
+  if(!m_board->m_sprites.valid(p))
+    return;
+
+  m_board->m_sprites[p] = sprite;
+}
 
 int GraphicalSystem::poolSize(int pool) {
   return m_view->pool(pool)->fill();
@@ -238,8 +243,8 @@ void GraphicalSystem::forward(const AbstractMove::Ptr& move,
   AbstractPiece::Ptr sel1 = m_pos->get(m_board->selection);
 
   if (move) {
-    shared_ptr<AnimationGroup> animation = m_animator->forward(pos, move);
-    animation->setChainAbortions(false);
+    AnimationPtr animation = m_animator->forward(pos, move);
+    //??? animation->setChainAbortions(false);
     m_board->enqueue(animation);
     m_board->setTags("highlighting", move->toUserMove().from, move->toUserMove().to);
 
@@ -263,8 +268,8 @@ void GraphicalSystem::back(const AbstractMove::Ptr& lastMove,
   AbstractPiece::Ptr sel1 = m_pos->get(m_board->selection);
 
   if (move) {
-    shared_ptr<AnimationGroup> animation = m_animator->back(pos, move);
-    animation->setChainAbortions(false);
+    AnimationPtr animation = m_animator->back(pos, move);
+    //??? animation->setChainAbortions(false);
     m_board->enqueue(animation);
 
     m_pos->copyFrom(pos);
@@ -290,8 +295,8 @@ void GraphicalSystem::warp(const AbstractMove::Ptr& lastMove,
 
   AbstractPiece::Ptr sel1 = m_pos->get(m_board->selection);
 
-  shared_ptr<AnimationGroup> animation = m_animator->warp(pos);
-  animation->setChainAbortions(false);
+  AnimationPtr animation = m_animator->warp(pos);
+  //??? animation->setChainAbortions(false);
   m_board->enqueue(animation);
 
   m_pos->copyFrom(pos);

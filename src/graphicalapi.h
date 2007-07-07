@@ -14,7 +14,7 @@
 #include <boost/shared_ptr.hpp>
 #include "kboard.h"
 #include "pointconverter.h"
-#include "sprite.h"
+#include "namedsprite.h"
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 
@@ -39,19 +39,25 @@ public:
   /**
     * \return a sprite at the position \a index in the graphical pool.
     */
-  virtual SpritePtr getSprite(const Point& p) = 0;
+  virtual NamedSprite getSprite(const Point& p) = 0;
 
   /**
     * Removes a sprite at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual SpritePtr takeSprite(const Point& p) = 0;
+  virtual NamedSprite takeSprite(const Point& p) = 0;
+
+  /**
+    * Sets the piece at the position \a index in the graphical pool.
+    * \return the newly created sprite.
+    */
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
 
   /**
     * Sets the sprite at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual SpritePtr setSprite(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
+  virtual void setSprite(const Point& p, const NamedSprite& sprite) = 0;
 
   /**
     * \return how many sprites are contained in the pool

@@ -37,7 +37,7 @@ class GraphicalAPI;
   * dynamic cast's and type checks in the calling code, when there's no
   * way to know the exact type of an argument at compile time.
   *
-  * The file @ref highlevel.h tries to address this problem doing part
+  * The file @ref kboard_wrapped.h tries to address this problem doing part
   * of the compiler's work. One exception is that type checking code
   * is inserted in a method wrapper, instead of the calling place, so
   * even calling a method of a noncasted instance would cause some
@@ -56,7 +56,7 @@ class GraphicalAPI;
 #include "option.h"
 #include "decoratedmove.h"
 #include "interactiontype.h"
-#include "kboard_fwd.h"
+#include "fwd.h"
 
 
 /**
@@ -323,7 +323,6 @@ class AnimationGroup;
 class AbstractAnimator {
 public:
   typedef boost::shared_ptr<AbstractAnimator> Ptr;
-  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
   virtual ~AbstractAnimator() { }
 
   /**

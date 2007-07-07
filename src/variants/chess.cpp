@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -12,11 +12,10 @@
 #include <boost/shared_ptr.hpp>
 #include "variants/chess.h"
 #include "common.h"
-#include "highlevel.h"
+#include "kboard_wrapped.h"
 #include "moveserializer.impl.h"
 #include "xchess/animator.impl.h"
 #include "piecefunction.h"
-#include "unwrapped_graphicalapi.h"
 #include "animation.h"
 
 using namespace boost;
@@ -40,9 +39,9 @@ public:
     : m_cinterface(cinterface) {
   }
 
-  boost::shared_ptr<AnimationGroup> warp(const ChessPosition& final) {
+  AnimationGroupPtr warp(const ChessPosition& final) {
     const ChessPosition* current = m_cinterface->position();
-    boost::shared_ptr<AnimationGroup> res(new AnimationGroup);
+    AnimationGroupPtr res(new AnimationGroup);
 
     for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
       ChessPiece c = current->get(i);
@@ -50,19 +49,19 @@ public:
 
       if( !c && f ) {
         //current->set(i, f);
-        SpritePtr sprite = m_cinterface->setSprite(i, f, false, false);
-        res->addPreAnimation( shared_ptr<DropAnimation>(new DropAnimation(sprite)) );
+        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        res->addPreAnimation( DropAnimationPtr(new DropAnimation(sprite.sprite())) );
       }
       else if (c && !f) {
         //current->set(i, NULL);
-        SpritePtr old_sprite = m_cinterface->getSprite(i);
-        res->addPreAnimation( shared_ptr<CaptureAnimation>(new CaptureAnimation(old_sprite)) );
+        NamedSprite old_sprite = m_cinterface->getSprite(i);
+        res->addPreAnimation( CaptureAnimationPtr(new CaptureAnimation(old_sprite.sprite())) );
       }
       else if(c && f && !(c == f) ) {
         //current->set(i, f);
-        SpritePtr old_sprite = m_cinterface->takeSprite(i);
-        SpritePtr sprite = m_cinterface->setSprite(i, f, false, false);
-        res->addPreAnimation( shared_ptr<PromotionAnimation>(new PromotionAnimation(old_sprite, sprite)) );
+        NamedSprite old_sprite = m_cinterface->takeSprite(i);
+        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        res->addPreAnimation( PromotionAnimationPtr(new PromotionAnimation(old_sprite.sprite(), sprite.sprite())) );
       }
     }
 
@@ -72,8 +71,147 @@ public:
     return res;
   }
 
-  boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& /*move*/) {
+  boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& move) {
+    const ChessPosition* current = m_cinterface->position();
+
+    #if 0 //OLD SHIT
+    Element piece = m_position->getElement(move.from);
+
+      Q_ASSERT(m_position->consistent());
+
+      AnimationPtr res(new AnimationGroup);
+
+      Element piece = m_position->getElement(move.from);
+      Q_ASSERT(piece);
+      Element captured = m_position->getElement(move.to);
+
+      // update graphical position
+      m_position->setElement(move.to, piece);
+      Q_ASSERT(m_position->consistent());
+
+      m_position->removeElement(move.from);
+      Q_ASSERT(m_position->consistent());
+
+
+      // add main animation
+      // the animation must be direct when the piece is already
+      // near the destination square
+      shared_ptr<Animation> mainAnimation;
+      QPoint hotSpot = piece.sprite()->pos();
+      hotSpot += QPoint(piece.sprite()->pixmap().width() / 2, piece.sprite()->pixmap().height() / 2);
+
+      if(!m_anim_movement)
+        mainAnimation = shared_ptr<InstantAnimation>(
+          new InstantAnimation(piece.sprite(), m_converter->toReal(move.to)));
+      else if (m_converter->toLogical(hotSpot) == move.to)
+        mainAnimation = shared_ptr<MovementAnimation>(
+          new MovementAnimation(piece.sprite(), m_converter->toReal(move.to)));
+      else
+        mainAnimation = createMovementAnimation(piece, m_converter->toReal(move.to));
+      res->addPreAnimation(mainAnimation);
+
+      res->addPostAnimation(createCapture(move.to, piece, captured, final));
+
+      if (move.type() == ChessMove::EnPassantCapture) {
+        Point phantom(move.to.x, move.from.y);
+        Element capturedPawn = m_position->getElement(phantom);
+
+        if (capturedPawn) {
+          if(m_anim_fade)
+            res->addPostAnimation(
+              shared_ptr<Animation>(
+                  new FadeAnimation(capturedPawn.sprite(),
+                                    m_converter->toReal(phantom),
+                                    255,0)));
+          else
+            res->addPostAnimation(
+              shared_ptr<Animation>(
+                  new CaptureAnimation(capturedPawn.sprite() )));
+          m_position->removeElement(phantom);
+        }
+      }
+
+      else if (move.type() == ChessMove::Promotion) {
+        AbstractPiece::Ptr promoted = final->get(move.to);
+
+        if (promoted) {
+          QPoint real = m_converter->toReal(move.to);
+          boost::shared_ptr<PieceSprite> pe_sprite = m_position->setPiece(move.to, promoted);
+
+          if(MovementAnimation* mva = dynamic_cast<MovementAnimation*>(mainAnimation.get()))
+            mva->setTarget(pe_sprite);
+
+          if(m_anim_fade) {
+            res->addPostAnimation(
+              shared_ptr<Animation>(new FadeAnimation(piece.sprite(), real, 255, 0))
+            );
+            res->addPostAnimation(
+              shared_ptr<Animation>(new FadeAnimation(pe_sprite, real, 0, 255))
+            );
+          }
+          else {
+            res->addPreAnimation(shared_ptr<Animation>(new CaptureAnimation(piece.sprite())));
+            res->addPreAnimation(shared_ptr<Animation>(new DropAnimation(pe_sprite)));
+          }
+        }
+      }
+
+      else if (move.type() == ChessMove::KingSideCastling) {
+        Point rookSquare = move.to + Point(1,0);
+        Point rookDestination = move.from + Point(1,0);
+
+        Element rook = m_position->getElement(rookSquare);
+        Q_ASSERT(rook);
+        m_position->setElement(rookDestination, rook);
+        m_position->removeElement(rookSquare);
+
+        res->addPreAnimation(
+          shared_ptr<Animation>(
+            m_anim_movement
+            ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+            : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+          )
+        );
+
+      }
+
+      else if (move.type() == ChessMove::QueenSideCastling) {
+        Point rookSquare = move.to - Point(2,0);
+        Point rookDestination = move.from - Point(1,0);
+
+        Element rook = m_position->getElement(rookSquare);
+        Q_ASSERT(rook);
+        m_position->setElement(rookDestination, rook);
+        m_position->removeElement(rookSquare);
+
+    //     if (m_anim_movement)
+    //       res->addPreAnimation(
+    //         shared_ptr<MovementAnimation>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+    //       );
+    //     else
+    //       res->addPreAnimation(
+    //         shared_ptr<Animation>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+    //       );
+        res->addPreAnimation(
+          shared_ptr<Animation>(
+            m_anim_movement
+            ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+            : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
+          )
+        );
+      }
+
+      Q_ASSERT(m_position->consistent());
+
+      finalizeForwardAnimation(res, final, move);
+
+      AnimationPtr warpingAnimation(new AnimationGroup);
+      warpingAnimation->addPreAnimation(res);
+      warpingAnimation->addPostAnimation(warp(final));
+
+      return warpingAnimation;
     //BROKEN
+    #endif
     return warp(final);
   }
 

@@ -67,19 +67,25 @@ private slots:
   /**
     * \return a sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     */
-  virtual SpritePtr getSprite(const Point& p);
+  virtual NamedSprite getSprite(const Point& p);
 
   /**
     * Removes a sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual SpritePtr takeSprite(const Point& p);
+  virtual NamedSprite takeSprite(const Point& p);
+
+  /**
+    * Sets the piece at the position \a index in the graphical pool. (interface for GraphicalAPI)
+    * \return the newly created sprite.
+    */
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
 
   /**
     * Sets the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual SpritePtr setSprite(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
+  virtual void setSprite(const Point& p, const NamedSprite& sprite);
 
   /**
     * \return how many sprites are contained in the pool

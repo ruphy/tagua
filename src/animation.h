@@ -17,6 +17,7 @@
 #include <boost/enable_shared_from_this.hpp>
 #include <QPoint>
 #include "sprite.h"
+#include "fwd.h"
 
 class Movement;
 class Random;
@@ -195,8 +196,6 @@ public:
   * When all pre-animations are gone, post-animations are handled.
   */
 class AnimationGroup : public Animation {
-public:
-  typedef boost::shared_ptr<Animation> AnimationPtr;
 private:
   typedef std::list<AnimationPtr> AnimationList;
   typedef AnimationList::iterator Iterator;

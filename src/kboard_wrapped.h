@@ -71,7 +71,7 @@ template <typename V> class WrappedPosition;
                        << "     got type   " << prettyTypeName(typeid(x).name()) << std::endl \
                        << "     instead of " << prettyTypeName(typeid(y).name()) << std::endl \
                        << "     this is    " << prettyTypeName(typeid(*this).name()) << std::endl)
-                       
+
 #define TYPECHECK(x,y) if (typeid(x) != typeid(y)) MISMATCH(x,y); else { }
 
 
@@ -398,7 +398,6 @@ class WrappedAnimator : public AbstractAnimator {
   typedef typename Variant::Position Position;
   typedef typename Variant::Animator Animator;
   typedef typename Variant::Move Move;
-  typedef AbstractAnimator::AnimationPtr AnimationPtr;
 
   Animator m_animator;
 public:
@@ -448,7 +447,7 @@ public:
   }
 };
 
-#include "unwrapped_graphicalapi.h"
+#include "graphicalapi_unwrapped.h"
 
 template <typename Variant>
 class WrappedVariantInfo : public VariantInfo {
