@@ -83,8 +83,7 @@ public:
   virtual void cancelPremove() = 0;
   virtual void handleRightClick(const Point&) const;
 
-  virtual Action validTurn(const Point&) const = 0;
-  virtual Action validTurn(int turn) const  = 0;
+  virtual InteractionType validTurn(const Point&) const = 0;
   virtual bool movable(const Point&) const = 0;
   virtual bool oneClickMoves() const { return false; }
 

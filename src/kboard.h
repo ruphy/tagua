@@ -57,6 +57,17 @@ class GraphicalAPI;
 #include "decoratedmove.h"
 #include "kboard_fwd.h"
 
+
+/**
+  * @brief An enumerated type to specify the type of an interaction with a position
+  */
+enum InteractionType {
+  NoAction,
+  Moving,
+  Premoving
+};
+
+
 /**
   * @brief A superclass for all the piece classes.
   */
@@ -204,6 +215,11 @@ public:
     * \return an interface to modify the pool of the board relative to \a player
     */
   virtual AbstractPool::Ptr pool(int player) = 0;
+
+  /**
+    * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
+    */
+  virtual InteractionType movable(const Point& p) const = 0;
 
   /**
     * \return an id corresponding to the player

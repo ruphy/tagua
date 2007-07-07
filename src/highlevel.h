@@ -280,6 +280,10 @@ public:
     return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
   }
 
+  virtual InteractionType movable(const Point& p) const {
+    return static_cast<int>(m_pos.movable(p));
+  }
+
   virtual int turn() const {
     return static_cast<int>(m_pos.turn());
   }

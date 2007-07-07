@@ -488,8 +488,8 @@ void Board::onMouseMove(const QPoint& pos, int /*button*/) {
     NormalUserMove move(m_drag_info->from,  point);
     bool valid = m_sprites.valid(point);
     if (valid) {
-      UserEntity::Action action = m_entity.lock()->validTurn(m_drag_info->from);
-      if (action == UserEntity::Moving)
+      InteractionType action = m_entity.lock()->validTurn(m_drag_info->from);
+      if (action == Moving)
         valid = m_entity.lock()->testMove(move);
     }
 
@@ -608,7 +608,7 @@ void Board::flip(bool flipped)
   }
 }
 
-void Board::draggingOn(AbstractPiece::Ptr piece, const QPoint& point) {
+void Board::draggingOn(int pool, int index, const QPoint& point) {
   Point to = converter()->toLogical(point);
 
   #if 0

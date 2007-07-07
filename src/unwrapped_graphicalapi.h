@@ -56,7 +56,7 @@ public:
     return m_graphical_api->takeSprite(p);
   }
 
-  virtual int poolSize(int pool) {
+  virtual int poolSize(int pool) const {
     return m_graphical_api->poolSize(pool);
   }
 

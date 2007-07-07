@@ -36,6 +36,7 @@ private:
 
   /** the piece that is being dragged, if any */
   NamedSprite m_dragged;
+  int m_dragged_index;
 
   /** the number of pieces on the pool */
   int m_fill;

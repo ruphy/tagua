@@ -42,8 +42,7 @@ public:
   virtual void addPremove(const NormalUserMove&);
   virtual void addPremove(const DropUserMove&);
   virtual void cancelPremove();
-  virtual Entity::Action validTurn(const Point&) const;
-  virtual Entity::Action validTurn(int) const;
+  virtual InteractionType validTurn(const Point&) const;
   virtual bool movable(const Point&) const;
   virtual bool jump(const Index&);
   virtual bool gotoFirst();

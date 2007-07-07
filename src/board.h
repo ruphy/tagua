@@ -216,10 +216,10 @@ public:
 
 
   /** Notifies to the board that a certain piece is being dragged over the board */
-  void draggingOn(AbstractPiece::Ptr piece, const QPoint& p);
+  void draggingOn(int pool, int index, const QPoint& p);
 
   /** Executes a drop. This function id typically called by by a PiecePool */
-  bool dropOn(AbstractPiece::Ptr piece, const QPoint& point);
+  bool dropOn(int pool, int index, const QPoint& point);
 
   /** returns the size of the grid */
   virtual Point gridSize() const { return m_sprites.getSize(); }

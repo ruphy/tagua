@@ -21,11 +21,6 @@ protected:
   bool m_enabled : 1;
   bool m_highlight : 1;
 public:
-  enum Action {
-    NoAction,
-    Moving,
-    Premoving
-  };
 
   Entity();
   /**
