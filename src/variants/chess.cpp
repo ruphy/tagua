@@ -73,9 +73,10 @@ public:
   }
 
   boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& move) {
-    const ChessPosition* current = m_cinterface->position();
+//     const ChessPosition* current = m_cinterface->position();
 
     AnimationGroupPtr res(new AnimationGroup);
+    MovementAnimationPtr ma;
     //ChessPiece piece = current->get(move.from);
 
     NamedSprite piece = m_cinterface->takeSprite(move.from);
@@ -83,7 +84,7 @@ public:
     m_cinterface->setSprite(move.to, piece);
 
     if(piece)
-      res->addPreAnimation(MovementAnimationPtr(new MovementAnimation(piece.sprite(),
+      res->addPreAnimation(ma = MovementAnimationPtr(new MovementAnimation(piece.sprite(),
                                               m_cinterface->converter()->toReal(move.to))));
     else
       std::cout << "Bug!!!!" << std::endl;
@@ -94,38 +95,32 @@ public:
       Point phantom(move.to.x, move.from.y);
       NamedSprite capturedPawn = m_cinterface->takeSprite(phantom);
 
-      if (capturedPawn)
+      if (capturedPawn) {
+        QPoint real = m_cinterface->converter()->toReal(phantom);
         res->addPostAnimation(FadeAnimationPtr(new FadeAnimation(capturedPawn.sprite(),
-                                              m_cinterface->converter()->toReal(phantom), 255, 0)));
+                                                                          real, 255, 0)));
+      }
+      else
+        std::cout << "Bug!!!!" << std::endl;
+    }
+    else if (move.type() == ChessMove::Promotion) {
+      ChessPiece promoted = final.get(move.to);
+
+      if (promoted) {
+        QPoint real = m_cinterface->converter()->toReal(move.to);
+        NamedSprite old_sprite = m_cinterface->getSprite(move.to);
+        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false, false);
+
+        if(ma)
+          ma->setTarget(new_sprite.sprite());
+
+        res->addPostAnimation( FadeAnimationPtr(new FadeAnimation(old_sprite.sprite(), real, 255, 0)) );
+        res->addPostAnimation( FadeAnimationPtr(new FadeAnimation(new_sprite.sprite(), real, 0, 255)) );
+      }
       else
         std::cout << "Bug!!!!" << std::endl;
     }
 #if 0
-    else if (move.type() == ChessMove::Promotion) {
-      AbstractPiece::Ptr promoted = final->get(move.to);
-
-      if (promoted) {
-        QPoint real = m_converter->toReal(move.to);
-        boost::shared_ptr<PieceSprite> pe_sprite = m_position->setPiece(move.to, promoted);
-
-        if(MovementAnimation* mva = dynamic_cast<MovementAnimation*>(mainAnimation.get()))
-          mva->setTarget(pe_sprite);
-
-        if(m_anim_fade) {
-          res->addPostAnimation(
-            shared_ptr<Animation>(new FadeAnimation(piece.sprite(), real, 255, 0))
-          );
-          res->addPostAnimation(
-            shared_ptr<Animation>(new FadeAnimation(pe_sprite, real, 0, 255))
-          );
-        }
-        else {
-          res->addPreAnimation(shared_ptr<Animation>(new CaptureAnimation(piece.sprite())));
-          res->addPreAnimation(shared_ptr<Animation>(new DropAnimation(pe_sprite)));
-        }
-      }
-    }
-
     else if (move.type() == ChessMove::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
       Point rookDestination = move.from + Point(1,0);
