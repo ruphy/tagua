@@ -197,26 +197,26 @@ public:
       Point rookSquare = move.to + Point(1,0);
       Point rookDestination = move.from + Point(1,0);
 
-      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
-      m_cinterface->setSprite(rookDestination, rook);
+      NamedSprite rook = m_cinterface->takeSprite(rookDestination);
+      m_cinterface->setSprite(rookSquare, rook);
 
       res->addPreAnimation(
         shared_ptr<Animation>(
           new MovementAnimation(rook.sprite(),
-            m_cinterface->converter()->toReal(rookDestination)))
+            m_cinterface->converter()->toReal(rookSquare)))
       );
     }
     else if (move.type() == ChessMove::QueenSideCastling) {
       Point rookSquare = move.to + Point(-2,0);
       Point rookDestination = move.from + Point(-1,0);
 
-      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
-      m_cinterface->setSprite(rookDestination, rook);
+      NamedSprite rook = m_cinterface->takeSprite(rookDestination);
+      m_cinterface->setSprite(rookSquare, rook);
 
       res->addPreAnimation(
         shared_ptr<Animation>(
           new MovementAnimation(rook.sprite(),
-            m_cinterface->converter()->toReal(rookDestination)))
+            m_cinterface->converter()->toReal(rookSquare)))
       );
     }
 
