@@ -55,7 +55,7 @@ public:
       }
       else if (c && !f) {
         //current->set(i, NULL);
-        NamedSprite old_sprite = m_cinterface->getSprite(i);
+        NamedSprite old_sprite = m_cinterface->takeSprite(i);
         res->addPreAnimation( CaptureAnimationPtr(new CaptureAnimation(old_sprite.sprite())) );
       }
       else if(c && f && !(c == f) ) {
@@ -83,12 +83,12 @@ public:
     NamedSprite captured = m_cinterface->takeSprite(move.to);
     m_cinterface->setSprite(move.to, piece);
 
-    if(piece)
+    if (piece)
       res->addPreAnimation(ma = MovementAnimationPtr(new MovementAnimation(piece.sprite(),
                                               m_cinterface->converter()->toReal(move.to))));
     else
       std::cout << "Bug!!!!" << std::endl;
-    if(captured)
+    if (captured)
       res->addPostAnimation(ExplodeAnimationPtr(new ExplodeAnimation(captured.sprite(), m_random)));
 
     if (move.type() == ChessMove::EnPassantCapture) {
@@ -120,52 +120,32 @@ public:
       else
         std::cout << "Bug!!!!" << std::endl;
     }
-#if 0
     else if (move.type() == ChessMove::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
       Point rookDestination = move.from + Point(1,0);
 
-      Element rook = m_position->getElement(rookSquare);
-      Q_ASSERT(rook);
-      m_position->setElement(rookDestination, rook);
-      m_position->removeElement(rookSquare);
+      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+      m_cinterface->setSprite(rookDestination, rook);
 
       res->addPreAnimation(
         shared_ptr<Animation>(
-          m_anim_movement
-          ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-          : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-        )
+          new MovementAnimation(rook.sprite(),
+            m_cinterface->converter()->toReal(rookDestination)))
       );
-
     }
-
     else if (move.type() == ChessMove::QueenSideCastling) {
-      Point rookSquare = move.to - Point(2,0);
-      Point rookDestination = move.from - Point(1,0);
+      Point rookSquare = move.to + Point(-2,0);
+      Point rookDestination = move.from + Point(-1,0);
 
-      Element rook = m_position->getElement(rookSquare);
-      Q_ASSERT(rook);
-      m_position->setElement(rookDestination, rook);
-      m_position->removeElement(rookSquare);
+      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+      m_cinterface->setSprite(rookDestination, rook);
 
-  //     if (m_anim_movement)
-  //       res->addPreAnimation(
-  //         shared_ptr<MovementAnimation>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-  //       );
-  //     else
-  //       res->addPreAnimation(
-  //         shared_ptr<Animation>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-  //       );
       res->addPreAnimation(
         shared_ptr<Animation>(
-          m_anim_movement
-          ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-          : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-        )
+          new MovementAnimation(rook.sprite(),
+            m_cinterface->converter()->toReal(rookDestination)))
       );
     }
-#endif
 
     return res;
 
