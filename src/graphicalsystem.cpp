@@ -45,8 +45,8 @@ GraphicalSystem::GraphicalSystem(ChessTable* view,
 
   m_animator = m_variant->createAnimator(this);
 
-  //settings.onChange(m_proxy, SLOT(settingsChanged()));
-  //settingsChanged();
+  settings.onChange( this, SLOT(settingsChanged()));
+  settingsChanged();
 
   if (startingPosition)
     warp(AbstractMove::Ptr(), startingPosition);
