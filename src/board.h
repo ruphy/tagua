@@ -58,11 +58,11 @@ private:
     bool dragging;
     bool dragStarted;
     bool droppedOut;
-    UserEntity::Action action;
+    InteractionType action;
 
     DragInfo(Point from, const QPoint& real, 
              const boost::shared_ptr<Sprite>& sprite,
-             UserEntity::Action action)
+             InteractionType action)
     : sprite(sprite)
     , from(from)
     , real(real)

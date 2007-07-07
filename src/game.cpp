@@ -664,7 +664,7 @@ void Game::add(MovePtr m, PositionPtr pos) {
     onCurrentIndexChanged(old_c);
   }
   /* we are playing the move that is already next in the mainline */
-  else if( (*vec)[at+1].position && (*vec)[at+1].position->equal(pos)) {
+  else if( (*vec)[at+1].position && (*vec)[at+1].position->equals(pos)) {
     current = current.next();
     onCurrentIndexChanged(old_c);
     /* no need to test the move */
@@ -676,7 +676,7 @@ void Game::add(MovePtr m, PositionPtr pos) {
     /* check if a variations with this move already exists. */
     for(Variations::iterator it = e->variations.begin(); it != e->variations.end(); ++it)
     if(it->second.size() > 0 && it->second[0].position
-        && it->second[0].position->equal(pos) ) {
+        && it->second[0].position->equals(pos) ) {
       current = current.next(it->first);
       onCurrentIndexChanged(old_c);
 
@@ -720,7 +720,7 @@ bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
     undo_pos = 0;
     undo_history.clear();
   }
-  bool res = e->position && e->position->equal(pos);
+  bool res = e->position && e->position->equals(pos);
   //*e = Entry(m, pos);
   e->move = m;
   e->position = pos;

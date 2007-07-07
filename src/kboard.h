@@ -55,17 +55,8 @@ class GraphicalAPI;
 #include "index.h"
 #include "option.h"
 #include "decoratedmove.h"
+#include "interactiontype.h"
 #include "kboard_fwd.h"
-
-
-/**
-  * @brief An enumerated type to specify the type of an interaction with a position
-  */
-enum InteractionType {
-  NoAction,
-  Moving,
-  Premoving
-};
 
 
 /**
@@ -261,9 +252,14 @@ public:
   virtual AbstractPosition::Ptr clone() const = 0;
 
   /**
+    * Make the position equal to the given one.
+    */
+  virtual void copyFrom(const AbstractPosition::Ptr&) = 0;
+
+  /**
     * Tests if two positions are equal.
     */
-  virtual bool equal(AbstractPosition::Ptr p) const = 0;
+  virtual bool equals(AbstractPosition::Ptr p) const = 0;
 
   /**
     * Return a move from an algebraic notation, or a null pointer.

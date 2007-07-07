@@ -13,6 +13,7 @@
 #include "game.h"
 #include "game_p.h"
 #include "global.h"
+#include "settings.h"
 #include "graphicalsystem.h"
 #include "movelist_table.h"
 #include "decoratedmove.h"
@@ -65,6 +66,9 @@ GraphicalGame::~GraphicalGame() {
 
 void GraphicalGame::settingsChanged() {
   //BROKEN
+  m_anim_sequence = settings.flag("animations", true)
+                      && settings("animations").flag("sequence", true);
+  m_anim_sequence_max = settings("animations")("sequence")[QString("max")] | 10;
   #if 0
   m_anim_sequence = m_graphical->getBoolSetting("animations", true)
                      && m_graphical->getBoolSetting("animations.sequence", true);

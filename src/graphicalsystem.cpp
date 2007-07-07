@@ -242,6 +242,8 @@ void GraphicalSystem::forward(const AbstractMove::Ptr& move,
     animation->setChainAbortions(false);
     m_board->enqueue(animation);
     m_board->setTags("highlighting", move->toUserMove().from, move->toUserMove().to);
+
+    m_pos->copyFrom(pos);
   }
   else
     warp(AbstractMove::Ptr(), pos);
@@ -264,6 +266,8 @@ void GraphicalSystem::back(const AbstractMove::Ptr& lastMove,
     shared_ptr<AnimationGroup> animation = m_animator->back(pos, move);
     animation->setChainAbortions(false);
     m_board->enqueue(animation);
+
+    m_pos->copyFrom(pos);
   }
   else
     warp(lastMove, pos);
@@ -285,10 +289,12 @@ void GraphicalSystem::warp(const AbstractMove::Ptr& lastMove,
                            const AbstractPosition::Ptr& pos) {
 
   AbstractPiece::Ptr sel1 = m_pos->get(m_board->selection);
+
   shared_ptr<AnimationGroup> animation = m_animator->warp(pos);
   animation->setChainAbortions(false);
-
   m_board->enqueue(animation);
+
+  m_pos->copyFrom(pos);
 
   if (lastMove)
     m_board->setTags("highlighting", lastMove->toUserMove().from, lastMove->toUserMove().to);

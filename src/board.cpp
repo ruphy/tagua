@@ -298,7 +298,7 @@ void Board::updateTags() {
 
 
 bool Board::doMove(const NormalUserMove& m) {
-  if (m_entity.lock()->oneClickMoves() || m_entity.lock()->validTurn(m.from) == Entity::Moving) {
+  if (m_entity.lock()->oneClickMoves() || m_entity.lock()->validTurn(m.from) == Moving) {
     AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
     if (mv) {
       m_entity.lock()->executeMove(mv);
@@ -367,12 +367,12 @@ void Board::onMousePress(const QPoint& pos, int button) {
 
           switch(m_entity.lock()->validTurn(selection)) {
 
-            case UserEntity::Moving:
+            case Moving:
               doMove(m);
               cancelSelection();
               break;
 
-            case UserEntity::Premoving:
+            case Premoving:
               if (m_entity.lock()->testPremove(m)) {
                 m_entity.lock()->addPremove(m);
                 setPremove(m);
@@ -433,12 +433,12 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
 
         switch(m_entity.lock()->validTurn(m_drag_info->from)) {
 
-          case UserEntity::Moving:
+          case Moving:
             if (doMove(m))
               moved = true;
             break;
 
-          case UserEntity::Premoving:
+          case Premoving:
             if (m_entity.lock()->testPremove(m)) {
               m_entity.lock()->addPremove(m);
               setPremove(m);
@@ -615,7 +615,7 @@ void Board::draggingOn(int pool, int index, const QPoint& point) {
   //BROKEN
   if (m_sprites.valid(to))
   switch(m_entity.lock()->validTurn(piece->color())) {
-    case UserEntity::Moving: {
+    case Moving: {
       DropUserMove m(piece, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv) {
@@ -625,7 +625,7 @@ void Board::draggingOn(int pool, int index, const QPoint& point) {
       break;
     }
 
-    case UserEntity::Premoving:
+    case Premoving:
       setTags("validmove", to);
       return;
 
@@ -637,7 +637,7 @@ void Board::draggingOn(int pool, int index, const QPoint& point) {
   clearTags("validmove");
 }
 
-bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
+bool Board::dropOn(int pool, int index, const QPoint& point) {
 
   Point to = converter()->toLogical(point);
   if (!m_sprites.valid(to))
@@ -649,7 +649,7 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
   //BROKEN
   switch(m_entity.lock()->validTurn(piece->color())) {
 
-    case UserEntity::Moving: {
+    case Moving: {
       DropUserMove m(piece, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv)  {
@@ -659,7 +659,7 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
       break;
     }
 
-    case UserEntity::Premoving: {
+    case Premoving: {
       DropUserMove m(piece, to);
       if (m_entity.lock()->testPremove(m)) {
         m_entity.lock()->addPremove(m);

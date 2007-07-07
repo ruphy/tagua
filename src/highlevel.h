@@ -281,7 +281,7 @@ public:
   }
 
   virtual InteractionType movable(const Point& p) const {
-    return static_cast<int>(m_pos.movable(p));
+    return m_pos.movable(p);
   }
 
   virtual int turn() const {
@@ -324,7 +324,16 @@ public:
     return AbstractPosition::Ptr(new WrappedPosition<Variant>(m_pos));
   }
 
-  virtual bool equal(AbstractPosition::Ptr _other) const {
+  virtual void copyFrom(const AbstractPosition::Ptr& _p) {
+    WrappedPosition* p = dynamic_cast<WrappedPosition*>(_p.get());
+
+    if (p)
+      m_pos = p->inner();
+    else
+      MISMATCH(*_p.get(),WrappedPosition);
+  }
+
+  virtual bool equals(AbstractPosition::Ptr _other) const {
     WrappedPosition<Variant>* other = dynamic_cast<WrappedPosition<Variant>*>(_other.get());
 
     if(other)
