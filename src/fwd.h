@@ -26,6 +26,7 @@ typedef boost::shared_ptr<class PromotionAnimation> PromotionAnimationPtr;
 typedef boost::shared_ptr<class CaptureAnimation> CaptureAnimationPtr;
 typedef boost::shared_ptr<class InstantAnimation> InstantAnimationPtr;
 typedef boost::shared_ptr<class DelayAnimation> DelayAnimationPtr;
+typedef boost::shared_ptr<class MovementAnimation> MovementAnimationPtr;
 typedef boost::shared_ptr<class FadeAnimation> FadeAnimationPtr;
 typedef boost::shared_ptr<class GrowAnimation> GrowAnimationPtr;
 typedef boost::shared_ptr<class ExplodeAnimation> ExplodeAnimationPtr;
