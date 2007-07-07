@@ -15,7 +15,7 @@
 #include "piecegroup.h"
 #include "pointconverter.h"
 #include "animation.h"
-#include "piecesprite.h"
+#include "sprite.h"
 
 using namespace boost;
 
@@ -59,7 +59,7 @@ void PieceGroup::onResize(int new_size, bool force_reload) {
   m_loader.setSize(m_square_size);
 }
 
-void PieceGroup::animatePiece(const shared_ptr<PieceSprite>& piece,
+void PieceGroup::animatePiece(const shared_ptr<Sprite>& piece,
                                     const Point& to, double speed) {
   enqueue(
     m_anim_movement
@@ -81,7 +81,7 @@ void PieceGroup::finalizeAnimation(AnimationGroup* group) {
 }
 
 void PieceGroup::adjustSprite(const Point& p, bool smooth) {
-  shared_ptr<PieceSprite> sprite = spriteAt(p);
+  shared_ptr<Sprite> sprite = spriteAt(p);
   if (sprite) {
     if (smooth) {
       animatePiece(sprite, p, 1.0);
@@ -93,7 +93,7 @@ void PieceGroup::adjustSprite(const Point& p, bool smooth) {
 }
 
 void PieceGroup::fadeIn(const Point& p) {
-  shared_ptr<PieceSprite> sprite = spriteAt(p);
+  shared_ptr<Sprite> sprite = spriteAt(p);
   if (sprite) {
     if(m_anim_fade)
       enqueue(shared_ptr<Animation>(new FadeAnimation(sprite, converter()->toReal(p), 0, 255)));
@@ -102,8 +102,8 @@ void PieceGroup::fadeIn(const Point& p) {
   }
 }
 
-shared_ptr<PieceSprite> PieceGroup::createSprite(const QPixmap& pix, const Point& pos) {
-  return shared_ptr<PieceSprite>(new PieceSprite(pix, piecesGroup(), converter()->toReal(pos)));
+SpritePtr PieceGroup::createSprite(const QPixmap& pix, const Point& pos) {
+  return SpritePtr(new Sprite(pix, piecesGroup(), converter()->toReal(pos)));
 }
 
 //END PieceGroup

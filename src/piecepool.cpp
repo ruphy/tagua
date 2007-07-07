@@ -60,20 +60,17 @@ void PiecePool::clear() {
   setFill(0);
 }
 
-void PiecePool::addPiece(Element p) {
-
-  setFill(m_fill+1);
-
-  Point i;
-  for(i = m_sprites.first(); i<=m_sprites.last(); i=m_sprites.next(i)) {
-    if(!m_sprites[i])
-      break;
-    if(m_sprites[i].piece()->less(p.piece()))
-      break;
+void PiecePool::insertSprite(int index, const NamedSprite& sprite) {
+  if(index < 0 || index > fill() ) {
+    std::cout << "invalid index " << index << " in PiecePool::insertPiece" << std::endl;
+    return;
   }
 
-  Element replacep = m_sprites[i];
-  m_sprites[i] = p;
+  setFill(m_fill+1);
+  Point i = m_sprites.nTh(index);
+
+  NamedSprite replacep = m_sprites[i];
+  m_sprites[i] = sprite;
   m_sprites[i].sprite()->show();
   m_sprites[i].sprite()->moveTo(converter()->toReal(i));
   fadeIn(i);
@@ -82,7 +79,7 @@ void PiecePool::addPiece(Element p) {
   for( i=m_sprites.next(i); i<=m_sprites.last(); i=m_sprites.next(i)) {
     if(!replacep)
       break;
-    Element tmp = replacep;
+    NamedSprite tmp = replacep;
     replacep = m_sprites[i];
     m_sprites[i] = tmp;
     animatePiece(m_sprites[i].sprite(), i, (1.0+1.0/speed)*0.4);
@@ -90,13 +87,38 @@ void PiecePool::addPiece(Element p) {
   }
 }
 
-Element PiecePool::takePiece(Point i) {
-  if( !m_sprites.valid(i) )
-    return Element();
+SpritePtr PiecePool::getSprite(int index) {
+  if(index < 0 || index >= fill() ) {
+    std::cout << "invalid index " << index << " in PiecePool::insertPiece" << std::endl;
+    return SpritePtr();
+  }
 
-  Element piece = m_sprites[i];
-  if(!piece)
-    return Element();
+  Point i = m_sprites.nTh(index);
+  return m_sprites[i].sprite();
+}
+
+SpritePtr PiecePool::takeSprite(int index) {
+  if(index < 0 || index >= fill() ) {
+    std::cout << "invalid index " << index << " in PiecePool::takeSprite" << std::endl;
+    return SpritePtr();
+  }
+
+  Point i = m_sprites.nTh(index);
+  NamedSprite piece = takeNamedSprite(i);
+
+  return piece.sprite();
+}
+
+NamedSprite PiecePool::takeNamedSprite(const Point& _i) {
+  Point i = _i;
+  if(i < m_sprites.first() || m_sprites.last() < i ) {
+    std::cout << "invalid index " << i << " in PiecePool::takeNamedSprite" << std::endl;
+    return NamedSprite();
+  }
+
+  NamedSprite piece = m_sprites[i];
+  if(!piece.sprite())
+    return NamedSprite();
 
   Point previ = i;
   int speed = 1;
@@ -111,24 +133,10 @@ Element PiecePool::takePiece(Point i) {
 
     previ = i;
   }
-  m_sprites[previ] = Element();
+  m_sprites[previ] = NamedSprite();
   setFill(m_fill-1);
 
   return piece;
-}
-
-Element PiecePool::takePiece(AbstractPiece::Ptr ref) {
-  if(m_dragged && m_dragged.piece()->equals(ref) ) {
-    Element retv = m_dragged;
-    m_dragged = Element();
-    return retv;
-  }
-
-  for(Point i = m_sprites.first(); i<=m_sprites.last(); i=m_sprites.next(i))
-  if(m_sprites[i].piece()->equals(ref) )
-    return takePiece(i);
-
-  return Element();
 }
 
 Canvas::Abstract* PiecePool::piecesGroup() {
@@ -140,19 +148,19 @@ void PiecePool::clearDrag(bool fadeOff) {
     return;
 
   if (fadeOff) {
-    boost::shared_ptr<PieceSprite> phantom =
-                boost::shared_ptr<PieceSprite>(m_dragged.sprite()->duplicate());
+    boost::shared_ptr<Sprite> phantom =
+                boost::shared_ptr<Sprite>(m_dragged.sprite()->duplicate());
     if(m_anim_fade)
       enqueue( boost::shared_ptr<Animation>(new FadeAnimation(phantom, phantom->pos(), 255, 0)) );
     else
       enqueue( boost::shared_ptr<Animation>(new CaptureAnimation(phantom)) );
   }
 
-  m_dragged.sprite()->setPixmap( m_loader( m_dragged.piece()->name() ) );
+  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
   m_dragged.sprite()->putInCanvas(piecesGroup());
-  addPiece(m_dragged);
+  //addPiece(m_dragged); //BROKEN
 
-  m_dragged = Element();
+  m_dragged = NamedSprite();
 }
 
 void PiecePool::flipAndMoveBy(QPoint p) {
@@ -177,11 +185,11 @@ void PiecePool::flipAndMoveBy(QPoint p) {
 void PiecePool::updateSprites() {
   // adjust piece positions
   for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
-    boost::shared_ptr<PieceSprite> p = m_sprites[i].sprite();
+    boost::shared_ptr<Sprite> p = m_sprites[i].sprite();
 
     if (p) {
       // drawing sprite
-      p->setPixmap( m_loader( m_sprites[i].piece()->name() ) );
+      p->setPixmap( m_loader( m_sprites[i].name() ) );
       adjustSprite(i);
     }
   }
@@ -202,15 +210,14 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
     return;
 
   /* did the board take this sprite? */
-  m_board->dropOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
+  //BROKEN m_board->dropOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
 
   bool fadeOff = true;
   if(!m_board->m_drop_sprite && m_dragged) {
-    m_dragged = Element( m_dragged.piece(),
-            boost::shared_ptr<PieceSprite>(m_dragged.sprite()->duplicate()) );
+    m_dragged = NamedSprite( m_dragged.name(), SpritePtr(m_dragged.sprite()->duplicate()) );
     fadeOff = false;
   }
-  m_board->m_drop_sprite = Element();
+  m_board->m_drop_sprite = NamedSprite();
   clearDrag(fadeOff);
 }
 
@@ -220,23 +227,21 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
 
   if(m_dragged) {
     std::cout << "Eh? We are already dragging?" << std::endl;
-    m_board->m_drop_sprite = Element();
+    m_board->m_drop_sprite = NamedSprite();
     clearDrag(); //never remove implicitly a piece from the pool
   }
 
   Point p = converter()->toLogical(pos);
-  Element got = takePiece(p);
+  NamedSprite got = takeNamedSprite(p);
   if(!got)
     return;
 
   got.sprite()->hide();
 
   /* recreate the sprite, as "got" may be being animated */
-  QPixmap px = m_board->m_loader( got.piece()->name() );
+  QPixmap px = m_board->m_loader( got.name() );
   QPoint at = pos + this->pos() - m_board->pos() - QPoint(px.width(), px.height())/2;
-  m_dragged = Element(  got.piece(),  boost::shared_ptr<PieceSprite>(
-                              new PieceSprite( px, m_board->piecesGroup(), at ) )
-                         );
+  m_dragged = NamedSprite(  got.name(),  SpritePtr(new Sprite(px, m_board->piecesGroup(), at)) );
   m_dragged.sprite()->raise();
   m_dragged.sprite()->show();
   m_board->m_drop_sprite = m_dragged;
@@ -247,6 +252,6 @@ void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
     m_dragged.sprite()->moveTo(pos + this->pos() - m_board->pos()
                 - QPoint(m_dragged.sprite()->pixmap().width(),
                          m_dragged.sprite()->pixmap().height() ) / 2 );
-    m_board->draggingOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
+    //BROKEN m_board->draggingOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
   }
 }

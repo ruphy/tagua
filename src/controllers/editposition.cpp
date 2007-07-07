@@ -9,10 +9,12 @@
 */
 
 #include "editposition.h"
-#include "graphicalinfo.h"
+#include "graphicalsystem.h"
 #include "entities/userentity.h"
 #include "piecefunction.h"
 
+#if 0
+//BROKEN
 using namespace boost;
 
 //BEGIN UndoHistory
@@ -350,4 +352,4 @@ void EditPositionController::setTurn(int turn) {
 AbstractPosition::Ptr EditPositionController::currentPosition() const {
   return m_graphical->position();
 }
-
+#endif

@@ -310,7 +310,8 @@ void ICSConnection::process(QString str) {
           p->setup();
         }
         if(m_move_list_pool_info) {
-          p->setPool(m_move_list_pool_info->m_pool);
+          //BROKEN
+          //p->setPool(m_move_list_pool_info->m_pool);
         }
 
         PGN pgn(m_move_list);

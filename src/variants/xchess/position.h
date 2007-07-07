@@ -23,6 +23,7 @@
 #include "common.h"
 #include "pathinfo.h"
 #include "option.h"
+#include "interactiontype.h"
 #include "variants/xchess/generator.h"
 #include "variants/xchess/piecetype.h"
 
@@ -33,8 +34,28 @@ class VerboseNotation;
   virtual type* _new argsdecl const { return new type args; }
 
 template <typename M, typename P, typename B>
+class Position;
+
+template <typename M, typename P, typename B>
+class PoolRef {
+  Position<M, P, B>* m_position;
+  int m_pool;
+public:
+
+  PoolRef(Position<M, P, B>* position, int pool)
+    : m_position(position)
+    , m_pool(pool) {
+  }
+  int size();
+  int insert(int idx, const P& p);
+  P get(int idx);
+  P take(int idx);
+};
+
+template <typename M, typename P, typename B>
 class Position {
 public:
+  friend class PoolRef<M, P, B>;
   typedef std::map<P, int> Pool;
 
 protected:
@@ -51,6 +72,7 @@ protected:
   bool m_castleBlackQueen : 1;
 
 public:
+  typedef PoolRef<M, P, B> PoolReference;
   typedef M Move;
   typedef P Piece;
   typedef B Board;
@@ -89,29 +111,25 @@ public:
   PathInfo path(const Point&, const Point&) const;
   const Point& enPassantSquare() const { return m_enPassantSquare; }
 
-  virtual Pool& pool() { return m_pool; }
-  virtual const Pool& pool() const { return m_pool; }
-  virtual void addToPool(const Piece&, int){ }
-  virtual void removeFromPool(const Piece&, int){ }
+  virtual PoolRef<M,P,B> pool(int index) { return PoolRef<M,P,B>(this, index); }
 
-  virtual const P* get(const Point& p) const {
-    return valid(p) && m_board[p] ? &m_board[p] : 0;
+  virtual P get(const Point& p) const {
+    return valid(p) ? m_board[p] : P();
   }
-  virtual P* get(const Point& p) {
-    return valid(p) && m_board[p] ? &m_board[p] : 0;
-  }
-  virtual const P* operator[](const Point& p) const { return get(p); }
-  inline void set(const Point& p, P* piece) {
+  virtual P operator[](const Point& p) const { return get(p); }
+  inline void set(const Point& p, const P& piece) {
     if(!valid(p))
       return;
-    if(piece)
-      m_board[p] = *piece;
-    else
-      m_board[p] = Piece();
+    m_board[p] = piece;
   }
   inline void removePiece(const Point& p) { set(p, 0); }
   inline void basicMovePiece(const M&);
 
+  inline InteractionType movable(const Point& p) const {
+    if(!valid(p) || !m_board[p])
+      return NoAction;
+    return m_board[p].color() == m_turn ? Moving : Premoving;
+  }
   inline Color turn() const { return m_turn; }
   inline Color previousTurn() const { return Piece::oppositeColor(m_turn); }
   inline const B& board() const { return m_board; }
@@ -176,12 +194,29 @@ public:
 //typedef Position<ChessMove, ChessPiece, PieceGrid> ChessPosition;
 std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 
-//BEGIN Implementation
 
 #include <iostream>
 #include "algebraicnotation.h"
 
-//FIXME: now the 8x8 dependent part is here
+template <typename M, typename P, typename B>
+int PoolRef<M, P, B>::size() {
+  return 0; //BROKEN
+}
+
+template <typename M, typename P, typename B>
+int PoolRef<M, P, B>::insert(int idx, const P& p) {
+  return 0; //BROKEN
+}
+
+template <typename M, typename P, typename B>
+P PoolRef<M, P, B>::get(int idx) {
+  return P(); //BROKEN
+}
+
+template <typename M, typename P, typename B>
+P PoolRef<M, P, B>::take(int idx) {
+  return P(); //BROKEN
+}
 
 template <typename M, typename P, typename B>
 Position<M, P, B>::Position(int width, int height)
@@ -594,7 +629,7 @@ void Position<M, P, B>::fromFEN(const QString& fen, bool& ok) {
       typename P::Type type = P::getType(symbol);
       if (type == INVALID_TYPE) return;
       Color color = symbol.isUpper() ? WHITE : BLACK;
-      set(cursor, new P(color, type));
+      set(cursor, P(color, type));
       cursor.x++;
     }
   }

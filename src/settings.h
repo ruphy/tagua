@@ -234,11 +234,21 @@ public:
     * template member function @a value.
     */
   SettingRef operator[](const QString& key);
-  
+
   /**
     * Just like the above function, but returns a constant reference.
     */
   SettingConstRef operator[](const QString& key) const;
+
+  /**
+    * Overload
+    */
+  SettingRef operator[](const char* key) { return operator[](QString(key)); }
+
+  /**
+    * Overload
+    */
+  SettingConstRef operator[](const char* key) const { return operator[](QString(key)); }
 
   /**
     * Access a setting group.
@@ -246,7 +256,14 @@ public:
     * @returns A Settings object representing the specified group.
     */
   class SettingGroup group(const QString& name) const;
-  
+
+  /**
+    * Shotcat to access a setting group, same as \a group
+    * @param name The name of the group.
+    * @returns A Settings object representing the specified group.
+    */
+  class SettingGroup operator()(const QString& name) const;
+
   /**
     * Access a setting map with keys of type @a T.
     * @param element The name of every map element.

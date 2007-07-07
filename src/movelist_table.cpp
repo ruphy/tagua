@@ -70,8 +70,9 @@ Table::Table(QWidget* w)
   m_scroll_area->resize(50,100);
   tw->addTab(m_scroll_area, KIcon("prefMoveList"), "&List");
 
-  m_movelist_textual = new Textual(tw);
-  tw->addTab(m_movelist_textual->widget(), KIcon("html"), "&Html");
+  m_movelist_textual = NULL;
+  //m_movelist_textual = new Textual(tw);
+  //tw->addTab(m_movelist_textual->widget(), KIcon("html"), "&Html");
 }
 
 void Table::settingsChanged() {

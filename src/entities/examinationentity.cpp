@@ -49,8 +49,7 @@ void ExaminationEntity::executeMove(boost::shared_ptr<AbstractMove>) { }
 void ExaminationEntity::addPremove(const NormalUserMove&) { }
 void ExaminationEntity::addPremove(const DropUserMove&) { }
 void ExaminationEntity::cancelPremove() { }
-Entity::Action ExaminationEntity::validTurn(const Point&) const { return NoAction; }
-Entity::Action ExaminationEntity::validTurn(int) const { return NoAction; }
+InteractionType ExaminationEntity::validTurn(const Point&) const { return NoAction; }
 bool ExaminationEntity::movable(const Point&) const { return false; }
 bool ExaminationEntity::jump(const Index&) { return true; }
 

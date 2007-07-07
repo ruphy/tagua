@@ -13,14 +13,12 @@
 
 #include <boost/shared_ptr.hpp>
 #include "animation.h"
-#include "element.h"
 #include "random.h"
-#include "wrappedanimator.h"
 
 class AnimationGroup;
 class PointConverter;
 class GraphicalPosition;
-
+#if 0
 /**
   * A variant-agnostic animator. 
   * Can be used as a base class for other specialized animators.
@@ -65,5 +63,7 @@ public:
   AnimationPtr forward(const Position&, const Move& move);
   AnimationPtr back(const Position&, const Move& move);
 };
+#endif
+
 
 #endif // ANIMATOR_H

@@ -1,15 +1,15 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 */
 
-#ifndef PIECESPRITE_H
-#define PIECESPRITE_H
+#ifndef SPRITE_H
+#define SPRITE_H
 
 #include "canvas/canvas.h"
 #include "random.h"
@@ -20,18 +20,18 @@ class QPoint;
 class QImage;
 class Animation;
 class FadeAnimation;
-class PieceSpriteExplosion;
+class SpriteExplosion;
 
 #undef DEBUG_PIECE
 
 /**
-  * @class PieceSprite <piecesprite.h>
+  * @class Sprite <sprite.h>
   * @brief The sprite of a piece.
   *
   * This class is a Canvas::Pixmap that enables a few nifty
   * effects and keeps some piece-related information.
   */
-class PieceSprite : public Canvas::Pixmap {
+class Sprite : public Canvas::Pixmap {
 private:
   /** the piece id (for convenience) */
   int m_id;
@@ -52,7 +52,7 @@ private:
   float m_explode_step;
 
   /** the explostion object */
-  PieceSpriteExplosion* m_explosion;
+  SpriteExplosion* m_explosion;
 
   /** rotation factor */
   float m_rotation;
@@ -61,7 +61,7 @@ private:
   float m_scale;
 
   /** creates a new explosion object */
-  PieceSpriteExplosion* createExplosion(Random& random);
+  SpriteExplosion* createExplosion(Random& random);
 
   /** painting implementation */
   virtual void paint(QPainter* p);
@@ -71,11 +71,11 @@ private:
 
 public:
   /** Constructor */
-  PieceSprite(const QPixmap& pix, Canvas::Abstract* canvas, const QPoint& location);
-  virtual ~PieceSprite();
+  Sprite(const QPixmap& pix, Canvas::Abstract* canvas, const QPoint& location);
+  virtual ~Sprite();
 
   /** duplicates the piece */
-  PieceSprite* duplicate() const;
+  Sprite* duplicate() const;
 
   void setThumb(const QImage& thumb);
   void removeThumb();
@@ -124,4 +124,4 @@ public:
 #endif
 };
 
-#endif // PIECESPRITE_H
+#endif // SPRITE_H

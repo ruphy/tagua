@@ -153,6 +153,8 @@ public:
   }
 };
 
+#if 0
+//BROKEN
 template <typename Variant>
 class DropAnimator : public SimpleAnimator<Variant> {
 protected:
@@ -199,5 +201,6 @@ template <typename Variant>
 typename DropAnimator<Variant>::AnimationPtr DropAnimator<Variant>::warp(const Position& final) {
 	this->m_position->updatePool(final.pool());
 }
+#endif
 
 #endif // CRAZYHOUSE_P_H

@@ -69,8 +69,9 @@ PositionInfo::PositionRow::PositionRow(VariantInfo* variant, const QString& str)
       continue;
     }
 
-    type = variant->type(c);
-    row[i] = variant->createPiece(color, type);
+    //BROKEN
+    //type = variant->type(c);
+    //row[i] = variant->createPiece(color, type);
   }
 }
 

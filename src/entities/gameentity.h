@@ -57,8 +57,7 @@ public:
   virtual AbstractPiece::Ptr moveHint(AbstractMove::Ptr move) const;
   virtual bool testPremove(const NormalUserMove&) const;
   virtual bool testPremove(const DropUserMove&) const;
-  virtual Entity::Action validTurn(const Point&) const;
-  virtual Entity::Action validTurn(int) const;
+  virtual InteractionType validTurn(const Point&) const;
   virtual bool movable(const Point&) const;
   virtual bool oneClickMoves() const;
 

@@ -104,20 +104,13 @@ bool GameEntity::testPremove(const DropUserMove&) const {
   return true; // TODO
 }
 
-Entity::Action GameEntity::validTurn(int turn) const {
-  if (!(*m_turn_test)(turn)) return NoAction;
-  return position()->turn() == turn ? Moving : Premoving;
-}
-
-Entity::Action GameEntity::validTurn(const Point& point) const {
-  AbstractPiece::Ptr piece = position()->get(point);
-  if (piece) return validTurn(piece->color());
-  else return NoAction;
+InteractionType GameEntity::validTurn(const Point& point) const {
+  return position()->movable(point);
 }
 
 bool GameEntity::movable(const Point& point) const {
   if (!m_enabled) return false;
-  Action action = validTurn(point);
+  InteractionType action = validTurn(point);
   return m_premove ? action != NoAction : action == Moving;
 }
 

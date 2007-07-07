@@ -15,7 +15,7 @@
 #include <qstring.h>
 #include "common.h"
 #include "entitytoken.h"
-#include "kboard_fwd.h"
+#include "fwd.h"
 
 class ChessTable;
 class UserEntity;
@@ -92,7 +92,7 @@ public:
     * @sa setPromotionType.
     */
   virtual int promotionType() const;
-  
+
   virtual void setDoPromotion(bool);
   virtual bool doPromotion() const;
 

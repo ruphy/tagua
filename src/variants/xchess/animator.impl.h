@@ -8,6 +8,7 @@
   (at your option) any later version.
 */
 
+#if 0
 #include <iostream>
 #include <memory>
 
@@ -220,6 +221,6 @@ shared_ptr<AnimationGroup> SimpleAnimator<Variant>::back(const Position& final,
   return warpingAnimation;
 }
 
-
+#endif
 
 

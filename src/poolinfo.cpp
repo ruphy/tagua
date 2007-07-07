@@ -23,6 +23,8 @@ PoolInfo::PoolInfo(const std::map<int, ICSGameData>& games, const QString& str)
 : m_valid(false)
 , m_pos_index(-1) {
 
+//BROKEN
+#if 0
   if (s_pattern.indexIn(str) != 0)
     return;
 
@@ -55,4 +57,5 @@ PoolInfo::PoolInfo(const std::map<int, ICSGameData>& games, const QString& str)
     m_added_piece = variant->createPiece(color, type);
   }
   m_valid = true;
+#endif
 }

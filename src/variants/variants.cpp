@@ -11,6 +11,8 @@
 #include "variants.h"
 #include "kboard.h"
 #include "variants/chess.h"
+
+#if 0
 #include "variants/crazyhouse.h"
 #include "variants/atomic.h"
 #include "variants/king4pawns.h"
@@ -21,6 +23,7 @@
 #include "variants/dummy.h"
 #include "variants/shogi.h"
 #include "variants/xiangqi.h"
+#endif
 
 bool Variant::s_initialized = false;
 

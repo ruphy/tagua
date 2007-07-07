@@ -77,6 +77,10 @@ SettingGroup Settings::group(const QString& name) const {
   return SettingGroup(node(), name);
 }
 
+SettingGroup Settings::operator()(const QString& name) const {
+  return group(name);
+}
+
 SettingArray Settings::array(const QString& name) const {
   return SettingArray(node(), name);
 }

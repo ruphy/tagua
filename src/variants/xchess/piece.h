@@ -50,8 +50,8 @@ public:
   template <typename Pos>
   Move::Type canMove(const Pos& position, Point from, Point to) const;
 
-  bool equals(const ChessPiece* other) const;
-  bool sameColor(const ChessPiece* other) const;
+  bool equals(const ChessPiece& other) const;
+  bool sameColor(const ChessPiece& other) const;
   int id() const;
   static Color colorFromId(int);
   static Type typeFromId(int);
@@ -155,7 +155,7 @@ ChessPiece::Move::Type ChessPiece::canMove(const Pos& position,
 
   case PAWN:
   {
-    const ChessPiece* destinationPiece = position[to];
+    ChessPiece destinationPiece = position[to];
     Point delta = to - from;
     bool enPassant = position.enPassantSquare() == to;
 

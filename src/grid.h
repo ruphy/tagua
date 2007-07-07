@@ -71,8 +71,11 @@ public:
     return board[p.x + p.y * sizeX];
   }
 
-  const Point first() const { return Point(0,0); }
-  const Point last() const { return Point(sizeX-1, sizeY-1); }
+  /** \return the nth point in the grid, that is not guaranteed to be valid */
+  Point nTh(int index) const { return Point(index%sizeX, index/sizeX); }
+
+  Point first() const { return Point(0,0); }
+  Point last() const { return Point(sizeX-1, sizeY-1); }
 
   Point next(const Point& p) const {
     if (p.x >= sizeX-1)

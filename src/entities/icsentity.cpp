@@ -42,8 +42,9 @@ void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
 
       if(position->testMove(icsMove)) {
         position->move(icsMove);
-        icsPos->copyPoolFrom(position);
-        if(!position->equal(icsPos))
+        //BROKEN
+        //icsPos->copyPoolFrom(position);
+        if(!position->equals(icsPos))
           std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
       }
       else
@@ -109,7 +110,8 @@ void ICSEntity::notifyPool(const PoolInfo& pi) {
 
   if(m_game->containsIndex(pi.m_pos_index)) {
     AbstractPosition::Ptr p = m_game->position(pi.m_pos_index);
-    p->setPool(pi.m_pool);
+    //BROKEN
+    //p->setPool(pi.m_pool);
     m_game->insert(m_game->move(pi.m_pos_index), p, pi.m_pos_index );
   }
 }

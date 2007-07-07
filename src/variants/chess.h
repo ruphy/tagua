@@ -21,6 +21,7 @@
 class ChessPiece;
 class ChessMove;
 class ChessAnimator;
+class VariantInfo;
 template <typename T> class PointerGrid;
 template <typename M, typename P, typename B> class Position;
 typedef Grid<ChessPiece> PieceGrid;
@@ -30,6 +31,7 @@ struct ChessVariant {
   typedef ChessPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
+  typedef Position::PoolReference Pool;
   typedef ChessAnimator Animator;
 
   static const bool m_simple_moves = false;

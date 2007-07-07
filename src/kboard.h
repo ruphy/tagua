@@ -11,6 +11,10 @@
 #ifndef LOWLEVEL_H
 #define LOWLEVEL_H
 
+
+class GraphicalAPI;
+
+
 /**
   * @file kboard.h
   * @brief Low level abstract classes used by the interface framework.
@@ -33,7 +37,7 @@
   * dynamic cast's and type checks in the calling code, when there's no
   * way to know the exact type of an argument at compile time.
   *
-  * The file @ref highlevel.h tries to address this problem doing part
+  * The file @ref kboard_wrapped.h tries to address this problem doing part
   * of the compiler's work. One exception is that type checking code
   * is inserted in a method wrapper, instead of the calling place, so
   * even calling a method of a noncasted instance would cause some
@@ -51,7 +55,9 @@
 #include "index.h"
 #include "option.h"
 #include "decoratedmove.h"
-#include "kboard_fwd.h"
+#include "interactiontype.h"
+#include "fwd.h"
+
 
 /**
   * @brief A superclass for all the piece classes.
@@ -68,49 +74,10 @@ public:
   virtual bool equals(AbstractPiece::Ptr other) const = 0;
 
   /**
-    * Piece compare. Return true if less than other.
-    */
-  virtual bool less(AbstractPiece::Ptr other) const = 0;
-
-  /**
-    * Return the piece type id. It should be a nonnegative
-    * number, or -1 if the type concept for this piece
-    * is not applicable.
-    */
-  virtual int type() const = 0;
-
-  /**
-    * Return the piece color id. It should be a nonnegative
-    * number, or -1 if the color concept for this piece
-    * is not applicable.
-    */
-  virtual int color() const = 0;
-
-  /**
-    * Return a unique id for the piece
-    * (type, color) pair. Used to store
-    * pixmaps.
-    */
-//  virtual int id() const = 0;
-
-  /**
     * Return a unique key for the piece.
     * Used to store pixmaps.
     */
   virtual QString name() const = 0;
-
-  /**
-    * Return the symbol used to identify the piece
-    * in a move.
-    */
-//    virtual QString typeSymbol() const = 0;
-
-  /**
-    * Return the name used to load the
-    * piece pixmap.
-    * OBSOLETE
-    */
-//   virtual QString name() const = 0;
 
   /**
     * Create a deep copy of the piece.
@@ -118,15 +85,6 @@ public:
   virtual AbstractPiece::Ptr clone() const = 0;
 };
 
-/**
-  * @brief A class to compare two pieces.
-  */
-class AbstractPieceComparer {
-public:
-  bool operator()(AbstractPiece::Ptr x, AbstractPiece::Ptr y) {
-    return x->less(y);
-  }
-};
 
 /**
   * @brief A superclass for all the move classes.
@@ -160,9 +118,49 @@ public:
     */
   virtual NormalUserMove toUserMove() const = 0;
 
+  /**
+    * Checks if the two moves are equal.
+    */
   virtual bool equals(Ptr other) const = 0;
 
 };
+
+
+/**
+  * @brief Superclass for pools
+  *
+  * A general interface for pools.
+  */
+class AbstractPool {
+public:
+  typedef boost::shared_ptr<AbstractPool> Ptr;
+  virtual ~AbstractPool() {}
+
+  /**
+    * \return the number of items in the pool
+    */
+  virtual int size() = 0;
+
+  /**
+    * Inserts a piece in the pool, preferably at the position \a pref_index.
+    * But the pool can be unpredictable and the piece can be placed at an arbitrary position.
+    * \return the position at which the item was placed.
+    */
+  virtual int insert(int pref_index, AbstractPiece::Ptr piece) = 0;
+
+  /**
+    * Gets the piece at the position \a index in the pool.
+    */
+  virtual AbstractPiece::Ptr get(int index) = 0;
+
+  /**
+    * Removes the piece at the position \a index in the pool.
+    * \return the removed piece.
+    */
+  virtual AbstractPiece::Ptr take(int index) = 0;
+};
+
+
 
 /**
   * @brief A superclass for all the position classes.
@@ -174,7 +172,6 @@ public:
 class AbstractPosition {
 public:
   typedef boost::shared_ptr<AbstractPosition> Ptr;
-  typedef std::map<AbstractPiece::Ptr, int, AbstractPieceComparer> AbstractPool;
   typedef boost::shared_ptr<AbstractPool> PoolPtr;
   virtual ~AbstractPosition() { }
 
@@ -195,31 +192,6 @@ public:
   virtual void setup() = 0;
 
   /**
-    * Retrieve the pieces in the piece pool.
-    */
-  virtual PoolPtr pool() const = 0;
-
-  /**
-    * Add a piece to the pool n times.
-    */
-  virtual void addToPool(AbstractPiece::Ptr piece, int n) = 0;
-
-  /**
-    * Remove a piece from the pool n times.
-    */
-  virtual void removeFromPool(AbstractPiece::Ptr piece, int n) = 0;
-
-  /**
-    * Copies the pool of a position.
-    */
-  virtual void copyPoolFrom(AbstractPosition::Ptr pos) = 0;
-
-  /**
-    * Sets the pool from a PoolPtr.
-    */
-  virtual void setPool(PoolPtr pool) = 0;
-
-  /**
     * Retrieve the piece on square @a p.
     * Return a null pointer if that square is empty.
     */
@@ -231,12 +203,29 @@ public:
   virtual void set(const Point& p, AbstractPiece::Ptr piece) = 0;
 
   /**
-    * Return an id corresponding to the player
+    * \return an interface to modify the pool of the board relative to \a player
+    */
+  virtual AbstractPool::Ptr pool(int player) = 0;
+
+  /**
+    * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
+    */
+  virtual InteractionType movable(const Point& p) const = 0;
+
+  /**
+    * \return an id corresponding to the player
     * who is in turn.
     */
   virtual int turn() const = 0;
+
+  /**
+    * Sets the player on move
+    */
   virtual void setTurn(int) = 0;
 
+  /**
+    * \return the player that just moved
+    */
   virtual int previousTurn() const = 0;
 
   /**
@@ -247,13 +236,13 @@ public:
   /**
     * Check move legality. Set move fields as needed.
     * Return whether the move is legal.
-    * This function should return immediately if @a m
+    * This function should return immediately if \a m
     * has already been tested.
     */
   virtual bool testMove(AbstractMove::Ptr m) const = 0;
 
   /**
-    * Execute move @a m. Assume that m is legal and tested.
+    * Execute move \a m. Assume that \a m is legal and tested.
     */
   virtual void move(AbstractMove::Ptr m) = 0;
 
@@ -263,9 +252,14 @@ public:
   virtual AbstractPosition::Ptr clone() const = 0;
 
   /**
+    * Make the position equal to the given one.
+    */
+  virtual void copyFrom(const AbstractPosition::Ptr&) = 0;
+
+  /**
     * Tests if two positions are equal.
     */
-  virtual bool equal(AbstractPosition::Ptr p) const = 0;
+  virtual bool equals(AbstractPosition::Ptr p) const = 0;
 
   /**
     * Return a move from an algebraic notation, or a null pointer.
@@ -329,7 +323,6 @@ class AnimationGroup;
 class AbstractAnimator {
 public:
   typedef boost::shared_ptr<AbstractAnimator> Ptr;
-  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
   virtual ~AbstractAnimator() { }
 
   /**
@@ -348,9 +341,6 @@ public:
   virtual AnimationPtr back(AbstractPosition::Ptr, AbstractMove::Ptr) = 0;
 };
 
-class PointConverter;
-class GraphicalPosition;
-namespace PixmapLoader{ class Info; }
 
 class VariantInfo {
 public:
@@ -359,19 +349,32 @@ public:
   virtual AbstractPosition::Ptr createCustomPosition(const OptList& l) = 0;
   virtual AbstractPosition::Ptr createPositionFromFEN(const QString& fen) = 0;
   virtual AbstractPosition::Ptr createChessboard(int turn, bool, bool, bool, bool, const Point&) = 0;
-  virtual AbstractPiece::Ptr createPiece(int color, int type) = 0;
   virtual void forallPieces(class PieceFunction&) = 0;
   virtual int moveListLayout() const = 0;
-  virtual AbstractAnimator::Ptr createAnimator(PointConverter* converter,
-                                           GraphicalPosition* position) = 0;
+  virtual AbstractAnimator::Ptr createAnimator(GraphicalAPI* graphical_api) = 0;
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove&) = 0;
   virtual AbstractMove::Ptr createDropMove(const DropUserMove&) = 0;
   virtual AbstractMove::Ptr getVerboseMove(int turn, const class VerboseNotation&) const = 0;
-  virtual int type(const QString& x) = 0;
-  virtual QString typeSymbol(int type) = 0;
+
+  /**
+    * \return if moves are done by just clicking
+    */
   virtual bool simpleMoves() = 0;
+
+  /**
+    * \return the name of the variant
+    */
   virtual QString name() const = 0;
+
+  /**
+    * \return the name of the theme proxy variant, ie the variant whose theme can be used
+    * for the current one (for instance crazyhouse can use chess themes).
+    */
   virtual QString themeProxy() const = 0;
+
+  /**
+    * \return the (subvariant) options that can be specified for position creation, such as board size, etc
+    */
   virtual OptList positionOptions() const = 0;
 };
 

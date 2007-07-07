@@ -12,6 +12,7 @@
 #include <kaboutdata.h>
 #include <kcmdlineargs.h>
 #include <kglobal.h>
+#include <klocale.h>
 #include <kstandarddirs.h>
 #include <kiconloader.h>
 #include <klocale.h>
@@ -20,8 +21,7 @@
 #include "crash.h"
 #include "common.h"
 
-static const char description[] =
-    I18N_NOOP("A generic board game interface");
+static const char description[] = "A generic board game interface";
 
 static const char version[] = "0.9.1";
 
@@ -33,21 +33,17 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-  KAboutData about("kboard", 0, ki18n("KBoard"), version, ki18n(description),
-                    KAboutData::License_GPL,
-                    ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge"),
-                    KLocalizedString(),
-                    "http://kboard.sourceforge.net",
-                    "p.capriotti@gmail.com");
+  KAboutData about( "kboard", 0, ki18n("KBoard"),
+    version, ki18n(description), KAboutData::License_GPL,
+    ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge") );
   about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
   about.addAuthor(ki18n("Maurizio Monge"), KLocalizedString(), "p.capriotti@gmail.com");
-  about.addCredit(ki18n("Jani Huhtanen"), ki18n("Gaussian blur code"));
-  about.addCredit(ki18n("Marcin Jakubowski"), ki18n("X11 taskbar flashing"));
-  about.addCredit(ki18n("Rici Lake"), ki18n("funclib lua library"));
-
-  KCmdLineArgs::init(argc, argv, &about);
+  about.addCredit(ki18n("Jani Huhtanen"), KLocalizedString(), I18N_NOOP("Gaussian blur code") );
+  about.addCredit(ki18n("Marcin Jakubowski"), KLocalizedString(), I18N_NOOP("X11 taskbar flashing") );
+  about.addCredit(ki18n("Rici Lake"), KLocalizedString(), I18N_NOOP("funclib lua library") );
 
   KCmdLineOptions options;
+  KCmdLineArgs::init(argc, argv, &about);
   KCmdLineArgs::addCmdLineOptions(options);
   KApplication app;
 

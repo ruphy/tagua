@@ -26,8 +26,8 @@ template <typename Pos>
 QString MoveSerializerBase<Pos>::SAN() const {
   Q_ASSERT(m_move.valid());
 
-  const Piece* piece = m_ref.get(m_move.from);
-  const Piece* captured = m_ref.get(m_move.to);
+  Piece piece = m_ref.get(m_move.from);
+  Piece captured = m_ref.get(m_move.to);
 
   if (!piece) {
     m_ref.dump();
@@ -36,7 +36,7 @@ QString MoveSerializerBase<Pos>::SAN() const {
 
   Q_ASSERT(piece);
   QString res;
-  if (piece->type() == PAWN) {
+  if (piece.type() == PAWN) {
     if (captured || m_move.type() == Move::EnPassantCapture)
       res = m_move.from.col() + "x";
 
@@ -51,12 +51,12 @@ QString MoveSerializerBase<Pos>::SAN() const {
       res = "O-O-O";
     }
     else {
-      res = Piece::typeSymbol(piece->type());
+      res = Piece::typeSymbol(piece.type());
 
       AlgebraicNotation temp;
       temp.from = m_move.from;
       temp.to = m_move.to;
-      temp.type = piece->type();
+      temp.type = piece.type();
       temp.castling = AlgebraicNotation::NoCastling;
       minimalNotation(temp, m_ref);
 

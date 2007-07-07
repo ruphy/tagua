@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef CHESSBOARDWIDGET_H_
-#define CHESSBOARDWIDGET_H_
+#ifndef BOARD_H
+#define BOARD_H
 
 #include <boost/shared_ptr.hpp>
 #include <boost/weak_ptr.hpp>
@@ -23,10 +23,10 @@
 #include "grid.h"
 #include "usermove.h"
 #include "piecegroup.h"
+#include "namedsprite.h"
 
 class DragInfo;
 class Animation;
-class BoardSprite;
 class UserEntity;
 
 class BoardTags;
@@ -38,43 +38,31 @@ typedef boost::shared_ptr<BoardTags> BoardTagsPtr;
   *
   * This class is a Canvas::Item that displaying a board filled with pieces.
   * You can set custom tags for each square.
-  * @sa Table, @sa PiecePool, @sa PieceSprite
+  * @sa Table, @sa PiecePool, @sa Sprite
   */
 class Board : public QObject, public PieceGroup {
   Q_OBJECT
 
 public:
-  friend class GraphicalInfo;
+  friend class GraphicalSystem;
   friend class PiecePool;
-
-  class BoardSprite {
-  public:
-    QString m_name;
-    boost::shared_ptr<PieceSprite> m_sprite;
-
-    BoardSprite() {}
-    BoardSprite(const QString& name, boost::shared_ptr<PieceSprite> s)
-      : m_name(name), m_sprite(s) {}
-    QString name(){ return m_name; }
-    boost::shared_ptr<PieceSprite> sprite(){ return m_sprite; }
-  };
-  typedef Grid<BoardSprite> PieceGrid;
+  typedef Grid<NamedSprite> PieceGrid;
 
 private:
   class DragInfo {
   public:
     static const int DRAG_THRESHOLD = 100; // pixels ^ 2
-    boost::shared_ptr<PieceSprite> sprite;
+    boost::shared_ptr<Sprite> sprite;
     Point from; // logical coordinates
     QPoint real; /// real starting point, used to honour drag threshold
     bool dragging;
     bool dragStarted;
     bool droppedOut;
-    UserEntity::Action action;
+    InteractionType action;
 
     DragInfo(Point from, const QPoint& real, 
-             const boost::shared_ptr<PieceSprite>& sprite,
-             UserEntity::Action action)
+             const boost::shared_ptr<Sprite>& sprite,
+             InteractionType action)
     : sprite(sprite)
     , from(from)
     , real(real)
@@ -95,10 +83,10 @@ private:
 
   /** used by a PiecePool to make available the piece that is being dropped
      on the board to the GraphicalInfo and the variant-specific animator */
-  Element m_drop_sprite;
+  NamedSprite m_drop_sprite;
 
   /** the visual move hint */
-  Element m_hinting;
+  NamedSprite m_hinting;
   Point m_hinting_pos;
 
   /** the canvas group that holds the pieces */
@@ -182,7 +170,7 @@ private:
   bool doMove(const NormalUserMove&);
 
   /** fetch the sprite */
-  boost::shared_ptr<PieceSprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
+  boost::shared_ptr<Sprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
 
 public:
   /** constructor, requires the canvas parent */
@@ -228,10 +216,10 @@ public:
 
 
   /** Notifies to the board that a certain piece is being dragged over the board */
-  void draggingOn(AbstractPiece::Ptr piece, const QPoint& p);
+  void draggingOn(int pool, int index, const QPoint& p);
 
   /** Executes a drop. This function id typically called by by a PiecePool */
-  bool dropOn(AbstractPiece::Ptr piece, const QPoint& point);
+  bool dropOn(int pool, int index, const QPoint& point);
 
   /** returns the size of the grid */
   virtual Point gridSize() const { return m_sprites.getSize(); }
@@ -267,4 +255,4 @@ signals:
   void error(ErrorCode code);
 };
 
-#endif // CHESSBOARDWIDGET_H_
+#endif //BOARD_H

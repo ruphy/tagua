@@ -22,7 +22,7 @@ public:
   bool  m_valid;
   int   m_game_num;
   Index m_pos_index;
-  AbstractPosition::PoolPtr m_pool;
+  AbstractPool::Ptr m_pool[2];
   AbstractPiece::Ptr m_added_piece;
   static QRegExp s_pattern;
 

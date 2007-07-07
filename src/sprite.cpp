@@ -15,7 +15,7 @@
 #include <boost/random/uniform_smallint.hpp>
 #include "common.h"
 #include "point.h"
-#include "piecesprite.h"
+#include "sprite.h"
 
 
 using namespace boost;
@@ -28,11 +28,11 @@ struct ExplosionFragment {
 };
 
 /* inherit instead of typedef to ease forward declaration :) */
-class PieceSpriteExplosion : public std::vector<ExplosionFragment> {
+class SpriteExplosion : public std::vector<ExplosionFragment> {
 
 };
 
-PieceSprite::PieceSprite(const QPixmap& pix, Canvas::Abstract* canvas,
+Sprite::Sprite(const QPixmap& pix, Canvas::Abstract* canvas,
                                               const QPoint& location)
 : Canvas::Pixmap(pix, canvas)
 , m_pixmap(pix)
@@ -53,16 +53,16 @@ PieceSprite::PieceSprite(const QPixmap& pix, Canvas::Abstract* canvas,
 #endif
 }
 
-PieceSprite::~PieceSprite() {
+Sprite::~Sprite() {
   if(m_explosion)
     delete m_explosion;
 }
 
-PieceSprite* PieceSprite::duplicate() const {
-  return new PieceSprite(pixmap(), canvas(), pos() );
+Sprite* Sprite::duplicate() const {
+  return new Sprite(pixmap(), canvas(), pos() );
 }
 
-void PieceSprite::setThumb(const QImage& thumb) {
+void Sprite::setThumb(const QImage& thumb) {
   std::cout << "setting thumb" << std::endl;
   QPixmap pix = m_pixmap;
   int width = pix.width() / 2;
@@ -79,37 +79,37 @@ void PieceSprite::setThumb(const QImage& thumb) {
   Canvas::Pixmap::setPixmap(pix);
 }
 
-void PieceSprite::removeThumb() {
+void Sprite::removeThumb() {
   Canvas::Pixmap::setPixmap(m_pixmap);
 }
 
-void PieceSprite::setPixmap(const QPixmap& pix) {
+void Sprite::setPixmap(const QPixmap& pix) {
   m_pixmap = pix;
   Canvas::Pixmap::setPixmap(pix);
 }
 
-void PieceSprite::setMovementAnimation(const shared_ptr<Animation>& animation) {
+void Sprite::setMovementAnimation(const shared_ptr<Animation>& animation) {
   m_movement_animation = animation;
 }
 
-weak_ptr<Animation> PieceSprite::movementAnimation() const {
+weak_ptr<Animation> Sprite::movementAnimation() const {
   return m_movement_animation;
 }
 /*
-void PieceSprite::setFadeAnimation(const shared_ptr<FadeAnimation>& animation) {
+void Sprite::setFadeAnimation(const shared_ptr<FadeAnimation>& animation) {
   m_fade_animation = animation;
 }
 
-weak_ptr<FadeAnimation> PieceSprite::fadeAnimation() const {
+weak_ptr<FadeAnimation> Sprite::fadeAnimation() const {
   return m_fade_animation;
 }*/
 
-void PieceSprite::setExplosionStep(float f) {
+void Sprite::setExplosionStep(float f) {
   m_explode_step = f;
   changed();
 }
 
-void PieceSprite::setupExplosion(Random& random) {
+void Sprite::setupExplosion(Random& random) {
   if (m_explosion) {
     delete m_explosion;
     m_explosion = NULL;
@@ -125,8 +125,8 @@ void PieceSprite::setupExplosion(Random& random) {
  * to random's will) the center -or- a point in the mid way from the center to the
  * previous or next split point.
  */
-PieceSpriteExplosion* PieceSprite::createExplosion(Random& random) {
-  PieceSpriteExplosion* retv = new PieceSpriteExplosion;
+SpriteExplosion* Sprite::createExplosion(Random& random) {
+  SpriteExplosion* retv = new SpriteExplosion;
   int w = pixmap().width();
   int h = pixmap().height();
   float splits[40];
@@ -240,17 +240,17 @@ PieceSpriteExplosion* PieceSprite::createExplosion(Random& random) {
   return retv;
 }
 
-void PieceSprite::setRotation(float f) {
+void Sprite::setRotation(float f) {
   m_rotation = f;
   changed();
 }
 
-void PieceSprite::setScale(float f) {
+void Sprite::setScale(float f) {
   m_scale = f;
   changed();
 }
 
-void PieceSprite::paint(QPainter* p) {
+void Sprite::paint(QPainter* p) {
   QMatrix savem;
 
   /* if scale/rotate change the painter matrix */
@@ -286,7 +286,7 @@ void PieceSprite::paint(QPainter* p) {
     p->setMatrix(savem);
 }
 
-QRect PieceSprite::rect() const {
+QRect Sprite::rect() const {
   QRect retv;
 
   /* if exploding, set the rect to the bounding rect of the pieces */

@@ -287,9 +287,12 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
 
 
 void MainWindow::editPosition() {
+//BROKEN
+#if 0
   shared_ptr<Controller> controller(new EditPositionController(table(), ChessVariant::info()));
   m_main->setTabText(m_main->currentIndex(), "Editing chess position");
   ui().setController(controller);
+#endif
 }
 
 void MainWindow::setupGame(const GameInfo* gameInfo, const PositionInfo& style12) {

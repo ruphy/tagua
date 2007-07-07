@@ -17,7 +17,7 @@
 #include "common.h"
 #include "animation.h"
 #include "point.h"
-#include "piecesprite.h"
+#include "sprite.h"
 #include "movement.h"
 
 using namespace std;
@@ -27,14 +27,14 @@ using namespace boost;
 
 //BEGIN ConcreteAnimation
 
-ConcreteAnimation::ConcreteAnimation(const Sprite& piece)
+ConcreteAnimation::ConcreteAnimation(const SpritePtr& piece)
 : m_piece(piece) { }
 
 //END ConcreteAnimation
 
 //BEGIN MovementAnimation
 
-MovementAnimation::MovementAnimation(const Sprite& piece,
+MovementAnimation::MovementAnimation(const SpritePtr& piece,
                             const QPoint& destination, double speed)
 : ConcreteAnimation(piece)
 , m_source(piece)
@@ -56,11 +56,11 @@ MovementAnimation::~MovementAnimation() {
 //  m_piece->setMovementAnimation(0);
 }
 
-void MovementAnimation::setTarget(const Sprite& target) {
+void MovementAnimation::setTarget(const SpritePtr& target) {
   m_target = target;
 }
 
-void MovementAnimation::setSource(const Sprite& source) {
+void MovementAnimation::setSource(const SpritePtr& source) {
   m_source = source;
 }
 
@@ -162,7 +162,7 @@ void MovementAnimation::abort() {
 
 //BEGIN KnightMovementAnimation
 
-KnightMovementAnimation::KnightMovementAnimation(const Sprite& piece, const QPoint& destination,
+KnightMovementAnimation::KnightMovementAnimation(const SpritePtr& piece, const QPoint& destination,
                                                                        bool rotate, double speed)
 : MovementAnimation(piece, destination, speed)
 , m_rotate(rotate) {
@@ -177,7 +177,7 @@ KnightMovementAnimation::createMovement(const QPoint& from, const QPoint& to) co
 
 //BEGIN OneShotAnimation
 
-OneShotAnimation::OneShotAnimation(const Sprite& piece)
+OneShotAnimation::OneShotAnimation(const SpritePtr& piece)
 : ConcreteAnimation(piece) { }
 
 Animation::State OneShotAnimation::animationAdvance(int) {
@@ -189,7 +189,7 @@ Animation::State OneShotAnimation::animationAdvance(int) {
 
 //BEGIN InstantAnimation
 
-InstantAnimation::InstantAnimation(const Sprite& piece, const QPoint& destination)
+InstantAnimation::InstantAnimation(const SpritePtr& piece, const QPoint& destination)
 : OneShotAnimation(piece)
 , m_destination(destination) { }
 
@@ -206,7 +206,7 @@ void InstantAnimation::shoot() {
 
 //BEGIN CaptureAnimation
 
-CaptureAnimation::CaptureAnimation(const Sprite& piece)
+CaptureAnimation::CaptureAnimation(const SpritePtr& piece)
 : OneShotAnimation(piece) { }
 
 void CaptureAnimation::shoot() {
@@ -223,11 +223,11 @@ void CaptureAnimation::shoot() {
 
 //BEGIN DropAnimation
 
-DropAnimation::DropAnimation(const Sprite& piece)
+DropAnimation::DropAnimation(const SpritePtr& piece)
 : OneShotAnimation(piece)
 , m_valid_position(false) { }
 
-DropAnimation::DropAnimation(const Sprite& piece, const QPoint& pos)
+DropAnimation::DropAnimation(const SpritePtr& piece, const QPoint& pos)
 : OneShotAnimation(piece)
 , m_valid_position(true)
 , m_position(pos) { }
@@ -242,8 +242,8 @@ void DropAnimation::shoot() {
 
 //BEGIN PromotionAnimation
 
-PromotionAnimation::PromotionAnimation(const Sprite& piece,
-                                       const Sprite& promoted)
+PromotionAnimation::PromotionAnimation(const SpritePtr& piece,
+                                       const SpritePtr& promoted)
 : OneShotAnimation(piece)
 , m_promoted(promoted) { }
 
@@ -256,8 +256,8 @@ void PromotionAnimation::shoot() {
 
 //BEGIN CrossFadingAnimation
 
-CrossFadingAnimation::CrossFadingAnimation(const Sprite& piece,
-                                           const Sprite& promoted)
+CrossFadingAnimation::CrossFadingAnimation(const SpritePtr& piece,
+                                           const SpritePtr& promoted)
 : m_piece(piece) {
   addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(piece, piece->pos(), 255, 0)));
   addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(promoted, promoted->pos(), 0, 255)));
@@ -313,7 +313,7 @@ void DelayAnimation::abort() {
 
 //BEGIN FadeAnimation
 
-FadeAnimation::FadeAnimation(const Sprite& sprite, const QPoint& to,
+FadeAnimation::FadeAnimation(const SpritePtr& sprite, const QPoint& to,
                              int fadeFrom, int fadeTo)
 : ConcreteAnimation(sprite)
 , m_fadeFrom(fadeFrom)
@@ -371,7 +371,7 @@ void FadeAnimation::abort() {
 
 //BEGIN GrowAnimation
 
-GrowAnimation::GrowAnimation(const Sprite& sprite)
+GrowAnimation::GrowAnimation(const SpritePtr& sprite)
 : ConcreteAnimation(sprite)
 , m_state(Inactive) { }
 
@@ -423,7 +423,7 @@ void GrowAnimation::abort() {
 
 //BEGIN ExplodeAnimation
 
-ExplodeAnimation::ExplodeAnimation(const Sprite& sprite, Random& random)
+ExplodeAnimation::ExplodeAnimation(const SpritePtr& sprite, Random& random)
 : ConcreteAnimation(sprite)
 , m_state(Inactive)
 , m_random(random) { }
@@ -592,22 +592,22 @@ void AnimationGroup::stop() {
 
 //BEGIN TeleportAnimation
 
-TeleportAnimation::TeleportAnimation(const shared_ptr<PieceSprite>& sprite,
+TeleportAnimation::TeleportAnimation(const SpritePtr& sprite,
                                      const QPoint& from, const QPoint& to)
   : AnimationGroup(1.0) {
 
-  shared_ptr<PieceSprite> copy(sprite->duplicate());
+  SpritePtr copy(sprite->duplicate());
   copy->show();
 
   addPreAnimation(AnimationPtr(new FadeAnimation(copy, from, 255, 0)));
   addPreAnimation(AnimationPtr(new FadeAnimation(sprite, to, 0, 255)));
 }
 
-TeleportAnimation::TeleportAnimation(const shared_ptr<PieceSprite>& sprite,
+TeleportAnimation::TeleportAnimation(const SpritePtr& sprite,
                                      const QPoint& to)
   : AnimationGroup(1.0) {
 
-  shared_ptr<PieceSprite> copy(sprite->duplicate());
+  SpritePtr copy(sprite->duplicate());
   copy->show();
 
   addPreAnimation(AnimationPtr(new FadeAnimation(copy, copy->pos(), 255, 0)));

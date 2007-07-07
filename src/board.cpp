@@ -15,9 +15,8 @@
 
 #include "global.h"
 #include "board.h"
-#include "piecesprite.h"
+#include "sprite.h"
 #include "animation.h"
-#include "boardsprite.h"
 #include "pointconverter.h"
 #include "entities/userentity.h"
 #include "mainanimation.h"
@@ -278,7 +277,7 @@ void Board::cancelPremove() {
 void Board::updateSprites() {
   // adjust piece positions
   for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
-    boost::shared_ptr<PieceSprite> p = m_sprites[i].sprite();
+    boost::shared_ptr<Sprite> p = m_sprites[i].sprite();
 
     if (p) {
       // drawing sprite
@@ -299,7 +298,7 @@ void Board::updateTags() {
 
 
 bool Board::doMove(const NormalUserMove& m) {
-  if (m_entity.lock()->oneClickMoves() || m_entity.lock()->validTurn(m.from) == Entity::Moving) {
+  if (m_entity.lock()->oneClickMoves() || m_entity.lock()->validTurn(m.from) == Moving) {
     AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
     if (mv) {
       m_entity.lock()->executeMove(mv);
@@ -350,7 +349,7 @@ void Board::onMousePress(const QPoint& pos, int button) {
       doMove(m);
     }
     else {
-      shared_ptr<PieceSprite> piece = m_sprites[point].sprite();
+      shared_ptr<Sprite> piece = m_sprites[point].sprite();
 
       if (piece && m_entity.lock()->movable(point)) {
           cancelSelection();
@@ -368,12 +367,12 @@ void Board::onMousePress(const QPoint& pos, int button) {
 
           switch(m_entity.lock()->validTurn(selection)) {
 
-            case UserEntity::Moving:
+            case Moving:
               doMove(m);
               cancelSelection();
               break;
 
-            case UserEntity::Premoving:
+            case Premoving:
               if (m_entity.lock()->testPremove(m)) {
                 m_entity.lock()->addPremove(m);
                 setPremove(m);
@@ -434,12 +433,12 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
 
         switch(m_entity.lock()->validTurn(m_drag_info->from)) {
 
-          case UserEntity::Moving:
+          case Moving:
             if (doMove(m))
               moved = true;
             break;
 
-          case UserEntity::Premoving:
+          case Premoving:
             if (m_entity.lock()->testPremove(m)) {
               m_entity.lock()->addPremove(m);
               setPremove(m);
@@ -451,7 +450,7 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
         }
       }
 
-      shared_ptr<PieceSprite> s = m_sprites[m_drag_info->from].sprite();
+      shared_ptr<Sprite> s = m_sprites[m_drag_info->from].sprite();
       if (!moved && s && s->pos() != converter()->toReal(m_drag_info->from)) {
         Q_ASSERT(s);
         QPoint real = converter()->toReal(m_drag_info->from);
@@ -489,8 +488,8 @@ void Board::onMouseMove(const QPoint& pos, int /*button*/) {
     NormalUserMove move(m_drag_info->from,  point);
     bool valid = m_sprites.valid(point);
     if (valid) {
-      UserEntity::Action action = m_entity.lock()->validTurn(m_drag_info->from);
-      if (action == UserEntity::Moving)
+      InteractionType action = m_entity.lock()->validTurn(m_drag_info->from);
+      if (action == Moving)
         valid = m_entity.lock()->testMove(move);
     }
 
@@ -549,12 +548,12 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
     }
 
     m_hinting_pos = Point::invalid();
-    m_hinting = Element();
+    m_hinting = NamedSprite();
   }
   else {
     if(pt == m_hinting_pos) {
-      if(!piece->equals(m_hinting.piece())) {
-        m_hinting = Element(piece, m_hinting.sprite());
+      if(!(piece->name() == m_hinting.name())) {
+        m_hinting = NamedSprite(piece->name(), m_hinting.sprite());
         m_hinting.sprite()->setPixmap(m_loader(piece->name()));
       }
     }
@@ -568,13 +567,13 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
       }
 
       QPixmap pix = m_loader(piece->name());
-      boost::shared_ptr<PieceSprite> sprite = createSprite(pix, pt);
+      boost::shared_ptr<Sprite> sprite = createSprite(pix, pt);
       sprite->setOpacity(160);
       sprite->raise();
       sprite->show();
 
       m_hinting_pos = pt;
-      m_hinting = Element(piece, sprite);
+      m_hinting = NamedSprite(piece->name(), sprite);
 
       /*if(m_anim_fade)
         enqueue( boost::shared_ptr<Animation>(new FadeAnimation(m_hinting.sprite(),
@@ -609,12 +608,14 @@ void Board::flip(bool flipped)
   }
 }
 
-void Board::draggingOn(AbstractPiece::Ptr piece, const QPoint& point) {
+void Board::draggingOn(int pool, int index, const QPoint& point) {
   Point to = converter()->toLogical(point);
 
+  #if 0
+  //BROKEN
   if (m_sprites.valid(to))
   switch(m_entity.lock()->validTurn(piece->color())) {
-    case UserEntity::Moving: {
+    case Moving: {
       DropUserMove m(piece, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv) {
@@ -624,18 +625,19 @@ void Board::draggingOn(AbstractPiece::Ptr piece, const QPoint& point) {
       break;
     }
 
-    case UserEntity::Premoving:
+    case Premoving:
       setTags("validmove", to);
       return;
 
     default:
       break;
   }
+  #endif
 
   clearTags("validmove");
 }
 
-bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
+bool Board::dropOn(int pool, int index, const QPoint& point) {
 
   Point to = converter()->toLogical(point);
   if (!m_sprites.valid(to))
@@ -643,9 +645,11 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
 
   clearTags("validmove");
 
+  #if 0
+  //BROKEN
   switch(m_entity.lock()->validTurn(piece->color())) {
 
-    case UserEntity::Moving: {
+    case Moving: {
       DropUserMove m(piece, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv)  {
@@ -655,7 +659,7 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
       break;
     }
 
-    case UserEntity::Premoving: {
+    case Premoving: {
       DropUserMove m(piece, to);
       if (m_entity.lock()->testPremove(m)) {
         m_entity.lock()->addPremove(m);
@@ -667,6 +671,7 @@ bool Board::dropOn(AbstractPiece::Ptr piece, const QPoint& point) {
     default:
       break;
   }
+  #endif
   std::cout << "invalid move" << std::endl;
   emit error(InvalidMove);
   return false;
