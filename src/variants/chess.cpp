@@ -111,7 +111,7 @@ public:
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
         NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false, false);
 
-        if(ma)
+        if (ma)
           ma->setTarget(new_sprite.sprite());
 
         res->addPostAnimation( FadeAnimationPtr(new FadeAnimation(old_sprite.sprite(), real, 255, 0)) );
@@ -148,150 +148,81 @@ public:
     }
 
     return res;
-
-    #if (1-1) //OLD SHIT
-    Element piece = m_position->getElement(move.from);
-
-      Q_ASSERT(m_position->consistent());
-
-      AnimationPtr res(new AnimationGroup);
-
-      Element piece = m_position->getElement(move.from);
-      Q_ASSERT(piece);
-      Element captured = m_position->getElement(move.to);
-
-      // update graphical position
-      m_position->setElement(move.to, piece);
-      Q_ASSERT(m_position->consistent());
-
-      m_position->removeElement(move.from);
-      Q_ASSERT(m_position->consistent());
-
-
-      // add main animation
-      // the animation must be direct when the piece is already
-      // near the destination square
-      shared_ptr<Animation> mainAnimation;
-      QPoint hotSpot = piece.sprite()->pos();
-      hotSpot += QPoint(piece.sprite()->pixmap().width() / 2, piece.sprite()->pixmap().height() / 2);
-
-      if(!m_anim_movement)
-        mainAnimation = shared_ptr<InstantAnimation>(
-          new InstantAnimation(piece.sprite(), m_converter->toReal(move.to)));
-      else if (m_converter->toLogical(hotSpot) == move.to)
-        mainAnimation = shared_ptr<MovementAnimation>(
-          new MovementAnimation(piece.sprite(), m_converter->toReal(move.to)));
-      else
-        mainAnimation = createMovementAnimation(piece, m_converter->toReal(move.to));
-      res->addPreAnimation(mainAnimation);
-
-      res->addPostAnimation(createCapture(move.to, piece, captured, final));
-
-      if (move.type() == ChessMove::EnPassantCapture) {
-        Point phantom(move.to.x, move.from.y);
-        Element capturedPawn = m_position->getElement(phantom);
-
-        if (capturedPawn) {
-          if(m_anim_fade)
-            res->addPostAnimation(
-              shared_ptr<Animation>(
-                  new FadeAnimation(capturedPawn.sprite(),
-                                    m_converter->toReal(phantom),
-                                    255,0)));
-          else
-            res->addPostAnimation(
-              shared_ptr<Animation>(
-                  new CaptureAnimation(capturedPawn.sprite() )));
-          m_position->removeElement(phantom);
-        }
-      }
-
-      else if (move.type() == ChessMove::Promotion) {
-        AbstractPiece::Ptr promoted = final->get(move.to);
-
-        if (promoted) {
-          QPoint real = m_converter->toReal(move.to);
-          boost::shared_ptr<PieceSprite> pe_sprite = m_position->setPiece(move.to, promoted);
-
-          if(MovementAnimation* mva = dynamic_cast<MovementAnimation*>(mainAnimation.get()))
-            mva->setTarget(pe_sprite);
-
-          if(m_anim_fade) {
-            res->addPostAnimation(
-              shared_ptr<Animation>(new FadeAnimation(piece.sprite(), real, 255, 0))
-            );
-            res->addPostAnimation(
-              shared_ptr<Animation>(new FadeAnimation(pe_sprite, real, 0, 255))
-            );
-          }
-          else {
-            res->addPreAnimation(shared_ptr<Animation>(new CaptureAnimation(piece.sprite())));
-            res->addPreAnimation(shared_ptr<Animation>(new DropAnimation(pe_sprite)));
-          }
-        }
-      }
-
-      else if (move.type() == ChessMove::KingSideCastling) {
-        Point rookSquare = move.to + Point(1,0);
-        Point rookDestination = move.from + Point(1,0);
-
-        Element rook = m_position->getElement(rookSquare);
-        Q_ASSERT(rook);
-        m_position->setElement(rookDestination, rook);
-        m_position->removeElement(rookSquare);
-
-        res->addPreAnimation(
-          shared_ptr<Animation>(
-            m_anim_movement
-            ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-            : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-          )
-        );
-
-      }
-
-      else if (move.type() == ChessMove::QueenSideCastling) {
-        Point rookSquare = move.to - Point(2,0);
-        Point rookDestination = move.from - Point(1,0);
-
-        Element rook = m_position->getElement(rookSquare);
-        Q_ASSERT(rook);
-        m_position->setElement(rookDestination, rook);
-        m_position->removeElement(rookSquare);
-
-    //     if (m_anim_movement)
-    //       res->addPreAnimation(
-    //         shared_ptr<MovementAnimation>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-    //       );
-    //     else
-    //       res->addPreAnimation(
-    //         shared_ptr<Animation>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-    //       );
-        res->addPreAnimation(
-          shared_ptr<Animation>(
-            m_anim_movement
-            ? static_cast<Animation*>(new MovementAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-            : static_cast<Animation*>(new InstantAnimation(rook.sprite(), m_converter->toReal(rookDestination)))
-          )
-        );
-      }
-
-      Q_ASSERT(m_position->consistent());
-
-      finalizeForwardAnimation(res, final, move);
-
-      AnimationPtr warpingAnimation(new AnimationGroup);
-      warpingAnimation->addPreAnimation(res);
-      warpingAnimation->addPostAnimation(warp(final));
-
-      return warpingAnimation;
-    //BROKEN
-    #endif
   }
 
-  boost::shared_ptr<AnimationGroup> back(const ChessPosition& final, const ChessMove& /*move*/) {
-    //BROKEN
-    return warp(final);
+  boost::shared_ptr<AnimationGroup> back(const ChessPosition& final, const ChessMove& move) {
+    AnimationGroupPtr res(new AnimationGroup);
+    MovementAnimationPtr ma;
+
+    NamedSprite piece = m_cinterface->takeSprite(move.to);
+    NamedSprite captured;
+    if (ChessPiece captured_piece = final.get(move.to)) {
+      captured = m_cinterface->setPiece(move.to, captured_piece, false, false);
+      res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(captured.sprite(),
+                                                m_cinterface->converter()->toReal(move.to), 0, 255)));
+    }
+
+    if (!piece) {
+      piece = m_cinterface->setPiece(move.to, final.get(move.from), false, false);
+      res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(piece.sprite(),
+                                              m_cinterface->converter()->toReal(move.to), 0, 255)));
+    }
+
+    m_cinterface->setSprite(move.from, piece);
+
+
+    if (move.type() == ChessMove::EnPassantCapture) {
+      Point phantom(move.to.x, move.from.y);
+
+      if (ChessPiece pawn_piece = final.get(phantom)) {
+        NamedSprite capturedPawn = m_cinterface->setPiece(phantom, pawn_piece, false, false);
+        res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(capturedPawn.sprite(),
+                                                    m_cinterface->converter()->toReal(phantom),
+                                                    0, 255)));
+      }
+    }
+    else if (move.type() == ChessMove::Promotion) {
+      ChessPiece pawn_piece = final.get(move.from);
+      if (pawn_piece) {
+        NamedSprite pawn = m_cinterface->setPiece(move.from, pawn_piece, false, false);
+        res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(pawn.sprite(),
+                                 m_cinterface->converter()->toReal(move.to), 0, 255)));
+        res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(piece.sprite(),
+                                 m_cinterface->converter()->toReal(move.to), 255, 0)));
+
+        piece = pawn;
+      }
+    }
+    else if (move.type() == ChessMove::KingSideCastling) {
+      Point rookSquare = move.to + Point(1,0);
+      Point rookDestination = move.from + Point(1,0);
+
+      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+      m_cinterface->setSprite(rookDestination, rook);
+
+      res->addPreAnimation(
+        shared_ptr<Animation>(
+          new MovementAnimation(rook.sprite(),
+            m_cinterface->converter()->toReal(rookDestination)))
+      );
+    }
+    else if (move.type() == ChessMove::QueenSideCastling) {
+      Point rookSquare = move.to + Point(-2,0);
+      Point rookDestination = move.from + Point(-1,0);
+
+      NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+      m_cinterface->setSprite(rookDestination, rook);
+
+      res->addPreAnimation(
+        shared_ptr<Animation>(
+          new MovementAnimation(rook.sprite(),
+            m_cinterface->converter()->toReal(rookDestination)))
+      );
+    }
+
+    res->addPreAnimation(ma = MovementAnimationPtr(new MovementAnimation(piece.sprite(),
+                                              m_cinterface->converter()->toReal(move.from))));
+    return res;
   }
 };
 
