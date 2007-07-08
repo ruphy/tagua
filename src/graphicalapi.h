@@ -67,19 +67,19 @@ public:
   /**
     * \return the sprite at the position \a index in the graphical pool.
     */
-  virtual SpritePtr getPoolSprite(int pool, int index) = 0;
+  virtual NamedSprite getPoolSprite(int pool, int index) = 0;
 
   /**
     * Removes the sprite at the position \a index in the graphical pool.
     * \return the removed sprite.
     */
-  virtual SpritePtr takePoolSprite(int pool, int index) = 0;
+  virtual NamedSprite takePoolSprite(int pool, int index) = 0;
 
   /**
     * Inserts a sprite at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece) = 0;
+  virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece) = 0;
 };
 
 #endif //GRAPHICALAPI_H

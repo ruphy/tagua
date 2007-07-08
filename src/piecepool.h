@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -36,6 +36,8 @@ private:
 
   /** the piece that is being dragged, if any */
   NamedSprite m_dragged;
+
+  /** the index of the piece being dragged */
   int m_dragged_index;
 
   /** the number of pieces on the pool */
@@ -85,10 +87,10 @@ public:
   void insertSprite(int index, const NamedSprite& sprite);
 
   /** \return the piece at the given index. */
-  SpritePtr getSprite(int index);
+  NamedSprite getSprite(int index);
 
   /** removes the piece at the given index from the pool and returns it. */
-  SpritePtr takeSprite(int index);
+  NamedSprite takeSprite(int index);
 
 
 

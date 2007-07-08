@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -49,7 +49,10 @@ inline void TRAP() {
 }
 
 #ifndef M_PI
-  #define M_PI 3.14159
+  #define M_PI 3.1415926
 #endif
+
+#define ERROR(x) (std::cout << "Error: " << x << std::endl \
+      << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ <<std::endl)
 
 #endif // COMMON_H

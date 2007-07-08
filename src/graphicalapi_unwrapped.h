@@ -64,16 +64,16 @@ public:
     return m_graphical_api->poolSize(pool);
   }
 
-  virtual SpritePtr insertPoolSprite(int pool, int index, const typename Variant::Piece& piece) {
+  virtual NamedSprite insertPoolPiece(int pool, int index, const typename Variant::Piece& piece) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->insertPoolSprite(pool, index, &wpiece);
+    return m_graphical_api->insertPoolPiece(pool, index, &wpiece);
   }
 
-  virtual SpritePtr getPoolSprite(int pool, int index) {
+  virtual NamedSprite getPoolSprite(int pool, int index) {
     return m_graphical_api->getPoolSprite(pool, index);
   }
 
-  virtual SpritePtr takePoolSprite(int pool, int index) {
+  virtual NamedSprite takePoolSprite(int pool, int index) {
     return m_graphical_api->takePoolSprite(pool, index);
   }
 };

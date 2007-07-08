@@ -49,18 +49,22 @@ void PiecePool::setFill(int f) {
   int w = gridSize().x;
   if(!w) {
     m_sprites.changeSize(0,0);
-    return;
+    m_fill = 0;
   }
-
-  m_sprites.changeSize(w, (f+w-1)/w);
-  m_fill = f;
+  else {
+    m_sprites.changeSize(w, (f+w-1)/w);
+    m_fill = f;
+  }
 }
 
 void PiecePool::clear() {
   setFill(0);
 }
 
-void PiecePool::insertSprite(int index, const NamedSprite& sprite) {
+void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
+  if(m_dragged && index > m_dragged_index)
+    index--;
+
   if(index < 0 || index > fill() ) {
     std::cout << "invalid index " << index << " in PiecePool::insertPiece" << std::endl;
     return;
@@ -70,7 +74,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& sprite) {
   Point i = m_sprites.nTh(index);
 
   NamedSprite replacep = m_sprites[i];
-  m_sprites[i] = sprite;
+  m_sprites[i] = nsprite;
   m_sprites[i].sprite()->show();
   m_sprites[i].sprite()->moveTo(converter()->toReal(i));
   fadeIn(i);
@@ -87,32 +91,49 @@ void PiecePool::insertSprite(int index, const NamedSprite& sprite) {
   }
 }
 
-SpritePtr PiecePool::getSprite(int index) {
+NamedSprite PiecePool::getSprite(int index) {
+  if(m_dragged && index == m_dragged_index)
+    return m_dragged;
+
+  if(m_dragged && index > m_dragged_index)
+    index--;
+
   if(index < 0 || index >= fill() ) {
-    std::cout << "invalid index " << index << " in PiecePool::insertPiece" << std::endl;
-    return SpritePtr();
+    ERROR("invalid index " << index);
+    return NamedSprite();
   }
 
   Point i = m_sprites.nTh(index);
-  return m_sprites[i].sprite();
+  return m_sprites[i];
 }
 
-SpritePtr PiecePool::takeSprite(int index) {
+NamedSprite PiecePool::takeSprite(int index) {
+  if(m_dragged && index == m_dragged_index) {
+    NamedSprite retv = m_dragged;
+    m_dragged = NamedSprite();
+    m_dragged_index = -1;
+
+    return retv;
+  }
+
+  if(m_dragged && index > m_dragged_index)
+    index--;
+
   if(index < 0 || index >= fill() ) {
-    std::cout << "invalid index " << index << " in PiecePool::takeSprite" << std::endl;
-    return SpritePtr();
+    ERROR("invalid index " << index);
+    return NamedSprite();
   }
 
   Point i = m_sprites.nTh(index);
   NamedSprite piece = takeNamedSprite(i);
 
-  return piece.sprite();
+  return piece;
 }
 
 NamedSprite PiecePool::takeNamedSprite(const Point& _i) {
   Point i = _i;
   if(i < m_sprites.first() || m_sprites.last() < i ) {
-    std::cout << "invalid index " << i << " in PiecePool::takeNamedSprite" << std::endl;
+    ERROR("invalid index " << i);
     return NamedSprite();
   }
 
@@ -147,20 +168,21 @@ void PiecePool::clearDrag(bool fadeOff) {
   if(!m_dragged)
     return;
 
+  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
+  m_dragged.sprite()->putInCanvas(piecesGroup());
+
   if (fadeOff) {
-    boost::shared_ptr<Sprite> phantom =
-                boost::shared_ptr<Sprite>(m_dragged.sprite()->duplicate());
+    SpritePtr phantom = SpritePtr(m_dragged.sprite()->duplicate());
     if(m_anim_fade)
       enqueue( boost::shared_ptr<Animation>(new FadeAnimation(phantom, phantom->pos(), 255, 0)) );
     else
       enqueue( boost::shared_ptr<Animation>(new CaptureAnimation(phantom)) );
   }
 
-  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
-  m_dragged.sprite()->putInCanvas(piecesGroup());
-  //addPiece(m_dragged); //BROKEN
+  addPiece(m_dragged_index, m_dragged);
 
   m_dragged = NamedSprite();
+  m_dragged_index = -1;
 }
 
 void PiecePool::flipAndMoveBy(QPoint p) {
@@ -210,7 +232,7 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
     return;
 
   /* did the board take this sprite? */
-  //BROKEN m_board->dropOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
+  m_board->dropOn( 0/*BROKEN*/, m_dragged_index, pos + this->pos() - m_board->pos() );
 
   bool fadeOff = true;
   if(!m_board->m_drop_sprite && m_dragged) {

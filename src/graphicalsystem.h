@@ -95,19 +95,19 @@ private slots:
   /**
     * \return the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     */
-  virtual SpritePtr getPoolSprite(int pool, int index);
+  virtual NamedSprite getPoolSprite(int pool, int index);
 
   /**
     * Removes the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the removed sprite.
     */
-  virtual SpritePtr takePoolSprite(int pool, int index);
+  virtual NamedSprite takePoolSprite(int pool, int index);
 
   /**
     * Inserts a sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece);
+  virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece);
 
 
 public:

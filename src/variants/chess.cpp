@@ -26,9 +26,6 @@ const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
 
 
-
-//BEGIN Dream code
-
 typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
 
 class ChessAnimator {
@@ -49,17 +46,14 @@ public:
       ChessPiece f = final.get(i);
 
       if( !c && f ) {
-        //current->set(i, f);
         NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
         res->addPreAnimation( DropAnimationPtr(new DropAnimation(sprite.sprite())) );
       }
       else if (c && !f) {
-        //current->set(i, NULL);
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
         res->addPreAnimation( CaptureAnimationPtr(new CaptureAnimation(old_sprite.sprite())) );
       }
       else if(c && f && !(c == f) ) {
-        //current->set(i, f);
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
         NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
         res->addPreAnimation( PromotionAnimationPtr(new PromotionAnimation(old_sprite.sprite(), sprite.sprite())) );
@@ -73,11 +67,8 @@ public:
   }
 
   boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& move) {
-//     const ChessPosition* current = m_cinterface->position();
-
     AnimationGroupPtr res(new AnimationGroup);
     MovementAnimationPtr ma;
-    //ChessPiece piece = current->get(move.from);
 
     NamedSprite piece = m_cinterface->takeSprite(move.from);
     NamedSprite captured = m_cinterface->takeSprite(move.to);
@@ -225,10 +216,6 @@ public:
     return res;
   }
 };
-
-
-//END Dream code
-
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);

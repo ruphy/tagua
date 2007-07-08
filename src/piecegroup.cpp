@@ -59,8 +59,7 @@ void PieceGroup::onResize(int new_size, bool force_reload) {
   m_loader.setSize(m_square_size);
 }
 
-void PieceGroup::animatePiece(const shared_ptr<Sprite>& piece,
-                                    const Point& to, double speed) {
+void PieceGroup::animatePiece(const SpritePtr& piece, const Point& to, double speed) {
   enqueue(
     m_anim_movement
     ? shared_ptr<Animation>(new MovementAnimation(piece, converter()->toReal(to), speed))

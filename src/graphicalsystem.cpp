@@ -135,20 +135,20 @@ int GraphicalSystem::poolSize(int pool) {
   return m_view->pool(pool)->fill();
 }
 
-SpritePtr GraphicalSystem::getPoolSprite(int pool, int index) {
+NamedSprite GraphicalSystem::getPoolSprite(int pool, int index) {
   return m_view->pool(pool)->getSprite(index);
 }
 
-SpritePtr GraphicalSystem::takePoolSprite(int pool, int index) {
+NamedSprite GraphicalSystem::takePoolSprite(int pool, int index) {
   return m_view->pool(pool)->takeSprite(index);
 }
 
-SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractPiece* piece) {
+NamedSprite GraphicalSystem::insertPoolPiece(int pool, int index, const AbstractPiece* piece) {
   PiecePool *pl = m_view->pool(pool);
   QPixmap px = pl->m_loader(piece->name());
 
-  SpritePtr s = SpritePtr( new Sprite( px, pl->piecesGroup(), QPoint() ) );
-  pl->insertSprite(index, NamedSprite(piece->name(), s) );
+  NamedSprite s( piece->name(), SpritePtr( new Sprite( px, pl->piecesGroup(), QPoint() ) ) );
+  pl->insertSprite(index, s);
   return s;
 }
 
