@@ -62,8 +62,8 @@ void PieceGroup::onResize(int new_size, bool force_reload) {
 void PieceGroup::animatePiece(const SpritePtr& piece, const Point& to, double speed) {
   enqueue(
     m_anim_movement
-    ? shared_ptr<Animation>(new MovementAnimation(piece, converter()->toReal(to), speed))
-    : shared_ptr<Animation>(new InstantAnimation(piece, converter()->toReal(to)))
+    ? AnimationPtr(new MovementAnimation(piece, converter()->toReal(to), speed))
+    : AnimationPtr(new InstantAnimation(piece, converter()->toReal(to)))
   );
 }
 

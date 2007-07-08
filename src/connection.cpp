@@ -27,7 +27,7 @@ Connection::Connection()
 , m_connected(false)
 , m_initialized(false) {
   QString logFileName;
-  if (logFileName != "") {
+  if (!logFileName.isEmpty()) {
     logFile = new QFile(logFileName);
     logFile->open(QIODevice::WriteOnly);
     logStream = 0; //= new QTextStream(logFile);
