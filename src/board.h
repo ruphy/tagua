@@ -54,13 +54,13 @@ private:
     static const int DRAG_THRESHOLD = 100; // pixels ^ 2
     boost::shared_ptr<Sprite> sprite;
     Point from; // logical coordinates
-    QPoint real; /// real starting point, used to honour drag threshold
+    QPoint real; /// real starting point, used to honor drag threshold
     bool dragging;
     bool dragStarted;
     bool droppedOut;
     InteractionType action;
 
-    DragInfo(Point from, const QPoint& real, 
+    DragInfo(Point from, const QPoint& real,
              const boost::shared_ptr<Sprite>& sprite,
              InteractionType action)
     : sprite(sprite)

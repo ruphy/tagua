@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -18,11 +18,11 @@ public:
   virtual ~TrivialExecutor() {
     std::cout << std::endl;
   }
-  
+
   virtual void writeChunk(const QString& text) {
     std::cout << text << "|";
   }
-  
+
   virtual void setFormat(const QTextCharFormat&) { }
 };
 
@@ -43,7 +43,7 @@ HLine::HLine(const QString& text, const QTextCharFormat& baseFormat)
 }
 
 HLine::HLine(const HLine& other)
-: m_regions(other.m_regions) 
+: m_regions(other.m_regions)
 , m_text(other.m_text) { }
 
 uint HLine::findRegion(int index) const {
@@ -84,7 +84,7 @@ void HLine::setFormat(int begin, int end, const Format& format) {
   if (begin >= end) return;
   int r1 = splitRegion(begin);
   int r2 = splitRegion(end);
-  
+
   for (int r = r1; r < r2; r++) {
     QTextCharFormat fmt = m_regions[r].format();
     format.applyTo(fmt);
@@ -107,7 +107,7 @@ void HLine::setItalic(int begin, int end, bool value) {
 void HLine::setColor(int begin, int end, const QColor& color) {
   Format format;
   format.m_color = std::make_pair(true, color);
-  setFormat(begin, end, format);  
+  setFormat(begin, end, format);
 }
 
 QString HLine::mid(int begin, int end) const {
@@ -118,48 +118,48 @@ HLine* HLine::extract(int begin, int end) const {
   HLine* res = new HLine(*this);
   int r1 = res->splitRegion(begin);
   int r2 = res->splitRegion(end);
-  
+
   // adjust text
   res->m_text = mid(begin, end);
-  
-  // remove superflous regions
+
+  // remove superfluous regions
   res->m_regions.erase(
     res->m_regions.begin() + r2,
     res->m_regions.end());
   res->m_regions.erase(
     res->m_regions.begin(),
     res->m_regions.begin() + r1);
-  
+
   // adjust regions
   for (uint i = 0; i < res->m_regions.size(); i++) {
     res->m_regions[i].setEnd(res->m_regions[i].end() - begin);
   }
-  
+
   return res;
 }
 
 HLine* HLine::append(const HLine& other, int begin, int end) const {
   HLine* res = new HLine(*this);
-  
+
   int old_r = res->m_regions.size();
   int old_length = res->m_text.length();
-  
+
   // append text
   res->m_text += other.mid(begin, end);
-  
+
   // add regions
   int r1 = other.findRegion(begin);
   int r2 = other.findRegion(end);
   std::copy(other.m_regions.begin() + r1,
        other.m_regions.begin() + r2,
        std::back_insert_iterator<std::vector<Region> >(res->m_regions));
-       
+
   // adjust regions
   for (uint i = old_r; i < res->m_regions.size(); i++) {
     int new_end = old_length + res->m_regions[i].end() - begin;
     res->m_regions[i].setEnd(new_end);
   }
-  
+
   return res;
 }
 
