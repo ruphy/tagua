@@ -179,7 +179,7 @@ void PiecePool::clearDrag(bool fadeOff) {
       enqueue( boost::shared_ptr<Animation>(new CaptureAnimation(phantom)) );
   }
 
-  addPiece(m_dragged_index, m_dragged);
+  insertSprite(m_dragged_index, m_dragged);
 
   m_dragged = NamedSprite();
   m_dragged_index = -1;
@@ -236,6 +236,9 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
 
   bool fadeOff = true;
   if(!m_board->m_drop_sprite && m_dragged) {
+
+    //this happens if the animator used the piece being dropped but removed another piece from the pool
+    //for instance it remove another piece of the same type.
     m_dragged = NamedSprite( m_dragged.name(), SpritePtr(m_dragged.sprite()->duplicate()) );
     fadeOff = false;
   }
@@ -274,6 +277,6 @@ void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
     m_dragged.sprite()->moveTo(pos + this->pos() - m_board->pos()
                 - QPoint(m_dragged.sprite()->pixmap().width(),
                          m_dragged.sprite()->pixmap().height() ) / 2 );
-    //BROKEN m_board->draggingOn( m_dragged.piece(), pos + this->pos() - m_board->pos() );
+    m_board->draggingOn( 0/*BROKEN*/, m_dragged_index, pos + this->pos() - m_board->pos() );
   }
 }
