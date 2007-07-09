@@ -77,20 +77,24 @@ public:
     return m_graphical_api->takePoolSprite(pool, index);
   }
   
-  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to) {
-  	return m_graphical_api->moveAnimation(sprite, to);
+  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, 
+  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->moveAnimation(sprite, to, type);
 	}
 	
-  virtual AnimationPtr appearAnimation(const NamedSprite& sprite) {
-  	return m_graphical_api->appearAnimation(sprite);
+  virtual AnimationPtr appearAnimation(const NamedSprite& sprite,
+  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->appearAnimation(sprite, type);
 	}
 	
-  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite) {
-  	return m_graphical_api->disappearAnimation(sprite);
+  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite,
+						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->disappearAnimation(sprite, type);
 	}
 	
-	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite) {
-		return m_graphical_api->destroyAnimation(sprite);
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite,
+						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+		return m_graphical_api->destroyAnimation(sprite, type);
 	}
 };
 

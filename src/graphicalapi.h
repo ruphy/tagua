@@ -25,6 +25,11 @@ typedef boost::shared_ptr<class Sprite> SpritePtr;
   */
 class GraphicalAPI {
 public:
+	enum AnimationType {
+		Normal,
+		Instant
+	};
+
   virtual ~GraphicalAPI() { }
 
   /**
@@ -88,14 +93,14 @@ public:
   	* \param to The destination square.
   	* \return A newly created animation moving \a sprite between the specified squares.
   	*/
-	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to) = 0;
+	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) = 0;
 	
   /**
   	* Create an appear animation.
   	* \param sprite The sprite to be shown.
   	* \return A newly created animation showing \a sprite.
   	*/
-	virtual AnimationPtr appearAnimation(const NamedSprite& sprite) = 0;
+	virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type) = 0;
 	
 	/**
 		* Create a disappear animation.
@@ -103,14 +108,14 @@ public:
   	* \return A newly created animation hiding \a sprite.
 		* \sa appearAnimation.
 		*/
-	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite) = 0;
+	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite, AnimationType type) = 0;
 	
 	/**
 		* Create a destruction animation.
 		* \param sprite The sprite to be destroyed.
 		* \return A newly created animation destroying \a sprite.
 		*/
-	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite) = 0;
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type) = 0;
 };
 
 #endif //GRAPHICALAPI_H

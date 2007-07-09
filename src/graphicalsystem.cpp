@@ -153,20 +153,44 @@ SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractP
 }
 
 
-AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to) {
-	return AnimationPtr(new MovementAnimation(sprite.sprite(), converter()->toReal(to)));
+AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new MovementAnimation(sprite.sprite(), converter()->toReal(to)));
+	case Instant:
+	default:
+		return AnimationPtr(new InstantAnimation(sprite.sprite(), converter()->toReal(to)));
+	}
 }
 
-AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite) {
-	return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 0, 255));
+AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 0, 255));
+	case Instant:
+	default:
+		return AnimationPtr(new DropAnimation(sprite.sprite()));
+	}
 }
 
-AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite) {
-	return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 255, 0));
+AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 255, 0));
+	case Instant:
+	default:
+		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
+	}
 }
 
-AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite) {
-	return AnimationPtr(new ExplodeAnimation(sprite.sprite(), m_random));
+AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new ExplodeAnimation(sprite.sprite(), m_random));
+	case Instant:
+	default:
+		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
+	}
 }
 
 
