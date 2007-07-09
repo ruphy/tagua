@@ -157,6 +157,7 @@ class FadeAnimation : public ConcreteAnimation {
   void start();
 public:
   FadeAnimation(const SpritePtr& sprite, const QPoint& pos, int fadeFrom, int fadeTo);
+  FadeAnimation(const SpritePtr& sprite, int fadeFrom, int fadeTo);
   virtual State animationAdvance(int msec);
   virtual void stop();
   virtual void abort();

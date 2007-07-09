@@ -106,14 +106,18 @@ NamedSprite GraphicalSystem::takeSprite(const Point& p) {
 }
 
 NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
+  return m_board->m_sprites[p] = createPiece(p, piece, usedrop, show);
+}
+
+NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
   Q_ASSERT(piece);
-  if(!m_board->m_sprites.valid(p))
+  if (!m_board->m_sprites.valid(p))
     return NamedSprite();
 
   QPixmap px = m_board->m_loader(piece->name());
 
   SpritePtr s;
-  if(usedrop && m_board->m_drop_sprite) {
+  if (usedrop && m_board->m_drop_sprite) {
     s = m_board->m_drop_sprite.sprite();
     m_board->m_drop_sprite = NamedSprite();
   }
@@ -121,11 +125,11 @@ NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece
     s = m_board->createSprite(px, p);
     if (show) s->show();
   }
-  return m_board->m_sprites[p] = NamedSprite(piece->name(), s);
+  return NamedSprite(piece->name(), s);
 }
 
 void GraphicalSystem::setSprite(const Point& p, const NamedSprite& sprite) {
-  if(!m_board->m_sprites.valid(p))
+  if (!m_board->m_sprites.valid(p))
     return;
 
   m_board->m_sprites[p] = sprite;
@@ -166,7 +170,7 @@ AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Poi
 AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite, AnimationType type) {
 	switch (type) {
 	case Normal:
-		return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 0, 255));
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), 0, 255));
 	case Instant:
 	default:
 		return AnimationPtr(new DropAnimation(sprite.sprite()));
@@ -176,7 +180,7 @@ AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite, Animati
 AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite, AnimationType type) {
 	switch (type) {
 	case Normal:
-		return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 255, 0));
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), 255, 0));
 	case Instant:
 	default:
 		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
@@ -190,6 +194,16 @@ AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite, Animat
 	case Instant:
 	default:
 		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
+	}
+}
+
+AnimationPtr GraphicalSystem::morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new CrossFadingAnimation(sprite.sprite(), new_sprite.sprite()));
+	case Instant:
+	default:
+		return AnimationPtr(new PromotionAnimation(sprite.sprite(), new_sprite.sprite()));
 	}
 }
 

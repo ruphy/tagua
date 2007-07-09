@@ -83,6 +83,12 @@ private slots:
     * \return the newly created sprite.
     */
   virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
+  
+	/**
+	  *  Create a new piece, but do not add it to the graphical system.
+	  * \return the newly created sprite.
+	  */
+	virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
 
   /**
     * Sets the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
@@ -116,6 +122,7 @@ private slots:
 	virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type);
 	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite, AnimationType type);
 	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type);
+	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,

@@ -58,6 +58,12 @@ public:
     * \return the newly created sprite.
     */
   virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
+  
+	/**
+	  *  Create a new piece, but do not add it to the graphical system.
+	  * \return the newly created sprite.
+	  */
+  virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
 
   /**
     * Sets the sprite at the position \a index in the graphical pool.
@@ -116,6 +122,14 @@ public:
 		* \return A newly created animation destroying \a sprite.
 		*/
 	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type) = 0;
+	
+	/**
+		* Create a morphing animation.
+		* \param sprite The sprite to be morphed.
+		* \param new_sprite The final appearance of the morphed sprite.
+		* \return A newly created morphing animation from \a sprite to \a new_sprite
+		*/
+	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType) = 0;
 };
 
 #endif //GRAPHICALAPI_H

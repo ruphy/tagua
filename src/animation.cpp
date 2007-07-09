@@ -259,8 +259,8 @@ void PromotionAnimation::shoot() {
 CrossFadingAnimation::CrossFadingAnimation(const SpritePtr& piece,
                                            const SpritePtr& promoted)
 : m_piece(piece) {
-  addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(piece, piece->pos(), 255, 0)));
-  addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(promoted, promoted->pos(), 0, 255)));
+  addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(piece, 255, 0)));
+  addPreAnimation(shared_ptr<FadeAnimation>(new FadeAnimation(promoted, 0, 255)));
 }
 
 void CrossFadingAnimation::start() {
@@ -321,10 +321,20 @@ FadeAnimation::FadeAnimation(const SpritePtr& sprite, const QPoint& to,
 , m_to(to)
 , m_state(Inactive) { }
 
+FadeAnimation::FadeAnimation(const SpritePtr& sprite, int fadeFrom, int fadeTo)
+: ConcreteAnimation(sprite)
+, m_fadeFrom(fadeFrom)
+, m_fadeTo(fadeTo)
+, m_to(Point::invalid())
+, m_state(Inactive) { }
+
 void FadeAnimation::start() {
   m_state = Active;
 
-  m_piece->moveTo(m_to);
+	if (m_to != Point::invalid()) {
+  	m_piece->moveTo(m_to);
+	}
+	
   m_piece->setOpacity(m_fadeFrom);
   m_piece->show();
 }
