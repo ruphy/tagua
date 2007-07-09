@@ -85,11 +85,10 @@ public:
   /**
   	* Create a movement animation.
   	* \param sprite The sprite to be animated.
-  	* \param from The starting square of the animation.
   	* \param to The destination square.
   	* \return A newly created animation moving \a sprite between the specified squares.
   	*/
-	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& from, const Point& to) = 0;
+	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to) = 0;
 	
   /**
   	* Create an appear animation.

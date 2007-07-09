@@ -153,7 +153,7 @@ SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractP
 }
 
 
-AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& from, const Point& to) {
+AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to) {
 	return AnimationPtr();
 }
 
