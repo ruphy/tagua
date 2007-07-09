@@ -25,7 +25,7 @@ typedef boost::shared_ptr<class Sprite> SpritePtr;
   */
 class GraphicalAPI {
 public:
-  virtual ~GraphicalAPI(){}
+  virtual ~GraphicalAPI() { }
 
   /**
     * \return the current abstract position.
@@ -96,7 +96,7 @@ public:
   	* \param sprite The sprite to be shown.
   	* \return A newly created animation showing \a sprite.
   	*/
-	virtual AnimationPtr appearAnimation(const NamedSprite& sprite);
+	virtual AnimationPtr appearAnimation(const NamedSprite& sprite) = 0;
 	
 	/**
 		* Create a disappear animation.
@@ -104,7 +104,7 @@ public:
   	* \return A newly created animation hiding \a sprite.
 		* \sa appearAnimation.
 		*/
-	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite);
+	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite) = 0;
 };
 
 #endif //GRAPHICALAPI_H
