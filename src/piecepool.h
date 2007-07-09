@@ -43,7 +43,7 @@ private:
   /** the number of pieces on the pool */
   int m_fill;
 
-  /** internal, resizes the grid vector to hold x pieces */
+  /** internal function, resizes the grid vector to hold x pieces */
   void setFill(int x);
 
   /** redefinition of PointConverter::flipPoint
@@ -53,10 +53,10 @@ private:
 
   /** removes the drag putting it back together with his friends in the pool.
       if fadeOff is true the current drag will fade off while a new piece will
-      fade in the pool, while if fadeOff is false the fade off is no done.
+      fade in the pool, while if fadeOff is false the fade off is not done.
       fadeOff will typically be false if the piece sprite has been used in the
       board and we don't want a clone that is fading off */
-  void clearDrag(bool fadeOff = true);
+  void cancelDragging(bool fadeOff = true);
 
   /** this internal function updates the sprite images after the board has been resized  */
   void updateSprites();
@@ -73,8 +73,8 @@ public:
 
   /** Constructor, requires the board the pool will be attached to */
   PiecePool(Board* b, Canvas::Abstract* parent);
-  ~PiecePool();
 
+  ~PiecePool();
 
 
   /** returns the number of pieces in the pool */
@@ -83,13 +83,13 @@ public:
   /** removes all the pieces */
   void clear();
 
-  /** adds a piece to the pool */
+  /** adds a sprite to the pool */
   void insertSprite(int index, const NamedSprite& sprite);
 
-  /** \return the piece at the given index. */
+  /** \return the sprite at the given index. */
   NamedSprite getSprite(int index);
 
-  /** removes the piece at the given index from the pool and returns it. */
+  /** removes the sprite at the given index from the pool and returns it. */
   NamedSprite takeSprite(int index);
 
 
@@ -108,7 +108,7 @@ public:
   virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*gridSize().x,
                                   (flipped()?-1:1)*m_square_size*gridSize().y)); }
 
-  /** flips and moves the pool at the same time */
+  /** flips and moves the pieces in the pool at the same time */
   void flipAndMoveBy(QPoint p);
 
   /** mouse release event  */

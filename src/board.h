@@ -81,9 +81,11 @@ private:
   /** displayed m_sprites */
   PieceGrid   m_sprites;
 
+#if 0
   /** used by a PiecePool to make available the piece that is being dropped
      on the board to the GraphicalInfo and the variant-specific animator */
   NamedSprite m_drop_sprite;
+#endif
 
   /** the visual move hint */
   NamedSprite m_hinting;

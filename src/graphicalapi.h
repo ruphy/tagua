@@ -51,7 +51,7 @@ public:
     * Sets the piece at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, /*bool use_drop,*/ bool show) = 0;
 
   /**
     * Sets the sprite at the position \a index in the graphical pool.

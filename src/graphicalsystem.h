@@ -79,7 +79,7 @@ private slots:
     * Sets the piece at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, /*bool use_drop,*/ bool show);
 
   /**
     * Sets the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)

@@ -46,7 +46,7 @@ public:
       ChessPiece f = final.get(i);
 
       if( !c && f ) {
-        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        NamedSprite sprite = m_cinterface->setPiece(i, f, /*false,*/ false);
         res->addPreAnimation( DropAnimationPtr(new DropAnimation(sprite.sprite())) );
       }
       else if (c && !f) {
@@ -55,7 +55,7 @@ public:
       }
       else if(c && f && !(c == f) ) {
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
-        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        NamedSprite sprite = m_cinterface->setPiece(i, f, /*false,*/ false);
         res->addPreAnimation( PromotionAnimationPtr(new PromotionAnimation(old_sprite.sprite(), sprite.sprite())) );
       }
     }
@@ -100,7 +100,7 @@ public:
       if (promoted) {
         QPoint real = m_cinterface->converter()->toReal(move.to);
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
-        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false, false);
+        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, /*false,*/ false);
 
         if (ma)
           ma->setTarget(new_sprite.sprite());
@@ -148,13 +148,13 @@ public:
     NamedSprite piece = m_cinterface->takeSprite(move.to);
     NamedSprite captured;
     if (ChessPiece captured_piece = final.get(move.to)) {
-      captured = m_cinterface->setPiece(move.to, captured_piece, false, false);
+      captured = m_cinterface->setPiece(move.to, captured_piece, /*false,*/ false);
       res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(captured.sprite(),
                                                 m_cinterface->converter()->toReal(move.to), 0, 255)));
     }
 
     if (!piece) {
-      piece = m_cinterface->setPiece(move.to, final.get(move.from), false, false);
+      piece = m_cinterface->setPiece(move.to, final.get(move.from), /*false,*/ false);
       res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(piece.sprite(),
                                               m_cinterface->converter()->toReal(move.to), 0, 255)));
     }
@@ -166,7 +166,7 @@ public:
       Point phantom(move.to.x, move.from.y);
 
       if (ChessPiece pawn_piece = final.get(phantom)) {
-        NamedSprite capturedPawn = m_cinterface->setPiece(phantom, pawn_piece, false, false);
+        NamedSprite capturedPawn = m_cinterface->setPiece(phantom, pawn_piece, /*false,*/ false);
         res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(capturedPawn.sprite(),
                                                     m_cinterface->converter()->toReal(phantom),
                                                     0, 255)));
@@ -175,7 +175,7 @@ public:
     else if (move.type() == ChessMove::Promotion) {
       ChessPiece pawn_piece = final.get(move.from);
       if (pawn_piece) {
-        NamedSprite pawn = m_cinterface->setPiece(move.from, pawn_piece, false, false);
+        NamedSprite pawn = m_cinterface->setPiece(move.from, pawn_piece, /*false,*/ false);
         res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(pawn.sprite(),
                                  m_cinterface->converter()->toReal(move.to), 0, 255)));
         res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(piece.sprite(),
