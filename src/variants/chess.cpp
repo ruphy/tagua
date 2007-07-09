@@ -76,7 +76,6 @@ public:
 //     const ChessPosition* current = m_cinterface->position();
 
     AnimationGroupPtr res(new AnimationGroup);
-    MovementAnimationPtr ma;
     //ChessPiece piece = current->get(move.from);
 
     NamedSprite piece = m_cinterface->takeSprite(move.from);
@@ -84,8 +83,7 @@ public:
     m_cinterface->setSprite(move.to, piece);
 
     if (piece)
-      res->addPreAnimation(ma = MovementAnimationPtr(new MovementAnimation(piece.sprite(),
-                                              m_cinterface->converter()->toReal(move.to))));
+      res->addPreAnimation(m_cinterface->moveAnimation(piece, move.to));
     else
       std::cout << "Bug!!!!" << std::endl;
     if (captured)
@@ -110,9 +108,6 @@ public:
         QPoint real = m_cinterface->converter()->toReal(move.to);
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
         NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false, false);
-
-        if (ma)
-          ma->setTarget(new_sprite.sprite());
 
         res->addPostAnimation( FadeAnimationPtr(new FadeAnimation(old_sprite.sprite(), real, 255, 0)) );
         res->addPostAnimation( FadeAnimationPtr(new FadeAnimation(new_sprite.sprite(), real, 0, 255)) );

@@ -154,17 +154,20 @@ SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractP
 
 
 AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to) {
-	return AnimationPtr();
+	return AnimationPtr(new MovementAnimation(sprite.sprite(), converter()->toReal(to)));
 }
 
 AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite) {
-	return AnimationPtr();
+	return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 0, 255));
 }
 
 AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite) {
-	return AnimationPtr();
+	return AnimationPtr(new FadeAnimation(sprite.sprite(), sprite.sprite()->pos(), 255, 0));
 }
 
+AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite) {
+	return AnimationPtr(new ExplodeAnimation(sprite.sprite(), m_random));
+}
 
 
 #if 0

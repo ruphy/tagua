@@ -104,6 +104,13 @@ public:
 		* \sa appearAnimation.
 		*/
 	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite) = 0;
+	
+	/**
+		* Create a destruction animation.
+		* \param sprite The sprite to be destroyed.
+		* \return A newly created animation destroying \a sprite.
+		*/
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite) = 0;
 };
 
 #endif //GRAPHICALAPI_H

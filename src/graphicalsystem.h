@@ -38,6 +38,9 @@ public:
 
   /** The current variant */
   VariantInfo* m_variant;
+  
+  /** A random number generator */
+  Random m_random;
 
   /** @a GraphicalPosition interface function implementation */
 //   virtual void addTag(const QString& name, Point, bool over = false);
@@ -112,6 +115,7 @@ private slots:
 	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to);
 	virtual AnimationPtr appearAnimation(const NamedSprite& sprite);
 	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite);
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,

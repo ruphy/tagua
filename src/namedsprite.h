@@ -22,9 +22,9 @@ public:
   NamedSprite() {}
   NamedSprite(const QString& name, boost::shared_ptr<Sprite> s)
     : m_name(name), m_sprite(s) {}
-  QString name(){ return m_name; }
-  SpritePtr sprite(){ return m_sprite; }
-  operator bool(){ return !!m_sprite; }
+  QString name() const { return m_name; }
+  SpritePtr sprite() const { return m_sprite; }
+  operator bool() const { return !!m_sprite; }
 };
 
 #endif //NAMEDSPRITE_H

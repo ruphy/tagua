@@ -76,6 +76,22 @@ public:
   virtual SpritePtr takePoolSprite(int pool, int index) {
     return m_graphical_api->takePoolSprite(pool, index);
   }
+  
+  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to) {
+  	return m_graphical_api->moveAnimation(sprite, to);
+	}
+	
+  virtual AnimationPtr appearAnimation(const NamedSprite& sprite) {
+  	return m_graphical_api->appearAnimation(sprite);
+	}
+	
+  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite) {
+  	return m_graphical_api->disappearAnimation(sprite);
+	}
+	
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite) {
+		return m_graphical_api->destroyAnimation(sprite);
+	}
 };
 
 #endif //UNWRAPPEDGRAPHICALAPI_H
