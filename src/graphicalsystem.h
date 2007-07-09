@@ -109,7 +109,9 @@ private slots:
     */
   virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece);
 
-
+	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& from, const Point& to);
+	virtual AnimationPtr appearAnimation(const NamedSprite& sprite);
+	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,

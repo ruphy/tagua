@@ -15,6 +15,7 @@
 #include "kboard.h"
 #include "pointconverter.h"
 #include "namedsprite.h"
+#include "fwd.h"
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 
@@ -80,6 +81,30 @@ public:
     * \return the newly created sprite.
     */
   virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece) = 0;
+  
+  /**
+  	* Create a movement animation.
+  	* \param sprite The sprite to be animated.
+  	* \param from The starting square of the animation.
+  	* \param to The destination square.
+  	* \return A newly created animation moving \a sprite between the specified squares.
+  	*/
+	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& from, const Point& to) = 0;
+	
+  /**
+  	* Create an appear animation.
+  	* \param sprite The sprite to be shown.
+  	* \return A newly created animation showing \a sprite.
+  	*/
+	virtual AnimationPtr appearAnimation(const NamedSprite& sprite);
+	
+	/**
+		* Create a disappear animation.
+  	* \param sprite The sprite to be hidden.
+  	* \return A newly created animation hiding \a sprite.
+		* \sa appearAnimation.
+		*/
+	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite);
 };
 
 #endif //GRAPHICALAPI_H
