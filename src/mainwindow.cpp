@@ -139,20 +139,20 @@ void MainWindow::setupActions() {
   																			 SLOT(setDoPromotion(bool)));
   m_do_promotion->setCheckable(true);
 
-	installRegularAction("back", KIcon("back"), i18n("&Back"), &ui(), SLOT(back()));
-	installRegularAction("forward", KIcon("forward"), i18n("&Forward"), &ui(), SLOT(forward()));
-	installRegularAction("begin", KIcon("start"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
-	installRegularAction("end", KIcon("finish"), i18n("&End"), &ui(), SLOT(gotoLast()));
-	installRegularAction("connect", KIcon("connect_creating"), i18n("&Connect"), this, SLOT(icsConnect()));
-	installRegularAction("disconnect", KIcon("connect_no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
+	installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
+	installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
+	installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
+	installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
+	installRegularAction("connect", KIcon("connection-estabilished"), i18n("&Connect"), this, SLOT(icsConnect()));
+	installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
   
-  installRegularAction("pgnCopy", KIcon("copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
-  installRegularAction("pgnPaste", KIcon("paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
+  installRegularAction("pgnCopy", KIcon("edit-copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
+  installRegularAction("pgnPaste", KIcon("edit-paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
   installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
-  installRegularAction("clearBoard", KIcon("editdelete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
+  installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
   installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
   		&ui(), SLOT(setStartingPosition()));
 	installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
