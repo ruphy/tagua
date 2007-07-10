@@ -46,7 +46,7 @@ bool ChessMove::operator!=(const ChessMove& other) const {
   return !operator==(other);
 }
 
-ChessMove ChessMove::createDropMove(const class ChessPiece&, const Point&) {
+ChessMove ChessMove::createDropMove(int pool, int piece_index, const Point&) {
   return ChessMove();
 }
 

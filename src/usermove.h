@@ -40,11 +40,13 @@ struct NormalUserMove {
 };
 
 struct DropUserMove {
-  PiecePtr m_piece;
+  int   m_pool;
+  int   m_piece_index;
   Point m_to;
 
-  DropUserMove(PiecePtr piece, const Point& to)
-  : m_piece(piece) //NOTE: clone?!?!??!?!?!
+  DropUserMove(int pool, int piece_index, const Point& to)
+  : m_pool(pool)
+  , m_piece_index(piece_index)
   , m_to(to) { }
 };
 

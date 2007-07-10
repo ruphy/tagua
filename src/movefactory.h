@@ -13,7 +13,6 @@
 
 #include "kboard.h"
 #include "usermove.h"
-template <typename V> class WrappedPiece;
 
 template <typename Variant>
 struct MoveFactory {
@@ -21,8 +20,9 @@ struct MoveFactory {
     return typename Variant::Move(move.from, move.to,
             static_cast<typename Variant::Piece::PromotionType>(move.promotionType));
   }
-  static typename Variant::Move createDropMove(const typename Variant::Piece& piece, const Point& to) {
-    return Variant::Move::createDropMove(piece, to);
+
+  static typename Variant::Move createDropMove(const DropUserMove& move) {
+    return Variant::Move::createDropMove(move.m_pool, move.m_piece_index, move.m_to);
   }
 
   static NormalUserMove toNormal(const typename Variant::Move& move) {
