@@ -159,9 +159,6 @@ IF (X11_FOUND)
 MESSAGE("* X11 was found!")
 ENDIF (X11_FOUND)
 
-SET (MyRuby_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-FIND_PACKAGE(Ruby)
-
 MESSAGE("* Qt4:")
 MESSAGE("    Includes:  ${QT_INCLUDE_DIR}")
 MESSAGE("    LinkFlags: ${QT_LIBRARIES}")
@@ -179,9 +176,6 @@ MESSAGE("    Includes:  ${LUA_INCLUDE_DIRS}")
 MESSAGE("    LinkDir:   ${LUA_LIBRARY_DIRS}")
 MESSAGE("    LinkFlags: ${LUA_LINK_FLAGS}")
 MESSAGE("    CFlags:    ${LUA_CFLAGS}")
-
-MESSAGE("* Ruby:")
-MESSAGE("    Includes: ${RUBY_INCLUDE_PATH}")
 
 MESSAGE("* Host:")
 MESSAGE("    Have MMX: ${HAVE_X86_MMX}")
