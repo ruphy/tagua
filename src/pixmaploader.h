@@ -67,10 +67,10 @@ public:
   QPixmap operator()(const QString& id);
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  ::ThemeLoader::PixmapOrMap getPixmapMap(const QString& id);
+  Loader::PixmapOrMap getPixmapMap(const QString& id);
 
   /** looks up a font + char */
-  ::ThemeLoader::Glyph getGlyph(const QString& id);
+  Loader::Glyph getGlyph(const QString& id);
 };
 
 #endif // PIXMAPLOADER_H

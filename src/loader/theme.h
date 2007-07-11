@@ -28,11 +28,11 @@ Q_OBJECT
 public:
   class SizeCache {
   public:
-    typedef std::map<QString, PixmapOrMap> Cache;
-    typedef std::map<QString, Glyph> Cache2;
+    typedef std::map<QString, PixmapOrMap> PixmapsCache;
+    typedef std::map<QString, Glyph> GlyphsCache;
     int m_ref_count;
-    Cache m_cache;
-    Cache2 m_cache2;
+    PixmapsCache m_pixmaps_cache;
+    GlyphsCache m_glyphs_cache;
 
     SizeCache()
       : m_ref_count(0) {}
