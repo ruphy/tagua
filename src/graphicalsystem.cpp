@@ -105,16 +105,20 @@ NamedSprite GraphicalSystem::takeSprite(const Point& p) {
   return retv;
 }
 
-NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, /*bool usedrop,*/ bool show) {
+NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, bool show) {
+  return m_board->m_sprites[p] = createPiece(p, piece, show);
+}
+
+NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* piece, bool show) {
   Q_ASSERT(piece);
-  if(!m_board->m_sprites.valid(p))
+  if (!m_board->m_sprites.valid(p))
     return NamedSprite();
 
   QPixmap px = m_board->m_loader(piece->name());
 
 #if 0
   SpritePtr s;
-  if(usedrop && m_board->m_drop_sprite) {
+  if (usedrop && m_board->m_drop_sprite) {
     s = m_board->m_drop_sprite.sprite();
     m_board->m_drop_sprite = NamedSprite();
   }
@@ -127,13 +131,12 @@ NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece
   NamedSprite s(piece->name(), m_board->createSprite(px, p));
   if (show)
     s.sprite()->show();
-  m_board->m_sprites[p] = s;
   return s;
 #endif
 }
 
 void GraphicalSystem::setSprite(const Point& p, const NamedSprite& sprite) {
-  if(!m_board->m_sprites.valid(p))
+  if (!m_board->m_sprites.valid(p))
     return;
 
   m_board->m_sprites[p] = sprite;
@@ -159,6 +162,58 @@ NamedSprite GraphicalSystem::insertPoolPiece(int pool, int index, const Abstract
   pl->insertSprite(index, s);
   return s;
 }
+
+
+AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new MovementAnimation(sprite.sprite(), converter()->toReal(to)));
+	case Instant:
+	default:
+		return AnimationPtr(new InstantAnimation(sprite.sprite(), converter()->toReal(to)));
+	}
+}
+
+AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), 0, 255));
+	case Instant:
+	default:
+		return AnimationPtr(new DropAnimation(sprite.sprite()));
+	}
+}
+
+AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new FadeAnimation(sprite.sprite(), 255, 0));
+	case Instant:
+	default:
+		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
+	}
+}
+
+AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new ExplodeAnimation(sprite.sprite(), m_random));
+	case Instant:
+	default:
+		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
+	}
+}
+
+AnimationPtr GraphicalSystem::morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType type) {
+	switch (type) {
+	case Normal:
+		return AnimationPtr(new CrossFadingAnimation(sprite.sprite(), new_sprite.sprite()));
+	case Instant:
+	default:
+		return AnimationPtr(new PromotionAnimation(sprite.sprite(), new_sprite.sprite()));
+	}
+}
+
 
 #if 0
 void GraphicalSystem::updatePool(AbstractPosition::PoolPtr pool) {

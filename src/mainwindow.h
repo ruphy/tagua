@@ -73,6 +73,7 @@ Q_OBJECT
 //   QAction *mkAction(const QString& txt, QKeySequence shk, QObject *o,
 //                     const char *sl, QString name, QObject *par = NULL);
   void setupActions();
+  void setupEngineMenu();
   KAction* addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
   KAction* installRegularAction(const QString& name, const KIcon& icon, const QString& text,
   															QObject* obj, const char* slot);

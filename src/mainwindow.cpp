@@ -19,6 +19,7 @@
 #include <kfiledialog.h>
 #include <kio/netaccess.h>
 #include <kmessagebox.h>
+#include <kmenubar.h>
 #include <QKeySequence>
 #include <QStackedWidget>
 #include <QDockWidget>
@@ -36,6 +37,7 @@
 #include "gameinfo.h"
 #include "controllers/editgame.h"
 #include "controllers/editposition.h"
+#include "engineinfo.h"
 #include "movelist_table.h"
 #include "icsconnection.h"
 #include "qconnect.h"
@@ -96,6 +98,7 @@ MainWindow::MainWindow()
 
   setupActions();
   setupGUI();
+  setupEngineMenu();
   updatePromotionType();
 }
 
@@ -119,10 +122,50 @@ KAction* MainWindow::installRegularAction(const QString& name, const KIcon& icon
 	return temp;
 }
 
-void MainWindow::setupActions() {
-//  (void) new KAction(i18n("&New game..."), CTRL+Key_N, this, SLOT(newGame()), actionCollection(), "new");
-  KAction* temp;
+void MainWindow::setupEngineMenu() {
+	QMenu* engine_menu = 0;
+	SettingArray engine_settings = settings.group("engines").array("engine");
+	foreach (Settings s, engine_settings) {
+		if (!engine_menu) {
+			// this way the menu is created only if there is at least one engine
+			engine_menu = menuBar()->addMenu(i18n("E&ngines"));
+		}
+		
+		QString name;
+		EngineDetails engine_details;
+		s["name"] >> engine_details.name;
+		s["path"] >> engine_details.path;
+		engine_details.type = EngineDetails::typeFromName(s["type"].value<QString>());
+		if (s["work-path"])
+			s["work-path"] >> engine_details.workPath;
+		
+		kDebug() << "creating engine " << engine_details.name << endl;
+		EngineInfo* engine = new EngineInfo(engine_details, ui());
 
+		m_engines.push_back(engine);
+		
+		QMenu* menu = engine_menu->addMenu(engine_details.name);
+		
+		{
+			KAction* play_white = new KAction(i18n("Play as &white"), this);
+			connect(play_white, SIGNAL(triggered()), engine, SLOT(playAsWhite()));
+			menu->addAction(play_white);
+		}
+		{
+			KAction* play_black = new KAction(i18n("Play as &black"), this);
+			connect(play_black, SIGNAL(triggered()), engine, SLOT(playAsBlack()));
+			menu->addAction(play_black);
+		}
+		{
+			KAction* analyze = new KAction(i18n("&Analyze"), this);
+			analyze->setCheckable(true);
+			connect(analyze, SIGNAL(triggered()), engine, SLOT(analyze()));
+			menu->addAction(analyze);
+		}
+	}
+}
+
+void MainWindow::setupActions() {
   KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
   KStandardAction::open(this, SLOT(loadGame()), actionCollection());
   KStandardAction::quit(this, SLOT(quit()), actionCollection());
@@ -134,33 +177,31 @@ void MainWindow::setupActions() {
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
   
-  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), 
-  																			 i18n("Do &promotion"), &ui(), 
-  																			 SLOT(setDoPromotion(bool)));
+  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), i18n("Do &promotion"), &ui(),SLOT(setDoPromotion(bool)));
   m_do_promotion->setCheckable(true);
 
-	installRegularAction("back", KIcon("back"), i18n("&Back"), &ui(), SLOT(back()));
-	installRegularAction("forward", KIcon("forward"), i18n("&Forward"), &ui(), SLOT(forward()));
-	installRegularAction("begin", KIcon("start"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
-	installRegularAction("end", KIcon("finish"), i18n("&End"), &ui(), SLOT(gotoLast()));
-	installRegularAction("connect", KIcon("connect_creating"), i18n("&Connect"), this, SLOT(icsConnect()));
-	installRegularAction("disconnect", KIcon("connect_no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
+  installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
+  installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
+  installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
+  installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
+  installRegularAction("connect", KIcon("connection-estabilished"), i18n("&Connect"), this, SLOT(icsConnect()));
+  installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
   
-  installRegularAction("pgnCopy", KIcon("copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
-  installRegularAction("pgnPaste", KIcon("paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
+  installRegularAction("pgnCopy", KIcon("edit-copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
+  installRegularAction("pgnPaste", KIcon("edit-paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
   installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
-  installRegularAction("clearBoard", KIcon("editdelete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
+  installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
   installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
   		&ui(), SLOT(setStartingPosition()));
-	installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
-	installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
-	installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
-	installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
-	installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
-	installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
+  installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
+  installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
+  installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
+  installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
+  installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
+  installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
 }
 
 void MainWindow::updatePromotionType() {

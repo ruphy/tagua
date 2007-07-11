@@ -1,6 +1,7 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=kboard
+Name[it]=kboard
 Name[xx]=xxkboardxx
 Exec=kboard %i %m -caption "%c"
 Icon=kboard

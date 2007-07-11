@@ -43,9 +43,14 @@ public:
     }
   }
 
-  virtual NamedSprite setPiece(const Point& p, const typename Variant::Piece& piece, /*bool use_drop,*/ bool show) {
+  virtual NamedSprite setPiece(const Point& p, const typename Variant::Piece& piece, bool show) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->setPiece(p, &wpiece, /*use_drop,*/ show);
+    return m_graphical_api->setPiece(p, &wpiece, show);
+  }
+  
+  virtual NamedSprite createPiece(const Point& p, const typename Variant::Piece& piece, bool show) {
+  	WrappedPiece<Variant> wpiece(piece);
+  	return m_graphical_api->createPiece(p, &wpiece, show);
   }
 
   virtual void setSprite(const Point& p, const NamedSprite& s) {
@@ -76,6 +81,31 @@ public:
   virtual NamedSprite takePoolSprite(int pool, int index) {
     return m_graphical_api->takePoolSprite(pool, index);
   }
+  
+  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, 
+  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->moveAnimation(sprite, to, type);
+	}
+	
+  virtual AnimationPtr appearAnimation(const NamedSprite& sprite,
+  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->appearAnimation(sprite, type);
+	}
+	
+  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite,
+						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+  	return m_graphical_api->disappearAnimation(sprite, type);
+	}
+	
+	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite,
+						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+		return m_graphical_api->destroyAnimation(sprite, type);
+	}
+	
+	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, 
+						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
+		return m_graphical_api->morphAnimation(sprite, new_sprite, type);
+	}
 };
 
 #endif //UNWRAPPEDGRAPHICALAPI_H
