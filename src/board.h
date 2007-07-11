@@ -60,7 +60,7 @@ private:
     bool droppedOut;
     InteractionType action;
 
-    DragInfo(Point from, const QPoint& real, 
+    DragInfo(Point from, const QPoint& real,
              const boost::shared_ptr<Sprite>& sprite,
              InteractionType action)
     : sprite(sprite)
@@ -98,8 +98,8 @@ private:
   /** all the tags on the board */
   BoardTagsPtr m_tags;
 
-  /** the @a SpriteLoader used to create tags */
-  SpriteLoader m_tags_loader;
+  /** the @a PixmapLoader used to create tags */
+  PixmapLoader m_tags_loader;
 
   /** the entity responsible of all the interctions with the board */
   boost::weak_ptr<UserEntity> m_entity;
@@ -198,7 +198,7 @@ public:
                                     Point p5 = Point::invalid(), Point p6 = Point::invalid() );
 
   /** returns a reference to the loader used to load tag pixmaps */
-  SpriteLoader* tagsLoader() { return &m_tags_loader; }
+  PixmapLoader* tagsLoader() { return &m_tags_loader; }
 
 
   void cancelPremove();

@@ -10,9 +10,9 @@
 
 #include <map>
 #include "loader/theme.h"
-#include "spriteloader.h"
+#include "pixmaploader.h"
 
-class SpriteLoader::Loader : public ::Loader::Theme {
+class PixmapLoader::Loader : public ::Loader::Theme {
 public:
   int m_ref_count;
   Loader(const QString& s)
@@ -22,23 +22,23 @@ public:
 };
 
 /* inherit instead of typedef to ease forward declaration :) */
-class SpriteLoader::LoadersCache : public
-  std::map<QString, SpriteLoader::Loader*> {
+class PixmapLoader::LoadersCache : public
+  std::map<QString, PixmapLoader::Loader*> {
 };
 
-SpriteLoader::LoadersCache SpriteLoader::loaders;
+PixmapLoader::LoadersCache PixmapLoader::loaders;
 
-SpriteLoader::SpriteLoader()
+PixmapLoader::PixmapLoader()
 : m_loader(NULL)
 , m_size(0)
 {
 }
 
-SpriteLoader::~SpriteLoader() {
+PixmapLoader::~PixmapLoader() {
   flush();
 }
 
-void SpriteLoader::flush() {
+void PixmapLoader::flush() {
   if(m_loader) {
     /* unref the size */
     if(m_size)
@@ -53,7 +53,7 @@ void SpriteLoader::flush() {
   }
 }
 
-void SpriteLoader::setBasePath(const QString& base) {
+void PixmapLoader::setBasePath(const QString& base) {
   //QString base = PixmapLoader::Loader::resolveBasePath(__base);
 
   if(base == m_base)
@@ -63,7 +63,7 @@ void SpriteLoader::setBasePath(const QString& base) {
   m_base = base;
 }
 
-void SpriteLoader::setSize(int s) {
+void PixmapLoader::setSize(int s) {
   if(m_loader) {
     if(s)
       m_loader->refSize(s);
@@ -73,7 +73,7 @@ void SpriteLoader::setSize(int s) {
   m_size = s;
 }
 
-void SpriteLoader::initialize() {
+void PixmapLoader::initialize() {
   if(m_loader)
     return;
 
@@ -89,7 +89,7 @@ void SpriteLoader::initialize() {
   m_loader->refSize(m_size);
 }
 
-QPixmap SpriteLoader::operator()(const QString& id) {
+QPixmap PixmapLoader::operator()(const QString& id) {
   if(!m_size || m_base.isEmpty())
     return QPixmap();
 
@@ -99,7 +99,7 @@ QPixmap SpriteLoader::operator()(const QString& id) {
   return m_loader->getPixmap(id, m_size);
 }
 
-::Loader::PixmapOrMap SpriteLoader::getPixmapMap(const QString& id) {
+::Loader::PixmapOrMap PixmapLoader::getPixmapMap(const QString& id) {
   if(!m_size || m_base.isEmpty())
     return ::Loader::PixmapOrMap();
 
@@ -109,7 +109,7 @@ QPixmap SpriteLoader::operator()(const QString& id) {
   return m_loader->getPixmapMap(id, m_size);
 }
 
-::Loader::Glyph SpriteLoader::getGlyph(const QString& id) {
+::Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
   if(!m_size || m_base.isEmpty())
     return ::Loader::Glyph();
 

@@ -8,15 +8,15 @@
   (at your option) any later version.
 */
 
-#ifndef SPRITELOADER_H
-#define SPRITELOADER_H
+#ifndef PIXMAPLOADER_H
+#define PIXMAPLOADER_H
 
 #include <QPixmap>
 #include <QString>
 #include "loader/theme.h"
 
 /**
-  * @class SpriteLoader <spriteloader.h>
+  * @class PixmapLoader <pixmaploader.h>
   * @brief The simple pixmap loading facility.
   *
   * This is the utility class used by the interface to load pixmap from resource ids.
@@ -25,7 +25,7 @@
   *
   * Note that pixmaps will not be all of the specified size, the size is only the base size.
   */
-class SpriteLoader {
+class PixmapLoader {
 private:
   class Loader;
   class LoadersCache;
@@ -51,8 +51,8 @@ private:
 
 public:
   /** constructor */
-  SpriteLoader();
-  ~SpriteLoader();
+  PixmapLoader();
+  ~PixmapLoader();
 
   /** set the theme path */
   void setBasePath(const QString& base);
@@ -73,4 +73,4 @@ public:
   ::Loader::Glyph getGlyph(const QString& id);
 };
 
-#endif // SPRITELOADER_H
+#endif // PIXMAPLOADER_H

@@ -19,12 +19,12 @@
 #include "sprite.h"
 #include "mainanimation.h"
 #include "pointconverter.h"
-#include "spriteloader.h"
+#include "pixmaploader.h"
 #include "clickablecanvas.h"
 
 class MainAnimation;
 class PointConverter;
-class SpriteLoader;
+class PixmapLoader;
 
 //BEGIN PieceGroup
 
@@ -54,7 +54,7 @@ protected:
   int         m_square_size;
 
   /** loader class, to load pieces */
-  SpriteLoader m_loader;
+  PixmapLoader m_loader;
 
   /** main animation structure */
   MainAnimation* m_main_animation;
@@ -92,10 +92,10 @@ public:
   const PointConverter* converter() const { return static_cast<const PointConverter*>(this); }
 
   /** returns the sprite loader */
-  SpriteLoader* loader() { return &m_loader; }
+  PixmapLoader* loader() { return &m_loader; }
 
   /** returns the sprite loader */
-  const SpriteLoader* loader() const { return &m_loader; }
+  const PixmapLoader* loader() const { return &m_loader; }
 
   /** returns the flipped value */
   virtual bool  flipped() const { return m_flipped; }
@@ -129,7 +129,7 @@ public:
 
   /** changed settings handler */
   virtual void settingsChanged();
-  
+
   /** create a sprite from a pixmap */
   virtual boost::shared_ptr<Sprite> createSprite(const QPixmap& pix, const Point& pos);
 };
