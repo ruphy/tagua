@@ -53,6 +53,9 @@ private:
   /** the index of the piece being dragged */
   int m_dragged_index;
 
+  /** main animation structure */
+  MainAnimation* m_main_animation;
+
   /** internal function, resizes the grid vector to hold x pieces */
   void setFill(int x);
 
