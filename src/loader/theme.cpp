@@ -39,25 +39,24 @@ Theme::Theme(const QString& lua_file)
 
   m_lua_loader.runFile(m_file.toAscii().constData());
   if(m_lua_loader.error())
-    std::cout << "SCRIPT LOAD ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;
+    ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
+
   settings.onChange(this, SLOT(onSettingsChanged()));
   onSettingsChanged();
 }
 
 Theme::~Theme() {
-  if(!m_cache.empty()) {
-    std::cout << " --> Error in Theme::~Theme, sizes still referenced" << std::endl;
-  }
+  if(!m_cache.empty())
+    ERROR("Sizes still referenced.");
 }
 
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
   OptList ol = m_lua_loader.getOptList("options");
-  if(options_list_load_from_settings(ol, entry.group("options"))) {
-    for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
-      it->second.m_pixmaps_cache.clear();
-  }
+  if(options_list_load_from_settings(ol, entry.group("options")))
+  for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
+    it->second.m_pixmaps_cache.clear();
 }
 
 void Theme::refSize(int size) {
@@ -67,7 +66,7 @@ void Theme::refSize(int size) {
 void Theme::unrefSize(int size) {
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    std::cout << " --> Error in Theme::unrefSize, size not referenced " << size << std::endl;
+    ERROR("Size " << size << " not referenced.");
     return;
   }
 
@@ -81,7 +80,7 @@ PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << "not referenced.");
+    ERROR("Size " << size << " not referenced.");
     return PixmapOrMap();
   }
 
@@ -91,7 +90,7 @@ PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
 
   PixmapOrMap retv = to_pixmap_map(m_lua_loader.getImageMap(key, size));
   if(m_lua_loader.error()) {
-    ERROR("Script error: " << std::endl << m_lua_loader.errorString());
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
     m_lua_loader.clearError();
   }
 
@@ -112,7 +111,7 @@ Glyph Theme::getGlyph(const QString& key, int size) {
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << "not referenced.");
+    ERROR("Size " << size << " not referenced.");
     return Glyph();
   }
 
@@ -124,7 +123,7 @@ Glyph Theme::getGlyph(const QString& key, int size) {
   retv.m_font.setPointSize(size+retv.m_delta);
 
   if(m_lua_loader.error()) {
-    std::cout << "SCRIPT RUN ERROR:" << std::endl << m_lua_loader.errorString() << std::endl;
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
     m_lua_loader.clearError();
   }
 

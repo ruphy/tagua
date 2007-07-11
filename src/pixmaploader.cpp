@@ -23,7 +23,7 @@ public:
 };
 
 
-PixmapLoader::ThemeLoadersCache PixmapLoader::loaders;
+PixmapLoader::ThemeLoadersCache PixmapLoader::s_loaders;
 
 
 PixmapLoader::PixmapLoader()
@@ -45,7 +45,7 @@ void PixmapLoader::flush() {
     /* unref the loader, and possibly destroy it */
     if(!--m_loader->m_ref_count) {
       delete m_loader;
-      loaders.erase(m_base);
+      s_loaders.erase(m_base);
     }
     m_loader = NULL;
   }
@@ -76,11 +76,11 @@ void PixmapLoader::initialize() {
     return;
 
   /* try to get a loader */
-  if(loaders.count(m_base))
-    m_loader = loaders[m_base];
+  if(s_loaders.count(m_base))
+    m_loader = s_loaders[m_base];
   else {
     m_loader = new ThemeLoader(m_base);
-    loaders[m_base] = m_loader;
+    s_loaders[m_base] = m_loader;
   }
 
   m_loader->m_ref_count++;
