@@ -20,21 +20,21 @@
   * @brief The simple pixmap loading facility.
   *
   * This is the utility class used by the interface to load pixmap from resource ids.
-  * It acts simply as a wrapper around PixmapLoader::Loader, making it possible to
+  * It acts simply as a wrapper around PixmapLoader::ThemeLoader, making it possible to
   * use it in a simple and afficient way.
   *
   * Note that pixmaps will not be all of the specified size, the size is only the base size.
   */
 class PixmapLoader {
 private:
-  class Loader;
-  class LoadersCache;
+  class ThemeLoader;
+  typedef std::map<QString, ThemeLoader*> ThemeLoadersCache;
 
   /** static cache of the loaders, there should be only one for each (theme,variant) pair  */
-  static LoadersCache loaders;
+  static ThemeLoadersCache loaders;
 
   /** the current loader, or NULL */
-  Loader *m_loader;
+  ThemeLoader *m_loader;
 
   /** the current size */
   int m_size;
@@ -67,10 +67,10 @@ public:
   QPixmap operator()(const QString& id);
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  ::Loader::PixmapOrMap getPixmapMap(const QString& id);
+  ::ThemeLoader::PixmapOrMap getPixmapMap(const QString& id);
 
   /** looks up a font + char */
-  ::Loader::Glyph getGlyph(const QString& id);
+  ::ThemeLoader::Glyph getGlyph(const QString& id);
 };
 
 #endif // PIXMAPLOADER_H

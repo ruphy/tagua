@@ -12,21 +12,19 @@
 #include "loader/theme.h"
 #include "pixmaploader.h"
 
-class PixmapLoader::Loader : public ::Loader::Theme {
+class PixmapLoader::ThemeLoader : public Loader::Theme {
 public:
   int m_ref_count;
-  Loader(const QString& s)
-    : ::Loader::Theme(s)
+
+  ThemeLoader(const QString& s)
+    : Loader::Theme(s)
     , m_ref_count(0) {
   }
 };
 
-/* inherit instead of typedef to ease forward declaration :) */
-class PixmapLoader::LoadersCache : public
-  std::map<QString, PixmapLoader::Loader*> {
-};
 
-PixmapLoader::LoadersCache PixmapLoader::loaders;
+PixmapLoader::ThemeLoadersCache PixmapLoader::loaders;
+
 
 PixmapLoader::PixmapLoader()
 : m_loader(NULL)
@@ -54,7 +52,7 @@ void PixmapLoader::flush() {
 }
 
 void PixmapLoader::setBasePath(const QString& base) {
-  //QString base = PixmapLoader::Loader::resolveBasePath(__base);
+  //QString base = PixmapLoader::ThemeLoader::resolveBasePath(__base);
 
   if(base == m_base)
     return;
@@ -81,7 +79,7 @@ void PixmapLoader::initialize() {
   if(loaders.count(m_base))
     m_loader = loaders[m_base];
   else {
-    m_loader = new Loader(m_base);
+    m_loader = new ThemeLoader(m_base);
     loaders[m_base] = m_loader;
   }
 
@@ -99,9 +97,9 @@ QPixmap PixmapLoader::operator()(const QString& id) {
   return m_loader->getPixmap(id, m_size);
 }
 
-::Loader::PixmapOrMap PixmapLoader::getPixmapMap(const QString& id) {
+Loader::PixmapOrMap PixmapLoader::getPixmapMap(const QString& id) {
   if(!m_size || m_base.isEmpty())
-    return ::Loader::PixmapOrMap();
+    return Loader::PixmapOrMap();
 
   if(!m_loader)
     initialize();
@@ -109,9 +107,9 @@ QPixmap PixmapLoader::operator()(const QString& id) {
   return m_loader->getPixmapMap(id, m_size);
 }
 
-::Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
+Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
   if(!m_size || m_base.isEmpty())
-    return ::Loader::Glyph();
+    return Loader::Glyph();
 
   if(!m_loader)
     initialize();
