@@ -16,8 +16,10 @@
 /*****************************************************************************************/
 PiecePool::PiecePool(Board* b, Canvas::Abstract* parent)
 : PieceGroup(parent)
-, m_sprites(0,0)
 , m_board(b)
+, m_flipped(false)
+, m_square_size(0)
+, m_width(1)
 , m_fill(0)
 , m_dragged_index(-1) {
   setGridWidth(1);
@@ -44,7 +46,7 @@ Point PiecePool::flipPoint(const Point& p) const {
 
 /*****************************************************************************************/
 void PiecePool::setGridWidth(int w) {
-  m_sprites.changeSize(w, (m_fill+w-1)/w);
+  m_width = w;
 }
 
 int PiecePool::fill() {
@@ -78,25 +80,18 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
     return;
   }
 
-  setFill(m_fill+1);
-  Point i = m_sprites.nTh(index);
+  m_sprite.resize(m_sprites.size()+1);
 
-  NamedSprite replacep = m_sprites[i];
-  m_sprites[i] = nsprite;
-  m_sprites[i].sprite()->show();
-  m_sprites[i].sprite()->moveTo(converter()->toReal(i));
-  fadeIn(i);
-
-  int speed = 1;
-  for( i=m_sprites.next(i); i<=m_sprites.last(); i=m_sprites.next(i)) {
-    if(!replacep)
-      break;
-    NamedSprite tmp = replacep;
-    replacep = m_sprites[i];
-    m_sprites[i] = tmp;
-    animatePiece(m_sprites[i].sprite(), i, (1.0+1.0/speed)*0.4);
-    speed++;
+  for(int i = m_sprites.size()-2; i >= index; i--) {
+    double speed = (1.0+1.0/(i - index + 1))*0.4;
+    m_sprites[i] = m_sprites[i-1];
+    m_sprites[i]->moveTo(toReal(i)); //BROKEN animate to that point?
   }
+
+  m_sprites[index] = nsprite;
+  m_sprites[index].sprite()->show();
+  m_sprites[index].sprite()->moveTo(toReal(index));
+  //BROKEN fadeIn(index);
 }
 
 /*****************************************************************************************/
@@ -107,13 +102,12 @@ NamedSprite PiecePool::getSprite(int index) {
   if(m_dragged && index > m_dragged_index)
     index--;
 
-  if(index < 0 || index >= fill() ) {
+  if(index < 0 || index >= m_sprites.size() ) {
     ERROR("invalid index " << index);
     return NamedSprite();
   }
 
-  Point i = m_sprites.nTh(index);
-  return m_sprites[i];
+  return m_sprites[index];
 }
 
 /*****************************************************************************************/
@@ -129,46 +123,33 @@ NamedSprite PiecePool::takeSprite(int index) {
   if(m_dragged && index > m_dragged_index)
     index--;
 
-  if(index < 0 || index >= fill() ) {
+  if(index < 0 || index >= m_sprites.size() ) {
     ERROR("invalid index " << index);
     return NamedSprite();
   }
 
-  Point i = m_sprites.nTh(index);
-  NamedSprite piece = takeNamedSprite(i);
-
-  return piece;
+  return takeSpriteAt(index);
 }
 
 /*****************************************************************************************/
-NamedSprite PiecePool::takeNamedSprite(const Point& _i) {
-  Point i = _i;
-  if(i < m_sprites.first() || m_sprites.last() < i ) {
-    ERROR("invalid index " << i);
+NamedSprite PiecePool::takeSpriteAt(int index) {
+  if(index < 0 || index >= m_sprites.size() ) {
+    ERROR("invalid index " << index);
     return NamedSprite();
   }
 
-  NamedSprite piece = m_sprites[i];
-  if(!piece.sprite())
+  NamedSprite retv = m_sprites[index];
+  if(!retv)
     return NamedSprite();
 
-  Point previ = i;
-  int speed = 1;
-  i = m_sprites.next(i);
-  for(; i<=m_sprites.last(); i=m_sprites.next(i)) {
-    m_sprites[previ] = m_sprites[i];
-
-    if(m_sprites[previ]) {
-      animatePiece(m_sprites[previ].sprite(), previ, (1.0+1.0/speed)*0.4);
-      speed++;
-    }
-
-    previ = i;
+  for(int i = index; i < m_sprites.size()-1; i++) {
+    double speed = (1.0+1.0/(i - index + 1))*0.4;
+    m_sprites[i] = m_sprites[i+1];
+    m_sprites[i]->moveTo(toReal(i)); //BROKEN animate to that point?
   }
-  m_sprites[previ] = NamedSprite();
-  setFill(m_fill-1);
+  m_sprites.resize(m_sprites.size()-1);
 
-  return piece;
+  return retv;
 }
 
 /*****************************************************************************************/
@@ -204,33 +185,16 @@ void PiecePool::flipAndMoveBy(QPoint p) {
   moveTo(pos() + deltapos);
   m_flipped = !m_flipped;
 
-  for(Point i=m_sprites.first(); i<=m_sprites.last(); i=m_sprites.next(i))
-  if(m_sprites[i]) {
-    if(m_anim_movement) {
-      enqueue(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
-                                               m_sprites[i].sprite()->pos() - deltapos)));
-      enqueue(AnimationPtr(new MovementAnimation(m_sprites[i].sprite(),
-                                               converter()->toReal(i), 1.0)));
-    }
-    else
-      enqueue(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
-                                               converter()->toReal(i))));
+  for(int i=0;i<m_sprites.size(); i++)
+  if(m_anim_movement) {
+    enqueue(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
+                                              m_sprites[i].sprite()->pos() - deltapos)));
+    enqueue(AnimationPtr(new MovementAnimation(m_sprites[i].sprite(),
+                                              toReal(i), 1.0)));
   }
-}
-
-/*****************************************************************************************/
-void PiecePool::updateSprites() {
-
-  // adjust piece positions
-  for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
-    boost::shared_ptr<Sprite> p = m_sprites[i].sprite();
-
-    if (p) {
-      // drawing sprite
-      p->setPixmap( m_loader( m_sprites[i].name() ) );
-      adjustSprite(i);
-    }
-  }
+  else
+    enqueue(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
+                                              toReal(i))));
 }
 
 /*****************************************************************************************/
@@ -238,10 +202,19 @@ void PiecePool::onResize(int new_size, bool force_reload) {
   if(m_square_size == new_size && !force_reload)
     return;
 
-  PieceGroup::onResize(new_size);
+  m_square_size = new_size;
+  m_loader.setSize(m_square_size);
 
   // update the sprites
-  updateSprites();
+  for (int i=0;i<m_sprites.size(); i++) {
+    SpritePtr s = m_sprites[i].sprite();
+
+    if (p) { // should be always true
+      // drawing sprite
+      s->setPixmap( m_loader( m_sprites[i].name() ) );
+      enqueue(AnimationPtr(new InstantAnimation(s, toReal(i))));
+    }
+  }
 }
 
 /*****************************************************************************************/
@@ -281,17 +254,17 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
     cancelDragging(); //never remove implicitly a piece from the pool
   }
 
-  Point p = converter()->toLogical(pos);
-  NamedSprite got = takeNamedSprite(p);
+  int index = toLogical(pos);
+  NamedSprite got = takeSpriteAt(index);
   if(!got)
     return;
 
   got.sprite()->hide();
 
   /* recreate the sprite, as "got" may be being animated */
-  QPixmap px = m_board->m_loader( got.name() );
   QPoint at = pos + this->pos() - m_board->pos() - QPoint(px.width(), px.height())/2;
-  m_dragged = NamedSprite(  got.name(),  SpritePtr(new Sprite(px, m_board->piecesGroup(), at)) );
+  m_dragged = NamedSprite(  got.name(), SpritePtr(new Sprite(m_board->m_loader( got.name() ),
+                                                             m_board->piecesGroup(),  at) ) );
   m_dragged.sprite()->raise();
   m_dragged.sprite()->show();
 #if 0
