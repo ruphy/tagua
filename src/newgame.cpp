@@ -65,4 +65,3 @@ void NewGame::variantChanged(const QString& var) {
   }
 }
 
-#include "newgame.moc"

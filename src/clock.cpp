@@ -339,5 +339,4 @@ void Clock::onMousePress(const QPoint& pos, int button) {
   }
 }
 
-#include "clock.moc"
 

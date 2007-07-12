@@ -354,4 +354,3 @@ void ICSConnection::startup() {
   sendText("set style 12");
 }
 
-#include "icsconnection.moc"

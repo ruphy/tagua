@@ -677,4 +677,3 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
   return false;
 }
 
-#include "board.moc"

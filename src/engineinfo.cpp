@@ -51,4 +51,3 @@ shared_ptr<Engine> EngineInfo::engine() {
   
   return res;
 }
-#include "engineinfo.moc"

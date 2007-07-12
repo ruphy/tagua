@@ -266,4 +266,3 @@ void ChessTable::displayMessage(const QString& msg) {
 }
 
 
-#include "chesstable.moc"

@@ -65,4 +65,3 @@ void HistLineEdit::updateHistory() {
   emit receivedInput(text());
   setText("");
 }
-#include "histlineedit.moc"
