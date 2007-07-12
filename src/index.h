@@ -43,14 +43,36 @@ public:
       is the number of moves played in the main line */
   Index(int n) : num_moves(n) {}
 
+  /** return a string like "1_2.3_4.5" */
   operator QString() const;
+
+  /** returns the number of moves from the start of the game */
   int totalNumMoves() const;
+
+  /** \return true if this index is the first of a variation branch */
   bool atVariationStart() const;
+
+  /** flip variation: returns the current index changed as if it was in the subvariation \a vid
+      at \a vstart instead of mainline and viceversa, ie at \a vstart the mainline becames
+      subvariation \a vid and viceversa */
   Index flipVariation(const Index& vstart, int v_id) const;
+
+  /** Returns an index the point to the next position. If variation is != -1, you will be entering in the
+    sub-variation with this id instead of continuing in the current main line. You can also specify
+    the number of moves you want to go on (in the main line or in the specified variation) */
   Index next(int variation_id = -1, int num = 1) const;
+
+  /** Returns an index pointing to the previous position (or to a position n moves back)  */
   Index prev(int _num = 1) const;
+
+  /** Returns an index that is the minimum of this index and the given one, ie the branch point
+    of the lines from start to the two indices. */
   Index min(const Index& ix) const;
+
+  /** Returns the number of steps down and up you have to do to go from this index to the given one */
   std::pair<int, int> stepsTo(const Index& ix) const;
+
+  /** returns the number of moves in the most nested variation */
   int lastIndex();
 
   /** True if this index refers to a position 'before' than the given one */
@@ -86,6 +108,7 @@ public:
     return !(*this == ix);
   }
 
+  /** \return an index from a string like "1_2.3_4.5" */
   static Index fromString(const QString& s);
 };
 
