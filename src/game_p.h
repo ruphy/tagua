@@ -1,15 +1,15 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 */
 
-#ifndef __GAME_P_H__
-#define __GAME_P_H__
+#ifndef GAME_P_H
+#define GAME_P_H
 
 #include <map>
 #include <QString>
@@ -20,6 +20,9 @@ namespace GamePrivate {
 typedef std::map<int, History> Variations;
 typedef std::map<int, QString> VComments;
 
+/**
+  * A class to store game entries
+  */
 class Entry {
 public:
   MovePtr move;
@@ -98,6 +101,6 @@ public:
 
 }
 
-#endif //__GAME_P_H__
+#endif //GAME_P_H
 
 

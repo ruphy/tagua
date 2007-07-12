@@ -11,9 +11,6 @@
 #include <cmath>
 #include "luaapi/imaging.h"
 
-#if QT_VERSION >= 0x040200
-  #define DEFAULT_GRADIENT
-#endif
 
 using namespace Loader;
 
@@ -275,10 +272,8 @@ const char* Wrapper<QLinearGradient>::class_name() {
 }
 
 void Wrapper<QLinearGradient>::create_index_table(lua_State* l) {
-#if QT_VERSION >= 0x040200
   SET_PROPERTY_RW(l, start);
   SET_PROPERTY_RW(l, finish);
-#endif //QT_VERSION >= 0x040200
 
   //set_meta_method(l, &index_event, "__index");
   set_meta_method(l, &newindex_event, "__newindex");
@@ -289,11 +284,9 @@ int Wrapper<QLinearGradient>::constructor(lua_State* l) {
   QLinearGradient* res;
 
   switch(n) {
-#ifdef DEFAULT_GRADIENT
     case 0:
       res =  new QLinearGradient();
       break;
-#endif // DEFAULT_GRADIENT
     case 2: {
       QPointF* start = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       QPointF* final = Wrapper<QPointF>::retrieve(l, 2, AssertOk);
@@ -322,11 +315,9 @@ const char* Wrapper<QRadialGradient>::class_name() {
 }
 
 void Wrapper<QRadialGradient>::create_index_table(lua_State* l) {
-#if QT_VERSION >= 0x040200
   SET_PROPERTY_RW(l, center);
   SET_PROPERTY_RW(l, radius);
   SET_PROPERTY_RW(l, focus);
-#endif //QT_VERSION >= 0x040200
 
   //set_meta_method(l, &index_event, "__index");
   set_meta_method(l, &newindex_event, "__newindex");
@@ -337,11 +328,9 @@ int Wrapper<QRadialGradient>::constructor(lua_State* l) {
   QRadialGradient* res;
 
   switch(n) {
-#ifdef DEFAULT_GRADIENT
     case 0:
       res =  new QRadialGradient();
       break;
-#endif // DEFAULT_GRADIENT
     case 2: {
       QPointF* center = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       double radius = lua_tonumber(l, 2);
@@ -376,10 +365,8 @@ const char* Wrapper<QConicalGradient>::class_name() {
 }
 
 void Wrapper<QConicalGradient>::create_index_table(lua_State* l) {
-#if QT_VERSION >= 0x040200
   SET_PROPERTY_RW(l, center);
   SET_PROPERTY_RW(l, angle);
-#endif //QT_VERSION >= 0x040200
 
   //set_meta_method(l, &index_event, "__index");
   set_meta_method(l, &newindex_event, "__newindex");
@@ -390,11 +377,9 @@ int Wrapper<QConicalGradient>::constructor(lua_State* l) {
   QConicalGradient* res;
 
   switch(n) {
-#ifdef DEFAULT_GRADIENT
     case 0:
       res =  new QConicalGradient();
       break;
-#endif // DEFAULT_GRADIENT
     case 2: {
       QPointF* center = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       double angle = lua_tonumber(l, 2);
@@ -438,15 +423,8 @@ QBrush Wrapper<QBrush>::get(lua_State* l, int index) {
     return QBrush(*g);
   else if(QConicalGradient* g = Wrapper<QConicalGradient>::retrieve(l, index))
     return QBrush(*g);
-  else if(Loader::Image* img = Wrapper<Image>::retrieve(l, index)) {
-#if QT_VERSION >= 0x040200
+  else if(Loader::Image* img = Wrapper<Image>::retrieve(l, index))
     return QBrush(img->m_image);
-#else
-    Q_UNUSED(img);
-    luaL_error(l, "Sorry my dear, you cannot create brushes from images with Qt < 4.2");
-    return QBrush();
-#endif
-  }
   else
     return QBrush(Wrapper<QColor>::get(l, index));
 }
@@ -471,8 +449,6 @@ int Wrapper<QBrush>::constructor(lua_State* l) {
   allocate(l, res);
   return 1;
 }
-
-#if QT_VERSION >= 0x040200
 
 int Wrapper<QBrush>::rotate(lua_State* l) {
   const int n = lua_gettop(l);
@@ -539,23 +515,6 @@ int Wrapper<QBrush>::translate(lua_State* l) {
   }
   return 0;
 }
-#else //QT_VERSION >= 0x040200
-
-int Wrapper<QBrush>::rotate(lua_State* l) {
-  luaL_error(l, "Sorry my dear, you cannot transform brushes with Qt < 4.2");
-  return 0;
-}
-
-int Wrapper<QBrush>::scale(lua_State* l) {
-  luaL_error(l, "Sorry my dear, you cannot transform brushes with Qt < 4.2");
-  return 0;
-}
-
-int Wrapper<QBrush>::translate(lua_State* l) {
-  luaL_error(l, "Sorry my dear, you cannot transform brushes with Qt < 4.2");
-  return 0;
-}
-#endif //QT_VERSION >= 0x040200
 
 //END Wrapper<QBrush>----------------------------------------------------------
 
@@ -783,7 +742,6 @@ int Wrapper<Image>::drawSVG(lua_State* l) {
 }
 
 int Wrapper<Image>::drawGlyph(lua_State* l) {
-#if QT_VERSION >= 0x040200
   int n = lua_gettop(l);
   if (n < 4 || n > 8) luaL_error(l, "Wrong argument count for Image::draw_glyph");
 
@@ -820,11 +778,6 @@ int Wrapper<Image>::drawGlyph(lua_State* l) {
                                           fg, bg, border, draw_inner_bg);
   lua_pushboolean(l, res);
   return 1;
-#else //QT_VERSION >= 0x040200
-  lua_pop(l, lua_gettop(l));
-  luaL_error(l, "Sorry my dear, you cannot paint font glyphs from images with Qt < 4.2");
-  return 0;
-#endif
 }
 
 int Wrapper<Image>::createShadow(lua_State* l) {

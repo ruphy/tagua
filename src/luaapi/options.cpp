@@ -42,21 +42,21 @@ int Wrapper<OptList>::index_event(lua_State* l) {
   for(int i=0; i<list.size();i++) {
     if(list[i]->name() == k) {
       if(BoolOptPtr p = boost::dynamic_pointer_cast<BoolOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<BoolOptPtr>::allocate(l, p);
+        GenericWrapperByValue<BoolOptPtr>::create(l, p);
       else if(IntOptPtr p = boost::dynamic_pointer_cast<IntOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<IntOptPtr>::allocate(l, p);
+        GenericWrapperByValue<IntOptPtr>::create(l, p);
       else if(StringOptPtr p = boost::dynamic_pointer_cast<StringOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<StringOptPtr>::allocate(l, p);
+        GenericWrapperByValue<StringOptPtr>::create(l, p);
       else if(UrlOptPtr p = boost::dynamic_pointer_cast<UrlOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<UrlOptPtr>::allocate(l, p);
+        GenericWrapperByValue<UrlOptPtr>::create(l, p);
       else if(ColorOptPtr p = boost::dynamic_pointer_cast<ColorOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<ColorOptPtr>::allocate(l, p);
+        GenericWrapperByValue<ColorOptPtr>::create(l, p);
       else if(FontOptPtr p = boost::dynamic_pointer_cast<FontOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<FontOptPtr>::allocate(l, p);
+        GenericWrapperByValue<FontOptPtr>::create(l, p);
       else if(ComboOptPtr p = boost::dynamic_pointer_cast<ComboOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<ComboOptPtr>::allocate(l, p);
+        GenericWrapperByValue<ComboOptPtr>::create(l, p);
       else if(SelectOptPtr p = boost::dynamic_pointer_cast<SelectOpt, BaseOpt>(list[i]))
-        GenericWrapperByValue<SelectOptPtr>::allocate(l, p);
+        GenericWrapperByValue<SelectOptPtr>::create(l, p);
       else
         luaL_error(l, "WFT?");
       return 1;
@@ -143,7 +143,7 @@ int Wrapper<BoolOptList>::index_event(lua_State* l) {
   lua_pop(l,2);
   for(int i=0; i<list.size();i++) {
     if(list[i]->name() == k) {
-      GenericWrapperByValue<BoolOptPtr>::allocate(l, list[i]);
+      GenericWrapperByValue<BoolOptPtr>::create(l, list[i]);
       return 1;
     }
   }

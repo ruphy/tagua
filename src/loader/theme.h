@@ -22,22 +22,32 @@ namespace Loader {
 typedef std::map<QRect, QPixmap, ::LuaApi::RectLess> PixmapMap;
 typedef boost::variant<QPixmap, PixmapMap> PixmapOrMap;
 
+/**
+  * @class Theme <loader/theme.h>
+  * @brief A class that represents and caches all images loaded by a theme.
+  *
+  * This class will be created once for each lua-scripted theme, and will cache
+  * images loaded from that theme.
+  */
 class Theme : public QObject {
 Q_OBJECT
+
+private:
   QString m_file;
-public:
+
+  /** there will be one such class for each size, and i will store pixmaps and glyphs */
   class SizeCache {
   public:
-    typedef std::map<QString, PixmapOrMap> Cache;
-    typedef std::map<QString, Glyph> Cache2;
+    typedef std::map<QString, PixmapOrMap> PixmapsCache;
+    typedef std::map<QString, Glyph> GlyphsCache;
     int m_ref_count;
-    Cache m_cache;
-    Cache2 m_cache2;
+    PixmapsCache m_pixmaps_cache;
+    GlyphsCache m_glyphs_cache;
 
     SizeCache()
       : m_ref_count(0) {}
   };
-private:
+
   typedef std::map<int, SizeCache> Cache;
 
   Context m_context;
@@ -46,18 +56,28 @@ private:
 
   static PixmapOrMap to_pixmap_map(const ::LuaApi::ImageOrMap& m);
 
+private slots:
+  void onSettingsChanged();
+
 public:
+  /** Constructor, created the class from a lua theme file */
   Theme(const QString& lua_file);
   ~Theme();
 
+  /** References the size \a size, enabling you to get pixmaps of size \a size */
   void refSize(int size);
+
+  /** Unreferences the size */
   void unrefSize(int size);
 
+  /** Loads a pixmap */
   QPixmap getPixmap(const QString& key, int size);
+
+  /** Loads a pixmap -or- map of rects->pixmaps */
   PixmapOrMap getPixmapMap(const QString& key, int size);
+
+  /** Loads a glyph */
   Glyph getGlyph(const QString& key, int size);
-private slots:
-  void onSettingsChanged();
 };
 
 } //end namespace loader

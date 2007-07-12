@@ -15,7 +15,7 @@
 #include <QWidget>
 #include <khtml_part.h>
 #include "decoratedmove.h"
-#include "spriteloader.h"
+#include "pixmaploader.h"
 #include "movelist_notifier.h"
 
 class KHTMLPart;
@@ -28,7 +28,7 @@ Q_OBJECT
   Index m_curr_selected;
   int   m_layout_style;
   Notifier *m_notifier;
-  SpriteLoader m_loader;
+  PixmapLoader m_loader;
 
 public:
   Textual(QWidget *parent = NULL);

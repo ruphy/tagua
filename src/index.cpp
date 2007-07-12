@@ -36,7 +36,6 @@ Index Index::fromString(const QString& s) {
   return retv;
 }
 
-/** returns the number of moves from the start of the game */
 int Index::totalNumMoves() const {
   int retv = num_moves;
 
@@ -46,16 +45,13 @@ int Index::totalNumMoves() const {
   return retv;
 }
 
-/** true if this index is the first of a variation branch */
 bool Index::atVariationStart() const {
   return nested.size() && (nested[nested.size()-1].num_moves == 0);
 }
 
-/** flip variation */
 Index Index::flipVariation(const Index& vstart, int v_id) const {
   int s = vstart.nested.size();
-  if(s)
-  {
+  if(s) {
     if( (int)nested.size() < s
         || vstart.num_moves != num_moves)
       return *this;
@@ -108,9 +104,6 @@ Index Index::flipVariation(const Index& vstart, int v_id) const {
     return *this;
 }
 
-/** Returns an index the point to the next position. If variation is != -1, you will be entering in the
-    sub-variation with this id instead of continuing in the current main line. You can also specify
-    the number of moves you want to go on (in the main line or in the specified variation) */
 Index Index::next(int variation_id, int num) const {
   Index retv = *this;
   if(variation_id != -1)
@@ -118,12 +111,11 @@ Index Index::next(int variation_id, int num) const {
   else if(retv.nested.size() == 0)
     retv.num_moves += num;
   else
-    retv.nested.rbegin()->num_moves += num;
+    retv.nested.last().num_moves += num;
 
   return retv;
 }
 
-/** Returns an index pointing to the previous position (or to a position n moves back)  */
 Index Index::prev(int _num) const {
   int num = _num;
   Index retv = *this;
@@ -139,12 +131,12 @@ Index Index::prev(int _num) const {
       num = 0;
     }
     else {
-      if(retv.nested.rbegin()->num_moves >= num) {
-        retv.nested.rbegin()->num_moves -= num;
+      if(retv.nested.last().num_moves >= num) {
+        retv.nested.last().num_moves -= num;
         num = 0;
       }
       else {
-        num -= retv.nested.rbegin()->num_moves+1;
+        num -= retv.nested.last().num_moves+1;
         retv.nested.pop_back();
       }
     }
@@ -153,8 +145,6 @@ Index Index::prev(int _num) const {
   return retv;
 }
 
-/** Returns an index that is the minimum of this index and the given one, ie the branch point
-    of the lines from start to the two indices. */
 Index Index::min(const Index& ix) const  {
   if(ix.num_moves != num_moves)
     return Index( std::min(ix.num_moves, num_moves) );
@@ -172,7 +162,6 @@ Index Index::min(const Index& ix) const  {
   return retv;
 }
 
-/** Returns the number of steps down and up you have to do to go from this index to the given one */
 std::pair<int, int> Index::stepsTo(const Index& ix) const {
   int i;
   int down = 0, up = 0;
@@ -204,7 +193,6 @@ std::pair<int, int> Index::stepsTo(const Index& ix) const {
   return std::pair<int,int>(down, up);
 }
 
-/** returns the number of moves in the most nested variation */
 int Index::lastIndex() {
   return nested.size() ? nested[nested.size()-1].num_moves : num_moves;
 }

@@ -10,35 +10,33 @@
 
 #include <map>
 #include "loader/theme.h"
-#include "spriteloader.h"
+#include "pixmaploader.h"
 
-class SpriteLoader::Loader : public ::Loader::Theme {
+class PixmapLoader::ThemeLoader : public Loader::Theme {
 public:
   int m_ref_count;
-  Loader(const QString& s)
-    : ::Loader::Theme(s)
+
+  ThemeLoader(const QString& s)
+    : Loader::Theme(s)
     , m_ref_count(0) {
   }
 };
 
-/* inherit instead of typedef to ease forward declaration :) */
-class SpriteLoader::LoadersCache : public
-  std::map<QString, SpriteLoader::Loader*> {
-};
 
-SpriteLoader::LoadersCache SpriteLoader::loaders;
+PixmapLoader::ThemeLoadersCache PixmapLoader::s_loaders;
 
-SpriteLoader::SpriteLoader()
+
+PixmapLoader::PixmapLoader()
 : m_loader(NULL)
 , m_size(0)
 {
 }
 
-SpriteLoader::~SpriteLoader() {
+PixmapLoader::~PixmapLoader() {
   flush();
 }
 
-void SpriteLoader::flush() {
+void PixmapLoader::flush() {
   if(m_loader) {
     /* unref the size */
     if(m_size)
@@ -47,14 +45,14 @@ void SpriteLoader::flush() {
     /* unref the loader, and possibly destroy it */
     if(!--m_loader->m_ref_count) {
       delete m_loader;
-      loaders.erase(m_base);
+      s_loaders.erase(m_base);
     }
     m_loader = NULL;
   }
 }
 
-void SpriteLoader::setBasePath(const QString& base) {
-  //QString base = PixmapLoader::Loader::resolveBasePath(__base);
+void PixmapLoader::setBasePath(const QString& base) {
+  //QString base = PixmapLoader::ThemeLoader::resolveBasePath(__base);
 
   if(base == m_base)
     return;
@@ -63,7 +61,7 @@ void SpriteLoader::setBasePath(const QString& base) {
   m_base = base;
 }
 
-void SpriteLoader::setSize(int s) {
+void PixmapLoader::setSize(int s) {
   if(m_loader) {
     if(s)
       m_loader->refSize(s);
@@ -73,23 +71,23 @@ void SpriteLoader::setSize(int s) {
   m_size = s;
 }
 
-void SpriteLoader::initialize() {
+void PixmapLoader::initialize() {
   if(m_loader)
     return;
 
   /* try to get a loader */
-  if(loaders.count(m_base))
-    m_loader = loaders[m_base];
+  if(s_loaders.count(m_base))
+    m_loader = s_loaders[m_base];
   else {
-    m_loader = new Loader(m_base);
-    loaders[m_base] = m_loader;
+    m_loader = new ThemeLoader(m_base);
+    s_loaders[m_base] = m_loader;
   }
 
   m_loader->m_ref_count++;
   m_loader->refSize(m_size);
 }
 
-QPixmap SpriteLoader::operator()(const QString& id) {
+QPixmap PixmapLoader::operator()(const QString& id) {
   if(!m_size || m_base.isEmpty())
     return QPixmap();
 
@@ -99,9 +97,9 @@ QPixmap SpriteLoader::operator()(const QString& id) {
   return m_loader->getPixmap(id, m_size);
 }
 
-::Loader::PixmapOrMap SpriteLoader::getPixmapMap(const QString& id) {
+Loader::PixmapOrMap PixmapLoader::getPixmapMap(const QString& id) {
   if(!m_size || m_base.isEmpty())
-    return ::Loader::PixmapOrMap();
+    return Loader::PixmapOrMap();
 
   if(!m_loader)
     initialize();
@@ -109,9 +107,9 @@ QPixmap SpriteLoader::operator()(const QString& id) {
   return m_loader->getPixmapMap(id, m_size);
 }
 
-::Loader::Glyph SpriteLoader::getGlyph(const QString& id) {
+Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
   if(!m_size || m_base.isEmpty())
-    return ::Loader::Glyph();
+    return Loader::Glyph();
 
   if(!m_loader)
     initialize();

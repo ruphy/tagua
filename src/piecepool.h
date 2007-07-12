@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef __PIECEPOOL_H__
-#define __PIECEPOOL_H__
+#ifndef PIECEPOOL_H
+#define PIECEPOOL_H
 
 #include <boost/shared_ptr.hpp>
 #include "piecegroup.h"
@@ -139,4 +139,4 @@ public:
   virtual void settingsChanged();
 };
 
-#endif //__PIECEPOOL_H__
+#endif //PIECEPOOL_H

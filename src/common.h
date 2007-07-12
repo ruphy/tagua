@@ -56,3 +56,4 @@ inline void TRAP() {
       << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ <<std::endl)
 
 #endif // COMMON_H
+

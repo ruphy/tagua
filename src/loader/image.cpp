@@ -10,11 +10,8 @@
 
 
 #include <boost/shared_ptr.hpp>
-#include <QtGlobal>
-#if QT_VERSION >= 0x040200
-  #include <QFont>
-  #include <QFontDatabase>
-#endif //QT_VERSION >= 0x040200
+#include <QFont>
+#include <QFontDatabase>
 #include <QPainter>
 #include <QPainterPath>
 #include <QSvgRenderer>
@@ -26,7 +23,6 @@
 
 namespace Loader {
 
-#if QT_VERSION >= 0x040200
 //BEGIN Font-------------------------------------------------------------------
 
 class Font {
@@ -78,13 +74,10 @@ public:
 };
 
 //END FontGlyph----------------------------------------------------------------
-#endif //QT_VERSION >= 0x040200
 
 typedef boost::shared_ptr<QSvgRenderer> Svg;
-#if QT_VERSION >= 0x040200
 typedef boost::shared_ptr<Font> FontPtr;
 typedef boost::shared_ptr<FontGlyph> FontGlyphPtr;
-#endif //QT_VERSION >= 0x040200
 
 
 //BEGIN Image------------------------------------------------------------------
@@ -118,9 +111,7 @@ Image::Image(Context* ctx,
 
 void Image::init_painter(QPainter* p) {
   p->setMatrix(m_draw_matrix);
-#if QT_VERSION >= 0x040200
   p->setOpacity(m_draw_opacity);
-#endif //QT_VERSION >= 0x040200
   p->setRenderHint(QPainter::Antialiasing);
   p->setRenderHint(QPainter::TextAntialiasing);
   p->setRenderHint(QPainter::SmoothPixmapTransform);
@@ -214,7 +205,6 @@ bool Image::drawSVG(Context* ctx,
   return true;
 }
 
-#if QT_VERSION >= 0x040200
 
 bool Image::drawGlyph(Context* ctx,
                 const QRectF& dest,
@@ -360,21 +350,6 @@ bool Image::drawGlyph(Context* ctx,
   }
   return true;
 }
-
-#else //QT_VERSION >= 0x040200
-
-bool Image::drawGlyph(Context* /*ctx*/,
-                const QRectF& /*dest*/,
-                const QString& /*file*/,
-                unsigned int /*glyph_num*/,
-                const QBrush& /*fg*/,
-                const QBrush& /*bg*/,
-                double /*border*/,
-                bool /*draw_inner_bg*/) {
-  return false;
-}
-
-#endif //QT_VERSION >= 0x040200
 
 
 Image Image::createShadow(double radius,

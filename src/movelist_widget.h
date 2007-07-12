@@ -21,7 +21,7 @@
 #include <vector>
 #include "index.h"
 #include "decoratedmove.h"
-#include "spriteloader.h"
+#include "pixmaploader.h"
 #include "kgamecanvas.h"
 
 namespace MoveList {
@@ -80,7 +80,7 @@ private:
   QHash<QString, QPixmap> loaded_pixmaps;
   Table *owner_table;
   Settings *m_settings;
-  SpriteLoader m_loader;
+  PixmapLoader m_loader;
 
   History* fetchRef(const Index& ix, int* idx = NULL);
   EntryPtr fetch(const Index& ix);

@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef __KBOARD_FWD_H__
-#define __KBOARD_FWD_H__
+#ifndef KBOARD_FWD_H
+#define KBOARD_FWD_H
 
 #include <boost/shared_ptr.hpp>
 
@@ -35,4 +35,4 @@ typedef boost::shared_ptr<class CrossFadingAnimation> CrossFadingAnimationPtr;
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 
-#endif //__KBOARD_FWD_H__
+#endif //KBOARD_FWD_H
