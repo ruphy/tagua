@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef __INDEX_H__
-#define __INDEX_H__
+#ifndef INDEX_H
+#define INDEX_H
 
 #include <vector>
 #include <QString>
@@ -112,4 +112,4 @@ public:
   static Index fromString(const QString& s);
 };
 
-#endif //__INDEX_H__
+#endif //INDEX_H

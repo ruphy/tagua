@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef __MOVELIST_TABLE_H__
-#define __MOVELIST_TABLE_H__
+#ifndef MOVELIST_TABLE_H
+#define MOVELIST_TABLE_H
 
 #include <QWidget>
 #include "movelist_widget.h"
@@ -97,4 +97,4 @@ namespace MoveList {
   };
 } //end namespace MoveList
 
-#endif //__MOVELIST_TABLE_H__
+#endif //MOVELIST_TABLE_H

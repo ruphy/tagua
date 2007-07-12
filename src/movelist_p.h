@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef __MOVELIST_P_H__
-#define __MOVELIST_P_H__
+#ifndef MOVELIST_P_H
+#define MOVELIST_P_H
 
 #include <map>
 #include <vector>
@@ -209,4 +209,4 @@ public:
 
 }
 
-#endif //__MOVELIST_P_H__
+#endif //MOVELIST_P_H

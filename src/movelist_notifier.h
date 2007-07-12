@@ -8,14 +8,14 @@
   (at your option) any later version.
 */
 
-#ifndef __MOVELIST_NOTIFIER_H__
-#define __MOVELIST_NOTIFIER_H__
+#ifndef MOVELIST_NOTIFIER_H
+#define MOVELIST_NOTIFIER_H
 
 #include "index.h"
 
 namespace MoveList {
   class Widget;
-  
+
   /**
     * @class Notifier <movelist_notifier.h>
     * @brief An observer class for user actions on the movelist.
@@ -59,4 +59,4 @@ namespace MoveList {
   };
 }
 
-#endif //__MOVELIST_NOTIFIER_H__
+#endif //MOVELIST_NOTIFIER_H
