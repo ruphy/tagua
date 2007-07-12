@@ -1,68 +1,133 @@
+set(kboard_SRC
+  controllers/editgame.cpp
+  controllers/abstract.cpp
+  controllers/editposition.cpp
 
-SETUP_SOURCES(kboard_SRC kboard_UIS)
+  loader/image.cpp
+  loader/theme.cpp
+  loader/context.cpp
 
-# i have to do this because QT4_WRAP_UI is stupid
-SET(old_bin_dir ${CMAKE_CURRENT_BINARY_DIR})
-SET(CMAKE_CURRENT_BINARY_DIR ${old_bin_dir}/ui)
-#QT4_WRAP_UI(kboard_UIS_H ${kboard_UIS})
-KDE4_ADD_UI_FILES(kboard_SRC ${kboard_UIS})
-SET(CMAKE_CURRENT_BINARY_DIR ${old_bin_dir})
-SET(old_bin_dir)
+  luaapi/lfunclib.c
+  luaapi/options.cpp
+  luaapi/luahl.cpp
+  luaapi/genericwrapper.cpp
+  luaapi/loader.cpp
+  luaapi/imaging.cpp
+  
+  entities/gameentity.cpp
+  entities/userentity.cpp
+  entities/examinationentity.cpp
+  entities/entity.cpp
+  entities/engineentity.cpp
+  entities/gamebasedentity.cpp
+  entities/icsentity.cpp
 
-# QT4_AUTOMOC is not very intelligent either
-KDE4_AUTOMOC(${kboard_SRC} ${kboard_UIS_H})
+  variants/variants.cpp
+  variants/xchess/move.cpp
+  variants/xchess/piece.cpp
+  variants/chess.cpp
 
-KDE4_ADD_EXECUTABLE(kboard ${kboard_SRC})
+  movelist.cpp
+  infodisplay.cpp
+  engineinfo.cpp
+  premove.cpp
+  mainanimation.cpp
+  random.cpp
+  point.cpp
+  sprite.cpp
+  pref_movelist.cpp
+  option.cpp
+  graphicalsystem.cpp
+  agentgroup.cpp
+  main.cpp
+  graphicalgame.cpp
+  imageeffects.cpp
+  crash.cpp
+  pref_clock.cpp
+  flash.cpp
+  histlineedit.cpp
+  pathinfo.cpp
+  pref_theme.cpp
+  gameinfo.cpp
+  console.cpp
+  animation.cpp
+  pref_engines.cpp
+  clock.cpp
+  chesstable.cpp
+  index.cpp
+  algebraicnotation.cpp
+  global.cpp
+  location.cpp
+  hline.cpp
+  xboardengine.cpp
+  settings.cpp
+  positioninfo.cpp
+  engine.cpp
+  ui.cpp
+  movelist_widget.cpp
+  pref_preferences.cpp
+  poolinfo.cpp
+  spriteloader.cpp
+  qconnect.cpp
+  pref_board.cpp
+  game.cpp
+  piecepool.cpp
+  piecegroup.cpp
+  movelist_textual.cpp
+  icsconnection.cpp
+  mainwindow.cpp
+  board.cpp
+  common.cpp
+  pgnparser.cpp
+  movement.cpp
+  connection.cpp
+  movelist_table.cpp
+  newgame.cpp
+)
 
+kde4_add_ui_files(kboard_SRC
+  ui/pref_highlight.ui
+  ui/newgamedialog.ui
+  ui/pref_engines.ui
+  ui/preferences.ui
+  ui/gametags.ui
+  ui/pref_movelist.ui
+  ui/quickconnect.ui
+  ui/pref_theme.ui
+  ui/pref_board.ui
+)
 
-INCLUDE_DIRECTORIES(
-#   ${QT_INCLUDE_DIR}
-   ${QT_QTNETWORK_INCLUDE_DIR}
-   ${QT_QTSVG_INCLUDE_DIR}
-   ${QT_QTXML_INCLUDE_DIR}
-#  ${QT_QTOPENGL_INCLUDE_DIR}
+include_directories(
+  ${KDE4_INCLUDES}
   ${LUA_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
-  ${KDE4_INCLUDE_DIR}
-  ${RUBY_INCLUDE_PATH}
-  .
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-ADD_DEFINITIONS(
+add_definitions(
   ${LUA_CFLAGS}
 )
 
-LINK_DIRECTORIES(
+
+kde4_add_executable(kboard ${kboard_SRC})
+
+link_directories(
   ${LUA_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
+
 )
 
-TARGET_LINK_LIBRARIES(kboard
-  ${QT_LIBRARIES}
-  ${QT_QTNETWORK_LIBRARIES}
-  ${QT_QTSVG_LIBRARIES}
-  ${QT_QTXML_LIBRARIES}
-#  ${QT_QTOPENGL_LIBRARIES}
+message("lua: " ${LUA_LINK_FLAGS})
+
+target_link_libraries(kboard
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
   ${KDE4_KHTML_LIBS}
-  ${RUBY_LIBRARY}
+  kdegames
 )
+
+
 
 INSTALL(TARGETS kboard
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-
-
-IF(0)
-  MESSAGE("(TEST) uis: ${kboard_UIS}")
-  MESSAGE("(TEST) ui headers: ${kboard_UIS_H}")
-
-  FILE(
-    GLOB_RECURSE kboard_H *.h)
-
-  QT4_WRAP_CPP(kboard_MOCS ${kboard_H})
-
-  MESSAGE("(TEST) mocs: ${kboard_MOCS}")
-ENDIF(0)

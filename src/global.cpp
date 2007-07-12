@@ -78,5 +78,4 @@ void MasterSettings::changed() {
 
 MasterSettings settings(".kboardrc.xml");
 
-#include "global.moc"
 

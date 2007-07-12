@@ -11,9 +11,10 @@
 #ifndef PREF_ENGINES_H
 #define PREF_ENGINES_H
 
-#include "ui/ui_pref_engines.h"
+#include "ui_pref_engines.h"
 #include "engineinfo.h"
 #include <vector>
+#include <map>
 
 
 class PrefEngines : public QWidget

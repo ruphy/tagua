@@ -453,7 +453,7 @@ void Settings::save() {
 //BEGIN Widget-----------------------------------------------------------------
 
 Widget::Widget(QWidget *parent, Table *o)
-: Canvas::Widget(parent)
+: KGameCanvasWidget(parent)
 , curr_highlight(-1)
 , curr_selected(-1)
 , comment_editor(NULL)
@@ -546,7 +546,7 @@ void Widget::settingsChanged() {
 }
 
 void Widget::mouseMoveEvent ( QMouseEvent * event ) {
-  Canvas::Item *i = itemAt(event->pos());
+  KGameCanvasItem *i = itemAt(event->pos());
   Entry* e = i ? dynamic_cast<Entry*>(i) : NULL;
   Text* f = i ? dynamic_cast<Text*>(i) : NULL;
   Brace* b = i ? dynamic_cast<Brace*>(i) : NULL;
@@ -665,7 +665,7 @@ void Widget::stopEditing() {
 void Widget::mousePressEvent ( QMouseEvent * event ) {
   stopEditing();
 
-  Canvas::Item *i = itemAt(event->pos());
+  KGameCanvasItem *i = itemAt(event->pos());
   if(!i)
     return;
 

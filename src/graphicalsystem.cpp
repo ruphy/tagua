@@ -382,7 +382,6 @@ void GraphicalSystem::setTurn(int turn) {
   m_view->updateTurn(m_pos->turn());
 }
 
-#include "graphicalsystem.moc"
 
 
 

@@ -284,6 +284,5 @@ void Console::clear() {
 }
 
 
-#include "console.moc"
 
 

@@ -1,56 +1,11 @@
-
 PROJECT(kboard)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.0)
 
-
-
-MACRO(SETUP_SOURCES SRC UI)
-  FILE(GLOB_RECURSE ${SRC} *.c *.cpp)
-
-  #find uis
-  FILE(GLOB_RECURSE ${UI} *.ui)
-
-  FOREACH(FILE1 ${${SRC}} ${${SRC}})
-    GET_FILENAME_COMPONENT(FILE2 ${FILE1} PATH)
-    FILE(RELATIVE_PATH FILE3 ${CMAKE_CURRENT_SOURCE_DIR} ${FILE2})
-    IF(NOT "${FILE3}" STREQUAL "")
-      LIST(APPEND DIRS "${FILE3}")
-    ENDIF(NOT "${FILE3}" STREQUAL "")
-  ENDFOREACH(FILE1)
-
-  #LIST(SORT DIRS)
-
-  FOREACH(D ${DIRS})
-    IF(NOT "${D}" STREQUAL "${PREVD}")
-      LIST(APPEND UDIRS "${D}")
-    ENDIF(NOT "${D}" STREQUAL "${PREVD}")
-    SET(PREVD "${D}")
-  ENDFOREACH(D)
-
-  FOREACH(D ${UDIRS})
-    FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/${D}")
-  ENDFOREACH(D)
-
-  SET(PREVD)
-  SET(DIRS)
-  SET(UDIRS)
-ENDMACRO(SETUP_SOURCES SRC UI)
-
-
-
-
-###############################################################################################
-# Boost stuff
-###############################################################################################
+# boost
 FIND_PACKAGE(Boost)
 
-
-
-
-###############################################################################################
-# Lua stuff
-###############################################################################################
-IF(SYSTEM_LUA)
+# lua
+IF(SYSTEM_LUA) # use lua installed in the system
   INCLUDE(UsePkgConfig)
 
   IF(LUA_PKG)
@@ -63,156 +18,20 @@ IF(SYSTEM_LUA)
   ENDIF(LUA_PKG)
 
   ADD_CUSTOM_TARGET(lua_library)
-ELSE(SYSTEM_LUA)
+ELSE(SYSTEM_LUA) # use the embedded lua source
   SET(LUA_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/lua")
   SET(LUA_INCLUDE_DIRS "${LUA_BIN_DIR}/include")
   SET(LUA_LIBRARY_DIRS "${LUA_BIN_DIR}")
   SET(LUA_LINK_FLAGS lua)
 
   ADD_SUBDIRECTORY(lua)
-#   GET_FILENAME_COMPONENT(_LUA_SRC_DIRS lua ABSOLUTE)
-#   SET(LUA_INCLUDE_DIRS ${_LUA_SRC_DIRS}/include)
-#   SET(LUA_LIBRARY_DIRS ${_LUA_SRC_DIRS}/lib)
-#   SET(LUA_LINK_FLAGS ${LUA_LIBRARY_DIRS}/liblua.a)
-#
-#   ADD_CUSTOM_TARGET(${__LUA_LIB}
-#     ALL
-#     COMMAND make linux
-#     COMMAND make local
-#     WORKING_DIRECTORY lua)
 ENDIF(SYSTEM_LUA)
 
-
-
-
-###############################################################################################
-# X11
-###############################################################################################
-FIND_PACKAGE(X11)
-
-IF(0)
-IF (X11_FOUND)
-  ADD_DEFINITIONS(-DHAVE_X11)
-ENDIF (X11_FOUND)
-ENDIF(0)
-
-
-
-
-###############################################################################################
-# Qt4 / KDE4 stuff
-###############################################################################################
 ADD_DEFINITIONS(-fexceptions)
-FIND_PACKAGE(KDE4 REQUIRED)
-INCLUDE(KDE4Defaults)
+find_package(KDE4 REQUIRED)
+include(KDE4Defaults)
 
-INCLUDE(${QT_USE_FILE})
+add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
-
-
-
-###############################################################################################
-# system stuff
-###############################################################################################
-INCLUDE(CheckCXXSourceCompiles)
-
-CHECK_CXX_SOURCE_COMPILES(" int main() { __asm__(\"pxor %mm0, %mm0\") ; }" HAVE_X86_MMX)
-CHECK_CXX_SOURCE_COMPILES(" int main() { __asm__(\"xorps %xmm0, %xmm0\"); }" HAVE_X86_SSE)
-
-IF(HAVE_X86_MMX AND NOT NO_MMX)
-#  ADD_DEFINITIONS(-DHAVE_X86_MMX)
-ENDIF(HAVE_X86_MMX AND NOT NO_MMX)
-
-IF(HAVE_X86_SSE AND NOT NO_SSE)
-#  ADD_DEFINITIONS(-DHAVE_X86_SSE)
-ENDIF(HAVE_X86_SSE AND NOT NO_SSE)
-
-
-
-
-# Compile for debugging as default
-SET(CMAKE_BUILD_TYPE debug)
-
-IF(SETTINGS_DEBUG)
-  MESSAGE("Compiling with -D__SETTINGS_DEBUG")
-  ADD_DEFINITIONS(-D__SETTINGS_DEBUG)
-ENDIF(SETTINGS_DEBUG)
-
-
-# FIXME, i think this is not portable
-IF(1)
-  ADD_DEFINITIONS(-Wall -ansi -pedantic -Wno-long-long) # -pg
-  #LINK_LIBRARIES(-pg)
-ENDIF(1)
-
-# Note by Paolo: verbose mode can be controlled
-# directly by the cmake command line. The setting
-# is stored in the cache, so you just need to type
-#    cmake -DCMAKE_VERBOSE_MAKEFILE=1
-#     -or when compiling-
-#    make VERBOSE=1
-# once and for all.
-
-# Debug messages
-
-IF (X11_FOUND)
-MESSAGE("* X11 was found!")
-ENDIF (X11_FOUND)
-
-MESSAGE("* Qt4:")
-MESSAGE("    Includes:  ${QT_INCLUDE_DIR}")
-MESSAGE("    LinkFlags: ${QT_LIBRARIES}")
-
-MESSAGE("* Kde4:")
-MESSAGE("    Includes:  ${KDE4_INCLUDE_DIR}")
-MESSAGE("    LinkFlags: ${KDE4_KDEUI_LIBS}")
-
-MESSAGE("* Boost:")
-MESSAGE("    Includes: ${Boost_INCLUDE_DIRS}")
-MESSAGE("    LinkDir:  ${Boost_LIBRARY_DIRS}")
-
-MESSAGE("* Lua:")
-MESSAGE("    Includes:  ${LUA_INCLUDE_DIRS}")
-MESSAGE("    LinkDir:   ${LUA_LIBRARY_DIRS}")
-MESSAGE("    LinkFlags: ${LUA_LINK_FLAGS}")
-MESSAGE("    CFlags:    ${LUA_CFLAGS}")
-
-MESSAGE("* Host:")
-MESSAGE("    Have MMX: ${HAVE_X86_MMX}")
-MESSAGE("    Have SSE: ${HAVE_X86_SSE}")
-
-
-#MESSAGE("data dir: ${DATA_INSTALL_DIR}")
-#SET(DATA_INSTALL_DIR ${CMAKE_INSTALL_PREFIX}/share/apps/kboard/)
-
-MACRO(INSTALL_LOCAL_DATA_DIR local_dir)
-  SET(abs_local_dir ${CMAKE_CURRENT_SOURCE_DIR}/data/${local_dir})
-  #MESSAGE("looking for files in ${abs_local_dir}")
-  FILE(GLOB_RECURSE INST_FILES ${abs_local_dir}/*)
-  FOREACH(INST_FILE ${INST_FILES})
-    #MESSAGE("processing: ${INST_FILE}")
-    STRING(REGEX MATCH "/\\.svn/" TEMP ${INST_FILE})
-    IF(NOT TEMP)
-      FILE(RELATIVE_PATH REL_FILE ${abs_local_dir} ${INST_FILE})
-      GET_FILENAME_COMPONENT(REL_DIR ${REL_FILE} PATH)
-      #MESSAGE("rel dir: ${REL_DIR}")
-      #MESSAGE("installing to: ${DATA_INSTALL_DIR}/${local_dir}/${REL_DIR}")
-      INSTALL(FILES ${INST_FILE}
-        DESTINATION ${DATA_INSTALL_DIR}/kboard/${local_dir}/${REL_DIR})
-    ENDIF(NOT TEMP)
-  ENDFOREACH(INST_FILE)
-ENDMACRO(INSTALL_LOCAL_DATA_DIR local_dir)
-
-INSTALL_LOCAL_DATA_DIR(themes)
-INSTALL_LOCAL_DATA_DIR(scripts)
-INSTALL_LOCAL_DATA_DIR(highlighting)
-INSTALL_LOCAL_DATA_DIR(pics)
-INSTALL_LOCAL_DATA_DIR(piece_icons)
-
-ADD_DEFINITIONS("-DDATA_INSTALL_DIR=\"${DATA_INSTALL_DIR}\"")
-
-
-
-
-ADD_SUBDIRECTORY(src)
-ADD_SUBDIRECTORY(tests EXCLUDE_FROM_ALL)
+add_subdirectory(src)
+# ADD_SUBDIRECTORY(tests EXCLUDE_FROM_ALL)

@@ -184,4 +184,3 @@ void UI::detach() {
   controller()->detach();
 }
 
-#include "ui.moc"

@@ -174,4 +174,3 @@ void Table::enableRedo(bool e) {
 
 } //end namespace MoveList
 
-#include "movelist_table.moc"

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cmath>
 #include <boost/random/uniform_smallint.hpp>
+#include <vector>
 #include "common.h"
 #include "point.h"
 #include "sprite.h"
@@ -32,9 +33,9 @@ class SpriteExplosion : public std::vector<ExplosionFragment> {
 
 };
 
-Sprite::Sprite(const QPixmap& pix, Canvas::Abstract* canvas,
+Sprite::Sprite(const QPixmap& pix, KGameCanvasAbstract* canvas,
                                               const QPoint& location)
-: Canvas::Pixmap(pix, canvas)
+: KGameCanvasPixmap(pix, canvas)
 , m_pixmap(pix)
 , m_explode_step(0.0)
 , m_explosion(NULL)
@@ -76,16 +77,16 @@ void Sprite::setThumb(const QImage& thumb) {
     painter.drawPixmap(pix.width() - width, 0, thumb_pix);
   }
 
-  Canvas::Pixmap::setPixmap(pix);
+  KGameCanvasPixmap::setPixmap(pix);
 }
 
 void Sprite::removeThumb() {
-  Canvas::Pixmap::setPixmap(m_pixmap);
+  KGameCanvasPixmap::setPixmap(m_pixmap);
 }
 
 void Sprite::setPixmap(const QPixmap& pix) {
   m_pixmap = pix;
-  Canvas::Pixmap::setPixmap(pix);
+  KGameCanvasPixmap::setPixmap(pix);
 }
 
 void Sprite::setMovementAnimation(const shared_ptr<Animation>& animation) {
@@ -280,7 +281,7 @@ void Sprite::paint(QPainter* p) {
     p->translate(-pos());
   }
   else
-    Canvas::Pixmap::paint(p);
+    KGameCanvasPixmap::paint(p);
 
   if(m_rotation != 0.0 || m_scale != 1.0)
     p->setMatrix(savem);
@@ -308,7 +309,7 @@ QRect Sprite::rect() const {
     retv = QRect(x1,y1,x2-x1,y2-y1).translated(pos());
   }
   else
-    retv = Canvas::Pixmap::rect();
+    retv = KGameCanvasPixmap::rect();
 
   /* transform the rectangle as needed */
   if(m_rotation != 0.0 || m_scale != 1.0) {

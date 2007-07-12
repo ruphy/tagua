@@ -123,4 +123,3 @@ void PrefEngines::apply() {
   }
 }
 
-#include "pref_engines.moc"

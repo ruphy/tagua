@@ -22,7 +22,7 @@
 #include "index.h"
 #include "decoratedmove.h"
 #include "spriteloader.h"
-#include "canvas/widget.h"
+#include "kgamecanvas.h"
 
 namespace MoveList {
 
@@ -45,7 +45,7 @@ class Settings;
   *
   * This class is a widget that can be used to display a tree of moves
   */
-class Widget : public Canvas::Widget {
+class Widget : public KGameCanvasWidget {
 private:
   Q_OBJECT
   friend class FancyItem;
