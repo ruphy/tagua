@@ -13,7 +13,7 @@ set(kboard_SRC
   luaapi/genericwrapper.cpp
   luaapi/loader.cpp
   luaapi/imaging.cpp
-  
+
   entities/gameentity.cpp
   entities/userentity.cpp
   entities/examinationentity.cpp
@@ -26,6 +26,7 @@ set(kboard_SRC
   variants/xchess/move.cpp
   variants/xchess/piece.cpp
   variants/chess.cpp
+  variants/crazyhouse.cpp
 
   movelist.cpp
   infodisplay.cpp

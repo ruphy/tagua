@@ -45,7 +45,7 @@ private:
   int m_fill;
 
   /** loader class, to load pieces */
-  SpriteLoader m_loader;
+  PixmapLoader m_loader;
 
   /** the piece that is being dragged, if any */
   NamedSprite m_dragged;
@@ -84,10 +84,10 @@ public:
   ~PiecePool();
 
   /** returns the sprite loader */
-  SpriteLoader* loader() { return &m_loader; }
+  PixmapLoader* loader() { return &m_loader; }
 
   /** returns the sprite loader */
-  const SpriteLoader* loader() const { return &m_loader; }
+  const PixmapLoader* loader() const { return &m_loader; }
 
   /** returns the flipped value */
   bool flipped() const { return m_flipped; }

@@ -37,29 +37,27 @@ template <typename M, typename P, typename B>
 class Position;
 
 template <typename M, typename P, typename B>
-class PoolRef {
-  Position<M, P, B>* m_position;
-  int m_pool;
-public:
-
-  PoolRef(Position<M, P, B>* position, int pool)
-    : m_position(position)
-    , m_pool(pool) {
-  }
-  int size();
-  int insert(int idx, const P& p);
-  P get(int idx);
-  P take(int idx);
-};
-
-template <typename M, typename P, typename B>
 class Position {
 public:
-  friend class PoolRef<M, P, B>;
-  typedef std::map<P, int> Pool;
+  typedef typename P::Type  Type;
+  typedef typename P::Color Color;
+  typedef std::map<Type, int> PlayerPool;
+  typedef std::map<Color, PlayerPool> Pool;
+
+  class PoolReference {
+    PlayerPool* m_p_pool;
+  public:
+
+    PoolReference(PlayerPool* p)
+      : m_p_pool(p) {
+    }
+    int size();
+    int insert(int idx, const P& p);
+    P get(int idx);
+    P take(int idx);
+  };
 
 protected:
-  typedef typename P::Color Color;
   Color m_turn;
 
   B m_board;
@@ -72,7 +70,6 @@ protected:
   bool m_castleBlackQueen : 1;
 
 public:
-  typedef PoolRef<M, P, B> PoolReference;
   typedef M Move;
   typedef P Piece;
   typedef B Board;
@@ -80,9 +77,9 @@ public:
   Position(int = 8, int = 8);
   Position(const OptList& l, int = 8, int = 8);
   Position(Color turn,
-                bool castleWhiteKing, bool castleWhiteQueen,
-                bool castleBlackKing, bool castleBlackQueen,
-                const Point& enPassant);
+          bool castleWhiteKing, bool castleWhiteQueen,
+          bool castleBlackKing, bool castleBlackQueen,
+          const Point& enPassant);
   Position(const Position<M, P, B>&);
   template <typename M1, typename P1, typename B1>
   Position(const Position<M1, P1, B1>&);
@@ -111,7 +108,9 @@ public:
   PathInfo path(const Point&, const Point&) const;
   const Point& enPassantSquare() const { return m_enPassantSquare; }
 
-  virtual PoolRef<M,P,B> pool(int index) { return PoolRef<M,P,B>(this, index); }
+  virtual Pool& rawPool() { return m_pool; }
+  virtual const Pool& rawPool() const { return m_pool; }
+  virtual PoolReference pool(int index) { return PoolReference(&m_pool[static_cast<Color>(index)]); }
 
   virtual P get(const Point& p) const {
     return valid(p) ? m_board[p] : P();
@@ -199,22 +198,22 @@ std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 #include "algebraicnotation.h"
 
 template <typename M, typename P, typename B>
-int PoolRef<M, P, B>::size() {
+int Position<M, P, B>::PoolReference::size() {
   return 0; //BROKEN
 }
 
 template <typename M, typename P, typename B>
-int PoolRef<M, P, B>::insert(int idx, const P& p) {
+int Position<M, P, B>::PoolReference::insert(int idx, const P& p) {
   return 0; //BROKEN
 }
 
 template <typename M, typename P, typename B>
-P PoolRef<M, P, B>::get(int idx) {
+P Position<M, P, B>::PoolReference::get(int idx) {
   return P(); //BROKEN
 }
 
 template <typename M, typename P, typename B>
-P PoolRef<M, P, B>::take(int idx) {
+P Position<M, P, B>::PoolReference::take(int idx) {
   return P(); //BROKEN
 }
 
@@ -720,12 +719,14 @@ void Position<M, P, B>::dump() const {
   }
   std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
 
+#if 0 // BROKEN
   for(typename Pool::const_iterator pi = m_pool.begin(); pi != m_pool.end(); ++pi) {
     if(pi->first.color() == BLACK)
       std::cout << Piece::typeSymbol(pi->first.type()).toLower() <<": "<<pi->second<<std::endl;
     else
       std::cout << Piece::typeSymbol(pi->first.type()) <<": "<<pi->second<<std::endl;
   }
+#endif
 }
 
 template <typename M, typename P, typename B>
