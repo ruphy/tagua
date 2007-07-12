@@ -21,7 +21,7 @@ using namespace boost;
 
 //BEGIN PieceGroup
 
-PieceGroup::PieceGroup(Canvas::Abstract* parent)
+PieceGroup::PieceGroup(KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_flipped(false)
 , m_square_size(0) {

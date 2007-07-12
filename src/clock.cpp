@@ -32,7 +32,7 @@ static void setFontSize(int max, int width, const QString& text, QFont& font) {
 void Clock::Info::settingsChanged() {
 }
 
-void Clock::Info::setup(const Player& player, const QRect& rect, const QString& caption, Canvas::Abstract* canvas) {
+void Clock::Info::setup(const Player& player, const QRect& rect, const QString& caption, KGameCanvasAbstract* canvas) {
   putInCanvas(canvas);
 
   m_player = player;
@@ -44,14 +44,14 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
   QColor framecol(0x60,0x60,0x90);
   QColor backgroundColor;
   (s_clock["background"] |= QColor(0xa0,0xf0,0xd0,200)) >> backgroundColor;
-  m_background = new Canvas::Rectangle(backgroundColor, QSize(m_rect.size()), this);
-  m_frame[0] = new Canvas::Rectangle(framecol, QSize(m_rect.width()-2,1), this);
+  m_background = new KGameCanvasRectangle(backgroundColor, QSize(m_rect.size()), this);
+  m_frame[0] = new KGameCanvasRectangle(framecol, QSize(m_rect.width()-2,1), this);
   m_frame[0]->moveTo(1,0);
-  m_frame[1] = new Canvas::Rectangle(framecol, QSize(m_rect.width()-2,1), this);
+  m_frame[1] = new KGameCanvasRectangle(framecol, QSize(m_rect.width()-2,1), this);
   m_frame[1]->moveTo(0,m_rect.height()-1);
-  m_frame[2] = new Canvas::Rectangle(framecol, QSize(1,m_rect.height()), this);
+  m_frame[2] = new KGameCanvasRectangle(framecol, QSize(1,m_rect.height()), this);
   m_frame[2]->moveTo(0,0);
-  m_frame[3] = new Canvas::Rectangle(framecol, QSize(1,m_rect.height()), this);
+  m_frame[3] = new KGameCanvasRectangle(framecol, QSize(1,m_rect.height()), this);
   m_frame[3]->moveTo(m_rect.width()-1,0);
 
   int tempFontSize;
@@ -61,8 +61,8 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
     (s_clock["captionFontSize"] |=
       static_cast<int>(captionFont.pointSize() * 1.4)) >> tempFontSize;
     captionFont.setPointSize(tempFontSize);
-    m_caption = new Canvas::Text(caption, Qt::black, captionFont,
-        Canvas::Text::HStart, Canvas::Text::VTop, this);
+    m_caption = new KGameCanvasText(caption, Qt::black, captionFont,
+        KGameCanvasText::HStart, KGameCanvasText::VTop, this);
     m_caption->show();
   }
 
@@ -71,8 +71,8 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
     (s_clock["timeFontSize"] |= timeFont.pointSize() * 2) >> tempFontSize;
     timeFont.setPointSize(tempFontSize);
     timeFont.setWeight(QFont::Bold);
-    m_time_label = new Canvas::Text("", Qt::black, timeFont,
-      Canvas::Text::HStart, Canvas::Text::VCenter, this);
+    m_time_label = new KGameCanvasText("", Qt::black, timeFont,
+      KGameCanvasText::HStart, KGameCanvasText::VCenter, this);
     m_time_label->show();
   }
 
@@ -81,16 +81,16 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
     (s_clock["decsFontSize"] |=
       static_cast<int>(decsFont.pointSize() * 0.8)) >> tempFontSize;
     decsFont.setPointSize(tempFontSize);
-    m_decs = new Canvas::Text("", Qt::black, decsFont,
-      Canvas::Text::HStart, Canvas::Text::VBottom, this);
+    m_decs = new KGameCanvasText("", Qt::black, decsFont,
+      KGameCanvasText::HStart, KGameCanvasText::VBottom, this);
   }
 
   {
     QFont playerFont("Bitstream Vera Sans");
     (s_clock["playerFontSize"] |= playerFont.pointSize()) >> tempFontSize;
     playerFont.setPointSize(tempFontSize);
-    m_player_name = new Canvas::Text(playerString(player), Qt::black, playerFont,
-      Canvas::Text::HStart, Canvas::Text::VBottom, this);
+    m_player_name = new KGameCanvasText(playerString(player), Qt::black, playerFont,
+      KGameCanvasText::HStart, KGameCanvasText::VBottom, this);
     m_player_name->show();
   }
 
@@ -264,7 +264,7 @@ QRect Clock::Info::eventRect() const {
 }
 
 
-Clock::Clock(Canvas::Abstract* parent)
+Clock::Clock(KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_running(-1)
 , m_active(-1) {
@@ -339,5 +339,4 @@ void Clock::onMousePress(const QPoint& pos, int button) {
   }
 }
 
-#include "clock.moc"
 

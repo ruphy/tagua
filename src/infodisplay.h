@@ -11,16 +11,16 @@
 #ifndef INFODISPLAY_H
 #define INFODISPLAY_H
 
-#include "canvas/group.h"
+#include "kgamecanvas.h"
 
 class MessageItem;
 
-class InfoDisplay : public Canvas::Group {
+class InfoDisplay : public KGameCanvasGroup {
   MessageItem* m_message;
 protected:
   void resizeEvent(QResizeEvent*);
 public:
-  InfoDisplay(Canvas::Abstract* parent = 0);
+  InfoDisplay(KGameCanvasAbstract* parent = 0);
   ~InfoDisplay();
   void setMessage(const QString&);
   void settingsChanged();

@@ -14,7 +14,7 @@
 #include "piecepool.h"
 
 /*****************************************************************************************/
-PiecePool::PiecePool(Board* b, Canvas::Abstract* parent)
+PiecePool::PiecePool(Board* b, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_board(b)
 , m_flipped(false)
@@ -164,7 +164,7 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
 }
 
 /*****************************************************************************************/
-Canvas::Abstract* PiecePool::piecesGroup() {
+KGameCanvasAbstract* PiecePool::piecesGroup() {
   return this;
 }
 

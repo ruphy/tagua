@@ -13,7 +13,7 @@
 
 #include <qwidget.h>
 
-#include "canvas/widget.h"
+#include "kgamecanvas.h"
 #include "positioninfo.h"
 #include "board.h"
 #include "common.h"
@@ -29,9 +29,9 @@ namespace Canvas {
   class TiledPixmap;
 }
 
-class ChessTable : public Canvas::Widget {
+class ChessTable : public KGameCanvasWidget {
   Q_OBJECT
-  Canvas::TiledPixmap* m_background;
+  KGameCanvasTiledPixmap* m_background;
 
   Clock*           m_clock;
   Board*           m_board;

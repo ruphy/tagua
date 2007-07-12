@@ -11,7 +11,7 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
-#include "canvas/canvas.h"
+#include "kgamecanvas.h"
 #include "random.h"
 #include <boost/weak_ptr.hpp>
 #include <QPixmap>
@@ -28,10 +28,10 @@ class SpriteExplosion;
   * @class Sprite <sprite.h>
   * @brief The sprite of a piece.
   *
-  * This class is a Canvas::Pixmap that enables a few nifty
+  * This class is a KGameCanvasPixmap that enables a few nifty
   * effects and keeps some piece-related information.
   */
-class Sprite : public Canvas::Pixmap {
+class Sprite : public KGameCanvasPixmap {
 private:
   /** the piece id (for convenience) */
   int m_id;
@@ -71,7 +71,7 @@ private:
 
 public:
   /** Constructor */
-  Sprite(const QPixmap& pix, Canvas::Abstract* canvas, const QPoint& location);
+  Sprite(const QPixmap& pix, KGameCanvasAbstract* canvas, const QPoint& location);
   virtual ~Sprite();
 
   /** duplicates the piece */
@@ -110,8 +110,8 @@ public:
   bool m_dummy_visible;
 
   void update_from_dummy(){
-    Canvas::Item::show();
-    Canvas::Item::setOpacity(m_dummy_visible ? 64+m_dummy_opacity*3/8 : 64);
+    KGameCanvasItem::show();
+    KGameCanvasItem::setOpacity(m_dummy_visible ? 64+m_dummy_opacity*3/8 : 64);
   }
 
   /* those should be enough, even if they are not virtual, as Piece is never casted IIRC */

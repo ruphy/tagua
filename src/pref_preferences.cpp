@@ -92,4 +92,3 @@ void Preferences::apply() {
   settings.changed();
 }
 
-#include "pref_preferences.moc"

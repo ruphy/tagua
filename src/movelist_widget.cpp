@@ -8,4 +8,3 @@
   (at your option) any later version.
 */
 
-#include "movelist_widget.moc"

@@ -166,4 +166,3 @@ void Connection::sendText(const QString& text) {
 
 
 
-#include "connection.moc"

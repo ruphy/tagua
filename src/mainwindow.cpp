@@ -670,4 +670,3 @@ void MainWindow::preferences() {
 
 
 
-#include "mainwindow.moc"

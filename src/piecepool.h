@@ -80,8 +80,7 @@ public:
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
-  PiecePool(Board* b, Canvas::Abstract* parent);
-
+  PiecePool(Board* b, KGameCanvasAbstract* parent);
   ~PiecePool();
 
   /** returns the sprite loader */
@@ -115,7 +114,7 @@ public:
   void setGridWidth(int w);
 
   /** piecesGroup overload */
-  virtual Canvas::Abstract* piecesGroup();
+  virtual KGameCanvasAbstract* piecesGroup();
 
   /** the rect that will be covered by the pool */
   virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*m_width,

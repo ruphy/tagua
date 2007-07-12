@@ -12,7 +12,7 @@
 #define PIECEGROUP_H
 
 #include <boost/shared_ptr.hpp>
-#include "canvas/group.h"
+#include "kgamecanvas.h"
 #include "point.h"
 #include "grid.h"
 #include "animation.h"
@@ -82,7 +82,7 @@ protected:
   virtual boost::shared_ptr<Sprite> spriteAt(const Point&) = 0;
 
 public:
-  PieceGroup(Canvas::Abstract* parent);
+  PieceGroup(KGameCanvasAbstract* parent);
   virtual ~PieceGroup();
 
   /** returns the point converter class */
@@ -122,7 +122,7 @@ public:
                                                  m_square_size*gridSize().y)); }
 
   /** returns the group that contains the pieces (override this) */
-  virtual Canvas::Abstract* piecesGroup() = 0;
+  virtual KGameCanvasAbstract* piecesGroup() = 0;
 
   /** resize event handler (updates the sprites and the square size) */
   virtual void onResize(int new_size, bool force_reload = false);
