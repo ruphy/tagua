@@ -118,7 +118,7 @@ namespace LuaApi {
 
 #define P_PROPERTY_RW_P_CLASS(PROP, GET, SET, CLASS)      \
   static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::allocate(l, (*retrieve(l, 1, DontCheck))->GET());      \
+    Wrapper<CLASS>::create(l, (*retrieve(l, 1, DontCheck))->GET());      \
     return 1;                                         \
   }                                                   \
                                                       \
@@ -129,7 +129,7 @@ namespace LuaApi {
 
 #define P_PROPERTY_RO_P_CLASS(PROP, GET, CLASS)      \
   static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::allocate(l, (*retrieve(l, 1, DontCheck))->GET());      \
+    Wrapper<CLASS>::create(l, (*retrieve(l, 1, DontCheck))->GET());      \
     return 1;                                         \
   }
 
@@ -171,7 +171,10 @@ namespace LuaApi {
 
 
 
-
+/**
+  * A simple class that read lua stack level at creation and checks it
+  * when destroyed, printing and error message if different from expected.
+  */
 class StackCheck {
   lua_State* l;
   int top;
@@ -182,7 +185,7 @@ public:
 
   ~StackCheck() {
     if (lua_gettop(l) != top) {
-      std::cout << "Wrong stack size!"  << std::endl
+      std::cout << "Wrong lua stack size!"  << std::endl
                 << "    expected = " << top << std::endl
                 << "    actual = " << lua_gettop(l) << std::endl;
     }
@@ -190,7 +193,9 @@ public:
 };
 
 
-
+/**
+  * An enumarated value to test how stong casts will be checked
+  */
 enum CheckStrenght {
   DontCheck,
   Check,
@@ -211,18 +216,18 @@ public:
   static Loader::Context* retrieve_context(lua_State* l);
 
   /**
-    * Add property f to the table at @a index.
+    * Add property \a f to the table at @a index.
     */
   static void set_property(lua_State* l, const char* name, lua_CFunction get,
                                             lua_CFunction set = NULL, int index = -1);
 
   /**
-    * Add method f to the table at @a index.
+    * Add method \a f to the table at @a index.
     */
   static void set_method(lua_State* l, lua_CFunction f, const char* name, int index = -1);
 
   /**
-    * Add meta method f to the table at @a index.
+    * Add meta method \a f to the table at @a index.
     */
   static void set_meta_method(lua_State* l, lua_CFunction f, const char* name, int index = -1);
 
@@ -240,13 +245,123 @@ public:
 //END GenericWrapperBase-------------------------------------------------------
 
 
+//BEGIN GenericWrapprCommon----------------------------------------------------
+
+template <typename T>
+class GenericWrapperCommon : public GenericWrapperBase {
+public:
+
+    /**
+    * Checks the type, will return true if ok, or false or raise a lua
+    * error if not (in case of Check/AssertOk parameters).
+    */
+  static bool check_type(lua_State* l, int index, CheckStrenght check) {
+    StackCheck s(l);
+
+    if(check != DontCheck) {
+      if(!lua_getmetatable(l,index)) {
+        if(check == AssertOk)
+          luaL_error(l, "Mismatch, got object of unknown type expecting %s",
+                                                      Wrapper<T>::class_name());
+        return false;
+      }
+      Wrapper<T>::push_meta_table(l);
+
+      if(!lua_rawequal(l, -2, -1)) {
+        if(check == AssertOk) {
+          if(lua_istable(l, -2)) {
+            lua_getfield(l, -2, ".type");
+            if(lua_isstring(l, -1))
+              luaL_error(l, "Mismatch, got object of type %s expecting %s",
+                            wrap_cptr(lua_tostring(l,-1)), Wrapper<T>::class_name());
+          }
+          lua_pop(l,2);
+          luaL_error(l, "Mismatch, got object of unknown type expecting %s",
+                                                      Wrapper<T>::class_name());
+        }
+        lua_pop(l,2);
+        return false;
+      }
+      lua_pop(l,2);
+    }
+
+    return true;
+  }
+
+  /**
+    * Create the factory class and static metatable.
+    */
+  static void register_class(lua_State* l) {
+    StackCheck s(l);
+
+    lua_newtable(l); // factory class
+
+    lua_newtable(l); // metatable
+    lua_pushcfunction(l, &Wrapper<T>::constructor_wrapper);
+    lua_setfield(l, -2, "__call");
+    lua_setmetatable(l, -2);
+
+    lua_newtable(l); // object metatable
+
+      // add gc metamethod
+      lua_pushcfunction(l, &Wrapper<T>::deallocate);
+      lua_setfield(l, -2, "__gc");
+
+      // add index metamethod
+      lua_pushcfunction(l, &Wrapper<T>::object_meta_index_event);
+      lua_setfield(l, -2, "__index");
+
+      // add newindex metamethod
+      lua_pushcfunction(l, &Wrapper<T>::object_meta_newindex_event);
+      lua_setfield(l, -2, "__newindex");
+
+      lua_newtable(l);
+      lua_setfield(l, -2, ".methods");
+
+      lua_newtable(l);
+      lua_setfield(l, -2, ".get");
+
+      lua_newtable(l);
+      lua_setfield(l, -2, ".set");
+
+      lua_pushstring(l, Wrapper<T>::class_name() );
+      lua_setfield(l, -2, ".type");
+
+      Wrapper<T>::create_index_table(l);
+
+    lua_setfield(l, -2, "object_meta_table");
+    lua_setglobal(l, Wrapper<T>::class_name() );
+  }
+
+  /**
+    * Calls the Wrapper&lt;T&gt; constructor
+    */
+  static int constructor_wrapper(lua_State* l) {
+    lua_remove(l, 1);
+    return Wrapper<T>::constructor(l);
+  }
+
+  /**
+    * Pushes this object's meta table.
+    */
+  static void push_meta_table(lua_State* l) {
+    StackCheck s(l, 1);
+
+    lua_getglobal(l, Wrapper<T>::class_name());
+    lua_pushstring(l, "object_meta_table");
+    lua_rawget(l,-2);
+    lua_remove(l,-2);
+  }
+};
+
+//END GenericWrapperCommon-----------------------------------------------------
+
+
 //BEGIN GenericWrapper---------------------------------------------------------
 
 template <typename T>
-class GenericWrapper : public GenericWrapperBase {
+class GenericWrapper : public GenericWrapperCommon<T> {
 public:
-
-  static void register_class(lua_State* l);
 
   /**
     * Retrieve a wrapped object on the stack.
@@ -264,61 +379,14 @@ public:
     * automatically disposed by the Lua garbage collector.
     */
   static void allocate(lua_State* l, T* x);
-
-  /**
-    * Create the factory class and static metatable.
-    */
-  static void create_prototype(lua_State* l, const char* prototype_name);
-
-  /**
-    * Calls the Wrapper&lt;T&gt; constructor
-    */
-  static int constructor_wrapper(lua_State* l);
-
-  /**
-    * Pushes this object's meta table.
-    */
-  static void push_meta_table(lua_State* l);
 };
 
 template<typename T>
-void GenericWrapper<T>::register_class(lua_State* l) {
-  create_prototype(l, Wrapper<T>::class_name());
-}
-
-template<typename T>
 T* GenericWrapper<T>::retrieve(lua_State* l, int index, CheckStrenght check) {
-  StackCheck s(l);
+  if(!GenericWrapperCommon<T>::check_type(l, index, check))
+    return NULL;
 
-  if(check != DontCheck) {
-    if(!lua_getmetatable(l,index)) {
-      if(check == AssertOk)
-        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
-                                                    Wrapper<T>::class_name());
-      return NULL;
-    }
-    GenericWrapper<T>::push_meta_table(l);
-
-    if(!lua_rawequal(l, -2, -1)) {
-      if(check == AssertOk) {
-        if(lua_istable(l, -2)) {
-          lua_getfield(l, -2, ".type");
-          if(lua_isstring(l, -1))
-            luaL_error(l, "Mismatch, got object of type %s expecting %s",
-                          wrap_cptr(lua_tostring(l,-1)), Wrapper<T>::class_name());
-        }
-        lua_pop(l,2);
-        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
-                                                    Wrapper<T>::class_name());
-      }
-      lua_pop(l,2);
-      return NULL;
-    }
-    lua_pop(l,2);
-  }
-
-  T** data = reinterpret_cast<T**>(
-    lua_touserdata(l, index));
+  T** data = reinterpret_cast<T**>( lua_touserdata(l, index) );
   return data ? *data : NULL;
 }
 
@@ -337,71 +405,12 @@ void GenericWrapper<T>::allocate(lua_State* l, T* x) {
   StackCheck s(l, 1);
 
   // create userdata
-  T** data = reinterpret_cast<T**>(
-    lua_newuserdata(l, sizeof(T*)));
+  T** data = reinterpret_cast<T**>( lua_newuserdata(l, sizeof(T*)) );
   *data = x;
 
   // set metatable
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
-}
-
-template<typename T>
-void GenericWrapper<T>::create_prototype(lua_State* l, const char* prototype_name) {
-  StackCheck s(l);
-
-  lua_newtable(l); // factory class
-
-  lua_newtable(l); // metatable
-  lua_pushcfunction(l, &constructor_wrapper);
-  lua_setfield(l, -2, "__call");
-  lua_setmetatable(l, -2);
-
-  lua_newtable(l); // object metatable
-    // add gc metamethod
-    lua_pushcfunction(l, &deallocate);
-    lua_setfield(l, -2, "__gc");
-
-    // add index metamethod
-    lua_pushcfunction(l, &object_meta_index_event);
-    lua_setfield(l, -2, "__index");
-
-    // add newindex metamethod
-    lua_pushcfunction(l, &object_meta_newindex_event);
-    lua_setfield(l, -2, "__newindex");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".methods");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".get");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".set");
-
-    lua_pushstring(l, prototype_name);
-    lua_setfield(l, -2, ".type");
-
-    Wrapper<T>::create_index_table(l);
-  lua_setfield(l, -2, "object_meta_table");
-
-  lua_setglobal(l, prototype_name);
-}
-
-template<typename T>
-int GenericWrapper<T>::constructor_wrapper(lua_State* l) {
-  lua_remove(l, 1);
-  return Wrapper<T>::constructor(l);
-}
-
-template<typename T>
-void GenericWrapper<T>::push_meta_table(lua_State* l) {
-  StackCheck s(l, 1);
-
-  lua_getglobal(l, Wrapper<T>::class_name());
-  lua_pushstring(l, "object_meta_table");
-  lua_rawget(l,-2);
-  lua_remove(l,-2);
 }
 
 //END GenericWrapper-----------------------------------------------------------
@@ -409,10 +418,8 @@ void GenericWrapper<T>::push_meta_table(lua_State* l) {
 //BEGIN GenericWrapperByValue---------------------------------------------------------
 
 template <typename T>
-class GenericWrapperByValue : public GenericWrapperBase {
+class GenericWrapperByValue : public GenericWrapperCommon<T> {
 public:
-
-  static void register_class(lua_State* l);
 
   /**
     * Retrieve a wrapped object on the stack.
@@ -425,12 +432,10 @@ public:
   static int deallocate(lua_State* l);
 
   /**
-    * Wrap an object of type T in a Lua userdatum.
+    * Create an object of type T in a Lua userdatum.
     * Lua takes ownership of the object, so that it is
     * automatically disposed by the Lua garbage collector.
     */
-  static void allocate(lua_State* l, const T x);
-
   static void create(lua_State* l);
   template<typename A1>
   static void create(lua_State* l, const A1&);
@@ -442,61 +447,14 @@ public:
   static void create(lua_State* l, const A1&, const A2&, const A3&, const A4&);
   template<typename A1, typename A2, typename A3, typename A4, typename A5>
   static void create(lua_State* l, const A1&, const A2&, const A3&, const A4&, const A5&);
-
-  /**
-    * Create the factory class and static metatable.
-    */
-  static void create_prototype(lua_State* l, const char* prototype_name);
-
-  /**
-    * Calls the Wrapper&lt;T&gt; constructor
-    */
-  static int constructor_wrapper(lua_State* l);
-
-  /**
-    * Pushes this object's meta table.
-    */
-  static void push_meta_table(lua_State* l);
 };
 
 template<typename T>
-void GenericWrapperByValue<T>::register_class(lua_State* l) {
-  create_prototype(l, Wrapper<T>::class_name());
-}
-
-template<typename T>
 T* GenericWrapperByValue<T>::retrieve(lua_State* l, int index, CheckStrenght check) {
-  StackCheck s(l);
+  if(!GenericWrapperCommon<T>::check_type(l, index, check))
+    return NULL;
 
-  if(check != DontCheck) {
-    if(!lua_getmetatable(l,index)) {
-      if(check == AssertOk)
-        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
-                                                    Wrapper<T>::class_name());
-      return NULL;
-    }
-    GenericWrapperByValue<T>::push_meta_table(l);
-
-    if(!lua_rawequal(l, -2, -1)) {
-      if(check == AssertOk) {
-        if(lua_istable(l, -2)) {
-          lua_getfield(l, -2, ".type");
-          if(lua_isstring(l, -1))
-            luaL_error(l, "Mismatch, got object of type %s expecting %s",
-                          wrap_cptr(lua_tostring(l,-1)), Wrapper<T>::class_name());
-        }
-        lua_pop(l,2);
-        luaL_error(l, "Mismatch, got object of unknown type expecting %s",
-                                                    Wrapper<T>::class_name());
-      }
-      lua_pop(l,2);
-      return NULL;
-    }
-    lua_pop(l,2);
-  }
-
-  T* data = reinterpret_cast<T*>(
-    lua_touserdata(l, index));
+  T* data = reinterpret_cast<T*>( lua_touserdata(l, index) );
   return data;
 }
 
@@ -511,28 +469,12 @@ int GenericWrapperByValue<T>::deallocate(lua_State* l) {
 }
 
 template<typename T>
-void GenericWrapperByValue<T>::allocate(lua_State* l, T x) {
-  StackCheck s(l, 1);
-
-  // create userdata
-  T* data = reinterpret_cast<T*>(
-    lua_newuserdata(l, sizeof(T)));
-  new(data) T(x); //placement new
-
-  StackCheck check(l);
-
-  // set metatable
-  push_meta_table(l);
-  lua_setmetatable(l, -2);
-}
-
-template<typename T>
 void GenericWrapperByValue<T>::create(lua_State* l) {
   StackCheck s(l, 1);
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
 }
 
@@ -543,7 +485,7 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1) {
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
 }
 
@@ -554,7 +496,7 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2) 
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
 }
 
@@ -565,7 +507,7 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2, 
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
 }
 
@@ -577,7 +519,7 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2,
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3, a4); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
 }
 
@@ -589,66 +531,8 @@ void GenericWrapperByValue<T>::create(lua_State* l, const A1& a1, const A2& a2, 
 
   T* data = reinterpret_cast<T*>(lua_newuserdata(l, sizeof(T)));
   new(data) T(a1, a2, a3, a4, a5); //placement new
-  push_meta_table(l);
+  GenericWrapperCommon<T>::push_meta_table(l);
   lua_setmetatable(l, -2);
-}
-
-template<typename T>
-void GenericWrapperByValue<T>::create_prototype(lua_State* l, const char* prototype_name) {
-  StackCheck s(l);
-
-  lua_newtable(l); // factory class
-
-  lua_newtable(l); // metatable
-  lua_pushcfunction(l, &constructor_wrapper);
-  lua_setfield(l, -2, "__call");
-  lua_setmetatable(l, -2);
-
-  lua_newtable(l); // object metatable
-    // add gc metamethod
-    lua_pushcfunction(l, &deallocate);
-    lua_setfield(l, -2, "__gc");
-
-    // add index metamethod
-    lua_pushcfunction(l, &object_meta_index_event);
-    lua_setfield(l, -2, "__index");
-
-    // add newindex metamethod
-    lua_pushcfunction(l, &object_meta_newindex_event);
-    lua_setfield(l, -2, "__newindex");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".methods");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".get");
-
-    lua_newtable(l);
-    lua_setfield(l, -2, ".set");
-
-    lua_pushstring(l, prototype_name);
-    lua_setfield(l, -2, ".type");
-
-    Wrapper<T>::create_index_table(l);
-  lua_setfield(l, -2, "object_meta_table");
-
-  lua_setglobal(l, prototype_name);
-}
-
-template<typename T>
-int GenericWrapperByValue<T>::constructor_wrapper(lua_State* l) {
-  lua_remove(l, 1);
-  return Wrapper<T>::constructor(l);
-}
-
-template<typename T>
-void GenericWrapperByValue<T>::push_meta_table(lua_State* l) {
-  StackCheck s(l, 1);
-
-  lua_getglobal(l, Wrapper<T>::class_name());
-  lua_pushstring(l, "object_meta_table");
-  lua_rawget(l,-2);
-  lua_remove(l,-2);
 }
 
 //END GenericWrapperByValue-----------------------------------------------------------
