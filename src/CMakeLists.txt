@@ -7,6 +7,7 @@ set(kboard_SRC
   loader/theme.cpp
   loader/context.cpp
 
+  luaapi/lfunclib.c
   luaapi/options.cpp
   luaapi/luahl.cpp
   luaapi/genericwrapper.cpp
