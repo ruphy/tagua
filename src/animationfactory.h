@@ -16,8 +16,6 @@
 class NamedSprite;
 class PointConverter;
 
-// typedef boost::function<AnimationPtr()> AnimationScheme;
-
 namespace Animate {
 
 enum AnimationType {
