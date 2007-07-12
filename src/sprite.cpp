@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cmath>
 #include <boost/random/uniform_smallint.hpp>
+#include <vector>
 #include "common.h"
 #include "point.h"
 #include "sprite.h"

@@ -11,7 +11,7 @@
 #ifndef NEWGAME_H
 #define NEWGAME_H
 
-#include "ui/ui_newgamedialog.h"
+#include "ui_newgamedialog.h"
 #include "option.h"
 
 class QHBoxLayout;

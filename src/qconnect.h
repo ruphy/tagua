@@ -11,7 +11,7 @@
 #ifndef QCONNECT_H
 #define QCONNECT_H
 
-#include "ui/ui_quickconnect.h"
+#include "ui_quickconnect.h"
 
 class QConnect: public QDialog, public Ui::QuickConnect {
 Q_OBJECT

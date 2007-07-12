@@ -11,7 +11,7 @@
 #ifndef PREFERENCES__BOARD_H
 #define PREFERENCES__BOARD_H
 
-#include "ui/ui_pref_board.h"
+#include "ui_pref_board.h"
 
 class PrefBoard : public QWidget
                 , private Ui::PrefBoard {

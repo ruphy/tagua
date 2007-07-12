@@ -1,1 +1,0 @@
-#include "canvas/widget.moc"

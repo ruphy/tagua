@@ -11,7 +11,7 @@
 #ifndef PREFERENCES__MOVELIST_H
 #define PREFERENCES__MOVELIST_H
 
-#include "ui/ui_pref_movelist.h"
+#include "ui_pref_movelist.h"
 
 namespace MoveList { class Settings; }
 
