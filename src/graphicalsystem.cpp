@@ -190,7 +190,7 @@ AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite, Anim
 AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite, AnimationType type) {
 	switch (type) {
 	case Normal:
-		return AnimationPtr(new ExplodeAnimation(sprite.sprite(), m_random));
+		return AnimationPtr(new ExplodeAnimation(sprite.sprite(), Random::instance()));
 	case Instant:
 	default:
 		return AnimationPtr(new CaptureAnimation(sprite.sprite()));

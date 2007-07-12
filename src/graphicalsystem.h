@@ -38,9 +38,6 @@ public:
 
   /** The current variant */
   VariantInfo* m_variant;
-  
-  /** A random number generator */
-  Random m_random;
 
   /** @a GraphicalPosition interface function implementation */
 //   virtual void addTag(const QString& name, Point, bool over = false);
@@ -56,7 +53,8 @@ public:
 private slots:
   /** internal function to listen at setting changes */
   void settingsChanged();
-
+  
+private:
   /**
     * \return the current abstract position. (interface for GraphicalAPI)
     */

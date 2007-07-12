@@ -23,12 +23,17 @@ public:
   typedef boost::uniform_real<float> RealDistribution;
   typedef boost::variate_generator<RandomGenerator*, IntegerDistribution> IntegerGenerator;
   typedef boost::variate_generator<RandomGenerator*, RealDistribution> RealGenerator;
-  
+private:
   RandomGenerator m_generator;
+  
+  Random(); // singleton
+  static Random* m_instance;
 public:
   IntegerGenerator rand(int min, int max);
   RealGenerator rand(float min, float max);
   RealGenerator rand(double min, double max);
+  
+  static Random& instance();
 };
 
 #endif // RANDOM_H
