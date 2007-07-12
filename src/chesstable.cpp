@@ -25,7 +25,7 @@
 using namespace boost;
 
 ChessTable::ChessTable(QWidget* parent)
-: Canvas::Widget(parent)
+: KGameCanvasWidget(parent)
 , m_background(NULL)
 , m_current(NULL)
 , m_mousegrab(NULL)
@@ -73,7 +73,7 @@ void ChessTable::settingsChanged() {
   if(m_background)
     delete m_background;
   if (settings["background"]) {
-    m_background = new Canvas::TiledPixmap(QPixmap(settings["background"].value<QString>()),
+    m_background = new KGameCanvasTiledPixmap(QPixmap(settings["background"].value<QString>()),
                                        QSize(), QPoint(), false, this);
     m_background->show();
   }

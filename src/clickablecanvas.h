@@ -11,11 +11,11 @@
 #ifndef CLICKABLECANVAS_H
 #define CLICKABLECANVAS_H
 
-#include "canvas/group.h"
+#include "kgamecanvas.h"
 
-class ClickableCanvas : public Canvas::Group {
+class ClickableCanvas : public KGameCanvasGroup {
 public:
-  ClickableCanvas(Abstract* canvas = NULL) : Canvas::Group(canvas) { }
+  ClickableCanvas(KGameCanvasAbstract* canvas = NULL) : KGameCanvasGroup(canvas) { }
   virtual void onMousePress(const QPoint& point, int button) = 0;
   virtual void onMouseMove(const QPoint& point, int button) = 0;
   virtual void onMouseRelease(const QPoint& point, int button) = 0;

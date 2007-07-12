@@ -14,7 +14,7 @@
 #include <boost/array.hpp>
 #include <QTimer>
 #include <QTime>
-#include "canvas/canvas.h"
+#include "kgamecanvas.h"
 #include "player.h"
 #include "clickablecanvas.h"
 
@@ -23,17 +23,17 @@ Q_OBJECT
   /**
     * Structure containing information for a player.
     */
-  class Info : public Canvas::Group {
+  class Info : public KGameCanvasGroup {
     Player m_player;
     QTime m_time;
     bool m_running;
     int m_total_time;
-    Canvas::Rectangle* m_background;
-    Canvas::Rectangle* m_frame[4];
-    Canvas::Text* m_caption;
-    Canvas::Text* m_time_label;
-    Canvas::Text* m_player_name;
-    Canvas::Text* m_decs;
+    KGameCanvasRectangle* m_background;
+    KGameCanvasRectangle* m_frame[4];
+    KGameCanvasText* m_caption;
+    KGameCanvasText* m_time_label;
+    KGameCanvasText* m_player_name;
+    KGameCanvasText* m_decs;
     QRect m_rect;
 
     void computeTime() const;
@@ -45,7 +45,7 @@ Q_OBJECT
     , m_rect(0, 0, 0, 0) { }
 
     void setup(const Player& player, const QRect& p,
-                const QString& caption, Canvas::Abstract* canvas);
+                const QString& caption, KGameCanvasAbstract* canvas);
     void setTime(int);
     void start();
     void stop();
@@ -68,7 +68,7 @@ Q_OBJECT
   int m_running;
   int m_active;
 public:
-  Clock(Canvas::Abstract* parent);
+  Clock(KGameCanvasAbstract* parent);
 
   void setTime(int index, int value);
   void start(int index);
