@@ -111,7 +111,7 @@ Index Index::next(int variation_id, int num) const {
   else if(retv.nested.size() == 0)
     retv.num_moves += num;
   else
-    retv.nested.rbegin()->num_moves += num;
+    retv.nested.last().num_moves += num;
 
   return retv;
 }
@@ -131,12 +131,12 @@ Index Index::prev(int _num) const {
       num = 0;
     }
     else {
-      if(retv.nested.rbegin()->num_moves >= num) {
-        retv.nested.rbegin()->num_moves -= num;
+      if(retv.nested.last().num_moves >= num) {
+        retv.nested.last().num_moves -= num;
         num = 0;
       }
       else {
-        num -= retv.nested.rbegin()->num_moves+1;
+        num -= retv.nested.last().num_moves+1;
         retv.nested.pop_back();
       }
     }

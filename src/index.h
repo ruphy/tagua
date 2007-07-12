@@ -11,7 +11,7 @@
 #ifndef INDEX_H
 #define INDEX_H
 
-#include <vector>
+#include <QVector>
 #include <QString>
 #include "common.h"
 
@@ -25,6 +25,7 @@ class Index {
 public:
   class Ref {
   public:
+    Ref() : variation(-1), num_moves(-1) {}
     Ref(int v, int n) : variation(v), num_moves(n) {}
     int variation;
     int num_moves;
@@ -37,7 +38,7 @@ public:
   };
 
   int num_moves;
-  std::vector<Ref> nested;
+  QVector<Ref> nested;
 
   /** Constructor, you can contruct it from an integer that
       is the number of moves played in the main line */

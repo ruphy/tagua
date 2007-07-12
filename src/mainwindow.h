@@ -12,6 +12,7 @@
 #define MAINWINDOW_H
 
 #include <map>
+#include <vector>
 #include <kxmlguiwindow.h>
 #include <kmainwindow.h>
 
@@ -55,7 +56,7 @@ Q_OBJECT
   KAction* m_promote_bishop;
   KAction* m_promote_knight;
   QActionGroup* m_promote_group;
-  
+
   KAction* m_do_promotion;
 
   ChessTable* table();
