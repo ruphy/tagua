@@ -70,7 +70,7 @@ public:
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
-  PiecePool(Board* b, Canvas::Abstract* parent);
+  PiecePool(Board* b, KGameCanvasAbstract* parent);
   ~PiecePool();
 
 
@@ -100,7 +100,7 @@ public:
   virtual Point gridSize() const { return m_sprites.getSize(); }
 
   /** piecesGroup overload */
-  virtual Canvas::Abstract* piecesGroup();
+  virtual KGameCanvasAbstract* piecesGroup();
 
   /** the rect that will be covered by the pool */
   virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*gridSize().x,

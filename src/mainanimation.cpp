@@ -46,4 +46,3 @@ void MainAnimation::setDelay(int delay) {
   m_timer.setInterval(delay);
 }
 
-#include "mainanimation.moc"

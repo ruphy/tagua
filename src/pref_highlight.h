@@ -11,7 +11,7 @@
 #ifndef PREF_HIGHLIGHT_H
 #define PREF_HIGHLIGHT_H
 
-#include "ui/ui_pref_highlight.h"
+#include "ui_pref_highlight.h"
 #include "highlighter.h"
 #include <boost/shared_ptr.hpp>
 #include <QDialog>

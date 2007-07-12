@@ -194,4 +194,3 @@ void XBoardEngine::setBoard(AbstractPosition::Ptr pos, int halfmove, int fullmov
   }
 }
 
-#include "xboardengine.moc"

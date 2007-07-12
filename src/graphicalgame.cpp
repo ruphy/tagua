@@ -306,4 +306,3 @@ void GraphicalGame::destroyCtrlAction() {
   m_ctrl.reset();
 }
 
-#include "graphicalgame.moc"

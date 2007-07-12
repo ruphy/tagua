@@ -381,6 +381,5 @@ void Textual::setLayoutStyle(int x) {
   m_layout_style = x;
 }
 
-#include "movelist_textual.moc"
 
 } //end namespace MoveList

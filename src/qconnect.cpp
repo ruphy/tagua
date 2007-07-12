@@ -86,6 +86,4 @@ void QConnect::accept() {
                       );
 }
 
-//#include "qconnect.moc"
 
-#include "qconnect.moc"

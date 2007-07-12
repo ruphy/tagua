@@ -59,4 +59,3 @@ void PrefMoveList::apply() {
   m_settings->save();
 }
 
-#include "pref_movelist.moc"

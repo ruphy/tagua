@@ -10,18 +10,18 @@
 
 #include <QResizeEvent>
 #include "infodisplay.h"
-#include "canvas/text.h"
+#include "kgamecanvas.h"
 
-class MessageItem : public Canvas::Text {
+class MessageItem : public KGameCanvasText {
 public:
-  MessageItem(const QString& text, const QFont& font, Canvas::Abstract* canvas)
-  : Canvas::Text(text, Qt::black, font,
-                 Canvas::Text::HStart, Canvas::Text::VCenter,
+  MessageItem(const QString& text, const QFont& font, KGameCanvasAbstract* canvas)
+  : KGameCanvasText(text, Qt::black, font,
+                 KGameCanvasText::HStart, KGameCanvasText::VCenter,
                  canvas) { }
 };
 
-InfoDisplay::InfoDisplay(Canvas::Abstract* parent)
-: Canvas::Group(parent) {
+InfoDisplay::InfoDisplay(KGameCanvasAbstract* parent)
+: KGameCanvasGroup(parent) {
   m_message = new MessageItem("", QFont(), this);
   m_message->moveTo(QPoint(0, 0));
   m_message->show();

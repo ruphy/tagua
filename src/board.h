@@ -17,7 +17,7 @@
 #include <QObject>
 #include <QFont>
 #include <boost/shared_ptr.hpp>
-#include "canvas/canvas.h"
+#include "kgamecanvas.h"
 #include "entities/userentity.h"
 #include "common.h"
 #include "grid.h"
@@ -36,7 +36,7 @@ typedef boost::shared_ptr<BoardTags> BoardTagsPtr;
   * @class Board <board.h>
   * @brief Board visualization class
   *
-  * This class is a Canvas::Item that displaying a board filled with pieces.
+  * This class is a KGameCanvasItem that displaying a board filled with pieces.
   * You can set custom tags for each square.
   * @sa Table, @sa PiecePool, @sa Sprite
   */
@@ -90,10 +90,10 @@ private:
   Point m_hinting_pos;
 
   /** the canvas group that holds the pieces */
-  Canvas::Group *m_pieces_group;
+  KGameCanvasGroup *m_pieces_group;
 
   /** the canvas item that is used as background of the board */
-  Canvas::Group *m_canvas_background;
+  KGameCanvasGroup *m_canvas_background;
 
   /** all the tags on the board */
   BoardTagsPtr m_tags;
@@ -132,10 +132,10 @@ private:
   QStringList m_border_coords;
 
   /** the rectangles used to draw the border */
-  std::vector<boost::shared_ptr<Canvas::Rectangle> > m_border_margins;
+  std::vector<boost::shared_ptr<KGameCanvasRectangle> > m_border_margins;
 
   /** the text items for the border */
-  std::vector<boost::shared_ptr<Canvas::Item> > m_border_items;
+  std::vector<boost::shared_ptr<KGameCanvasItem> > m_border_items;
 
   /** this internal function updates the background after the board has been resized  */
   void updateBackground();
@@ -174,7 +174,7 @@ private:
 
 public:
   /** constructor, requires the canvas parent */
-  Board(Canvas::Abstract* parent);
+  Board(KGameCanvasAbstract* parent);
   ~Board();
 
   /** set the board flipping */
@@ -184,7 +184,7 @@ public:
   inline void flip() { flip(!m_flipped); }
 
   /** adds a tag with name name, the tag will stay over the pieces if over is true */
-  boost::shared_ptr<Canvas::Pixmap> addTag(const QString& name, Point at, bool over=false);
+  boost::shared_ptr<KGameCanvasPixmap> addTag(const QString& name, Point at, bool over=false);
 
   /** clears the tags with name name */
   void clearTags(const QString& name);
@@ -225,7 +225,7 @@ public:
   virtual Point gridSize() const { return m_sprites.getSize(); }
 
   /** return the group that contains the pieces */
-  virtual Canvas::Abstract* piecesGroup() { return m_pieces_group; }
+  virtual KGameCanvasAbstract* piecesGroup() { return m_pieces_group; }
 
   /** mouse release event */
   virtual void onMouseRelease(const QPoint& pos, int button);

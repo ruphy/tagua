@@ -13,7 +13,7 @@
 #include "animation.h"
 #include "piecepool.h"
 
-PiecePool::PiecePool(Board* b, Canvas::Abstract* parent)
+PiecePool::PiecePool(Board* b, KGameCanvasAbstract* parent)
 : PieceGroup(parent)
 , m_sprites(0,0)
 , m_board(b)
@@ -139,7 +139,7 @@ NamedSprite PiecePool::takeNamedSprite(const Point& _i) {
   return piece;
 }
 
-Canvas::Abstract* PiecePool::piecesGroup() {
+KGameCanvasAbstract* PiecePool::piecesGroup() {
   return this;
 }
 

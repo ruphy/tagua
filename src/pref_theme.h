@@ -16,7 +16,7 @@
 #include <boost/shared_ptr.hpp>
 #include <QDir>
 #include "option.h"
-#include "ui/ui_pref_theme.h"
+#include "ui_pref_theme.h"
 
 class VariantInfo;
 class Settings;

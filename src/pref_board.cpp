@@ -75,4 +75,3 @@ void PrefBoard::apply() {
   }
 }
 
-#include "pref_board.moc"

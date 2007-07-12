@@ -96,4 +96,3 @@ void PrefClock::setBackgroundColor() {
     m_background_button->setPalette(palette);
   }
 }
-#include "pref_clock.moc"

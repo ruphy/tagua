@@ -394,4 +394,3 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
   return retv;
 }
 
-#include "pref_theme.moc"

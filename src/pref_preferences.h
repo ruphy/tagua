@@ -12,7 +12,7 @@
 #define PREFERENCES__PREFERENCES_H
 
 #include <list>
-#include "ui/ui_preferences.h"
+#include "ui_preferences.h"
 
 
 class PrefBase : public QWidget {

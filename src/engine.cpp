@@ -73,4 +73,3 @@ void Engine::setNotifier(const shared_ptr<EngineNotifier>& notifier) {
 void Engine::setConsole(const shared_ptr<Console>& console) {
   m_console = console;
 }
-#include "engine.moc"

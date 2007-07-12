@@ -131,6 +131,5 @@ Glyph Theme::getGlyph(const QString& key, int size) {
   return retv;
 }
 
-#include "theme.moc"
 
 } //end namespace Loader

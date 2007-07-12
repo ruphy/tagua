@@ -20,7 +20,7 @@
 #include <QColor>
 #include "index.h"
 #include "decoratedmove.h"
-#include "canvas/item.h"
+#include "kgamecanvas.h"
 
 namespace MoveList {
 
@@ -64,7 +64,7 @@ public:
   void save();
 };
 
-class FancyItem : public Canvas::Item {
+class FancyItem : public KGameCanvasItem {
 public:
   int time_pos;
   QPoint target_pos;
@@ -80,8 +80,8 @@ public:
   int target_highlight;
   int old_highlight;
 
-  FancyItem(Canvas::Abstract* c = NULL)
-    : Canvas::Item(c)
+  FancyItem(KGameCanvasAbstract* c = NULL)
+    : KGameCanvasItem(c)
     , time_pos(-1)
     , time_opacity(-1)
     , highlighted(false)
@@ -114,7 +114,7 @@ public:
   virtual bool canStop() { return time_height==-1 && FancyItem::canStop(); }
   virtual void advance(int time);
 
-  Brace(Entry* e, int var, Canvas::Abstract* c = NULL)
+  Brace(Entry* e, int var, KGameCanvasAbstract* c = NULL)
     : FancyItem(c)
     , width(0)
     , height(0)
@@ -138,7 +138,7 @@ public:
   virtual void  paint (QPainter *p);
   virtual QRect rect () const;
 
-  Text(Entry* e, int t, Canvas::Abstract* c = NULL)
+  Text(Entry* e, int t, KGameCanvasAbstract* c = NULL)
     : FancyItem(c)
     , width(0)
     , height(0)
@@ -161,7 +161,7 @@ public:
   virtual void  paint (QPainter *p);
   virtual QRect rect () const;
 
-  Comment(Entry* e, Canvas::Abstract* c = NULL, int v = -1)
+  Comment(Entry* e, KGameCanvasAbstract* c = NULL, int v = -1)
     : FancyItem(c)
     , width(0)
     , height(0)
@@ -196,7 +196,7 @@ public:
   virtual QRect rect () const;
   virtual bool canStop() { return time_highlight==-1 && FancyItem::canStop(); }
 
-  Entry(int turn, const DecoratedMove& m, const Index& i, Canvas::Abstract* c = NULL)
+  Entry(int turn, const DecoratedMove& m, const Index& i, KGameCanvasAbstract* c = NULL)
     : FancyItem(c)
     , expanded(true)
     , hide_next(false)
