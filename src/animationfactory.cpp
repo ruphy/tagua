@@ -3,6 +3,28 @@
 #include "animation.h"
 #include "namedsprite.h"
 #include "pointconverter.h"
+#include "graphicalapi.h"
+
+AnimationFactory::AnimationFactory(GraphicalAPI* api)
+: m_api(api) {
+  m_group = AnimationGroupPtr(new AnimationGroup);
+}
+
+AnimationGroupPtr AnimationFactory::group() const {
+  return m_group;
+}
+
+void AnimationFactory::addPreAnimation(const Animate::Scheme& scheme, Animate::AnimationType type) {
+  m_group->addPreAnimation(m_api->animate(scheme, type));
+}
+
+void AnimationFactory::addPostAnimation(const Animate::Scheme& scheme, Animate::AnimationType type) {
+  m_group->addPostAnimation(m_api->animate(scheme, type));
+}
+
+AnimationFactory::operator AnimationGroupPtr() const {
+  return group();
+}
 
 namespace Animate {
 
@@ -12,7 +34,7 @@ move::move(const NamedSprite& sprite, const Point& to)
 : m_sprite(sprite)
 , m_to(to) { }
 
-AnimationPtr move::run(PointConverter* converter, AnimationType type) {
+AnimationPtr move::run(const PointConverter* converter, AnimationType type) const {
 	switch (type) {
 	case Normal:
 		return AnimationPtr(new MovementAnimation(m_sprite.sprite(), converter->toReal(m_to)));
@@ -25,7 +47,7 @@ AnimationPtr move::run(PointConverter* converter, AnimationType type) {
 appear::appear(const NamedSprite& sprite)
 : m_sprite(sprite) { }
 
-AnimationPtr appear::run(PointConverter*, AnimationType type) {
+AnimationPtr appear::run(const PointConverter*, AnimationType type) const {
 	switch (type) {
 	case Normal:
 		return AnimationPtr(new FadeAnimation(m_sprite.sprite(), 0, 255));
@@ -38,7 +60,7 @@ AnimationPtr appear::run(PointConverter*, AnimationType type) {
 disappear::disappear(const NamedSprite& sprite)
 : m_sprite(sprite) { }
 
-AnimationPtr disappear::run(PointConverter*, AnimationType type) {
+AnimationPtr disappear::run(const PointConverter*, AnimationType type) const {
 	switch (type) {
 	case Normal:
 		return AnimationPtr(new FadeAnimation(m_sprite.sprite(), 255, 0));
@@ -51,7 +73,7 @@ AnimationPtr disappear::run(PointConverter*, AnimationType type) {
 destroy::destroy(const NamedSprite& sprite)
 : m_sprite(sprite) { }
 
-AnimationPtr destroy::run(PointConverter*, AnimationType type) {
+AnimationPtr destroy::run(const PointConverter*, AnimationType type) const {
 	switch (type) {
 	case Normal:
 		return AnimationPtr(new ExplodeAnimation(m_sprite.sprite(), Random::instance()));
@@ -65,7 +87,7 @@ morph::morph(const NamedSprite& sprite, const NamedSprite& new_sprite)
 : m_sprite(sprite)
 , m_new_sprite(new_sprite) { }
 
-AnimationPtr morph::run(PointConverter*, AnimationType type) {
+AnimationPtr morph::run(const PointConverter*, AnimationType type) const {
 	switch (type) {
 	case Normal:
 		return AnimationPtr(new CrossFadingAnimation(m_sprite.sprite(), m_new_sprite.sprite()));

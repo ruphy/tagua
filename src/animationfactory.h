@@ -11,51 +11,73 @@
 #ifndef ANIMATIONFACTORY_H
 #define ANIMATIONFACTORY_H
 
+#include "animation.h"
 #include "fwd.h"
 #include "point.h"
+
 class NamedSprite;
 class PointConverter;
+class GraphicalAPI;
 
 namespace Animate {
 
 enum AnimationType {
-	Normal,
-	Instant
+  Normal,
+  Instant
 };
 
 class Scheme {
 public:
-	virtual ~Scheme();
-	virtual AnimationPtr run(PointConverter*, AnimationType) = 0;
+  virtual ~Scheme();
+  virtual AnimationPtr run(const PointConverter*, AnimationType) const = 0;
 };
+
+}
+
+class AnimationFactory {
+  AnimationGroupPtr m_group;
+  GraphicalAPI* m_api;
+public:
+  AnimationFactory(GraphicalAPI* api);
+  
+  AnimationGroupPtr group() const;
+  
+  void addPreAnimation(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal);
+  void addPostAnimation(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal);
+  
+  operator AnimationGroupPtr() const;
+};
+
+
+namespace Animate {
 
 class move : public Scheme {
 	const NamedSprite& m_sprite;
 	Point m_to;
 public:
 	move(const NamedSprite& sprite, const Point& to);
-	virtual AnimationPtr run(PointConverter* converter, AnimationType type);
+	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 class appear : public Scheme {
 	const NamedSprite& m_sprite;
 public:
 	appear(const NamedSprite& sprite);
-	virtual AnimationPtr run(PointConverter* converter, AnimationType type);
+	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 class disappear : public Scheme {
 	const NamedSprite& m_sprite;
 public:
 	disappear(const NamedSprite& sprite);
-	virtual AnimationPtr run(PointConverter* converter, AnimationType type);
+	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 class destroy : public Scheme {
 	const NamedSprite& m_sprite;
 public:
 	destroy(const NamedSprite& sprite);
-	virtual AnimationPtr run(PointConverter* converter, AnimationType type);
+	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 class morph : public Scheme {
@@ -63,7 +85,7 @@ class morph : public Scheme {
 	const NamedSprite& m_new_sprite;
 public:
 	morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
-	virtual AnimationPtr run(PointConverter* converter, AnimationType type);
+	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 

@@ -116,11 +116,10 @@ private:
     */
   virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece);
 
-	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type);
-	virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType);
+  /**
+    * Create an animation from a scheme.
+    */
+	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,

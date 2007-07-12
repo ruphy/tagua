@@ -156,55 +156,8 @@ SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractP
   return s;
 }
 
-
-AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) {
-	switch (type) {
-	case Normal:
-		return AnimationPtr(new MovementAnimation(sprite.sprite(), converter()->toReal(to)));
-	case Instant:
-	default:
-		return AnimationPtr(new InstantAnimation(sprite.sprite(), converter()->toReal(to)));
-	}
-}
-
-AnimationPtr GraphicalSystem::appearAnimation(const NamedSprite& sprite, AnimationType type) {
-	switch (type) {
-	case Normal:
-		return AnimationPtr(new FadeAnimation(sprite.sprite(), 0, 255));
-	case Instant:
-	default:
-		return AnimationPtr(new DropAnimation(sprite.sprite()));
-	}
-}
-
-AnimationPtr GraphicalSystem::disappearAnimation(const NamedSprite& sprite, AnimationType type) {
-	switch (type) {
-	case Normal:
-		return AnimationPtr(new FadeAnimation(sprite.sprite(), 255, 0));
-	case Instant:
-	default:
-		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
-	}
-}
-
-AnimationPtr GraphicalSystem::destroyAnimation(const NamedSprite& sprite, AnimationType type) {
-	switch (type) {
-	case Normal:
-		return AnimationPtr(new ExplodeAnimation(sprite.sprite(), Random::instance()));
-	case Instant:
-	default:
-		return AnimationPtr(new CaptureAnimation(sprite.sprite()));
-	}
-}
-
-AnimationPtr GraphicalSystem::morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType type) {
-	switch (type) {
-	case Normal:
-		return AnimationPtr(new CrossFadingAnimation(sprite.sprite(), new_sprite.sprite()));
-	case Instant:
-	default:
-		return AnimationPtr(new PromotionAnimation(sprite.sprite(), new_sprite.sprite()));
-	}
+AnimationPtr GraphicalSystem::animate(const Animate::Scheme& scheme, Animate::AnimationType type) {
+  return scheme.run(converter(), type);
 }
 
 

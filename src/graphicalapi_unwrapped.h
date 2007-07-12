@@ -81,31 +81,12 @@ public:
   virtual SpritePtr takePoolSprite(int pool, int index) {
     return m_graphical_api->takePoolSprite(pool, index);
   }
+    
+  virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal) {
+    return m_graphical_api->animate(scheme, type);
+  }
   
-  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, 
-  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
-  	return m_graphical_api->moveAnimation(sprite, to, type);
-	}
-	
-  virtual AnimationPtr appearAnimation(const NamedSprite& sprite,
-  					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
-  	return m_graphical_api->appearAnimation(sprite, type);
-	}
-	
-  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite,
-						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
-  	return m_graphical_api->disappearAnimation(sprite, type);
-	}
-	
-	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite,
-						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
-		return m_graphical_api->destroyAnimation(sprite, type);
-	}
-	
-	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, 
-						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
-		return m_graphical_api->morphAnimation(sprite, new_sprite, type);
-	}
+  GraphicalAPI* inner() const { return m_graphical_api; }
 };
 
 #endif //UNWRAPPEDGRAPHICALAPI_H
