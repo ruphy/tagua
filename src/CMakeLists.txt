@@ -67,7 +67,7 @@ set(kboard_SRC
   movelist_widget.cpp
   pref_preferences.cpp
   poolinfo.cpp
-  spriteloader.cpp
+  pixmaploader.cpp
   qconnect.cpp
   pref_board.cpp
   game.cpp
