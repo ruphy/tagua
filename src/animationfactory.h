@@ -21,36 +21,81 @@ class GraphicalAPI;
 
 namespace Animate {
 
+/**
+  * AnimationType distinguishes between those animations which honor settings 
+  * and those that are instantaneous regardless of user preferences.
+  */
 enum AnimationType {
-  Normal,
-  Instant
+  Normal,             /// Honor user settings.
+  Instant             /// Instantaneous animation.
 };
 
+/**
+  * @brief A scheme of animations. 
+  * 
+  * Animation schemes are descriptions of an animation, i.e. what the animation
+  * should suggest to the user. The actual Animation class implementing the scheme
+  * depends of various factors, such as the AnimationType that the animator imposes
+  * and user settings.
+  */
 class Scheme {
 public:
   virtual ~Scheme();
+  
+  /**
+    * Convert the scheme into an actual animation which can be enqueued in the
+    * animation system, or grouped into an AnimationGroup.
+    */
   virtual AnimationPtr run(const PointConverter*, AnimationType) const = 0;
 };
 
 }
 
+/**
+  * @brief A convenience wrapper around an AnimationGroup, useful for Animators.
+  * 
+  * An AnimationFactory is a wrapper around AnimationGroup that accepts shemes instead
+  * of Animations in its addPreAnimation() and addPostAnimation() methods.
+  * It offers a convenient syntax to an animator when composing animations into groups.
+  */
 class AnimationFactory {
   AnimationGroupPtr m_group;
   GraphicalAPI* m_api;
 public:
   AnimationFactory(GraphicalAPI* api);
   
+  /** \return The wrapped animation group. */
   AnimationGroupPtr group() const;
   
+  /**
+    * Add a pre-animation to the group.
+    * \param scheme The scheme producing the animation to be added.
+    * \param type The AnimationType to be used when creating the animation.
+    */
   void addPreAnimation(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal);
+  
+  /**
+    * Add a post-animation to the group.
+    * \param scheme The scheme producing the animation to be added.
+    * \param type The AnimationType to be used when creating the animation.
+    */
   void addPostAnimation(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal);
   
+  /** 
+    * Implicitly convert the object to an AnimationGroup shared pointer,
+    * using the group() member function.
+    */
   operator AnimationGroupPtr() const;
 };
 
 
 namespace Animate {
 
+/**
+  * @brief A movement animation scheme.
+  * 
+  * Used to animate the movement of a piece to a destination square.
+  */
 class move : public Scheme {
 	const NamedSprite& m_sprite;
 	Point m_to;
@@ -59,6 +104,13 @@ public:
 	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
+/**
+  * @brief Appear animation scheme.
+  * 
+  * The appear scheme visualizes a new piece coming into existence. It is 
+  * used, for example, when retracting a capture in chess, to restore the captured
+  * piece on the chessboard.
+  */
 class appear : public Scheme {
 	const NamedSprite& m_sprite;
 public:
@@ -66,6 +118,11 @@ public:
 	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
+/**
+  * @brief Disappear animation scheme.
+  * 
+  * The disappear scheme visualizes a piece being removed from the board.
+  */
 class disappear : public Scheme {
 	const NamedSprite& m_sprite;
 public:
@@ -73,6 +130,13 @@ public:
 	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
+/**
+  * @brief Animation scheme destroying a piece.
+  * 
+  * This animation scheme is used to destroy a piece, removing it from the
+  * board. It is similar to the disappear scheme, but can provide an additional
+  * effect like an explosion.
+  */
 class destroy : public Scheme {
 	const NamedSprite& m_sprite;
 public:
@@ -80,6 +144,11 @@ public:
 	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
+/**
+  * @brief Animation scheme for changing a piece into another.
+  * 
+  * The morph animation scheme is used when a piece changes, like in chess promotions.
+  */
 class morph : public Scheme {
 	const NamedSprite& m_sprite;
 	const NamedSprite& m_new_sprite;
@@ -87,7 +156,6 @@ public:
 	morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
 	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
-
 
 
 }
