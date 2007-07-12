@@ -29,20 +29,12 @@
 
 using namespace GamePrivate;
 
-/**
-    \class Game game.h <game.h>
-    \brief A game with history and variations.
 
-    This template class encapsulates an editable game with history and undo editing.
-*/
-
-/** Constructor, creates an empty game*/
 Game::Game()
 : current(-1)
 , undo_pos(0) {
 }
 
-/** destructor */
 Game::~Game() {
 }
 
@@ -117,10 +109,8 @@ void Game::testMove(const Index& ix) {
     if(!e1 || !e2 || !e1->position || !e2->move)
       return;
 
-    if (!e1->position->testMove(e2->move)) {
-      std::cout << "--> warning, invalid move added to game history!" << std::endl;
-      //e2->move = MovePtr();
-    }
+    if (!e1->position->testMove(e2->move))
+      ERROR("invalid move added to game history!");
   }
 }
 
@@ -143,61 +133,52 @@ void Game::saveUndo(const UndoOp& op) {
 }
 
 
-/** returns the index of the current position */
 Index Game::index() const {
   return current;
 }
 
-/** returns an index opinting to the last position in the main line */
 Index Game::lastMainlineIndex() const {
   return Index(history.size()-1);
 }
 
-/** true if the game contains the index */
 bool Game::containsIndex(const Index& index) const {
   return !!fetch(index);
 }
 
-/** returns the current move */
 MovePtr Game::move() const {
   return move(current);
 }
 
-/** returns the move at the given index */
 MovePtr Game::move(const Index& index) const {
   Entry *e = (Entry*)fetch(index);
   if(!e) {
-    std::cout << "--> Error in Game::position! Index out of range!" << std::endl;
+    ERROR("Index out of range!");
     return MovePtr();
   }
   return e->move;
 }
 
-/** returns the current position */
 PositionPtr Game::position() const {
   return position(current);
 }
 
-/** returns the position at the given index */
 PositionPtr Game::position(const Index& index) const {
   Entry *e = (Entry*)fetch(index);
   if(!e) {
-    std::cout << "--> Error in Game::position! Index out of range!" << std::endl;
+    ERROR("Index out of range!");
     return PositionPtr();
   }
   return e->position;
 }
 
-/** returns the current comment */
 QString Game::comment() const {
   return comment(current);
 }
 
-/** returns the comment at the given index */
 QString Game::comment(const Index& index) const {
   const Entry *e = fetch(index);
   if(!e) {
-    std::cout << "--> Error in Game::comment! Index out of range!" << std::endl;
+    ERROR("Index out of range!");
     return QString();
   }
   return e->comment;
@@ -214,10 +195,9 @@ void Game::reset(PositionPtr pos) {
   onCurrentIndexChanged();
 }
 
-/** undo */
 void Game::undo() {
   if(undo_pos <= 0) {
-    std::cout << "--> Info: Cannot undo at the beginning of the undo history!" << std::endl;
+    ERROR("Cannot undo at the beginning of the undo history!");
     return;
   }
 
@@ -345,10 +325,9 @@ void Game::undo() {
     onAvailableRedo(true);
 }
 
-/** redo */
 void Game::redo() {
   if(undo_pos >= (int)undo_history.size()) {
-    std::cout << "--> Info: Cannot redo at the end of the undo history!" << std::endl;
+    ERROR("Cannot redo at the end of the undo history!");
     return;
   }
 
@@ -469,16 +448,14 @@ void Game::redo() {
     onAvailableRedo(false);
 }
 
-/** sets the comment in the current index */
 void Game::setComment(const QString& c) {
   setComment(current, c);
 }
 
-/** sets the comment in the given index */
 void Game::setComment(const Index& ix, const QString& c) {
   Entry* e = fetch(ix);
   if(!e) {
-    std::cout << "--> Error in Game::setComment! Invalid index!" << std::endl;
+    ERROR("Invalid index!");
     return;
   }
   if(e->comment == c)
@@ -489,11 +466,10 @@ void Game::setComment(const Index& ix, const QString& c) {
   onSetComment(ix, c);
 }
 
-/** sets the variation comment in the given index/variation */
 void Game::setVComment(const Index& ix, int v, const QString& c) {
   Entry* e = fetch(ix);
   if(!e) {
-    std::cout << "--> Error in Game::setComment! Invalid index!" << std::endl;
+    ERROR("Invalid index!");
     return;
   }
   QString oc = e->vcomments.count(v) ? e->vcomments[v] : QString();
@@ -508,15 +484,13 @@ void Game::setVComment(const Index& ix, int v, const QString& c) {
   onSetVComment(ix, v, c);
 }
 
-/** promotes the current position in the upper main line */
 void Game::promoteVariation() {
   promoteVariation(current);
 }
 
-/** promotes the given position in the upper main line */
 void Game::promoteVariation(const Index& _ix) {
   if(_ix.nested.size()==0) {
-    std::cout << "--> Error in Game::promoteVariation! cannot promote main line!" << std::endl;
+    ERROR("Cannot promote main line!");
     return;
   }
   Index ix = _ix;
@@ -526,7 +500,6 @@ void Game::promoteVariation(const Index& _ix) {
   promoteVariation(ix, v);
 }
 
-/** promotes the given variation in the upper main line */
 void Game::promoteVariation(const Index& ix, int v) {
   int at;
   std::vector<Entry>* vec = fetchRef(ix, &at);
@@ -549,15 +522,13 @@ void Game::promoteVariation(const Index& ix, int v) {
   //don't call onCurrentIndexChanged(), as the position did not change actually
 }
 
-/** removes the given variation in the current index */
 void Game::removeVariation(int v) {
   removeVariation(current, v);
 }
 
-/** removes the given variation in the given index */
 void Game::removeVariation(const Index& _ix) {
   if(_ix.nested.size()==0) {
-    std::cout << "--> Error in Game::removeVariation! cannot remove main line!" << std::endl;
+    ERROR("Cannot remove main line!");
     return;
   }
   Index ix = _ix;
@@ -567,7 +538,6 @@ void Game::removeVariation(const Index& _ix) {
   removeVariation(ix, v);
 }
 
-/** removes the given variation in the given index */
 void Game::removeVariation(const Index& ix, int v) {
   Entry* e = fetch(ix);
 
@@ -583,12 +553,10 @@ void Game::removeVariation(const Index& ix, int v) {
   }
 }
 
-/** removes the given variation in the current index */
 void Game::clearVariations() {
   clearVariations(current);
 }
 
-/** removes the given variation in the given index */
 void Game::clearVariations(const Index& ix) {
   Entry* e = fetch(ix);
 
@@ -605,17 +573,15 @@ void Game::clearVariations(const Index& ix) {
   }
 }
 
-/** removes all the successors of the current position */
 void Game::truncate() {
   truncate(current);
 }
 
-/** removes all the successors of the given position */
 void Game::truncate(const Index& ix) {
   int at;
   History* vec = fetchRef(ix, &at);
   if(!vec) {
-    std::cout << "--> Error in Game::truncate! Truncating at an unexisting index!" << std::endl;
+    ERROR("Truncating at an unexisting index!");
     return;
   }
 
@@ -643,8 +609,6 @@ void Game::truncate(const Index& ix) {
   }
 }
 
-/** adds a new move+position after the current one, on the main
-    line if possible, or else in a new variation */
 void Game::add(MovePtr m, PositionPtr pos) {
   Q_ASSERT(pos);
 
@@ -693,7 +657,6 @@ void Game::add(MovePtr m, PositionPtr pos) {
   }
 }
 
-/** forces a move+position at in certain index */
 bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
   Entry *e = fetch(at);
 
@@ -711,7 +674,7 @@ bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
       return true;
     }
     else {
-      std::cout << "--> Error in Game::insert! Index out of range!" << std::endl;
+      ERROR("Index out if range!");
       return false;
     }
   }
@@ -721,7 +684,6 @@ bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
     undo_history.clear();
   }
   bool res = e->position && e->position->equals(pos);
-  //*e = Entry(m, pos);
   e->move = m;
   e->position = pos;
   testMove(at);
@@ -733,12 +695,10 @@ bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
   return res;
 }
 
-/** returns true if we cannot go forward */
 bool Game::lastPosition() const {
   return !fetch(current.next());
 }
 
-/** go back */
 bool Game::back() {
   if (current <= 0) return false; // first entry or uninitialized
   Index old_c = current;
@@ -752,7 +712,6 @@ bool Game::back() {
   return true;
 }
 
-/** go forward (in the current mainline) */
 bool Game::forward() {
   Index old_c = current;
   Index new_c = current.next();
@@ -767,14 +726,12 @@ bool Game::forward() {
   return true;
 }
 
-/** go to the root position */
 void Game::gotoFirst() {
   Index old_c = current;
   current = Index(0);
   onCurrentIndexChanged(old_c);
 }
 
-/** go to the last position (in the current mainline) */
 void Game::gotoLast() {
   int at;
   std::vector<Entry>* vec = fetchRef(current, &at);
@@ -788,7 +745,6 @@ void Game::gotoLast() {
   }
 }
 
-/** go to a specified index */
 bool Game::goTo(const Index& index) {
   if (fetch(index)) {
     Index old_c = current;
@@ -841,13 +797,11 @@ QString Game::variationPgn(const History& vec, const Entry& e,
   return res;
 }
 
-/** returns a pgn containing the whole game (with variations) */
 QString Game::pgn() const {
   return variationPgn(history, history[0], 1, Index(1));
 }
 
 #ifndef NO_PGN
-/** loads a pgn in the current game */
 void Game::load(const PGN& pgn) {
   std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
   VariantInfo *vi;
@@ -855,10 +809,9 @@ void Game::load(const PGN& pgn) {
   if(var == pgn.m_tags.end())
     vi = Variant::variant("Chess");
   else if(!(vi = Variant::variant(var->second))) {
-    std::cout << " --> Error, no such variant " << var->second << std::endl;
+    ERROR("No such variant "<<var->second);
     return;
   }
-  std::cout << "Fine, loaded variant " << vi->name() << std::endl;
 
   std::map<QString, QString>::const_iterator fen = pgn.m_tags.find("FEN");
   PositionPtr pos;
@@ -868,7 +821,7 @@ void Game::load(const PGN& pgn) {
     pos->setup();
   }
   else if( !(pos = vi->createPositionFromFEN(fen->second))) {
-    std::cout << " --> Error, wrong fen " << fen->second << std::endl;
+    ERROR("Wrong fen " << fen->second);
     return;
   }
 
@@ -877,7 +830,6 @@ void Game::load(const PGN& pgn) {
   load(pos, pgn);
 }
 
-/** loads a pgn in the current game */
 void Game::load(PositionPtr pos, const PGN& pgn) {
   current = Index(0);
   undo_history.clear();
@@ -927,7 +879,7 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
     }
     else if(boost::get<PGN::EndVariation>(pgn[i])) {
       if(var_stack.size() == 0) {
-        std::cout << " --> Error, unexpected end variation!!!" << std::endl;
+        ERROR("Unexpected end variation!");
         break;
       }
       current = var_stack[var_stack.size()-1];
@@ -941,15 +893,15 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
         if(!pm->m_number)
           current = current.prev();
         else if(pm->m_number>n+1)
-          std::cout << " --> Error, too far variation!!!" << std::endl;
+          ERROR("Too far variation!");
         else {
           if(pm->m_number<n)
-            std::cout << " --> Warning, too near variation..." << std::endl;
+            ERROR("Too near variation!");
           current = current.prev(n + 1 - pm->m_number);
         }
       }
       else if(pm->m_number && pm->m_number!=n+1)
-        std::cout << " --> Warning, move number mismatch..." << std::endl;
+        ERROR("Move number mismatch!");
 
       PositionPtr pos = position();
       MovePtr m = pos->getMove(pm->m_move);

@@ -20,6 +20,9 @@ namespace GamePrivate {
 typedef std::map<int, History> Variations;
 typedef std::map<int, QString> VComments;
 
+/**
+  * A class to store game entries
+  */
 class Entry {
 public:
   MovePtr move;

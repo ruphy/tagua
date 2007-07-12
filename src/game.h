@@ -31,6 +31,12 @@ typedef std::vector<UndoOp> UndoHistory;
 }
 
 
+/**
+    \class Game game.h <game.h>
+    \brief A game with history and variations.
+
+    This template class encapsulates an editable game with history and undo editing.
+*/
 class Game {
 public:
   GamePrivate::History history;
@@ -62,44 +68,119 @@ public:
   virtual void onAvailableRedo(bool);
 
 public:
+  /** Constructor, creates an empty game*/
   Game();
+
+  /** destructor */
   virtual ~Game();
 
+  /** \return the index of the current position */
   Index index() const;
+
+  /** \return an index opinting to the last position in the main line */
   Index lastMainlineIndex() const;
+
+  /** \return true if the game contains the index */
   bool containsIndex(const Index& index) const;
+
+  /** \return the current move */
   MovePtr move() const;
+
+  /** \return the move at the given index */
   MovePtr move(const Index& index) const;
+
+  /** \return the current position */
   PositionPtr position() const;
+
+  /** \return the position at the given index */
   PositionPtr position(const Index& index) const;
+
+  /** \return the current comment */
   QString comment() const;
+
+  /** \return the comment at the given index */
   QString comment(const Index& index) const;
-  void reset(PositionPtr);
+
+  /** clears the games, and puts \a pos as root position */
+  void reset(PositionPtr pos);
+
+  /** undo */
   void undo();
+
+  /** redo */
   void redo();
+
+  /** sets the comment in the current index */
   void setComment(const QString& c);
+
+  /** sets the comment at the given index */
   void setComment(const Index& index, const QString& c);
+
+  /** sets the variation comment at the given index/variation */
   void setVComment(const Index& index, int v, const QString& c);
+
+  /** promotes the current position in the upper main line */
   void promoteVariation();
+
+  /** promotes the given position in the upper main line */
   void promoteVariation(const Index& index);
+
+  /** promotes the given variation in the upper main line */
   void promoteVariation(const Index& index, int v);
+
+  /** removes the given variation in the current index */
   void removeVariation(int v);
+
+  /** removes the given variation in the given index */
   void removeVariation(const Index& index);
+
+  /** removes the given variation in the given index */
   void removeVariation(const Index& index, int v);
+
+  /** removes the given variation in the current index */
   void clearVariations();
+
+  /** removes the given variation in the given index */
   void clearVariations(const Index& index);
+
+  /** removes all the successors of the current position */
   void truncate();
+
+  /** removes all the successors of the given position */
   void truncate(const Index& index);
+
+  /** adds a new move+position after the current one, on the main
+    line if possible, or else in a new variation */
   void add(MovePtr move, PositionPtr pos);
+
+  /** forces a move+position at in certain index */
   bool insert(MovePtr move, PositionPtr pos, const Index& index);
+
+  /** \return true if we cannot go forward */
   bool lastPosition() const;
+
+  /** go back */
   bool back();
+
+  /** go forward (in the current mainline) */
   bool forward();
+
+  /** go to the root position */
   void gotoFirst();
+
+  /** go to the last position (in the current mainline) */
   void gotoLast();
+
+  /** go to a specified index */
   bool goTo(const Index& index);
+
+  /** \return a pgn containing the whole game (with variations) */
   QString pgn() const;
+
+  /** loads a pgn in the current game */
   void load(PositionPtr, const PGN& pgn);
+
+  /** loads a pgn in the current game */
   void load(const PGN& pgn);
 };
 
