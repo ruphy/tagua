@@ -97,10 +97,8 @@ public:
 template <>
 class Wrapper<QLinearGradient> : public GradientWrapper<QLinearGradient> {
 public:
-#if QT_VERSION >= 0x040200
   PROPERTY_RW_CLASS(start, start, setStart, QPointF)
   PROPERTY_RW_CLASS(finish, finalStop, setFinalStop, QPointF)
-#endif //QT_VERSION >= 0x040200
 
   static const char* class_name();
   static void create_index_table(lua_State* l);
@@ -115,11 +113,9 @@ public:
 template <>
 class Wrapper<QRadialGradient> : public GradientWrapper<QRadialGradient> {
 public:
-#if QT_VERSION >= 0x040200
   PROPERTY_RW_CLASS(center, center, setCenter, QPointF)
   PROPERTY_RW(radius, radius, setRadius, number)
   PROPERTY_RW_CLASS(focus, focalPoint, setFocalPoint, QPointF)
-#endif //QT_VERSION >= 0x040200
 
   static const char* class_name();
   static void create_index_table(lua_State* l);
@@ -134,10 +130,8 @@ public:
 template <>
 class Wrapper<QConicalGradient> : public GradientWrapper<QConicalGradient> {
 public:
-#if QT_VERSION >= 0x040200
   PROPERTY_RW_CLASS(center, center, setCenter, QPointF)
   PROPERTY_RW(angle, angle, setAngle, number)
-#endif //QT_VERSION >= 0x040200
 
   static const char* class_name();
   static void create_index_table(lua_State* l);

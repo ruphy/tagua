@@ -12,9 +12,9 @@
 #define LOADER__IMAGE_H
 
 #include <QColor>
-#include <QFont>
 #include <QMatrix>
 #include <QBrush>
+#include <QFont>
 #include <QImage>
 
 class QPainter;
@@ -30,7 +30,7 @@ class Context;
 
 
 /**
-  * @class Image <luaimage.h>
+  * @class Image <loader/image.h>
   * @brief The image class to be used with lua
   */
 class Image {
@@ -251,6 +251,10 @@ public:
                      const QPointF& offset = QPointF() );
 };
 
+/**
+  * @class Glyph <loader/image.h>
+  * @brief A simple class that represents a glyph in a font to be used with lua
+  */
 class Glyph {
 public:
   bool m_font_valid;
