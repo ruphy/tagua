@@ -182,8 +182,9 @@ public:
 
   ~StackCheck() {
     if (lua_gettop(l) != top) {
-      std::cout << "Wrong stack size!\n\texpected = " << top <<
-                   "\n\tactual = " << lua_gettop(l) << std::endl;
+      std::cout << "Wrong stack size!"  << std::endl
+                << "    expected = " << top << std::endl
+                << "    actual = " << lua_gettop(l) << std::endl;
     }
   }
 };
