@@ -27,6 +27,7 @@ set(kboard_SRC
   variants/xchess/piece.cpp
   variants/chess.cpp
 
+  animationfactory.cpp
   movelist.cpp
   infodisplay.cpp
   engineinfo.cpp
