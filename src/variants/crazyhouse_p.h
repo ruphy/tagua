@@ -114,15 +114,16 @@ public:
 
 private:
   void generateDrops() {
-    if(m_pos.rawPool().count(m_pos.turn()));
-    const CrazyhousePosition::PlayerPool& pp = m_pos.rawPool().find(m_pos.turn())->second;
-    for (CrazyhousePosition::PlayerPool::const_iterator it = pp.begin();
-          it != pp.end(); ++it) {
-      for (Point to = m_pos.first();
-          to <= m_pos.last();
-          to = m_pos.next(to)) {
-        CrazyhouseMove move(CrazyhousePiece(m_pos.turn(),it->first), to);
-        if (m_test(move)) m_moves.push_back(move);
+    if(m_pos.rawPool().count(m_pos.turn())) {
+      const CrazyhousePosition::PlayerPool& pp = m_pos.rawPool().find(m_pos.turn())->second;
+      for (CrazyhousePosition::PlayerPool::const_iterator it = pp.begin();
+            it != pp.end(); ++it) {
+        for (Point to = m_pos.first();
+            to <= m_pos.last();
+            to = m_pos.next(to)) {
+          CrazyhouseMove move(CrazyhousePiece(m_pos.turn(),it->first), to);
+          if (m_test(move)) m_moves.push_back(move);
+        }
       }
     }
   }

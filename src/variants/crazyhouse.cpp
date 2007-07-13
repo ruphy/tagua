@@ -220,6 +220,74 @@ public:
     : m_cinterface(cinterface) {
   }
 
+  void updatePool(const CrazyhousePosition& final) {
+    final.dump();
+
+    for(int color = 0; color < 2; color++) {
+      CrazyhousePosition::Color c = static_cast<CrazyhousePosition::Color>(color);
+      const CrazyhousePosition::PlayerPool& before = const_cast<CrazyhousePosition*>(
+                                                      m_cinterface->position())->rawPool()[c];
+      const CrazyhousePosition::PlayerPool& after = const_cast<CrazyhousePosition*>(
+                                                                    &final)->rawPool()[c];
+      CrazyhousePosition::PlayerPool::const_iterator before_it = before.begin();
+      CrazyhousePosition::PlayerPool::const_iterator after_it = after.begin();
+
+      int pos = 0;
+
+      //oh, a nice bunch of write-only magic shit
+      while(before_it != before.end() || after_it != after.end()) {
+        if(after_it == after.end() || (before_it != before.end()
+                && before_it->first < after_it->first )) {
+          for(int i=0;i<before_it->second;i++)
+            m_cinterface->takePoolSprite(color, pos);
+          ++before_it;
+        }
+        else if (before_it == before.end() || (after_it != after.end()
+                && after_it->first < before_it->first )) {
+          for(int i=0;i<after_it->second;i++)
+            m_cinterface->insertPoolPiece(color, pos, CrazyhousePiece(c, after_it->first) );
+          pos += after_it->second;
+          ++after_it;
+        }
+        else {
+          Q_ASSERT(after_it->first == before_it->first);
+          if(before_it->second < after_it->second)
+          for(int i=0;i<after_it->second - before_it->second;i++)
+            m_cinterface->insertPoolPiece(color, pos, CrazyhousePiece(c, after_it->first) );
+          else if(before_it->second > after_it->second)
+          for(int i=0;i<before_it->second - after_it->second;i++)
+            m_cinterface->takePoolSprite(color, pos);
+          pos += after_it->second;
+          ++after_it;
+          ++before_it;
+        }
+      }
+#if 0
+      while(oldit != curr->end() || newit != pool->end()) {
+        if(newit == pool->end() || (oldit != curr->end()
+                && oldit->first->less(newit->first) )) {
+          removeFromPool(oldit->first, oldit->second);
+          ++oldit;
+        }
+        else if (oldit == curr->end() || (newit != pool->end()
+                && newit->first->less(oldit->first) )) {
+          addToPool(newit->first, newit->second);
+          ++newit;
+        }
+        else {
+          Q_ASSERT(newit->first->equals(oldit->first));
+          if(oldit->second < newit->second)
+            addToPool(newit->first, newit->second - oldit->second);
+          else if(oldit->second > newit->second)
+            removeFromPool(newit->first, oldit->second - newit->second);
+          ++newit;
+          ++oldit;
+        }
+      }
+#endif
+    }
+  }
+
   AnimationGroupPtr warp(const CrazyhousePosition& final) {
     const CrazyhousePosition* current = m_cinterface->position();
     AnimationGroupPtr res(new AnimationGroup);
@@ -229,7 +297,6 @@ public:
       CrazyhousePiece f = final.get(i);
 
       if( !c && f ) {
-        //current->set(i, f);
         NamedSprite sprite = m_cinterface->setPiece(i, f, false);
         res->addPreAnimation(m_cinterface->appearAnimation(sprite, GraphicalAPI::Instant));
       }
@@ -244,9 +311,7 @@ public:
       }
     }
 
-    //BROKEN: implement pool update
-
-
+    updatePool(final);
     return res;
   }
 
@@ -260,7 +325,8 @@ public:
     if (piece)
       res->addPreAnimation(m_cinterface->moveAnimation(piece, move.to));
     else
-      std::cout << "Bug!!!!" << std::endl;
+      ERROR("Bug!!!");
+
     if (captured)
       res->addPostAnimation(m_cinterface->destroyAnimation(captured));
 
@@ -273,7 +339,7 @@ public:
         res->addPostAnimation(m_cinterface->disappearAnimation(capturedPawn));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == CrazyhouseMove::Promotion) {
       CrazyhousePiece promoted = final.get(move.to);
@@ -286,7 +352,7 @@ public:
         res->addPostAnimation(m_cinterface->morphAnimation(old_sprite, new_sprite));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == CrazyhouseMove::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
@@ -305,6 +371,7 @@ public:
       res->addPreAnimation(m_cinterface->moveAnimation(rook, rookDestination));
     }
 
+    updatePool(final);
     return res;
   }
 
@@ -367,6 +434,8 @@ public:
     }
 
     res->addPreAnimation(m_cinterface->moveAnimation(piece, move.from));
+
+    updatePool(final);
     return res;
   }
 };

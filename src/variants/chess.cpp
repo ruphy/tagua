@@ -75,7 +75,8 @@ public:
     if (piece)
       res->addPreAnimation(m_cinterface->moveAnimation(piece, move.to));
     else
-      std::cout << "Bug!!!!" << std::endl;
+      ERROR("Bug!!!");
+
     if (captured)
       res->addPostAnimation(m_cinterface->destroyAnimation(captured));
 
@@ -88,7 +89,7 @@ public:
         res->addPostAnimation(m_cinterface->disappearAnimation(capturedPawn));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == ChessMove::Promotion) {
       ChessPiece promoted = final.get(move.to);
@@ -101,7 +102,7 @@ public:
 				res->addPostAnimation(m_cinterface->morphAnimation(old_sprite, new_sprite));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == ChessMove::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
