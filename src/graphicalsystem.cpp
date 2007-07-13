@@ -114,25 +114,10 @@ NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* pi
   if (!m_board->m_sprites.valid(p))
     return NamedSprite();
 
-  QPixmap px = m_board->m_loader(piece->name());
-
-#if 0
-  SpritePtr s;
-  if (usedrop && m_board->m_drop_sprite) {
-    s = m_board->m_drop_sprite.sprite();
-    m_board->m_drop_sprite = NamedSprite();
-  }
-  else {
-    s = m_board->createSprite(px, p);
-    if (show) s->show();
-  }
-  return m_board->m_sprites[p] = NamedSprite(piece->name(), s);
-#else
-  NamedSprite s(piece->name(), m_board->createSprite(px, p));
+  NamedSprite s(piece->name(), m_board->createSprite(m_board->m_loader(piece->name()), p));
   if (show)
     s.sprite()->show();
   return s;
-#endif
 }
 
 void GraphicalSystem::setSprite(const Point& p, const NamedSprite& sprite) {

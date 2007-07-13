@@ -237,19 +237,6 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
   m_board->m_dropped_pool = -1;
   m_board->m_dropped_index = -1;
 
-#if 0
-  bool fadeOff = true;
-  if(!m_board->m_drop_sprite && m_dragged) {
-
-    //this happens if the animator used the piece being dropped but removed another piece from the pool
-    //for instance it remove another piece of the same type.
-    m_dragged = NamedSprite( m_dragged.name(), SpritePtr(m_dragged.sprite()->duplicate()) );
-    fadeOff = false;
-  }
-  m_board->m_drop_sprite = NamedSprite();
-  cancelDragging(fadeOff);
-#endif
-
   cancelDragging(true);
 }
 
@@ -260,9 +247,6 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
 
   if(m_dragged) {
     std::cout << "Eh? We are already dragging?" << std::endl;
-#if 0
-    m_board->m_drop_sprite = NamedSprite();
-#endif
     cancelDragging(); //never remove implicitly a piece from the pool
   }
 
@@ -280,9 +264,6 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
   m_dragged.sprite()->raise();
   m_dragged.sprite()->show();
   m_dragged_index = index;
-#if 0
-  m_board->m_drop_sprite = m_dragged;
-#endif
 }
 
 /*****************************************************************************************/
