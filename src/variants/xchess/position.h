@@ -46,10 +46,12 @@ public:
 
   class PoolReference {
     PlayerPool* m_p_pool;
+    Color m_color;
   public:
 
-    PoolReference(PlayerPool* p)
-      : m_p_pool(p) {
+    PoolReference(PlayerPool* p, Color color)
+      : m_p_pool(p)
+      , m_color(color) {
     }
     int size();
     int insert(int idx, const P& p);
@@ -110,7 +112,10 @@ public:
 
   virtual Pool& rawPool() { return m_pool; }
   virtual const Pool& rawPool() const { return m_pool; }
-  virtual PoolReference pool(int index) { return PoolReference(&m_pool[static_cast<Color>(index)]); }
+  virtual PoolReference pool(int index) {
+    Color c = static_cast<Color>(index);
+    return PoolReference(&m_pool[c], c);
+  }
 
   virtual P get(const Point& p) const {
     return valid(p) ? m_board[p] : P();
@@ -190,7 +195,6 @@ public:
   QStringList borderCoords() const;
 };
 
-//typedef Position<ChessMove, ChessPiece, PieceGrid> ChessPosition;
 std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 
 
@@ -199,22 +203,62 @@ std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 
 template <typename M, typename P, typename B>
 int Position<M, P, B>::PoolReference::size() {
-  return 0; //BROKEN
+  if(!m_p_pool)
+    return 0;
+
+  int retv = 0;
+  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i)
+    retv += i->second;
+  return retv;
 }
 
 template <typename M, typename P, typename B>
 int Position<M, P, B>::PoolReference::insert(int idx, const P& p) {
-  return 0; //BROKEN
+  if(m_color != p.color()) {
+    ERROR("Inserting a piece in the wrong pool?");
+    return -1;
+  }
+
+  int fill = 0;
+  for(typename PlayerPool::iterator i = m_p_pool->begin(); (i != m_p_pool->end()) && i->first < p.type(); ++i)
+    fill += i->second;
+  int nump = ++(*m_p_pool)[p.type()];
+
+  if(idx < fill)
+    return fill;
+  if(idx >= fill + nump)
+    return fill + nump - 1;
+  return idx;
 }
 
 template <typename M, typename P, typename B>
 P Position<M, P, B>::PoolReference::get(int idx) {
-  return P(); //BROKEN
+  if(idx < 0)
+    return P();
+
+  int fill = 0;
+  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i) {
+    if(idx < fill + i->second)
+      return P(m_color, i->first);
+  }
+  return P();
 }
 
 template <typename M, typename P, typename B>
 P Position<M, P, B>::PoolReference::take(int idx) {
-  return P(); //BROKEN
+  if(idx < 0)
+    return P();
+
+  int fill = 0;
+  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i) {
+    if(idx < fill + i->second) {
+      Type t = i->first;
+      if(!--i->second)
+        m_p_pool->erase(i);
+      return P(m_color, t);
+    }
+  }
+  return P();
 }
 
 template <typename M, typename P, typename B>
