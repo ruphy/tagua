@@ -58,6 +58,7 @@ public:
   virtual bool testPremove(const NormalUserMove&) const;
   virtual bool testPremove(const DropUserMove&) const;
   virtual InteractionType validTurn(const Point&) const;
+  virtual InteractionType validTurn(int) const;
   virtual bool movable(const Point&) const;
   virtual bool oneClickMoves() const;
 

@@ -80,13 +80,13 @@ private:
     * Sets the piece at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
-  
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool show);
+
 	/**
 	  *  Create a new piece, but do not add it to the graphical system.
 	  * \return the newly created sprite.
 	  */
-	virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show);
+  virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool show);
 
   /**
     * Sets the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
@@ -102,19 +102,24 @@ private:
   /**
     * \return the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     */
-  virtual SpritePtr getPoolSprite(int pool, int index);
+  virtual NamedSprite getPoolSprite(int pool, int index);
 
   /**
     * Removes the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the removed sprite.
     */
-  virtual SpritePtr takePoolSprite(int pool, int index);
+  virtual NamedSprite takePoolSprite(int pool, int index);
 
   /**
     * Inserts a sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     * \return the newly created sprite.
     */
-  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece);
+  virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece);
+
+  /**
+    * \return the piece of the pool that has been dropped, or (-1,-1). (interface for GraphicalAPI)
+    */
+  virtual std::pair<int, int> droppedPoolPiece();
 
   /**
     * Create an animation from a scheme.

@@ -8,6 +8,8 @@
   (at your option) any later version.
 */
 
+#ifdef HAVE_KHTML
+
 #include <boost/shared_ptr.hpp>
 #include <iostream>
 #include <QFile>
@@ -383,3 +385,5 @@ void Textual::setLayoutStyle(int x) {
 
 
 } //end namespace MoveList
+
+#endif //HAVE_KHTML

@@ -55,6 +55,5 @@ inline void TRAP() {
 #define ERROR(x) (std::cout << "Error: " << x << std::endl \
       << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ <<std::endl)
 
-
-
 #endif // COMMON_H
+

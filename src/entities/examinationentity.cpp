@@ -50,6 +50,7 @@ void ExaminationEntity::addPremove(const NormalUserMove&) { }
 void ExaminationEntity::addPremove(const DropUserMove&) { }
 void ExaminationEntity::cancelPremove() { }
 InteractionType ExaminationEntity::validTurn(const Point&) const { return NoAction; }
+InteractionType ExaminationEntity::validTurn(int) const { return NoAction; }
 bool ExaminationEntity::movable(const Point&) const { return false; }
 bool ExaminationEntity::jump(const Index&) { return true; }
 

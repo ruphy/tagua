@@ -52,7 +52,7 @@ ChessTable::ChessTable(QWidget* parent)
 
   // create pools
   for(int i=0;i<2;i++) {
-    m_pools[i] = new PiecePool(m_board, this);
+    m_pools[i] = new PiecePool(i, m_board, this);
     m_pools[i]->show();
   }
 

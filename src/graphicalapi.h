@@ -11,6 +11,7 @@
 #ifndef GRAPHICALAPI_H
 #define GRAPHICALAPI_H
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include "animationfactory.h"
 #include "kboard.h"
@@ -53,13 +54,13 @@ public:
     * Sets the piece at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
-  
+  virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool show) = 0;
+
 	/**
 	  *  Create a new piece, but do not add it to the graphical system.
 	  * \return the newly created sprite.
 	  */
-  virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool use_drop, bool show) = 0;
+  virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece,  bool show) = 0;
 
   /**
     * Sets the sprite at the position \a index in the graphical pool.
@@ -75,20 +76,25 @@ public:
   /**
     * \return the sprite at the position \a index in the graphical pool.
     */
-  virtual SpritePtr getPoolSprite(int pool, int index) = 0;
+  virtual NamedSprite getPoolSprite(int pool, int index) = 0;
 
   /**
     * Removes the sprite at the position \a index in the graphical pool.
     * \return the removed sprite.
     */
-  virtual SpritePtr takePoolSprite(int pool, int index) = 0;
+  virtual NamedSprite takePoolSprite(int pool, int index) = 0;
 
   /**
     * Inserts a sprite at the position \a index in the graphical pool.
     * \return the newly created sprite.
     */
-  virtual SpritePtr insertPoolSprite(int pool, int index, const AbstractPiece* piece) = 0;
-  
+  virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece) = 0;
+
+  /**
+    * \return the piece of the pool that has been dropped, or (-1,-1)
+    */
+  virtual std::pair<int, int> droppedPoolPiece() = 0;
+
 	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type) = 0;
 };
 

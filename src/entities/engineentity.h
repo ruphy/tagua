@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -27,16 +27,16 @@ class EngineEntity : public Entity
   VariantInfo* m_variant;
   boost::shared_ptr<Engine> m_engine;
   AgentGroupDispatcher m_dispatcher;
-  
+
   void executeMove(AbstractMove::Ptr move);
 public:
   boost::shared_ptr<Engine> engine() { return m_engine; }
 
-  EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&, 
+  EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&,
               const boost::shared_ptr<Engine>& engine, AgentGroup* group);
-  
+
   virtual void notifyEngineMove(const QString&);
-  
+
   virtual bool canDetach() const { return true; }
 
   virtual void notifyClockUpdate(int, int) { }

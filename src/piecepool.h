@@ -23,57 +23,73 @@
   * stack of pieces and lets you drop them on the board, notifying
   * the board.
   */
-class PiecePool : public PieceGroup {
-public:
-  typedef Grid<NamedSprite> PieceGrid;
+class PiecePool : public ClickableCanvas {
 
 private:
+  int m_pool_num;
+
   /** displayed m_sprites */
-  PieceGrid   m_sprites;
+  std::vector<NamedSprite>   m_sprites;
 
   /** refrence board */
   class Board* m_board;
 
+  /** true if flipped */
+  bool m_flipped;
+
+  /** size if a square */
+  int m_square_size;
+
+  /** the width of the pool (ie how many pieces) */
+  int m_width;
+
+  /** loader class, to load pieces */
+  PixmapLoader m_loader;
+
   /** the piece that is being dragged, if any */
   NamedSprite m_dragged;
+
+  /** the index of the piece being dragged */
   int m_dragged_index;
 
-  /** the number of pieces on the pool */
-  int m_fill;
+  /** main animation structure */
+  MainAnimation* m_main_animation;
 
-  /** internal, resizes the grid vector to hold x pieces */
+  /** internal function, resizes the grid vector to hold x pieces */
   void setFill(int x);
-
-  /** redefinition of PointConverter::flipPoint
-      if the PiecePool is flipped it will be drawn using the position as
-      lower bound. Further, the points are ordered in a snake-like way */
-  virtual Point flipPoint(const Point& p) const; //custom flip function
 
   /** removes the drag putting it back together with his friends in the pool.
       if fadeOff is true the current drag will fade off while a new piece will
-      fade in the pool, while if fadeOff is false the fade off is no done.
+      fade in the pool, while if fadeOff is false the fade off is not done.
       fadeOff will typically be false if the piece sprite has been used in the
       board and we don't want a clone that is fading off */
-  void clearDrag(bool fadeOff = true);
-
-  /** this internal function updates the sprite images after the board has been resized  */
-  void updateSprites();
-
-  /** fetch the sprite */
-  boost::shared_ptr<Sprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
+  void cancelDragging(bool fadeOff = true);
 
   /** takes the named sprite */
-  NamedSprite takeNamedSprite(const Point& p);
+  NamedSprite takeSpriteAt(int i);
+
+  /** converts an index to the upper left point of the corresponding square */
+  QPoint toReal(int i);
+
+  /** finds to which index corresponds the point p, or -1 if corresponds to none */
+  int toLogical(const QPoint& p);
 
 public:
   friend class GraphicalSystem;
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
-  PiecePool(Board* b, KGameCanvasAbstract* parent);
+  PiecePool(int num, Board* b, KGameCanvasAbstract* parent);
   ~PiecePool();
 
+  /** returns the sprite loader */
+  PixmapLoader* loader() { return &m_loader; }
 
+  /** returns the sprite loader */
+  const PixmapLoader* loader() const { return &m_loader; }
+
+  /** returns the flipped value */
+  bool flipped() const { return m_flipped; }
 
   /** returns the number of pieces in the pool */
   int fill();
@@ -81,14 +97,14 @@ public:
   /** removes all the pieces */
   void clear();
 
-  /** adds a piece to the pool */
+  /** adds a sprite to the pool */
   void insertSprite(int index, const NamedSprite& sprite);
 
-  /** \return the piece at the given index. */
-  SpritePtr getSprite(int index);
+  /** \return the sprite at the given index. */
+  NamedSprite getSprite(int index);
 
-  /** removes the piece at the given index from the pool and returns it. */
-  SpritePtr takeSprite(int index);
+  /** removes the sprite at the given index from the pool and returns it. */
+  NamedSprite takeSprite(int index);
 
 
 
@@ -96,17 +112,14 @@ public:
       grid height will be recalculated) */
   void setGridWidth(int w);
 
-  /** \return the size of the grid */
-  virtual Point gridSize() const { return m_sprites.getSize(); }
-
   /** piecesGroup overload */
   virtual KGameCanvasAbstract* piecesGroup();
 
   /** the rect that will be covered by the pool */
-  virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*gridSize().x,
-                                  (flipped()?-1:1)*m_square_size*gridSize().y)); }
+  virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*m_width,
+                                  (m_flipped?-1:1)*m_square_size*((m_sprites.size()+m_width-1)/m_width)) ); }
 
-  /** flips and moves the pool at the same time */
+  /** flips and moves the pieces in the pool at the same time */
   void flipAndMoveBy(QPoint p);
 
   /** mouse release event  */

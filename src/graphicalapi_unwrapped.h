@@ -43,14 +43,14 @@ public:
     }
   }
 
-  virtual NamedSprite setPiece(const Point& p, const typename Variant::Piece& piece, bool use_drop, bool show) {
+  virtual NamedSprite setPiece(const Point& p, const typename Variant::Piece& piece, bool show) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->setPiece(p, &wpiece, use_drop, show);
+    return m_graphical_api->setPiece(p, &wpiece, show);
   }
-  
-  virtual NamedSprite createPiece(const Point& p, const typename Variant::Piece& piece, bool use_drop, bool show) {
+
+  virtual NamedSprite createPiece(const Point& p, const typename Variant::Piece& piece, bool show) {
   	WrappedPiece<Variant> wpiece(piece);
-  	return m_graphical_api->createPiece(p, &wpiece, use_drop, show);
+  	return m_graphical_api->createPiece(p, &wpiece, show);
   }
 
   virtual void setSprite(const Point& p, const NamedSprite& s) {
@@ -69,17 +69,21 @@ public:
     return m_graphical_api->poolSize(pool);
   }
 
-  virtual SpritePtr insertPoolSprite(int pool, int index, const typename Variant::Piece& piece) {
+  virtual NamedSprite insertPoolPiece(int pool, int index, const typename Variant::Piece& piece) {
     WrappedPiece<Variant> wpiece(piece);
-    return m_graphical_api->insertPoolSprite(pool, index, &wpiece);
+    return m_graphical_api->insertPoolPiece(pool, index, &wpiece);
   }
 
-  virtual SpritePtr getPoolSprite(int pool, int index) {
+  virtual NamedSprite getPoolSprite(int pool, int index) {
     return m_graphical_api->getPoolSprite(pool, index);
   }
 
-  virtual SpritePtr takePoolSprite(int pool, int index) {
+  virtual NamedSprite takePoolSprite(int pool, int index) {
     return m_graphical_api->takePoolSprite(pool, index);
+  }
+
+  virtual std::pair<int, int> droppedPoolPiece() {
+    return m_graphical_api->droppedPoolPiece();
   }
     
   virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal) {

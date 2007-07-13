@@ -26,9 +26,6 @@ const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
 
 
-
-//BEGIN Dream code
-
 typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
 
 class ChessAnimator {
@@ -48,18 +45,16 @@ public:
 
       if( !c && f ) {
         //current->set(i, f);
-        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        NamedSprite sprite = m_cinterface->setPiece(i, f, false);
         res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
       }
       else if (c && !f) {
-        //current->set(i, NULL);
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
         res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
       }
       else if(c && f && !(c == f) ) {
-        //current->set(i, f);
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
-        NamedSprite sprite = m_cinterface->setPiece(i, f, false, false);
+        NamedSprite sprite = m_cinterface->setPiece(i, f, false);
         res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
       }
     }
@@ -72,7 +67,6 @@ public:
 
   boost::shared_ptr<AnimationGroup> forward(const ChessPosition& final, const ChessMove& move) {
     AnimationFactory res(m_cinterface->inner());
-    //ChessPiece piece = current->get(move.from);
 
     NamedSprite piece = m_cinterface->takeSprite(move.from);
     NamedSprite captured = m_cinterface->takeSprite(move.to);
@@ -81,7 +75,8 @@ public:
     if (piece)
       res.addPreAnimation(Animate::move(piece, move.to));
     else
-      std::cout << "Bug!!!!" << std::endl;
+      ERROR("Bug!!!");
+
     if (captured)
       res.addPostAnimation(Animate::destroy(captured));
 
@@ -94,7 +89,7 @@ public:
         res.addPostAnimation(Animate::disappear(capturedPawn));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == ChessMove::Promotion) {
       ChessPiece promoted = final.get(move.to);
@@ -102,12 +97,12 @@ public:
       if (promoted) {
         QPoint real = m_cinterface->converter()->toReal(move.to);
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
-        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false, false);
+        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, /*false,*/ false);
 
 				res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
       }
       else
-        std::cout << "Bug!!!!" << std::endl;
+        ERROR("Bug!!!");
     }
     else if (move.type() == ChessMove::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
@@ -135,12 +130,12 @@ public:
     NamedSprite piece = m_cinterface->takeSprite(move.to);
     NamedSprite captured;
     if (ChessPiece captured_piece = final.get(move.to)) {
-      captured = m_cinterface->setPiece(move.to, captured_piece, false, false);
+      captured = m_cinterface->setPiece(move.to, captured_piece, false);
       res.addPreAnimation(Animate::appear(captured));
     }
 
     if (!piece) {
-      piece = m_cinterface->createPiece(move.to, final.get(move.from), false, false);
+      piece = m_cinterface->createPiece(move.to, final.get(move.from), false);
       res.addPreAnimation(Animate::appear(piece));
     }
 
@@ -151,16 +146,15 @@ public:
       Point phantom(move.to.x, move.from.y);
 
       if (ChessPiece pawn_piece = final.get(phantom)) {
-        NamedSprite captured_pawn = m_cinterface->setPiece(phantom, pawn_piece, false, false);
+        NamedSprite captured_pawn = m_cinterface->setPiece(phantom, pawn_piece, false);
         res.addPreAnimation(Animate::appear(captured_pawn));
       }
     }
     else if (move.type() == ChessMove::Promotion) {
       ChessPiece pawn_piece = final.get(move.from);
       if (pawn_piece) {
-        NamedSprite pawn = m_cinterface->createPiece(move.to, pawn_piece, false, false);
+        NamedSprite pawn = m_cinterface->createPiece(move.to, pawn_piece, false);
         res.addPreAnimation(Animate::morph(piece, pawn));
-
 				// replace piece with pawn
         m_cinterface->setSprite(move.from, pawn);
         piece = pawn;
@@ -189,10 +183,6 @@ public:
     return res;
   }
 };
-
-
-//END Dream code
-
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);

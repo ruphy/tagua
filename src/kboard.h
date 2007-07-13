@@ -213,6 +213,11 @@ public:
   virtual InteractionType movable(const Point& p) const = 0;
 
   /**
+    * \return 1 if this pool can be dropped, -1 if could be dropped in the future (premove), or else 0.
+    */
+  virtual InteractionType droppable(int) const = 0;
+
+  /**
     * \return an id corresponding to the player
     * who is in turn.
     */

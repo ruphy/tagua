@@ -127,7 +127,7 @@ VerboseNotation::VerboseNotation(const QString& str, int ysize)
     to = Point(pattern.cap(3), ysize);
 
     type = ChessPiece::getType(pattern.cap(1));
-    if (pattern.cap(5) != "")
+    if (!pattern.cap(5).isEmpty())
       promotion = ChessPiece::getType(pattern.cap(6));
     else
       promotion = INVALID_TYPE;

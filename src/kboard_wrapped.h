@@ -284,6 +284,10 @@ public:
     return m_pos.movable(p);
   }
 
+  virtual InteractionType droppable(int p) const {
+    return m_pos.droppable(p);
+  }
+
   virtual int turn() const {
     return static_cast<int>(m_pos.turn());
   }
@@ -510,15 +514,8 @@ public:
       MoveFactory<Variant>::createNormalMove(move)));
   }
   virtual AbstractMove::Ptr createDropMove(const DropUserMove& move) {
-    WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(move.m_piece.get());
-    if (piece) {
-      return AbstractMove::Ptr(new WrappedMove<Variant>(
-        MoveFactory<Variant>::createDropMove(piece->inner(), move.m_to)));
-    }
-    else {
-      MISMATCH(move.m_piece.get(), WrappedPiece<Variant>);
-      return AbstractMove::Ptr();
-    }
+    return AbstractMove::Ptr(new WrappedMove<Variant>(
+      MoveFactory<Variant>::createDropMove(move)));
   }
 
   virtual AbstractMove::Ptr getVerboseMove(int turn, const VerboseNotation& m) const {

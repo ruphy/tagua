@@ -51,7 +51,7 @@ public:
   bool operator==(const ChessMove& other) const;
   bool operator!=(const ChessMove& other) const;
 
-  static ChessMove createDropMove(const class ChessPiece&, const Point&);
+  static ChessMove createDropMove(int pool, int piece_index, const Point&);
 };
 
 #endif // MOVE_H

@@ -105,17 +105,18 @@ NamedSprite GraphicalSystem::takeSprite(const Point& p) {
   return retv;
 }
 
-NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
-  return m_board->m_sprites[p] = createPiece(p, piece, usedrop, show);
+NamedSprite GraphicalSystem::setPiece(const Point& p, const AbstractPiece* piece, bool show) {
+  return m_board->m_sprites[p] = createPiece(p, piece, show);
 }
 
-NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* piece, bool usedrop, bool show) {
+NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* piece, bool show) {
   Q_ASSERT(piece);
   if (!m_board->m_sprites.valid(p))
     return NamedSprite();
 
   QPixmap px = m_board->m_loader(piece->name());
 
+#if 0
   SpritePtr s;
   if (usedrop && m_board->m_drop_sprite) {
     s = m_board->m_drop_sprite.sprite();
@@ -125,7 +126,13 @@ NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* pi
     s = m_board->createSprite(px, p);
     if (show) s->show();
   }
-  return NamedSprite(piece->name(), s);
+  return m_board->m_sprites[p] = NamedSprite(piece->name(), s);
+#else
+  NamedSprite s(piece->name(), m_board->createSprite(px, p));
+  if (show)
+    s.sprite()->show();
+  return s;
+#endif
 }
 
 void GraphicalSystem::setSprite(const Point& p, const NamedSprite& sprite) {
@@ -139,21 +146,25 @@ int GraphicalSystem::poolSize(int pool) {
   return m_view->pool(pool)->fill();
 }
 
-SpritePtr GraphicalSystem::getPoolSprite(int pool, int index) {
+NamedSprite GraphicalSystem::getPoolSprite(int pool, int index) {
   return m_view->pool(pool)->getSprite(index);
 }
 
-SpritePtr GraphicalSystem::takePoolSprite(int pool, int index) {
+NamedSprite GraphicalSystem::takePoolSprite(int pool, int index) {
   return m_view->pool(pool)->takeSprite(index);
 }
 
-SpritePtr GraphicalSystem::insertPoolSprite(int pool, int index, const AbstractPiece* piece) {
+NamedSprite GraphicalSystem::insertPoolPiece(int pool, int index, const AbstractPiece* piece) {
   PiecePool *pl = m_view->pool(pool);
   QPixmap px = pl->m_loader(piece->name());
 
-  SpritePtr s = SpritePtr( new Sprite( px, pl->piecesGroup(), QPoint() ) );
-  pl->insertSprite(index, NamedSprite(piece->name(), s) );
+  NamedSprite s( piece->name(), SpritePtr( new Sprite( px, pl->piecesGroup(), QPoint() ) ) );
+  pl->insertSprite(index, s);
   return s;
+}
+
+std::pair<int, int> GraphicalSystem::droppedPoolPiece() {
+  return std::pair<int, int>(m_board->m_dropped_pool, m_board->m_dropped_index);
 }
 
 AnimationPtr GraphicalSystem::animate(const Animate::Scheme& scheme, Animate::AnimationType type) {

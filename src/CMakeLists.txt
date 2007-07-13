@@ -13,7 +13,7 @@ set(kboard_SRC
   luaapi/genericwrapper.cpp
   luaapi/loader.cpp
   luaapi/imaging.cpp
-  
+
   entities/gameentity.cpp
   entities/userentity.cpp
   entities/examinationentity.cpp
@@ -26,6 +26,7 @@ set(kboard_SRC
   variants/xchess/move.cpp
   variants/xchess/piece.cpp
   variants/chess.cpp
+  variants/crazyhouse.cpp
 
   animationfactory.cpp
   movelist.cpp
@@ -123,8 +124,8 @@ message("lua: " ${LUA_LINK_FLAGS})
 target_link_libraries(kboard
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${KDE4_KHTML_LIBS}
+#   ${KDE4_KIO_LIBS}
+#   ${KDE4_KHTML_LIBS}
   kdegames
 )
 

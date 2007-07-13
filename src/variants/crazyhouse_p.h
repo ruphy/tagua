@@ -40,10 +40,13 @@ public:
 class CrazyhouseMove : public ChessMove {
 public:
   CrazyhousePiece m_drop;
+  int m_pool;
+  int m_pool_index;
 
   CrazyhouseMove(const ChessMove& move);
   CrazyhouseMove(const Point& from, const Point& to, PieceType promotionType = INVALID_TYPE);
-  CrazyhouseMove(CrazyhousePiece piece, const Point& to);
+  CrazyhouseMove(const CrazyhousePiece& p, const Point& to);
+  CrazyhouseMove(int pool, int m_pool_index, const Point& to);
   CrazyhouseMove(const CrazyhouseMove&);
 
   QString toString(int ysize) const {
@@ -51,8 +54,8 @@ public:
       return CrazyhousePiece::typeSymbol(m_drop.type()) + "@" + to.toString(ysize);
     return ChessMove::toString(ysize);
   }
-  static CrazyhouseMove createDropMove(const CrazyhousePiece& p, const Point& to) {
-    return CrazyhouseMove(p, to);
+  static CrazyhouseMove createDropMove(int pool, int m_pool_index, const Point& to) {
+    return CrazyhouseMove(pool, m_pool_index, to);
   }
 };
 
@@ -61,7 +64,6 @@ public:
   typedef CrazyhouseMove Move;
   typedef CrazyhousePiece Piece;
   typedef Position<Move, Piece, Grid<Piece> > Base;
-  typedef std::map<CrazyhousePiece, int> Pool;
 
   CrazyhousePosition();
   CrazyhousePosition(const OptList& l);
@@ -72,12 +74,6 @@ public:
   virtual CrazyhousePosition* clone() const;
 
 public:
-  virtual void addToPool(const Piece& p, int n) { m_pool[p] += n; }
-  virtual void removeFromPool(const Piece& p, int n) {
-    if((m_pool[p] -= n) <= 0)
-      m_pool.erase(p);
-  }
-
   virtual CrazyhousePiece::Color moveTurn(const Move&) const;
   virtual bool pseudolegal(Move&) const;
   virtual void move(const Move&);
@@ -118,14 +114,16 @@ public:
 
 private:
   void generateDrops() {
-    for (std::map<CrazyhousePiece, int>::const_iterator it = m_pos.pool().begin();
-          it != m_pos.pool().end(); ++it) {
-      if(m_pos.turn() == it->first.color())
-      for (Point to = m_pos.first();
-          to <= m_pos.last();
-          to = m_pos.next(to)) {
-        CrazyhouseMove move(it->first, to);
-        if (m_test(move)) m_moves.push_back(move);
+    if(m_pos.rawPool().count(m_pos.turn())) {
+      const CrazyhousePosition::PlayerPool& pp = m_pos.rawPool().find(m_pos.turn())->second;
+      for (CrazyhousePosition::PlayerPool::const_iterator it = pp.begin();
+            it != pp.end(); ++it) {
+        for (Point to = m_pos.first();
+            to <= m_pos.last();
+            to = m_pos.next(to)) {
+          CrazyhouseMove move(CrazyhousePiece(m_pos.turn(),it->first), to);
+          if (m_test(move)) m_moves.push_back(move);
+        }
       }
     }
   }
@@ -165,7 +163,7 @@ protected:
   typedef typename Base::Position Position;
   typedef typename Base::Piece Piece;
   typedef typename Base::Move Move;
-/*  
+/*
   virtual boost::shared_ptr<MovementAnimation>
     createMovementAnimation(const GElement& element, const QPoint& destination);
 
@@ -193,7 +191,7 @@ public:
 
 
 template <typename Variant>
-DropAnimator<Variant>::DropAnimator(PointConverter* converter, 
+DropAnimator<Variant>::DropAnimator(PointConverter* converter,
 	const boost::shared_ptr<GPosition>& position)
 : Base(converter, position) { }
 

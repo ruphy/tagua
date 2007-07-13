@@ -11,9 +11,9 @@
 #include "variants.h"
 #include "kboard.h"
 #include "variants/chess.h"
+#include "variants/crazyhouse.h"
 
 #if 0
-#include "variants/crazyhouse.h"
 #include "variants/atomic.h"
 #include "variants/king4pawns.h"
 #include "variants/progressive.h"

@@ -33,7 +33,9 @@ Board::Board(KGameCanvasAbstract* parent)
 , m_sprites(0,0)
 , m_hinting_pos(Point::invalid())
 , selection(Point::invalid())
-, lastSelection(Point::invalid()) {
+, lastSelection(Point::invalid())
+, m_dropped_pool(-1)
+, m_dropped_index(-1) {
 
   m_tags = BoardTagsPtr(new BoardTags);
 
@@ -645,12 +647,10 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
 
   clearTags("validmove");
 
-  #if 0
-  //BROKEN
-  switch(m_entity.lock()->validTurn(piece->color())) {
+  switch(m_entity.lock()->validTurn(pool)) {
 
     case Moving: {
-      DropUserMove m(piece, to);
+      DropUserMove m(pool, index, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv)  {
           m_entity.lock()->executeMove(mv);
@@ -660,7 +660,7 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
     }
 
     case Premoving: {
-      DropUserMove m(piece, to);
+      DropUserMove m(pool, index, to);
       if (m_entity.lock()->testPremove(m)) {
         m_entity.lock()->addPremove(m);
         setPremove(m);
@@ -671,7 +671,7 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
     default:
       break;
   }
-  #endif
+
   std::cout << "invalid move" << std::endl;
   emit error(InvalidMove);
   return false;
