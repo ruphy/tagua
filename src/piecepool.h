@@ -26,6 +26,8 @@
 class PiecePool : public ClickableCanvas {
 
 private:
+  int m_pool_num;
+
   /** displayed m_sprites */
   std::vector<NamedSprite>   m_sprites;
 
@@ -77,7 +79,7 @@ public:
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
-  PiecePool(Board* b, KGameCanvasAbstract* parent);
+  PiecePool(int num, Board* b, KGameCanvasAbstract* parent);
   ~PiecePool();
 
   /** returns the sprite loader */

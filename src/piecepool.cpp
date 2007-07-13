@@ -14,8 +14,9 @@
 #include "piecepool.h"
 
 /*****************************************************************************************/
-PiecePool::PiecePool(Board* b, KGameCanvasAbstract* parent)
+PiecePool::PiecePool(int num, Board* b, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
+, m_pool_num(num)
 , m_board(b)
 , m_flipped(false)
 , m_square_size(0)
@@ -86,7 +87,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
     index--;
 
   if(index < 0 || index > fill() ) {
-    ERROR("invalid index " << index);
+    ERROR("invalid index " << index); TRAP();
     return;
   }
 
@@ -144,7 +145,7 @@ NamedSprite PiecePool::takeSprite(int index) {
 /*****************************************************************************************/
 NamedSprite PiecePool::takeSpriteAt(int index) {
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index);
+    ERROR("invalid index " << index); TRAP();
     return NamedSprite();
   }
 
@@ -228,7 +229,7 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
     return;
 
   /* did the board take this sprite? */
-  m_board->dropOn( 0/*BROKEN*/, m_dragged_index, pos + this->pos() - m_board->pos() );
+  m_board->dropOn( m_pool_num, m_dragged_index, pos + this->pos() - m_board->pos() );
 
 #if 0
   bool fadeOff = true;
@@ -272,6 +273,7 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
   m_dragged = NamedSprite(  got.name(), SpritePtr(new Sprite(px, m_board->piecesGroup(),  at) ) );
   m_dragged.sprite()->raise();
   m_dragged.sprite()->show();
+  m_dragged_index = index;
 #if 0
   m_board->m_drop_sprite = m_dragged;
 #endif
@@ -283,6 +285,6 @@ void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
     m_dragged.sprite()->moveTo(pos + this->pos() - m_board->pos()
                 - QPoint(m_dragged.sprite()->pixmap().width(),
                          m_dragged.sprite()->pixmap().height() ) / 2 );
-    m_board->draggingOn( 0/*BROKEN*/, m_dragged_index, pos + this->pos() - m_board->pos() );
+    m_board->draggingOn( m_pool_num, m_dragged_index, pos + this->pos() - m_board->pos() );
   }
 }
