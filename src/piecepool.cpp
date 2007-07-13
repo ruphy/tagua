@@ -228,8 +228,14 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
   if (button != Qt::LeftButton || !m_dragged)
     return;
 
+  m_board->m_dropped_pool = m_pool_num;
+  m_board->m_dropped_index = m_dragged_index;
+
   /* did the board take this sprite? */
   m_board->dropOn( m_pool_num, m_dragged_index, pos + this->pos() - m_board->pos() );
+
+  m_board->m_dropped_pool = -1;
+  m_board->m_dropped_index = -1;
 
 #if 0
   bool fadeOff = true;

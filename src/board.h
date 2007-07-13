@@ -133,6 +133,9 @@ private:
 
   QStringList m_border_coords;
 
+  int m_dropped_pool;
+  int m_dropped_index;
+
   /** the rectangles used to draw the border */
   std::vector<boost::shared_ptr<KGameCanvasRectangle> > m_border_margins;
 

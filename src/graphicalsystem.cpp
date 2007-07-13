@@ -163,6 +163,9 @@ NamedSprite GraphicalSystem::insertPoolPiece(int pool, int index, const Abstract
   return s;
 }
 
+std::pair<int, int> GraphicalSystem::droppedPoolPiece() {
+  return std::pair<int, int>(m_board->m_dropped_pool, m_board->m_dropped_index);
+}
 
 AnimationPtr GraphicalSystem::moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) {
 	switch (type) {

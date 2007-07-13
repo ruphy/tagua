@@ -11,6 +11,7 @@
 #ifndef GRAPHICALAPI_H
 #define GRAPHICALAPI_H
 
+#include <vector>
 #include <boost/shared_ptr.hpp>
 #include "kboard.h"
 #include "pointconverter.h"
@@ -92,6 +93,11 @@ public:
     * \return the newly created sprite.
     */
   virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece) = 0;
+
+  /**
+    * \return the piece of the pool that has been dropped, or (-1,-1)
+    */
+  virtual std::pair<int, int> droppedPoolPiece() = 0;
 
   /**
   	* Create a movement animation.

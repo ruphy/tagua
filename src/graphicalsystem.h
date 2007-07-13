@@ -38,7 +38,7 @@ public:
 
   /** The current variant */
   VariantInfo* m_variant;
-  
+
   /** A random number generator */
   Random m_random;
 
@@ -83,7 +83,7 @@ private slots:
     * \return the newly created sprite.
     */
   virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool show);
-  
+
 	/**
 	  *  Create a new piece, but do not add it to the graphical system.
 	  * \return the newly created sprite.
@@ -117,6 +117,11 @@ private slots:
     * \return the newly created sprite.
     */
   virtual NamedSprite insertPoolPiece(int pool, int index, const AbstractPiece* piece);
+
+  /**
+    * \return the piece of the pool that has been dropped, or (-1,-1). (interface for GraphicalAPI)
+    */
+  virtual std::pair<int, int> droppedPoolPiece();
 
 	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type);
 	virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type);

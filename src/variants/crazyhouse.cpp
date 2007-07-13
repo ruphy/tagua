@@ -324,8 +324,19 @@ public:
     AnimationGroupPtr res(new AnimationGroup);
 
     if(move.m_drop) {
-      NamedSprite drop = m_cinterface->setPiece(move.to, move.m_drop, false);
-      res->addPreAnimation(m_cinterface->appearAnimation(drop));
+      std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
+      if(dropped.first != -1 && dropped.second != -1
+          && const_cast<CrazyhousePosition*>(m_cinterface->position())
+              ->pool(dropped.first).get(dropped.second) == move.m_drop) {
+        NamedSprite drop = m_cinterface->takePoolSprite(dropped.first, dropped.second);
+        m_cinterface->setSprite(move.to, drop);
+        res->addPreAnimation(m_cinterface->moveAnimation(drop, move.to));
+        return res;
+      }
+      else {
+        NamedSprite drop = m_cinterface->setPiece(move.to, move.m_drop, false);
+        res->addPreAnimation(m_cinterface->appearAnimation(drop));
+      }
     }
     else {
       NamedSprite piece = m_cinterface->takeSprite(move.from);

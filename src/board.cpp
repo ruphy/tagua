@@ -33,7 +33,9 @@ Board::Board(KGameCanvasAbstract* parent)
 , m_sprites(0,0)
 , m_hinting_pos(Point::invalid())
 , selection(Point::invalid())
-, lastSelection(Point::invalid()) {
+, lastSelection(Point::invalid())
+, m_dropped_pool(-1)
+, m_dropped_index(-1) {
 
   m_tags = BoardTagsPtr(new BoardTags);
 
