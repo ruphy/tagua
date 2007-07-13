@@ -76,10 +76,15 @@ public:
   /**
     * \return the sprite at the position \a index in the graphical pool.
     */
-  virtual NamedSprite getPoolSprite(int pool, int index) = 0;
+  //virtual NamedSprite getPoolSprite(int pool, int index) = 0;
 
   /**
     * Removes the sprite at the position \a index in the graphical pool.
+    */
+  virtual void removePoolSprite(int pool, int index) = 0;
+
+  /**
+    * Removes the sprite at the position \a index in the graphical pool (only for drops).
     * \return the removed sprite.
     */
   virtual NamedSprite takePoolSprite(int pool, int index) = 0;

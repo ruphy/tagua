@@ -103,6 +103,9 @@ public:
   /** \return the sprite at the given index. */
   NamedSprite getSprite(int index);
 
+  /** removes the sprite at the given index from the pool. */
+  void removeSprite(int index);
+
   /** removes the sprite at the given index from the pool and returns it. */
   NamedSprite takeSprite(int index);
 

@@ -13,7 +13,7 @@
 #include "animation.h"
 #include "piecepool.h"
 
-/*****************************************************************************************/
+
 PiecePool::PiecePool(int num, Board* b, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_pool_num(num)
@@ -26,12 +26,12 @@ PiecePool::PiecePool(int num, Board* b, KGameCanvasAbstract* parent)
   setGridWidth(1);
 }
 
-/*****************************************************************************************/
+
 PiecePool::~PiecePool() {
   delete m_main_animation;
 }
 
-/*****************************************************************************************/
+
 QPoint PiecePool::toReal(int i) {
   int x = i%m_width;
   int y = i/m_width;
@@ -43,7 +43,7 @@ QPoint PiecePool::toReal(int i) {
   return QPoint(m_square_size*x, m_square_size*y);
 }
 
-/*****************************************************************************************/
+
 int PiecePool::toLogical(const QPoint& p) {
   int x = p.x()/m_square_size;
   int y = p.y()/m_square_size;
@@ -61,27 +61,27 @@ int PiecePool::toLogical(const QPoint& p) {
   return retv;
 }
 
-/*****************************************************************************************/
+
 void PiecePool::settingsChanged() {
   //PieceGroup::settingsChanged();
 }
 
-/*****************************************************************************************/
+
 void PiecePool::setGridWidth(int w) {
   m_width = w;
 }
 
-/*****************************************************************************************/
+
 int PiecePool::fill() {
   return m_sprites.size();
 }
 
-/*****************************************************************************************/
+
 void PiecePool::clear() {
   m_sprites.clear();
 }
 
-/*****************************************************************************************/
+
 void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   if(m_dragged && index > m_dragged_index)
     index--;
@@ -105,7 +105,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   //BROKEN fadeIn(index);
 }
 
-/*****************************************************************************************/
+
 NamedSprite PiecePool::getSprite(int index) {
   if(m_dragged && index == m_dragged_index)
     return m_dragged;
@@ -121,7 +121,26 @@ NamedSprite PiecePool::getSprite(int index) {
   return m_sprites[index];
 }
 
-/*****************************************************************************************/
+
+void PiecePool::removeSprite(int index) {
+  if(m_dragged && index == m_dragged_index) {
+    m_dragged = NamedSprite();
+    m_dragged_index = -1;
+    return;
+  }
+
+  if(m_dragged && index > m_dragged_index)
+    index--;
+
+  if(index < 0 || index >= (int)m_sprites.size() ) {
+    ERROR("invalid index " << index);
+    return;
+  }
+
+  takeSpriteAt(index);
+}
+
+
 NamedSprite PiecePool::takeSprite(int index) {
   if(m_dragged && index == m_dragged_index) {
     NamedSprite retv = m_dragged;
@@ -131,6 +150,9 @@ NamedSprite PiecePool::takeSprite(int index) {
     return retv;
   }
 
+  ERROR("Only the sprite being dropped can be taken from the pool.");
+  return NamedSprite();
+#if 0
   if(m_dragged && index > m_dragged_index)
     index--;
 
@@ -140,9 +162,10 @@ NamedSprite PiecePool::takeSprite(int index) {
   }
 
   return takeSpriteAt(index);
+#endif
 }
 
-/*****************************************************************************************/
+
 NamedSprite PiecePool::takeSpriteAt(int index) {
   if(index < 0 || index >= (int)m_sprites.size() ) {
     ERROR("invalid index " << index); TRAP();
@@ -163,12 +186,12 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
   return retv;
 }
 
-/*****************************************************************************************/
+
 KGameCanvasAbstract* PiecePool::piecesGroup() {
   return this;
 }
 
-/*****************************************************************************************/
+
 void PiecePool::cancelDragging(bool fadeOff) {
   if(!m_dragged)
     return;
@@ -190,7 +213,7 @@ void PiecePool::cancelDragging(bool fadeOff) {
   m_dragged_index = -1;
 }
 
-/*****************************************************************************************/
+
 void PiecePool::flipAndMoveBy(QPoint p) {
   QPoint deltapos = m_flipped ? -p : p;
   moveTo(pos() + deltapos);
@@ -208,7 +231,7 @@ void PiecePool::flipAndMoveBy(QPoint p) {
                                               toReal(i))));
 }
 
-/*****************************************************************************************/
+
 void PiecePool::onResize(int new_size, bool force_reload) {
   if(m_square_size == new_size && !force_reload)
     return;
@@ -223,7 +246,7 @@ void PiecePool::onResize(int new_size, bool force_reload) {
   }
 }
 
-/*****************************************************************************************/
+
 void PiecePool::onMouseRelease(const QPoint& pos, int button) {
   if (button != Qt::LeftButton || !m_dragged)
     return;
@@ -240,7 +263,7 @@ void PiecePool::onMouseRelease(const QPoint& pos, int button) {
   cancelDragging(true);
 }
 
-/*****************************************************************************************/
+
 void PiecePool::onMousePress(const QPoint& pos, int button) {
   if (button != Qt::LeftButton)
     return;
@@ -266,7 +289,7 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
   m_dragged_index = index;
 }
 
-/*****************************************************************************************/
+
 void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
   if(m_dragged) {
     m_dragged.sprite()->moveTo(pos + this->pos() - m_board->pos()

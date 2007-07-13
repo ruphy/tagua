@@ -74,8 +74,12 @@ public:
     return m_graphical_api->insertPoolPiece(pool, index, &wpiece);
   }
 
-  virtual NamedSprite getPoolSprite(int pool, int index) {
-    return m_graphical_api->getPoolSprite(pool, index);
+  // virtual NamedSprite getPoolSprite(int pool, int index) {
+  //   return m_graphical_api->getPoolSprite(pool, index);
+  // }
+
+  virtual void removePoolSprite(int pool, int index) {
+    m_graphical_api->removePoolSprite(pool, index);
   }
 
   virtual NamedSprite takePoolSprite(int pool, int index) {
@@ -85,11 +89,11 @@ public:
   virtual std::pair<int, int> droppedPoolPiece() {
     return m_graphical_api->droppedPoolPiece();
   }
-    
+
   virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal) {
     return m_graphical_api->animate(scheme, type);
   }
-  
+
   GraphicalAPI* inner() const { return m_graphical_api; }
 };
 

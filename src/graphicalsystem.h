@@ -53,7 +53,7 @@ public:
 private slots:
   /** internal function to listen at setting changes */
   void settingsChanged();
-  
+
 private:
   /**
     * \return the current abstract position. (interface for GraphicalAPI)
@@ -102,10 +102,16 @@ private:
   /**
     * \return the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     */
-  virtual NamedSprite getPoolSprite(int pool, int index);
+  //virtual NamedSprite getPoolSprite(int pool, int index);
 
   /**
     * Removes the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
+    */
+  virtual void removePoolSprite(int pool, int index);
+
+  /**
+    * Removes the sprite at the position \a index in the graphical pool (only for drops).
+    * (interface for GraphicalAPI)
     * \return the removed sprite.
     */
   virtual NamedSprite takePoolSprite(int pool, int index);

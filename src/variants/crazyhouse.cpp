@@ -247,7 +247,7 @@ public:
         if(after_it == after.end() || (before_it != before.end()
                 && before_it->first < after_it->first )) {
           for(int i=0;i<before_it->second;i++)
-            m_cinterface->takePoolSprite(color, pos);
+            m_cinterface->removePoolSprite(color, pos);
           ++before_it;
         }
         else if (before_it == before.end() || (after_it != after.end()
@@ -264,7 +264,7 @@ public:
             m_cinterface->insertPoolPiece(color, pos, CrazyhousePiece(c, after_it->first) );
           else if(before_it->second > after_it->second)
           for(int i=0;i<before_it->second - after_it->second;i++)
-            m_cinterface->takePoolSprite(color, pos);
+            m_cinterface->removePoolSprite(color, pos);
           pos += after_it->second;
           ++after_it;
           ++before_it;
