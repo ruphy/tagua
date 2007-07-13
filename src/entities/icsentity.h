@@ -12,7 +12,6 @@
 #define ICSENTITY_H
 
 #include "entity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "agentgroup.h"
 #include "icslistener.h"

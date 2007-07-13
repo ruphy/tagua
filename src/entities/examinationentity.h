@@ -15,7 +15,6 @@
 #include "kboard.h"
 #include "icslistener.h"
 #include "agent.h"
-#include "gamebasedentity.h"
 #include "agentgroup.h"
 
 class ICSConnection;

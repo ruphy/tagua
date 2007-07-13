@@ -19,7 +19,6 @@ set(kboard_SRC
   entities/examinationentity.cpp
   entities/entity.cpp
   entities/engineentity.cpp
-  entities/gamebasedentity.cpp
   entities/icsentity.cpp
 
   variants/variants.cpp

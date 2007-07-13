@@ -20,7 +20,7 @@ public:
   virtual ~Agent() { }
   Agent() : m_active(true) { }
   virtual void notifyClockUpdate(int, int) = 0;
-  virtual void notifyMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref) = 0;
+  virtual void notifyMove(MovePtr move, PositionPtr ref) = 0;
   virtual void notifyBack() = 0;
   virtual void notifyForward() = 0;
   virtual void notifyGotoFirst() = 0;

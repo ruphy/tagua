@@ -12,7 +12,6 @@
 #define ENGINEENTITY_H
 
 #include "entity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "enginenotifier.h"
 #include "kboard.h"

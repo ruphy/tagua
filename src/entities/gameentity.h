@@ -12,7 +12,6 @@
 #define GAMEENTITY_H
 
 #include "userentity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "agentgroup.h"
 
