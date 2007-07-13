@@ -244,6 +244,7 @@ P Position<M, P, B>::PoolReference::get(int idx) {
   for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i) {
     if(idx < fill + i->second)
       return P(m_color, i->first);
+    fill += i->second;
   }
   return P();
 }
@@ -261,6 +262,7 @@ P Position<M, P, B>::PoolReference::take(int idx) {
         m_p_pool->erase(i);
       return P(m_color, t);
     }
+    fill += i->second;
   }
   return P();
 }
