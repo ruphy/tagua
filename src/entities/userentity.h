@@ -15,6 +15,7 @@
 #define GAMEBASEDRULES_H
 
 #include "entity.h"
+#include "fwd.h"
 #include "kboard.h"
 #include "usermove.h"
 #include "agent.h"
@@ -54,7 +55,7 @@ protected:
   bool m_editing_tools;
   int m_promotion;
 public:
-  UserEntity(int);
+  UserEntity(const GamePtr& game, int);
   virtual void setTurnTest(const boost::shared_ptr<TurnTest>& test) { m_turn_test = test; }
   virtual void enableEditingTools(bool value);
 

@@ -21,7 +21,7 @@ using namespace boost;
 ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                    int side, int gameNumber,
                    const shared_ptr<ICSConnection>& connection, AgentGroup* group)
-: GameBasedEntity(game)
+: Entity(game)
 , m_variant(variant)
 , m_connection(connection)
 , m_side(side)

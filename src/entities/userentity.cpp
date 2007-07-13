@@ -10,8 +10,9 @@
 
 #include "userentity.h"
 
-UserEntity::UserEntity(int promotionType)
-: m_editing_tools(false)
+UserEntity::UserEntity(const GamePtr& game, int promotionType)
+: Entity(game)
+, m_editing_tools(false)
 , m_promotion(promotionType) { }
 
 void UserEntity::enableEditingTools(bool value) {

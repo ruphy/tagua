@@ -11,18 +11,19 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "stdio.h"
+#include "fwd.h"
 #include "usermove.h"
-
 
 class Entity {
 protected:
   bool m_premove : 1;
   bool m_enabled : 1;
   bool m_highlight : 1;
+  
+  GamePtr m_game;
 public:
 
-  Entity();
+  explicit Entity(const GamePtr& game);
   /**
     * Detach from dependent resource disposing it.
     */
@@ -39,6 +40,9 @@ public:
     * Detach from dependent resource without disposing it.
     */
   virtual void detach() { }
+  
+  GamePtr game() const;
+  PositionPtr position() const;
 };
 
 #endif // ENTITY_H

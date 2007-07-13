@@ -18,7 +18,7 @@ using namespace boost;
 
 EngineEntity::EngineEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                          const shared_ptr<Engine>& engine, AgentGroup* group)
-: GameBasedEntity(game)
+: Entity(game)
 , m_variant(variant)
 , m_engine(engine)
 , m_dispatcher(group, this) { }

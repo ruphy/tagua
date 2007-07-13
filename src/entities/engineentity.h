@@ -21,7 +21,6 @@
 class Engine;
 
 class EngineEntity : public Entity
-                   , public GameBasedEntity
                    , public Agent
                    , public EngineNotifier {
   VariantInfo* m_variant;

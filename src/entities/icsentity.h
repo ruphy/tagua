@@ -22,7 +22,6 @@ class ICSConnection;
 
 class ICSEntity : public Entity
                 , public Agent
-                , public GameBasedEntity
                 , public ICSListener {
 protected:
   VariantInfo* m_variant;

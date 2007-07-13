@@ -21,7 +21,6 @@
 class ICSConnection;
 
 class ExaminationEntity : public UserEntity
-                        , public GameBasedEntity
                         , public ICSListener {
   VariantInfo* m_variant;
   int m_game_number;

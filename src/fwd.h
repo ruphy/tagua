@@ -35,4 +35,6 @@ typedef boost::shared_ptr<class CrossFadingAnimation> CrossFadingAnimationPtr;
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 
+typedef boost::shared_ptr<class Game> GamePtr;
+
 #endif //KBOARD_FWD_H

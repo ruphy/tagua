@@ -18,8 +18,7 @@
 
 class Board;
 
-class GameEntity : public UserEntity
-                 , public GameBasedEntity {
+class GameEntity : public UserEntity {
   VariantInfo* m_variant;
   Board* m_chessboard;
   AgentGroupDispatcher m_dispatcher;
