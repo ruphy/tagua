@@ -94,8 +94,11 @@ private:
   /** the canvas group that holds the pieces */
   KGameCanvasGroup *m_pieces_group;
 
-  /** the canvas item that is used as background of the board */
+  /** the canvas item that holds the background of the board */
   KGameCanvasGroup *m_canvas_background;
+
+  /** the canvas item that holds board border */
+  KGameCanvasGroup *m_canvas_border;
 
   /** all the tags on the board */
   BoardTagsPtr m_tags;
@@ -116,9 +119,6 @@ private:
   Point m_premove_from;
   Point m_premove_to;
 
-  /** size of the border */
-  int m_border_size;
-
   /** ascent of the font used for the border */
   int m_border_asc;
 
@@ -135,9 +135,6 @@ private:
 
   int m_dropped_pool;
   int m_dropped_index;
-
-  /** the rectangles used to draw the border */
-  std::vector<boost::shared_ptr<KGameCanvasTiledPixmap> > m_border_margins;
 
   /** the text items for the border */
   std::vector<boost::shared_ptr<KGameCanvasItem> > m_border_items;
@@ -211,9 +208,6 @@ public:
 
   /** recreates the board underlying grid  */
   void createGrid(Point p, const QStringList& border_coords);
-
-  /** returns the size of the border */
-  int marginSize(){ return m_border_size+1; };
 
 
   /** sets the controlling entity */

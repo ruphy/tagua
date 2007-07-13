@@ -39,6 +39,10 @@ Board::Board(KGameCanvasAbstract* parent)
 
   m_tags = BoardTagsPtr(new BoardTags);
 
+  m_canvas_border = new KGameCanvasGroup(this);
+  m_canvas_border->lower();
+  m_canvas_border->show();
+
   m_canvas_background = new KGameCanvasGroup(this);
   m_canvas_background->lower();
   m_canvas_background->show();
@@ -55,6 +59,9 @@ Board::~Board() {
   while(!m_canvas_background->items()->isEmpty())
     delete m_canvas_background->items()->first();
   delete m_canvas_background;
+  while(!m_canvas_border->items()->isEmpty())
+    delete m_canvas_border->items()->first();
+  delete m_canvas_border;
 }
 
 void Board::mySettingsChanged() {
@@ -136,13 +143,11 @@ void Board::setTags(const QString& name, Point p1, Point p2, Point p3,
 void Board::recreateBorder() {
   m_border_items.clear();
 
-  if(!m_show_border || m_border_coords.size() == 0) {
-    m_border_size = 0;
+  if(!m_show_border || m_border_coords.size() == 0)
     return;
-  }
 
   QFontMetrics fm(m_border_font);
-  m_border_size = std::max( fm.height(), fm.boundingRect("H").width() );
+  int m_border_size = std::max( fm.height(), fm.boundingRect("H").width() );
   m_border_asc = fm.ascent() + (m_border_size-fm.height())/2;
 
   Point s = m_sprites.getSize();
@@ -172,12 +177,13 @@ void Board::recreateBorder() {
 }
 
 void Board::updateBorder() {
-  m_border_margins.clear();
+  while(!m_canvas_border->items()->isEmpty())
+    delete m_canvas_border->items()->first();
 
   if(!m_show_border || !m_square_size)
     return;
 
-  m_border_size = m_square_size * 3 / 9;
+  int m_border_size = m_square_size * 3 / 9;
 
   int at = 0;
   for(int w = 0; w<2; w++)
@@ -198,19 +204,15 @@ void Board::updateBorder() {
   Loader::PixmapOrMap bord = m_tags_loader.getPixmapMap("border");
   if(const QPixmap* p = boost::get<QPixmap>(&bord)) {
     KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
-                                    true, this);
-    t->lower();
+                                    true, m_canvas_border);
     t->show();
-    m_border_margins.push_back(boost::shared_ptr<KGameCanvasTiledPixmap>(t));
   }
   else if(const Loader::PixmapMap* p = boost::get<Loader::PixmapMap>(&bord)) {
     for(Loader::PixmapMap::const_iterator it = p->begin(); it != p->end(); ++it) {
       KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(it->second, it->first.size(),
-                                      QPoint(), true, this);
+                                      QPoint(), true, m_canvas_border);
       t->moveTo(it->first.topLeft());
-      t->lower();
       t->show();
-      m_border_margins.push_back(boost::shared_ptr<KGameCanvasTiledPixmap>(t));
     }
   }
 }

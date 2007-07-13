@@ -126,10 +126,7 @@ void ChessTable::layout(bool force_reload) {
     m_wallpaper->setOrigin(QPoint(delta.width(), delta.height()));
   }
 
-//  int b = m_board->marginSize();
   Point gs = m_board->gridSize();
-//   int sq_size = std::max(0, std::min(int((width()-3*b)/(gs.x+2.2)),
-//                         (gs.y == 0 ? 100000 : (height()-80-3*b)/gs.y)) );
   int sq_size = std::max(0, std::min(int(width()/(gs.x+2.2+4.0/3.0)),
                         int(gs.y == 0 ? 100000 : (height()-80)/(gs.y+6.0/3.0))) );
   int b = sq_size*2/3;
@@ -230,7 +227,7 @@ void ChessTable::flip() {
   m_board->flip();
 
   for(int i=0;i<2;i++)
-    m_pools[i]->flipAndMoveBy( QPoint(0, m_board->squareSize()*8+m_board->marginSize()) );
+    m_pools[i]->flipAndMoveBy( QPoint(0, m_board->squareSize()*8+m_board->squareSize()*2/3) );
 }
 
 void ChessTable::flip(bool flipped) {
