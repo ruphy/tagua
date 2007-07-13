@@ -121,6 +121,11 @@ CrazyhousePosition::createLegalGenerator() const {
 
 bool CrazyhousePosition::pseudolegal(Move& move) const {
 
+  if(!move.m_drop.valid() && move.m_pool != -1 && move.m_pool_index != -1) {
+    move.m_drop = const_cast<CrazyhousePosition*>(this)->pool(move.m_pool).get(move.m_pool_index);
+    std::cout << move.m_drop << " " << move.m_pool << " " << move.m_pool_index << std::endl;
+  }
+
   if (move.m_drop.valid()) {
     Q_ASSERT(valid(move.to));
 
