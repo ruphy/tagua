@@ -8,6 +8,7 @@
   (at your option) any later version.
 */
 
+#include <math.h>
 #include <iostream>
 #include <QPainter>
 #include <QApplication>
@@ -29,13 +30,17 @@ class BoardTags : public std::map<QString, std::map<Point, boost::shared_ptr<KGa
 };
 
 Board::Board(KGameCanvasAbstract* parent)
-: PieceGroup(parent)
+: ClickableCanvas(parent)
+, m_flipped(false)
+, m_square_size(0)
 , m_sprites(0,0)
 , m_hinting_pos(Point::invalid())
 , selection(Point::invalid())
 , lastSelection(Point::invalid())
 , m_dropped_pool(-1)
 , m_dropped_index(-1) {
+
+  m_main_animation = new MainAnimation( 1.0 );
 
   m_tags = BoardTagsPtr(new BoardTags);
 
@@ -50,7 +55,7 @@ Board::Board(KGameCanvasAbstract* parent)
   m_pieces_group = new KGameCanvasGroup(this);
   m_pieces_group->show();
 
-  mySettingsChanged();
+  settingsChanged();
 }
 
 Board::~Board() {
@@ -59,12 +64,21 @@ Board::~Board() {
   while(!m_canvas_background->items()->isEmpty())
     delete m_canvas_background->items()->first();
   delete m_canvas_background;
+
   while(!m_canvas_border->items()->isEmpty())
     delete m_canvas_border->items()->first();
   delete m_canvas_border;
+
+  delete m_main_animation;
 }
 
-void Board::mySettingsChanged() {
+void Board::settingsChanged() {
+  Settings s_anim = settings.group("animations");
+  int speed = (s_anim["speed"] | 16);
+  int smoothness = (s_anim["smoothness"] | 16);
+  m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );
+  m_main_animation->setDelay( int(70.0*pow(10.0, -smoothness/32.0)) );
+
   Settings s_border = settings.group("board-border");
   m_show_border = s_border.flag("visible", true);
   m_border_color = (s_border["color"] |= QColor(Qt::white));
@@ -72,11 +86,6 @@ void Board::mySettingsChanged() {
   m_border_font = (s_border["font"] |= QApplication::font());
 
   recreateBorder();
-}
-
-void Board::settingsChanged() {
-  PieceGroup::settingsChanged();
-  mySettingsChanged();
 }
 
 void Board::updateBackground() {
@@ -100,6 +109,23 @@ void Board::updateBackground() {
       t->show();
     }
   }
+}
+
+void Board::enqueue(const shared_ptr<Animation>& anim) {
+  m_main_animation->addAnimation(anim);
+}
+
+void Board::adjustSprite(const Point& p, bool immediate) {
+  SpritePtr sprite = m_sprites[p].sprite();
+
+  if(!sprite)
+    return;
+
+  enqueue(
+    1 /*BROKEN m_anim_movement*/ && !immediate
+    ? AnimationPtr(new MovementAnimation(sprite, converter()->toReal(p), 1.0))
+    : AnimationPtr(new InstantAnimation(sprite, converter()->toReal(p)))
+  );
 }
 
 boost::shared_ptr<KGameCanvasPixmap> Board::addTag(const QString& name, Point pt, bool over) {
@@ -281,7 +307,7 @@ void Board::updateSprites() {
     if (p) {
       // drawing sprite
       p->setPixmap( m_loader( m_sprites[i].name() ) );
-      adjustSprite(i);
+      adjustSprite(i, true);
     }
   }
 }
@@ -319,7 +345,10 @@ void Board::onResize(int new_size, bool force_reload) {
   if(m_square_size == new_size && !force_reload)
     return;
 
-  PieceGroup::onResize(new_size);
+  m_square_size = new_size;
+
+  // update the size of the piece loader
+  m_loader.setSize(m_square_size);
 
   // update the size of the tag loader
   m_tags_loader.setSize(m_square_size);
@@ -456,7 +485,7 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
       if (!moved && s && s->pos() != converter()->toReal(m_drag_info->from)) {
         Q_ASSERT(s);
         QPoint real = converter()->toReal(m_drag_info->from);
-        if( (point == m_drag_info->from) ? !m_anim_movement : !m_anim_fade)
+        if( (point == m_drag_info->from) ? 0/* !m_anim_movement*/ : 0 /* !m_anim_fade*/) //BROKEN
           enqueue(shared_ptr<Animation>(new InstantAnimation(s, real)));
         else if (point == m_drag_info->from)
           enqueue(shared_ptr<Animation>(new MovementAnimation(s, real)));
@@ -542,7 +571,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
 
   if(!piece || !m_sprites.valid(pt)) {
     if(m_hinting.sprite()) {
-      if(m_anim_fade)
+      if(1 /*BROKEN m_anim_fade*/)
         enqueue( boost::shared_ptr<Animation>(new FadeAnimation(m_hinting.sprite(),
                                                         m_hinting.sprite()->pos(), 160, 0)) );
       else
@@ -561,7 +590,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
     }
     else {
       if(m_hinting.sprite()) {
-        if(m_anim_fade)
+        if(1 /*BROKEN m_anim_fade*/)
           enqueue( boost::shared_ptr<Animation>(new FadeAnimation(m_hinting.sprite(),
                                                           m_hinting.sprite()->pos(), 160, 0)) );
         else
@@ -569,7 +598,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
       }
 
       QPixmap pix = m_loader(piece->name());
-      boost::shared_ptr<Sprite> sprite = createSprite(pix, pt);
+      SpritePtr sprite(new Sprite(pix, piecesGroup(), converter()->toReal(pt)));
       sprite->setOpacity(160);
       sprite->raise();
       sprite->show();
@@ -603,7 +632,7 @@ void Board::flip(bool flipped)
     // update sprite positions
     for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i))
     if (m_sprites[i].sprite())
-      animatePiece(m_sprites[i].sprite(), i, 1.0);
+      adjustSprite(i);
 
     updateTags();
     updateBorder();

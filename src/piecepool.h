@@ -12,7 +12,9 @@
 #define PIECEPOOL_H
 
 #include <boost/shared_ptr.hpp>
-#include "piecegroup.h"
+#include "mainanimation.h"
+#include "pixmaploader.h"
+#include "clickablecanvas.h"
 #include "namedsprite.h"
 
 /**

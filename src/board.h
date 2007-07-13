@@ -22,7 +22,10 @@
 #include "common.h"
 #include "grid.h"
 #include "usermove.h"
-#include "piecegroup.h"
+#include "mainanimation.h"
+#include "pointconverter.h"
+#include "pixmaploader.h"
+#include "clickablecanvas.h"
 #include "namedsprite.h"
 
 class DragInfo;
@@ -40,7 +43,7 @@ typedef boost::shared_ptr<BoardTags> BoardTagsPtr;
   * You can set custom tags for each square.
   * @sa Table, @sa PiecePool, @sa Sprite
   */
-class Board : public QObject, public PieceGroup {
+class Board : public QObject, public ClickableCanvas, protected PointConverter {
   Q_OBJECT
 
 public:
@@ -74,6 +77,17 @@ private:
 
   typedef boost::shared_ptr<DragInfo> DragInfoPtr;
 
+  /** true if the board is flipped */
+  bool        m_flipped;
+
+  /** size of a square in points */
+  int         m_square_size;
+
+  /** loader class, to load pieces */
+  PixmapLoader m_loader;
+
+  /** main animation structure */
+  MainAnimation* m_main_animation;
 
   /** the piece being dragged */
   DragInfoPtr m_drag_info;
@@ -150,8 +164,6 @@ private:
   /** this internal function updates the tags after the board has been resized  */
   void updateTags();
 
-  void mySettingsChanged();
-
   void setPremove(const NormalUserMove& move);
   void setPremove(const DropUserMove& move);
   void setPremove(const class Premove& move);
@@ -165,9 +177,6 @@ private:
   /** this function tries to notify the move to the entity */
   bool doMove(const NormalUserMove&);
 
-  /** fetch the sprite */
-  boost::shared_ptr<Sprite> spriteAt(const Point& p) { return m_sprites[p].sprite(); }
-
 public:
   /** constructor, requires the canvas parent */
   Board(KGameCanvasAbstract* parent);
@@ -177,7 +186,39 @@ public:
   void flip(bool flipped);
 
   /** flips the board */
-  inline void flip() { flip(!m_flipped); }
+  void flip() { flip(!m_flipped); }
+
+  /** returns the flipped value */
+  bool flipped() const { return m_flipped; }
+
+  /** returns the size of a square */
+  int squareSize() const { return m_square_size; }
+
+  /** returns the area covered by the piece grid */
+  QRect boardRect() { return QRect(pos(), QSize(m_square_size*gridSize().x,
+                                                 m_square_size*gridSize().y)); }
+
+  /** returns the size of the grid */
+  Point gridSize() const { return m_sprites.getSize(); }
+
+  /** recreates the board underlying grid  */
+  void createGrid(Point p, const QStringList& border_coords);
+
+  /** return the group that contains the pieces */
+  KGameCanvasAbstract* piecesGroup() { return m_pieces_group; }
+
+  /** returns the point converter class */
+  PointConverter* converter() { return static_cast<PointConverter*>(this); }
+
+  /** returns the point converter class */
+  const PointConverter* converter() const { return static_cast<const PointConverter*>(this); }
+
+  /** returns the sprite loader */
+  PixmapLoader* loader() { return &m_loader; }
+
+  /** returns the sprite loader */
+  const PixmapLoader* loader() const { return &m_loader; }
+
 
   /** adds a tag with name name, the tag will stay over the pieces if over is true */
   boost::shared_ptr<KGameCanvasPixmap> addTag(const QString& name, Point at, bool over=false);
@@ -198,11 +239,15 @@ public:
 
 
   void cancelPremove();
+
   void cancelSelection();
 
-  /** recreates the board underlying grid  */
-  void createGrid(Point p, const QStringList& border_coords);
 
+  /** enqueue an animation */
+  void enqueue(const boost::shared_ptr<Animation>&);
+
+  /** Brings the sprite to its correct position */
+  void adjustSprite(const Point& p, bool immediate = false);
 
   /** sets the controlling entity */
   inline void setEntity(const boost::shared_ptr<UserEntity>& entity) { m_entity = entity; }
@@ -213,12 +258,6 @@ public:
 
   /** Executes a drop. This function id typically called by by a PiecePool */
   bool dropOn(int pool, int index, const QPoint& point);
-
-  /** returns the size of the grid */
-  virtual Point gridSize() const { return m_sprites.getSize(); }
-
-  /** return the group that contains the pieces */
-  virtual KGameCanvasAbstract* piecesGroup() { return m_pieces_group; }
 
   /** mouse release event */
   virtual void onMouseRelease(const QPoint& pos, int button);

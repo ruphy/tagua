@@ -74,7 +74,6 @@ set(kboard_SRC
   pref_board.cpp
   game.cpp
   piecepool.cpp
-  piecegroup.cpp
   movelist_textual.cpp
   icsconnection.cpp
   mainwindow.cpp
