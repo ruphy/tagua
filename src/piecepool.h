@@ -41,9 +41,6 @@ private:
   /** the width of the pool (ie how many pieces) */
   int m_width;
 
-  /** the number of pieces on the pool */
-  int m_fill;
-
   /** loader class, to load pieces */
   PixmapLoader m_loader;
 

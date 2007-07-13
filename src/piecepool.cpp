@@ -20,7 +20,6 @@ PiecePool::PiecePool(Board* b, KGameCanvasAbstract* parent)
 , m_flipped(false)
 , m_square_size(0)
 , m_width(1)
-, m_fill(0)
 , m_dragged_index(-1) {
   m_main_animation = new MainAnimation( 1.0 );
   setGridWidth(1);
@@ -73,7 +72,7 @@ void PiecePool::setGridWidth(int w) {
 
 /*****************************************************************************************/
 int PiecePool::fill() {
-  return m_fill;
+  return m_sprites.size();
 }
 
 /*****************************************************************************************/
@@ -93,7 +92,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
 
   m_sprites.resize(m_sprites.size()+1);
 
-  for(int i = m_sprites.size()-2; i >= index; i--) {
+  for(int i = m_sprites.size()-1; i > index; i--) {
     double speed = (1.0+1.0/(i - index + 1))*0.4;
     m_sprites[i] = m_sprites[i-1];
     m_sprites[i].sprite()->moveTo(toReal(i)); //BROKEN animate to that point?
