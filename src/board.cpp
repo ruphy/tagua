@@ -183,7 +183,7 @@ void Board::updateBorder() {
   for(int w = 0; w<2; w++)
   for(int i = 0;i<m_sprites.getSize().x;i++) {
     int x = (m_flipped ? (m_sprites.getSize().x-1-i):i)*m_square_size+m_square_size/2;
-    int y = m_border_asc+(w?0:m_border_size+m_square_size*m_sprites.getSize().y)-m_border_size;
+    int y = +m_border_asc/2+(w?0:m_square_size*3/9+m_square_size*m_sprites.getSize().y)-m_square_size*2/9;
     m_border_items[at++]->moveTo(x, y);
   }
 
@@ -191,7 +191,7 @@ void Board::updateBorder() {
   for(int i = 0;i<m_sprites.getSize().y;i++) {
     int x = -m_border_size/2+(w?0:m_border_size+m_square_size*m_sprites.getSize().x);
     int y = (!m_flipped ? (m_sprites.getSize().y-1-i):i)*m_square_size
-                        +m_square_size/2-m_border_size/2+m_border_asc;
+                        +m_square_size/2+m_border_asc/2;
     m_border_items[at++]->moveTo(x, y);
   }
 
