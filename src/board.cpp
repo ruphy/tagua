@@ -76,6 +76,9 @@ void Board::updateBackground() {
   while(!m_canvas_background->items()->isEmpty())
     delete m_canvas_background->items()->first();
 
+  if(!m_square_size)
+    return;
+
   Loader::PixmapOrMap bg = m_tags_loader.getPixmapMap("background");
   if(const QPixmap* p = boost::get<QPixmap>(&bg)) {
     KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
@@ -131,7 +134,6 @@ void Board::setTags(const QString& name, Point p1, Point p2, Point p3,
 }
 
 void Board::recreateBorder() {
-  m_border_margins.clear();
   m_border_items.clear();
 
   if(!m_show_border || m_border_coords.size() == 0) {
@@ -142,14 +144,6 @@ void Board::recreateBorder() {
   QFontMetrics fm(m_border_font);
   m_border_size = std::max( fm.height(), fm.boundingRect("H").width() );
   m_border_asc = fm.ascent() + (m_border_size-fm.height())/2;
-
-  for(int w = 0; w<2; w++)
-  for(int i=0;i<4;i++) {
-    KGameCanvasRectangle *item = new KGameCanvasRectangle(
-          w ? m_border_text_color : m_border_color, QSize(), this);
-    item->show();
-    m_border_margins.push_back( boost::shared_ptr<KGameCanvasRectangle>( item ));
-  }
 
   Point s = m_sprites.getSize();
   for(int w = 0; w<2; w++)
@@ -178,8 +172,12 @@ void Board::recreateBorder() {
 }
 
 void Board::updateBorder() {
-  if(!m_show_border)
+  m_border_margins.clear();
+
+  if(!m_show_border || !m_square_size)
     return;
+
+  m_border_size = m_square_size * 3 / 9;
 
   int at = 0;
   for(int w = 0; w<2; w++)
@@ -197,27 +195,24 @@ void Board::updateBorder() {
     m_border_items[at++]->moveTo(x, y);
   }
 
-  m_border_margins[0]->moveTo(-m_border_size,-m_border_size);
-  m_border_margins[0]->setSize(QSize(2*m_border_size+m_square_size*m_sprites.getSize().x,
-                                                              m_border_size));
-  m_border_margins[4]->moveTo(-m_border_size-1,-m_border_size-1);
-  m_border_margins[4]->setSize(QSize(2*m_border_size+m_square_size*m_sprites.getSize().x+2, 1));
-
-  m_border_margins[1]->moveTo(-m_border_size,m_square_size*m_sprites.getSize().y);
-  m_border_margins[1]->setSize(QSize(2*m_border_size+m_square_size*m_sprites.getSize().x,
-                                                              m_border_size));
-  m_border_margins[5]->moveTo(-m_border_size-1,m_square_size*m_sprites.getSize().y+m_border_size);
-  m_border_margins[5]->setSize(QSize(2*m_border_size+m_square_size*m_sprites.getSize().x+2, 1));
-
-  m_border_margins[2]->moveTo(-m_border_size,0);
-  m_border_margins[2]->setSize(QSize(m_border_size, m_square_size*m_sprites.getSize().y));
-  m_border_margins[6]->moveTo(-m_border_size-1,-m_border_size);
-  m_border_margins[6]->setSize(QSize(1, m_square_size*m_sprites.getSize().y+2*m_border_size));
-
-  m_border_margins[3]->moveTo(m_square_size*m_sprites.getSize().x, 0);
-  m_border_margins[3]->setSize(QSize(m_border_size, m_square_size*m_sprites.getSize().y));
-  m_border_margins[7]->moveTo(m_square_size*m_sprites.getSize().x+m_border_size, -m_border_size);
-  m_border_margins[7]->setSize(QSize(1, m_square_size*m_sprites.getSize().y+2*m_border_size));
+  Loader::PixmapOrMap bord = m_tags_loader.getPixmapMap("border");
+  if(const QPixmap* p = boost::get<QPixmap>(&bord)) {
+    KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
+                                    true, this);
+    t->lower();
+    t->show();
+    m_border_margins.push_back(boost::shared_ptr<KGameCanvasTiledPixmap>(t));
+  }
+  else if(const Loader::PixmapMap* p = boost::get<Loader::PixmapMap>(&bord)) {
+    for(Loader::PixmapMap::const_iterator it = p->begin(); it != p->end(); ++it) {
+      KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(it->second, it->first.size(),
+                                      QPoint(), true, this);
+      t->moveTo(it->first.topLeft());
+      t->lower();
+      t->show();
+      m_border_margins.push_back(boost::shared_ptr<KGameCanvasTiledPixmap>(t));
+    }
+  }
 }
 
 void Board::createGrid(Point p, const QStringList& border_coords) {
@@ -290,6 +285,9 @@ void Board::updateSprites() {
 }
 
 void Board::updateTags() {
+  if(!m_square_size)
+    return;
+
   for(BoardTags::iterator tit = m_tags->begin(); tit != m_tags->end(); ++tit)
   for(std::map<Point, boost::shared_ptr<KGameCanvasPixmap> >::iterator pt =
                           tit->second.begin(); pt != tit->second.end(); ++pt) {

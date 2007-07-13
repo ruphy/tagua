@@ -31,7 +31,7 @@ namespace Canvas {
 
 class ChessTable : public KGameCanvasWidget {
   Q_OBJECT
-  KGameCanvasTiledPixmap* m_background;
+  KGameCanvasTiledPixmap* m_wallpaper;
 
   Clock*           m_clock;
   Board*           m_board;

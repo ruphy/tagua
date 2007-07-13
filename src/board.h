@@ -137,7 +137,7 @@ private:
   int m_dropped_index;
 
   /** the rectangles used to draw the border */
-  std::vector<boost::shared_ptr<KGameCanvasRectangle> > m_border_margins;
+  std::vector<boost::shared_ptr<KGameCanvasTiledPixmap> > m_border_margins;
 
   /** the text items for the border */
   std::vector<boost::shared_ptr<KGameCanvasItem> > m_border_items;

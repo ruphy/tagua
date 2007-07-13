@@ -26,7 +26,7 @@ using namespace boost;
 
 ChessTable::ChessTable(QWidget* parent)
 : KGameCanvasWidget(parent)
-, m_background(NULL)
+, m_wallpaper(NULL)
 , m_current(NULL)
 , m_mousegrab(NULL)
 , m_need_reload(false) {
@@ -70,21 +70,26 @@ ChessTable::~ChessTable() {
 }
 
 void ChessTable::settingsChanged() {
-  if(m_background)
-    delete m_background;
-  if (settings["background"]) {
-    m_background = new KGameCanvasTiledPixmap(QPixmap(settings["background"].value<QString>()),
-                                       QSize(), QPoint(), false, this);
-    m_background->show();
-  }
-  else
-    m_background = 0;
-
   m_board->settingsChanged();
   m_clock->settingsChanged();
   m_info->settingsChanged();
   for(int i=0;i<2;i++)
     m_pools[i]->settingsChanged();
+
+  if(m_wallpaper)
+    delete m_wallpaper;
+  bool was0 = m_board->squareSize() == 0;
+  if(was0) m_board->tagsLoader()->setSize(1);
+  QPixmap bg = m_board->tagsLoader()->operator()("wallpaper");
+  if(was0) m_board->tagsLoader()->setSize(0);
+  if(!bg.isNull()) {
+    std::cout << "Size is " << bg.size().width() << " "<< bg.size().height()  << std::endl;
+    m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
+    m_wallpaper->lower();
+    m_wallpaper->show();
+  }
+  else
+    m_wallpaper = 0;
 
   /* redo the layout, forcing reload */
   if(isVisible())
@@ -115,17 +120,23 @@ void ChessTable::layout(bool force_reload) {
   force_reload |= m_need_reload;
   m_need_reload = false;
 
-  if (m_background)
-    m_background->setSize(size());
+  if (m_wallpaper) {
+    m_wallpaper->setSize(size());
+    QSize delta = (m_wallpaper->pixmap().size()-size())/2;
+    m_wallpaper->setOrigin(QPoint(delta.width(), delta.height()));
+  }
 
-  int b = m_board->marginSize();
+//  int b = m_board->marginSize();
   Point gs = m_board->gridSize();
-  int sq_size = std::max(0, std::min(int((width()-3*b)/(gs.x+2.2)),
-                        (gs.y == 0 ? 100000 : (height()-80-3*b)/gs.y)) );
+//   int sq_size = std::max(0, std::min(int((width()-3*b)/(gs.x+2.2)),
+//                         (gs.y == 0 ? 100000 : (height()-80-3*b)/gs.y)) );
+  int sq_size = std::max(0, std::min(int(width()/(gs.x+2.2+4.0/3.0)),
+                        int(gs.y == 0 ? 100000 : (height()-80)/(gs.y+6.0/3.0))) );
+  int b = sq_size*2/3;
   m_board->moveTo(b,80+2*b);
   m_board->onResize( sq_size, force_reload);
 
-  m_clock->moveTo(0, b);
+  m_clock->moveTo(0, b/2);
   m_clock->resize(QSize(m_board->rect().width(), 80) /*, force_reload*/);
 
   int x = !!m_board->flipped();
