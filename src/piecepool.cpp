@@ -187,17 +187,12 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
 }
 
 
-KGameCanvasAbstract* PiecePool::piecesGroup() {
-  return this;
-}
-
-
 void PiecePool::cancelDragging(bool fadeOff) {
   if(!m_dragged)
     return;
 
   m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
-  m_dragged.sprite()->putInCanvas(piecesGroup());
+  m_dragged.sprite()->putInCanvas(this);
 
   if (fadeOff) {
     SpritePtr phantom = SpritePtr(m_dragged.sprite()->duplicate());

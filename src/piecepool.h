@@ -55,6 +55,7 @@ private:
   /** main animation structure */
   MainAnimation* m_main_animation;
 
+
   /** internal function, resizes the grid vector to hold x pieces */
   void setFill(int x);
 
@@ -114,9 +115,6 @@ public:
   /** sets the width of the grid (the fill will stay the same, and the
       grid height will be recalculated) */
   void setGridWidth(int w);
-
-  /** piecesGroup overload */
-  virtual KGameCanvasAbstract* piecesGroup();
 
   /** the rect that will be covered by the pool */
   virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*m_width,
