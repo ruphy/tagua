@@ -28,6 +28,7 @@ set(kboard_SRC
   variants/chess.cpp
   variants/crazyhouse.cpp
 
+  animationfactory.cpp
   movelist.cpp
   infodisplay.cpp
   engineinfo.cpp

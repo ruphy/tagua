@@ -10,6 +10,10 @@
 
 #include "random.h"
 
+Random* Random::m_instance = 0;
+
+Random::Random() { }
+
 Random::IntegerGenerator Random::rand(int min, int max) {
   return IntegerGenerator(&m_generator, IntegerDistribution(min, max));
 }
@@ -22,3 +26,11 @@ Random::RealGenerator Random::rand(double min, double max) {
   return rand(static_cast<float>(min),
               static_cast<float>(max));
 }
+
+Random& Random::instance() {
+	if (!m_instance) {
+		m_instance = new Random;
+	}
+	return *m_instance;
+}
+

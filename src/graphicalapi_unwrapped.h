@@ -85,6 +85,10 @@ public:
   virtual std::pair<int, int> droppedPoolPiece() {
     return m_graphical_api->droppedPoolPiece();
   }
+    
+  virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type = Animate::Normal) {
+    return m_graphical_api->animate(scheme, type);
+  }
 
   virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to,
   					GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
@@ -110,6 +114,10 @@ public:
 						GraphicalAPI::AnimationType type = GraphicalAPI::Normal) {
 		return m_graphical_api->morphAnimation(sprite, new_sprite, type);
 	}
+=======
+  
+  GraphicalAPI* inner() const { return m_graphical_api; }
+>>>>>>> master:src/graphicalapi_unwrapped.h
 };
 
 #endif //UNWRAPPEDGRAPHICALAPI_H

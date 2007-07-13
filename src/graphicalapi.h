@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <boost/shared_ptr.hpp>
+#include "animationfactory.h"
 #include "kboard.h"
 #include "pointconverter.h"
 #include "namedsprite.h"
@@ -26,11 +27,6 @@ typedef boost::shared_ptr<class Sprite> SpritePtr;
   */
 class GraphicalAPI {
 public:
-  enum AnimationType {
-    Normal,
-    Instant
-  };
-
   virtual ~GraphicalAPI() { }
 
   /**
@@ -99,43 +95,7 @@ public:
     */
   virtual std::pair<int, int> droppedPoolPiece() = 0;
 
-  /**
-  	* Create a movement animation.
-  	* \param sprite The sprite to be animated.
-  	* \param to The destination square.
-  	* \return A newly created animation moving \a sprite between the specified squares.
-  	*/
-  virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type) = 0;
-
-  /**
-  	* Create an appear animation.
-  	* \param sprite The sprite to be shown.
-  	* \return A newly created animation showing \a sprite.
-  	*/
-  virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type) = 0;
-
-	/**
-		* Create a disappear animation.
-  	* \param sprite The sprite to be hidden.
-  	* \return A newly created animation hiding \a sprite.
-		* \sa appearAnimation.
-		*/
-  virtual AnimationPtr disappearAnimation(const NamedSprite& sprite, AnimationType type) = 0;
-
-	/**
-		* Create a destruction animation.
-		* \param sprite The sprite to be destroyed.
-		* \return A newly created animation destroying \a sprite.
-		*/
-  virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type) = 0;
-
-	/**
-		* Create a morphing animation.
-		* \param sprite The sprite to be morphed.
-		* \param new_sprite The final appearance of the morphed sprite.
-		* \return A newly created morphing animation from \a sprite to \a new_sprite
-		*/
-  virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType) = 0;
+	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type) = 0;
 };
 
 #endif //GRAPHICALAPI_H

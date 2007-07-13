@@ -39,9 +39,6 @@ public:
   /** The current variant */
   VariantInfo* m_variant;
 
-  /** A random number generator */
-  Random m_random;
-
   /** @a GraphicalPosition interface function implementation */
 //   virtual void addTag(const QString& name, Point, bool over = false);
 
@@ -56,7 +53,8 @@ public:
 private slots:
   /** internal function to listen at setting changes */
   void settingsChanged();
-
+  
+private:
   /**
     * \return the current abstract position. (interface for GraphicalAPI)
     */
@@ -123,11 +121,10 @@ private slots:
     */
   virtual std::pair<int, int> droppedPoolPiece();
 
-	virtual AnimationPtr moveAnimation(const NamedSprite& sprite, const Point& to, AnimationType type);
-	virtual AnimationPtr appearAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr disappearAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr destroyAnimation(const NamedSprite& sprite, AnimationType type);
-	virtual AnimationPtr morphAnimation(const NamedSprite& sprite, const NamedSprite& new_sprite, AnimationType);
+  /**
+    * Create an animation from a scheme.
+    */
+	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,
