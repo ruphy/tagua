@@ -642,12 +642,10 @@ void Board::flip(bool flipped)
 void Board::draggingOn(int pool, int index, const QPoint& point) {
   Point to = converter()->toLogical(point);
 
-  #if 0
-  //BROKEN
   if (m_sprites.valid(to))
-  switch(m_entity.lock()->validTurn(piece->color())) {
+  switch(m_entity.lock()->validTurn(pool)) {
     case Moving: {
-      DropUserMove m(piece, to);
+      DropUserMove m(pool, index, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv) {
         setTags("validmove", to);
@@ -663,7 +661,6 @@ void Board::draggingOn(int pool, int index, const QPoint& point) {
     default:
       break;
   }
-  #endif
 
   clearTags("validmove");
 }
