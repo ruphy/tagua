@@ -12,6 +12,7 @@
 #include "crazyhouse.h"
 #include "kboard_wrapped.h"
 #include "animation.h"
+#include "animationfactory.h"
 #include "moveserializer.impl.h"
 
 class CrazyhouseVariantInfo {
@@ -297,7 +298,7 @@ public:
 
   AnimationGroupPtr warp(const CrazyhousePosition& final) {
     const CrazyhousePosition* current = m_cinterface->position();
-    AnimationGroupPtr res(new AnimationGroup);
+    AnimationFactory res(m_cinterface->inner());
 
     for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
       CrazyhousePiece c = current->get(i);
@@ -305,16 +306,16 @@ public:
 
       if( !c && f ) {
         NamedSprite sprite = m_cinterface->setPiece(i, f, false);
-        res->addPreAnimation(m_cinterface->appearAnimation(sprite, GraphicalAPI::Instant));
+        res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
       }
       else if (c && !f) {
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
-        res->addPreAnimation(m_cinterface->disappearAnimation(old_sprite, GraphicalAPI::Instant));
+        res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
       }
       else if(c && f && !(c == f) ) {
         NamedSprite old_sprite = m_cinterface->takeSprite(i);
         NamedSprite sprite = m_cinterface->setPiece(i, f, false);
-        res->addPreAnimation(m_cinterface->morphAnimation(old_sprite, sprite, GraphicalAPI::Instant));
+        res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
       }
     }
 
@@ -323,7 +324,7 @@ public:
   }
 
   boost::shared_ptr<AnimationGroup> forward(const CrazyhousePosition& final, const CrazyhouseMove& move) {
-    AnimationGroupPtr res(new AnimationGroup);
+    AnimationFactory res(m_cinterface->inner());
 
     if(move.m_drop) {
       std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
@@ -332,12 +333,12 @@ public:
               ->pool(dropped.first).get(dropped.second) == move.m_drop) {
         NamedSprite drop = m_cinterface->takePoolSprite(dropped.first, dropped.second);
         m_cinterface->setSprite(move.to, drop);
-        res->addPreAnimation(m_cinterface->moveAnimation(drop, move.to));
+        res.addPreAnimation(Animate::move(drop, move.to));
         return res;
       }
       else {
         NamedSprite drop = m_cinterface->setPiece(move.to, move.m_drop, false);
-        res->addPreAnimation(m_cinterface->appearAnimation(drop));
+        res.addPreAnimation(Animate::appear(drop));
       }
     }
     else {
@@ -346,12 +347,12 @@ public:
       m_cinterface->setSprite(move.to, piece);
 
       if (piece)
-        res->addPreAnimation(m_cinterface->moveAnimation(piece, move.to));
+        res.addPreAnimation(Animate::move(piece, move.to));
       else
         ERROR("Bug!!!");
 
       if (captured)
-        res->addPostAnimation(m_cinterface->destroyAnimation(captured));
+        res.addPostAnimation(Animate::destroy(captured));
 
       if (move.type() == CrazyhouseMove::EnPassantCapture) {
         Point phantom(move.to.x, move.from.y);
@@ -359,7 +360,7 @@ public:
 
         if (capturedPawn) {
           QPoint real = m_cinterface->converter()->toReal(phantom);
-          res->addPostAnimation(m_cinterface->disappearAnimation(capturedPawn));
+          res.addPostAnimation(Animate::disappear(capturedPawn));
         }
         else
           ERROR("Bug!!!");
@@ -372,7 +373,7 @@ public:
           NamedSprite old_sprite = m_cinterface->getSprite(move.to);
           NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, /*false,*/ false);
 
-          res->addPostAnimation(m_cinterface->morphAnimation(old_sprite, new_sprite));
+          res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
         }
         else
           ERROR("Bug!!!");
@@ -383,7 +384,7 @@ public:
 
         NamedSprite rook = m_cinterface->takeSprite(rookSquare);
         m_cinterface->setSprite(rookDestination, rook);
-        res->addPreAnimation(m_cinterface->moveAnimation(rook, rookDestination));
+        res.addPreAnimation(Animate::move(rook, rookDestination));
       }
       else if (move.type() == CrazyhouseMove::QueenSideCastling) {
         Point rookSquare = move.to + Point(-2,0);
@@ -391,7 +392,7 @@ public:
 
         NamedSprite rook = m_cinterface->takeSprite(rookSquare);
         m_cinterface->setSprite(rookDestination, rook);
-        res->addPreAnimation(m_cinterface->moveAnimation(rook, rookDestination));
+        res.addPreAnimation(Animate::move(rook, rookDestination));
       }
     }
 
@@ -400,25 +401,23 @@ public:
   }
 
   boost::shared_ptr<AnimationGroup> back(const CrazyhousePosition& final, const CrazyhouseMove& move) {
-    AnimationGroupPtr res(new AnimationGroup);
+    AnimationFactory res(m_cinterface->inner());
 
     if(move.m_drop) {
       NamedSprite drop = m_cinterface->takeSprite(move.to);
-      res->addPostAnimation(m_cinterface->destroyAnimation(drop));
+      res.addPostAnimation(Animate::destroy(drop));
     }
     else {
       NamedSprite piece = m_cinterface->takeSprite(move.to);
       NamedSprite captured;
       if (CrazyhousePiece captured_piece = final.get(move.to)) {
         captured = m_cinterface->setPiece(move.to, captured_piece, false);
-        res->addPreAnimation(m_cinterface->appearAnimation(captured));
+        res.addPreAnimation(Animate::appear(captured));
       }
 
       if (!piece) {
         piece = m_cinterface->createPiece(move.to, final.get(move.from), false);
-        res->addPreAnimation(m_cinterface->appearAnimation(piece));
-        res->addPreAnimation(FadeAnimationPtr(new FadeAnimation(piece.sprite(),
-                                                m_cinterface->converter()->toReal(move.to), 0, 255)));
+        res.addPreAnimation(Animate::appear(piece));
       }
 
       m_cinterface->setSprite(move.from, piece);
@@ -429,14 +428,14 @@ public:
 
         if (CrazyhousePiece pawn_piece = final.get(phantom)) {
           NamedSprite captured_pawn = m_cinterface->setPiece(phantom, pawn_piece, false);
-          res->addPreAnimation(m_cinterface->appearAnimation(captured_pawn));
+          res.addPreAnimation(Animate::appear(captured_pawn));
         }
       }
       else if (move.type() == CrazyhouseMove::Promotion) {
         CrazyhousePiece pawn_piece = final.get(move.from);
         if (pawn_piece) {
           NamedSprite pawn = m_cinterface->createPiece(move.to, pawn_piece, false);
-          res->addPreAnimation(m_cinterface->morphAnimation(piece, pawn));
+          res.addPreAnimation(Animate::morph(piece, pawn));
 
           // replace piece with pawn
           m_cinterface->setSprite(move.from, pawn);
@@ -450,7 +449,7 @@ public:
         NamedSprite rook = m_cinterface->takeSprite(rookDestination);
         m_cinterface->setSprite(rookSquare, rook);
 
-        res->addPreAnimation(m_cinterface->moveAnimation(rook, rookSquare));
+        res.addPreAnimation(Animate::move(rook, rookSquare));
       }
       else if (move.type() == CrazyhouseMove::QueenSideCastling) {
         Point rookSquare = move.to + Point(-2,0);
@@ -459,10 +458,10 @@ public:
         NamedSprite rook = m_cinterface->takeSprite(rookDestination);
         m_cinterface->setSprite(rookSquare, rook);
 
-        res->addPreAnimation(m_cinterface->moveAnimation(rook, rookSquare));
+        res.addPreAnimation(Animate::move(rook, rookSquare));
       }
 
-      res->addPreAnimation(m_cinterface->moveAnimation(piece, move.from));
+      res.addPreAnimation(Animate::move(piece, move.from));
     }
     updatePool(final);
     return res;
