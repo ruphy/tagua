@@ -561,9 +561,17 @@ int Wrapper<Image>::constructor(lua_State* l) {
     break;
   case 2:
     {
-      int width = static_cast<int>(lua_tonumber(l, 1));
-      int height = static_cast<int>(lua_tonumber(l, 2));
-      res = new Image(width, height);
+      if(lua_isnumber(l, 1)) {
+        int width = static_cast<int>(lua_tonumber(l, 1));
+        int height = static_cast<int>(lua_tonumber(l, 2));
+        res = new Image(width, height);
+      }
+      else {
+        const char* file = lua_tostring(l, 1);
+        bool use_cache = lua_toboolean(l, 2);
+        Context* context = retrieve_context(l);
+        res = new Image(context, file_path(l, file), use_cache );
+      }
     }
     break;
   default:
@@ -693,7 +701,7 @@ int Wrapper<Image>::drawLine(lua_State* l) {
 
 int Wrapper<Image>::drawImage(lua_State* l) {
   const int n = lua_gettop(l);
-  if (n < 3 || n > 4) luaL_error(l, "Wrong argument count for Image::draw_image");
+  if (n < 3 || n > 5) luaL_error(l, "Wrong argument count for Image::draw_image");
 
   Image* img = retrieve(l, 1, AssertOk);
   QRectF* dest = Wrapper<QRectF>::retrieve(l, 2, AssertOk);
@@ -701,9 +709,10 @@ int Wrapper<Image>::drawImage(lua_State* l) {
     Context* context = retrieve_context(l);
     const char* image_path = lua_tostring(l, 3);
     bool res;
-    if (n == 4) {
+    if (n >= 4) {
       QRectF* src = Wrapper<QRectF>::retrieve(l, 4, AssertOk);
-      res = img->drawImage(context, *dest, file_path(l, image_path), *src);
+      bool use_cache = n == 5 ? lua_toboolean(l, 5) : true;
+      res = img->drawImage(context, *dest, file_path(l, image_path), *src, use_cache);
     }
     else
       res = img->drawImage(context, *dest, file_path(l, image_path) );
@@ -713,6 +722,8 @@ int Wrapper<Image>::drawImage(lua_State* l) {
     return 1;
   }
   else {
+    if (n == 5) luaL_error(l, "Wrong argument count for Image::draw_image");
+
     Image* image = retrieve(l, 3, AssertOk);
     if (n == 4) {
       QRectF* src = Wrapper<QRectF>::retrieve(l, 4, AssertOk);

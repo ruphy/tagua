@@ -96,7 +96,8 @@ Image::Image(int width,
 
 
 Image::Image(Context* ctx,
-      const QString& file)
+      const QString& file,
+      bool use_cache)
 : m_draw_opacity(1.0)
 , m_draw_over(true) {
 
@@ -104,7 +105,7 @@ Image::Image(Context* ctx,
     m_image = *i;
   else {
     m_image = QImage(file);
-    ctx->put(file, m_image);
+    if(use_cache) ctx->put(file, m_image);
   }
 }
 
@@ -164,8 +165,9 @@ void Image::drawImage(const QRectF& dest,
 bool Image::drawImage(Context* ctx,
                 const QRectF& dest,
                 const QString& src_img,
-                const QRectF& src) {
-  Image img(ctx, src_img);
+                const QRectF& src,
+                bool use_cache) {
+  Image img(ctx, src_img, use_cache);
   if(img.width()==0 || img.height()==0)
     return false;
   QRectF s = src.isNull() ? QRectF(0,0,img.width(),img.height()) :

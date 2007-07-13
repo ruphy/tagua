@@ -60,7 +60,8 @@ public:
    * @param file The file name.
    */
   Image(Context* ctx,
-        const QString& file);
+        const QString& file,
+        bool use_cache = true);
 
 
   /** Returns the width of the image */
@@ -200,7 +201,8 @@ public:
   bool drawImage(Context* ctx,
                  const QRectF& dest,
                  const QString& src_img,
-                 const QRectF& src = QRectF(0.0,0.0,0.0,0.0));
+                 const QRectF& src = QRectF(0.0,0.0,0.0,0.0),
+                 bool use_cache = true);
 
 
   /**
