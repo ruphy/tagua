@@ -51,7 +51,7 @@ int PiecePool::toLogical(const QPoint& p) {
   if(x<0 || x>= m_width)
     return -1;
   if(m_flipped)
-    y = -1-y;
+    y = -y;
   if(y&1)
     x = m_width-1-x;
 
