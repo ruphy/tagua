@@ -82,10 +82,10 @@ private:
     */
   virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool show);
 
-	/**
-	  *  Create a new piece, but do not add it to the graphical system.
-	  * \return the newly created sprite.
-	  */
+  /**
+    *  Create a new piece, but do not add it to the graphical system.
+    * \return the newly created sprite.
+    */
   virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece, bool show);
 
   /**
@@ -124,7 +124,7 @@ private:
   /**
     * Create an animation from a scheme.
     */
-	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type);
+  virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type);
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,

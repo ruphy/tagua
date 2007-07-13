@@ -116,53 +116,53 @@ KAction* MainWindow::addPromotionAction(const QString& name, const QString& text
 }
 
 KAction* MainWindow::installRegularAction(const QString& name, const KIcon& icon, const QString& text, QObject* obj, const char* slot) {
-	KAction* temp = new KAction(icon, text, this);
-	actionCollection()->addAction(name, temp);
-	connect(temp, SIGNAL(triggered(bool)), obj, slot);
-	return temp;
+  KAction* temp = new KAction(icon, text, this);
+  actionCollection()->addAction(name, temp);
+  connect(temp, SIGNAL(triggered(bool)), obj, slot);
+  return temp;
 }
 
 void MainWindow::setupEngineMenu() {
-	QMenu* engine_menu = 0;
-	SettingArray engine_settings = settings.group("engines").array("engine");
-	foreach (Settings s, engine_settings) {
-		if (!engine_menu) {
-			// this way the menu is created only if there is at least one engine
-			engine_menu = menuBar()->addMenu(i18n("E&ngines"));
-		}
-		
-		QString name;
-		EngineDetails engine_details;
-		s["name"] >> engine_details.name;
-		s["path"] >> engine_details.path;
-		engine_details.type = EngineDetails::typeFromName(s["type"].value<QString>());
-		if (s["work-path"])
-			s["work-path"] >> engine_details.workPath;
-		
-		kDebug() << "creating engine " << engine_details.name << endl;
-		EngineInfo* engine = new EngineInfo(engine_details, ui());
+  QMenu* engine_menu = 0;
+  SettingArray engine_settings = settings.group("engines").array("engine");
+  foreach (Settings s, engine_settings) {
+    if (!engine_menu) {
+      // this way the menu is created only if there is at least one engine
+      engine_menu = menuBar()->addMenu(i18n("E&ngines"));
+    }
+    
+    QString name;
+    EngineDetails engine_details;
+    s["name"] >> engine_details.name;
+    s["path"] >> engine_details.path;
+    engine_details.type = EngineDetails::typeFromName(s["type"].value<QString>());
+    if (s["work-path"])
+      s["work-path"] >> engine_details.workPath;
+    
+    kDebug() << "creating engine " << engine_details.name << endl;
+    EngineInfo* engine = new EngineInfo(engine_details, ui());
 
-		m_engines.push_back(engine);
-		
-		QMenu* menu = engine_menu->addMenu(engine_details.name);
-		
-		{
-			KAction* play_white = new KAction(i18n("Play as &white"), this);
-			connect(play_white, SIGNAL(triggered()), engine, SLOT(playAsWhite()));
-			menu->addAction(play_white);
-		}
-		{
-			KAction* play_black = new KAction(i18n("Play as &black"), this);
-			connect(play_black, SIGNAL(triggered()), engine, SLOT(playAsBlack()));
-			menu->addAction(play_black);
-		}
-		{
-			KAction* analyze = new KAction(i18n("&Analyze"), this);
-			analyze->setCheckable(true);
-			connect(analyze, SIGNAL(triggered()), engine, SLOT(analyze()));
-			menu->addAction(analyze);
-		}
-	}
+    m_engines.push_back(engine);
+    
+    QMenu* menu = engine_menu->addMenu(engine_details.name);
+    
+    {
+      KAction* play_white = new KAction(i18n("Play as &white"), this);
+      connect(play_white, SIGNAL(triggered()), engine, SLOT(playAsWhite()));
+      menu->addAction(play_white);
+    }
+    {
+      KAction* play_black = new KAction(i18n("Play as &black"), this);
+      connect(play_black, SIGNAL(triggered()), engine, SLOT(playAsBlack()));
+      menu->addAction(play_black);
+    }
+    {
+      KAction* analyze = new KAction(i18n("&Analyze"), this);
+      analyze->setCheckable(true);
+      connect(analyze, SIGNAL(triggered()), engine, SLOT(analyze()));
+      menu->addAction(analyze);
+    }
+  }
 }
 
 void MainWindow::setupActions() {
@@ -195,7 +195,7 @@ void MainWindow::setupActions() {
   installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
   installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
   installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
-  		&ui(), SLOT(setStartingPosition()));
+      &ui(), SLOT(setStartingPosition()));
   installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
   installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
   installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));

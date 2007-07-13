@@ -156,8 +156,8 @@ public:
 template <typename Variant>
 class DropAnimator : public SimpleAnimator<Variant> {
 protected:
-	typedef SimpleAnimator<Variant> Base;
-	typedef typename Base::AnimationPtr AnimationPtr;
+  typedef SimpleAnimator<Variant> Base;
+  typedef typename Base::AnimationPtr AnimationPtr;
   typedef typename Base::GPosition GPosition;
   typedef typename Base::GElement GElement;
   typedef typename Base::Position Position;
@@ -180,7 +180,7 @@ protected:
                                         const Move&) { }*/
 public:
   DropAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position);
-	AnimationPtr warp(const Position&);
+  AnimationPtr warp(const Position&);
 //   AnimationPtr forward(const Position&, const Move& move);
 //   AnimationPtr back(const Position&, const Move& move);
 };
@@ -192,12 +192,12 @@ public:
 
 template <typename Variant>
 DropAnimator<Variant>::DropAnimator(PointConverter* converter,
-	const boost::shared_ptr<GPosition>& position)
+  const boost::shared_ptr<GPosition>& position)
 : Base(converter, position) { }
 
 template <typename Variant>
 typename DropAnimator<Variant>::AnimationPtr DropAnimator<Variant>::warp(const Position& final) {
-	this->m_position->updatePool(final.pool());
+  this->m_position->updatePool(final.pool());
 }
 #endif
 

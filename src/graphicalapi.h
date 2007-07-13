@@ -56,10 +56,10 @@ public:
     */
   virtual NamedSprite setPiece(const Point& p, const AbstractPiece* piece, bool show) = 0;
 
-	/**
-	  *  Create a new piece, but do not add it to the graphical system.
-	  * \return the newly created sprite.
-	  */
+  /**
+    *  Create a new piece, but do not add it to the graphical system.
+    * \return the newly created sprite.
+    */
   virtual NamedSprite createPiece(const Point& p, const AbstractPiece* piece,  bool show) = 0;
 
   /**
@@ -95,7 +95,7 @@ public:
     */
   virtual std::pair<int, int> droppedPoolPiece() = 0;
 
-	virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type) = 0;
+  virtual AnimationPtr animate(const Animate::Scheme& scheme, Animate::AnimationType type) = 0;
 };
 
 #endif //GRAPHICALAPI_H

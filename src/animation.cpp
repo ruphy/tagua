@@ -331,10 +331,10 @@ FadeAnimation::FadeAnimation(const SpritePtr& sprite, int fadeFrom, int fadeTo)
 void FadeAnimation::start() {
   m_state = Active;
 
-	if (m_to != Point::invalid()) {
-  	m_piece->moveTo(m_to);
-	}
-	
+  if (m_to != Point::invalid()) {
+    m_piece->moveTo(m_to);
+  }
+  
   m_piece->setOpacity(m_fadeFrom);
   m_piece->show();
 }

@@ -97,11 +97,11 @@ namespace Animate {
   * Used to animate the movement of a piece to a destination square.
   */
 class move : public Scheme {
-	const NamedSprite& m_sprite;
-	Point m_to;
+  const NamedSprite& m_sprite;
+  Point m_to;
 public:
-	move(const NamedSprite& sprite, const Point& to);
-	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  move(const NamedSprite& sprite, const Point& to);
+  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 /**
@@ -112,10 +112,10 @@ public:
   * piece on the chessboard.
   */
 class appear : public Scheme {
-	const NamedSprite& m_sprite;
+  const NamedSprite& m_sprite;
 public:
-	appear(const NamedSprite& sprite);
-	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  appear(const NamedSprite& sprite);
+  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 /**
@@ -124,10 +124,10 @@ public:
   * The disappear scheme visualizes a piece being removed from the board.
   */
 class disappear : public Scheme {
-	const NamedSprite& m_sprite;
+  const NamedSprite& m_sprite;
 public:
-	disappear(const NamedSprite& sprite);
-	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  disappear(const NamedSprite& sprite);
+  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 /**
@@ -138,10 +138,10 @@ public:
   * effect like an explosion.
   */
 class destroy : public Scheme {
-	const NamedSprite& m_sprite;
+  const NamedSprite& m_sprite;
 public:
-	destroy(const NamedSprite& sprite);
-	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  destroy(const NamedSprite& sprite);
+  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 /**
@@ -150,11 +150,11 @@ public:
   * The morph animation scheme is used when a piece changes, like in chess promotions.
   */
 class morph : public Scheme {
-	const NamedSprite& m_sprite;
-	const NamedSprite& m_new_sprite;
+  const NamedSprite& m_sprite;
+  const NamedSprite& m_new_sprite;
 public:
-	morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
-	virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
+  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 
 

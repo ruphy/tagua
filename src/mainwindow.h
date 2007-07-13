@@ -77,7 +77,7 @@ Q_OBJECT
   void setupEngineMenu();
   KAction* addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
   KAction* installRegularAction(const QString& name, const KIcon& icon, const QString& text,
-  															QObject* obj, const char* slot);
+                                QObject* obj, const char* slot);
   void updatePromotionType();
 
   bool openFile(const QString&);

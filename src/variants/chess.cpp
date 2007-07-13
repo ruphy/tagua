@@ -99,7 +99,7 @@ public:
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
         NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, /*false,*/ false);
 
-				res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
+        res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
       }
       else
         ERROR("Bug!!!");
@@ -155,7 +155,7 @@ public:
       if (pawn_piece) {
         NamedSprite pawn = m_cinterface->createPiece(move.to, pawn_piece, false);
         res.addPreAnimation(Animate::morph(piece, pawn));
-				// replace piece with pawn
+        // replace piece with pawn
         m_cinterface->setSprite(move.from, pawn);
         piece = pawn;
       }
@@ -176,7 +176,7 @@ public:
       NamedSprite rook = m_cinterface->takeSprite(rookDestination);
       m_cinterface->setSprite(rookSquare, rook);
 
-			res.addPreAnimation(Animate::move(rook, rookSquare));
+      res.addPreAnimation(Animate::move(rook, rookSquare));
     }
 
     res.addPreAnimation(Animate::move(piece, move.from));

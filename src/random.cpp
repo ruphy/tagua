@@ -28,9 +28,9 @@ Random::RealGenerator Random::rand(double min, double max) {
 }
 
 Random& Random::instance() {
-	if (!m_instance) {
-		m_instance = new Random;
-	}
-	return *m_instance;
+  if (!m_instance) {
+    m_instance = new Random;
+  }
+  return *m_instance;
 }
 

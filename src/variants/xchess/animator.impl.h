@@ -134,7 +134,7 @@ shared_ptr<AnimationGroup> SimpleAnimator<Variant>::forward(const Position& fina
       QPoint hotSpot = piece.sprite()->pos();
       hotSpot += QPoint(piece.sprite()->pixmap().width() / 2, piece.sprite()->pixmap().height() / 2);
     
-    	// do not animate forward
+      // do not animate forward
       if (!m_anim_movement) {
         mainAnimation = shared_ptr<InstantAnimation>(
           new InstantAnimation(piece.sprite(), m_converter->toReal(move.to))

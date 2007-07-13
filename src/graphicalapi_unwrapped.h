@@ -49,8 +49,8 @@ public:
   }
 
   virtual NamedSprite createPiece(const Point& p, const typename Variant::Piece& piece, bool show) {
-  	WrappedPiece<Variant> wpiece(piece);
-  	return m_graphical_api->createPiece(p, &wpiece, show);
+    WrappedPiece<Variant> wpiece(piece);
+    return m_graphical_api->createPiece(p, &wpiece, show);
   }
 
   virtual void setSprite(const Point& p, const NamedSprite& s) {

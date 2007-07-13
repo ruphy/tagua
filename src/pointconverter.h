@@ -41,7 +41,6 @@ public:
 class PointConverter {
 protected:
   virtual ~PointConverter(){};
-
 private:
   virtual bool  flipped() const = 0;
   virtual int   squareSize() const = 0;
