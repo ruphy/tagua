@@ -45,7 +45,8 @@ function theme.border(size)
 end
 
 theme.wallpaper = function(size)
-                    return Image("Wallpapers/autumn.jpg")
+                    --return Image("Wallpapers/dragonballz.jpg")
+                    return Image("Wallpapers/Bled (nastja).jpg")
                   end
 
 theme.validmove = fromColor("#cd9eee")
