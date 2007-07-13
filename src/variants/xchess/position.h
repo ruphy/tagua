@@ -134,6 +134,10 @@ public:
       return NoAction;
     return m_board[p].color() == m_turn ? Moving : Premoving;
   }
+  inline InteractionType droppable(int p) const {
+    Color c = static_cast<Color>(p);
+    return c == m_turn ? Moving : Premoving;
+  }
   inline Color turn() const { return m_turn; }
   inline Color previousTurn() const { return Piece::oppositeColor(m_turn); }
   inline const B& board() const { return m_board; }

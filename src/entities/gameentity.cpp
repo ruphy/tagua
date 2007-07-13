@@ -104,6 +104,10 @@ bool GameEntity::testPremove(const DropUserMove&) const {
   return true; // TODO
 }
 
+InteractionType GameEntity::validTurn(int pool) const {
+  return position()->droppable(pool);
+}
+
 InteractionType GameEntity::validTurn(const Point& point) const {
   return position()->movable(point);
 }

@@ -284,6 +284,10 @@ public:
     return m_pos.movable(p);
   }
 
+  virtual InteractionType droppable(int p) const {
+    return m_pos.droppable(p);
+  }
+
   virtual int turn() const {
     return static_cast<int>(m_pos.turn());
   }

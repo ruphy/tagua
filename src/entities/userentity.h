@@ -84,6 +84,7 @@ public:
   virtual void handleRightClick(const Point&) const;
 
   virtual InteractionType validTurn(const Point&) const = 0;
+  virtual InteractionType validTurn(int) const = 0;
   virtual bool movable(const Point&) const = 0;
   virtual bool oneClickMoves() const { return false; }
 
