@@ -123,8 +123,8 @@ message("lua: " ${LUA_LINK_FLAGS})
 target_link_libraries(kboard
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
-  ${KDE4_KIO_LIBS}
-  ${KDE4_KHTML_LIBS}
+#   ${KDE4_KIO_LIBS}
+#   ${KDE4_KHTML_LIBS}
   kdegames
 )
 

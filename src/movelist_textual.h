@@ -11,6 +11,8 @@
 #ifndef MOVELIST_TEXTUAL_H
 #define MOVELIST_TEXTUAL_H
 
+#ifdef HAVE_KHTML
+
 #include <vector>
 #include <QWidget>
 #include <khtml_part.h>
@@ -72,5 +74,42 @@ private slots:
 };
 
 } //end namespace MoveList
+
+#else //HAVE_KHTML
+
+#include <QWidget>
+#include "decoratedmove.h"
+#include "index.h"
+
+namespace MoveList {
+
+class Notifier;
+
+class Textual : public QWidget {
+Q_OBJECT
+
+public:
+  Textual(QWidget *parent = NULL) : QWidget(parent){}
+
+  void settingsChanged() {}
+  void setLoaderBasePath(const QString& /*p*/){}
+  void setComment(const Index& /*index*/, const QString& /*comment*/){}
+  void setVComment(const Index& /*index*/, int /*v*/, const QString& /*comment*/){}
+  void setMove(const Index& /*index*/, int /*turn*/, const DecoratedMove& /*move*/,
+                                  const QString& /*comment*/ = QString()){}
+  void setMove(const Index& /*index*/, int /*turn*/, const QString& /*move*/,
+                                  const QString& /*comment*/ = QString()){}
+  void remove(const Index& /*index*/){}
+  void reset(){}
+  Notifier* getNotifier(){ return NULL; }
+  void setNotifier(Notifier* /*n*/, bool /*detach_prev*/=true){}
+  int layoutStyle(){ return 0; }
+  void setLayoutStyle(int /*x*/){}
+  void select(const Index& /*index*/){}
+};
+
+} //end namespace MoveList
+
+#endif //HAVE_KHTML
 
 #endif //MOVELIST_TEXTUAL_H
