@@ -115,7 +115,7 @@ NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* pi
     return NamedSprite();
 
   NamedSprite s(piece->name(), SpritePtr(new Sprite(m_board->m_loader(piece->name()),
-                                                                m_board->piecesGroup(), p)) );
+                                 m_board->piecesGroup(), m_board->converter()->toReal(p))) );
   if (show)
     s.sprite()->show();
   return s;
