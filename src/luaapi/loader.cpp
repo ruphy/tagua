@@ -115,143 +115,39 @@ bool Loader::runFile(const QString& file, bool setdir) {
   return retv;
 }
 
-struct Loader::create_number_data {
+template<typename T>
+struct Loader::create_value_data {
   const QString& key;
   int size;
-  double out;
-  create_number_data(const QString& _key, int _size)
+  T out;
+  create_value_data(const QString& _key, int _size)
     : key(_key)
     , size(_size) {
   }
 };
 
-struct Loader::create_point_data {
-  const QString& key;
-  int size;
-  QPoint out;
-  create_point_data(const QString& _key, int _size)
-    : key(_key)
-    , size(_size) {
-  }
-};
-
-struct Loader::create_rect_data {
-  const QString& key;
-  int size;
-  QRect out;
-  create_rect_data(const QString& _key, int _size)
-    : key(_key)
-    , size(_size) {
-  }
-};
-
-struct Loader::create_brush_data {
-  const QString& key;
-  int size;
-  QBrush out;
-  create_brush_data(const QString& _key, int _size)
-    : key(_key)
-    , size(_size) {
-  }
-};
-
-struct Loader::create_image_data {
-  const QString& key;
-  int size;
-  QImage out;
-  create_image_data(const QString& _key, int _size)
-    : key(_key)
-    , size(_size) {
-  }
-};
-
-struct Loader::create_image_map_data {
-  const QString& key;
-  int size;
-  ImageOrMap out;
-  create_image_map_data(const QString& _key, int _size)
-    : key(_key)
-    , size(_size) {
-  }
-};
-
-double Loader::getNumber(const QString& key, int size) {
+template<typename T>
+T Loader::getValue(const QString& key, int size) {
   StackCheck s(m_state);
 
-  create_number_data data(key, size);
-  if(lua_cpcall(m_state, create_number_func, &data) != 0) {
+  create_value_data<T> data(key, size);
+  if(lua_cpcall(m_state, create_value_func<T>, &data) != 0) {
     m_error = true;
     m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
     lua_pop(m_state, 1);
-    return 0;
+    return T();
   }
   return data.out;
 }
 
-QPoint Loader::getPoint(const QString& key, int size) {
-  StackCheck s(m_state);
+template QImage Loader::getValue<QImage>(const QString& /*id*/, int /*size*/);
+template ImageOrMap Loader::getValue<ImageOrMap>(const QString& /*id*/, int /*size*/);
+template double Loader::getValue<double>(const QString& /*id*/, int /*size*/);
+template QPointF Loader::getValue<QPointF>(const QString& /*id*/, int /*size*/);
+template QRectF Loader::getValue<QRectF>(const QString& /*id*/, int /*size*/);
+template QBrush Loader::getValue<QBrush>(const QString& /*id*/, int /*size*/);
+template QColor Loader::getValue<QColor>(const QString& /*id*/, int /*size*/);
 
-  create_point_data data(key, size);
-  if(lua_cpcall(m_state, create_point_func, &data) != 0) {
-    m_error = true;
-    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
-    lua_pop(m_state, 1);
-    return QPoint();
-  }
-  return data.out;
-}
-
-QRect Loader::getRect(const QString& key, int size) {
-  StackCheck s(m_state);
-
-  create_rect_data data(key, size);
-  if(lua_cpcall(m_state, create_rect_func, &data) != 0) {
-    m_error = true;
-    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
-    lua_pop(m_state, 1);
-    return QRect();
-  }
-  return data.out;
-}
-
-QBrush Loader::getBrush(const QString& key, int size) {
-  StackCheck s(m_state);
-
-  create_brush_data data(key, size);
-  if(lua_cpcall(m_state, create_brush_func, &data) != 0) {
-    m_error = true;
-    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
-    lua_pop(m_state, 1);
-    return QBrush();
-  }
-  return data.out;
-}
-
-QImage Loader::getImage(const QString& key, int size) {
-  StackCheck s(m_state);
-
-  create_image_data data(key, size);
-  if(lua_cpcall(m_state, create_image_func, &data) != 0) {
-    m_error = true;
-    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
-    lua_pop(m_state, 1);
-    return QImage();
-  }
-  return data.out;
-}
-
-ImageOrMap Loader::getImageMap(const QString& key, int size) {
-  StackCheck s(m_state);
-
-  create_image_map_data data(key, size);
-  if(lua_cpcall(m_state, create_image_map_func, &data) != 0) {
-    m_error = true;
-    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
-    lua_pop(m_state, 1);
-    return ImageMap();
-  }
-  return data.out;
-}
 
 ::Loader::Glyph Loader::getGlyph(const QString& l) {
   StackCheck check(m_state);
@@ -306,111 +202,32 @@ QString Loader::getString(const QString& s) {
   return retv;
 }
 
-int Loader::create_number_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_number_data* data = reinterpret_cast<create_number_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
 
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-  data->out = lua_tonumber(l, -1);
-  lua_pop(l, 1);
-
-  return 0;
+template<typename T>
+void Loader::retrieve(create_value_data<T>* d, lua_State *l, int pos) {
+  d->out = *Wrapper<T>::retrieve(l, pos, AssertOk);
 }
 
-int Loader::create_point_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_point_data* data = reinterpret_cast<create_point_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-  data->out = Wrapper<QPointF>::retrieve(l, -1, AssertOk)->toPoint();
-  lua_pop(l, 1);
-
-  return 0;
+template<>
+void Loader::retrieve<double>(create_value_data<double>* d, lua_State *l, int pos) {
+  d->out = lua_tonumber(l, pos);
 }
 
-int Loader::create_rect_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_rect_data* data = reinterpret_cast<create_rect_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-  data->out = Wrapper<QRectF>::retrieve(l, -1, AssertOk)->toRect();
-  lua_pop(l, 1);
-
-  return 0;
+template<>
+void Loader::retrieve<QImage>(create_value_data<QImage>* d, lua_State *l, int pos) {
+  ::Loader::Image *retv = Wrapper< ::Loader::Image>::retrieve(l, pos, AssertOk);
+  d->out = retv->m_image;
 }
 
-int Loader::create_brush_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_brush_data* data = reinterpret_cast<create_brush_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-  data->out = *Wrapper<QBrush>::retrieve(l, -1, AssertOk);
-  lua_pop(l, 1);
-
-  return 0;
-}
-
-int Loader::create_image_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_image_data* data = reinterpret_cast<create_image_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-  ::Loader::Image *retv = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
-  data->out = retv->m_image;
-  lua_pop(l, 1);
-
-  return 0;
-}
-
-int Loader::create_image_map_func(lua_State *l) {
-  StackCheck s(l, -1);
-  create_image_map_data* data = reinterpret_cast<create_image_map_data*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  lua_getglobal(l, "theme");
-  lua_getfield(l, -1, data->key.toAscii().constData());
-  lua_remove(l, -2);
-
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
-
-  if(::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1)) {
-     data->out = img->m_image;
-  }
+template<>
+void Loader::retrieve<ImageOrMap>(create_value_data<ImageOrMap>* d, lua_State *l, int pos) {
+  if(::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, pos))
+     d->out = img->m_image;
   else {
     ImageMap m;
+
     lua_pushnil(l);
-    while (lua_next(l, -2) != 0) {
+    while (lua_next(l, pos-1) != 0) {
       QRectF *rect = Wrapper<QRectF>::retrieve(l, -2, AssertOk);
       ::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
 
@@ -419,12 +236,29 @@ int Loader::create_image_map_func(lua_State *l) {
 
       lua_pop(l, 1);
     }
-    data->out = m;
-  }
 
+    d->out = m;
+  }
+}
+
+template<typename T>
+int Loader::create_value_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_value_data<T>* data = reinterpret_cast<create_value_data<T>*>(lua_touserdata(l, -1));
   lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+  retrieve<T>(data, l, -1);
+  lua_pop(l, 1);
+
   return 0;
 }
+
 
 int Loader::import_func(lua_State *l) {
   lua_getfield(l, LUA_REGISTRYINDEX, API_LOADER);

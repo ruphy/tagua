@@ -266,24 +266,24 @@ void Clock::onMousePress(const QPoint& pos, int button) {
 }
 
 void Clock::resize() {
-  m_height = (int)m_board->tagsLoader()->getNumber("clock_height");
+  m_height = (int)m_board->tagsLoader()->getValue<double>("clock_height");
 
-  m_active_pixmap = m_board->tagsLoader()->operator()("clock_active_background");
-  m_inactive_pixmap = m_board->tagsLoader()->operator()("clock_inactive_background");
+  m_active_pixmap = m_board->tagsLoader()->getValue<QPixmap>("clock_active_background");
+  m_inactive_pixmap = m_board->tagsLoader()->getValue<QPixmap>("clock_inactive_background");
 
-  m_active_text = m_board->tagsLoader()->getBrush("clock_active_text").color();
-  m_inactive_text = m_board->tagsLoader()->getBrush("clock_inactive_text").color();
+  m_active_text = m_board->tagsLoader()->getValue<QBrush>("clock_active_text").color();
+  m_inactive_text = m_board->tagsLoader()->getValue<QBrush>("clock_inactive_text").color();
 
   m_background->setPixmap(m_active ? m_active_pixmap : m_inactive_pixmap);
-  m_background->moveTo(m_board->tagsLoader()->getPoint("clock_background_offset"));
+  m_background->moveTo(m_board->tagsLoader()->getValue<QPointF>("clock_background_offset").toPoint());
 
-  m_time_label->setConstrainRect(m_board->tagsLoader()->getRect("clock_time_rect"));
+  m_time_label->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_time_rect").toRect());
   m_time_label->setColor(m_active ? m_active_text : m_inactive_text);
 
-  m_player_name->setConstrainRect(m_board->tagsLoader()->getRect("clock_player_rect"));
+  m_player_name->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_player_rect").toRect());
   m_player_name->setColor(m_active ? m_active_text : m_inactive_text);
 
-  m_caption->setConstrainRect(m_board->tagsLoader()->getRect("clock_caption_rect"));
+  m_caption->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_caption_rect").toRect());
   m_caption->setColor(m_active ? m_active_text : m_inactive_text);
 }
 

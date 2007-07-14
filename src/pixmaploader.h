@@ -64,25 +64,18 @@ public:
   void setSize(int s);
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  QPixmap operator()(const QString& id);
+  QPixmap operator()(const QString& id) {
+    return getValue<QPixmap>(id);
+  }
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  Loader::PixmapOrMap getPixmapMap(const QString& id);
+  Loader::PixmapOrMap getPixmapMap(const QString& id) {
+    return getValue<Loader::PixmapOrMap>(id);
+  }
 
-  /** looks up a font + char */
-  Loader::Glyph getGlyph(const QString& id);
-
-  /** gets a number */
-  double getNumber(const QString& id);
-
-  /** gets a point */
-  QPoint getPoint(const QString& id);
-
-  /** gets a rectangle */
-  QRect getRect(const QString& id);
-
-  /** gets a brush */
-  QBrush getBrush(const QString& id);
+  /** returns a value */
+  template<typename T>
+  T getValue(const QString& id);
 };
 
 #endif // PIXMAPLOADER_H

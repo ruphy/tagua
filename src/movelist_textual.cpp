@@ -326,7 +326,7 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
   mv_el.setAttribute("submvnum", QString::number(sub_mv_num));
   for(int i=0;i<move.size();i++) {
     if(move[i].m_type == MovePart::Figurine) {
-      ::Loader::Glyph g = m_loader.getGlyph(move[i].m_string);
+      ::Loader::Glyph g = m_loader.getValue< ::Loader::Glyph>(move[i].m_string);
       DOM::Element el = document.createElement("span");
 #if 1
       std::cout << "size = " << QString("%1%").arg(g.m_font.pointSize()*100/12) << std::endl;

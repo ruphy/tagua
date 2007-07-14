@@ -87,73 +87,22 @@ void PixmapLoader::initialize() {
   m_loader->refSize(m_size);
 }
 
-QPixmap PixmapLoader::operator()(const QString& id) {
+template<typename T>
+T PixmapLoader::getValue(const QString& id) {
   if(!m_size || m_base.isEmpty())
-    return QPixmap();
+    return T();
 
   if(!m_loader)
     initialize();
 
-  return m_loader->getPixmap(id, m_size);
+  return m_loader->getValue<T>(id, m_size);
 }
 
-Loader::PixmapOrMap PixmapLoader::getPixmapMap(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return Loader::PixmapOrMap();
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getPixmapMap(id, m_size);
-}
-
-Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return Loader::Glyph();
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getGlyph(id, m_size);
-}
-
-double PixmapLoader::getNumber(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return 0;
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getNumber(id, m_size);
-}
-
-QPoint PixmapLoader::getPoint(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return QPoint();
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getPoint(id, m_size);
-}
-
-QRect PixmapLoader::getRect(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return QRect();
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getRect(id, m_size);
-}
-
-QBrush PixmapLoader::getBrush(const QString& id) {
-  if(!m_size || m_base.isEmpty())
-    return QBrush();
-
-  if(!m_loader)
-    initialize();
-
-  return m_loader->getBrush(id, m_size);
-}
-
+template QPixmap PixmapLoader::getValue<QPixmap>(const QString& /*id*/);
+template Loader::PixmapOrMap PixmapLoader::getValue<Loader::PixmapOrMap>(const QString& /*id*/);
+template Loader::Glyph PixmapLoader::getValue<Loader::Glyph>(const QString& /*id*/);
+template double PixmapLoader::getValue<double>(const QString& /*id*/);
+template QPointF PixmapLoader::getValue<QPointF>(const QString& /*id*/);
+template QRectF PixmapLoader::getValue<QRectF>(const QString& /*id*/);
+template QBrush PixmapLoader::getValue<QBrush>(const QString& /*id*/);
+template QColor PixmapLoader::getValue<QColor>(const QString& /*id*/);

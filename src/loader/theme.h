@@ -70,26 +70,9 @@ public:
   /** Unreferences the size */
   void unrefSize(int size);
 
-  /** Loads a pixmap */
-  QPixmap getPixmap(const QString& key, int size);
-
-  /** Loads a pixmap -or- map of rects->pixmaps */
-  PixmapOrMap getPixmapMap(const QString& key, int size);
-
-  /** Loads a glyph */
-  Glyph getGlyph(const QString& key, int size);
-
-  /** gets a number */
-  double getNumber(const QString& id, int size);
-
-  /** gets a point */
-  QPoint getPoint(const QString& id, int size);
-
-  /** gets a rectangle */
-  QRect getRect(const QString& id, int size);
-
-  /** gets a brush */
-  QBrush getBrush(const QString& id, int size);
+  /** Loads a value */
+  template<typename T>
+  T getValue(const QString& key, int size);
 };
 
 } //end namespace loader

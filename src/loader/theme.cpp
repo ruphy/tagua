@@ -74,7 +74,29 @@ void Theme::unrefSize(int size) {
     m_cache.erase(size);
 }
 
-PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
+template<typename T>
+T Theme::getValue(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return T();
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    ERROR("Size " << size << " not referenced.");
+    return T();
+  }
+
+  T retv = m_lua_loader.getValue<T>(key, size);
+
+  if(m_lua_loader.error()) {
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    m_lua_loader.clearError();
+  }
+
+  return retv;
+}
+
+template<>
+PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size) {
   if(m_lua_loader.error())
     return PixmapOrMap();
 
@@ -88,7 +110,7 @@ PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
   if(pix != it->second.m_pixmaps_cache.end())
     return pix->second;
 
-  PixmapOrMap retv = to_pixmap_map(m_lua_loader.getImageMap(key, size));
+  PixmapOrMap retv = to_pixmap_map(m_lua_loader.getValue< ::LuaApi::ImageOrMap>(key, size));
   if(m_lua_loader.error()) {
     ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
     m_lua_loader.clearError();
@@ -98,14 +120,16 @@ PixmapOrMap Theme::getPixmapMap(const QString& key, int size) {
   return retv;
 }
 
-QPixmap Theme::getPixmap(const QString& key, int size) {
-  PixmapOrMap p = getPixmapMap(key, size);
+template<>
+QPixmap Theme::getValue<QPixmap>(const QString& key, int size) {
+  PixmapOrMap p = getValue<PixmapOrMap>(key, size);
   if(QPixmap *px = boost::get<QPixmap>(&p))
     return *px;
   return QPixmap();
 }
 
-Glyph Theme::getGlyph(const QString& key, int size) {
+template<>
+Glyph Theme::getValue<Glyph>(const QString& key, int size) {
   if(m_lua_loader.error())
     return Glyph();
 
@@ -131,84 +155,10 @@ Glyph Theme::getGlyph(const QString& key, int size) {
   return retv;
 }
 
-double Theme::getNumber(const QString& key, int size) {
-  if(m_lua_loader.error())
-    return 0;
-
-  Cache::iterator it = m_cache.find(size);
-  if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
-    return 0;
-  }
-
-  double retv = m_lua_loader.getNumber(key, size);
-
-  if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
-    m_lua_loader.clearError();
-  }
-
-  return retv;
-}
-
-QPoint Theme::getPoint(const QString& key, int size) {
-  if(m_lua_loader.error())
-    return QPoint();
-
-  Cache::iterator it = m_cache.find(size);
-  if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
-    return QPoint();
-  }
-
-  QPoint retv = m_lua_loader.getPoint(key, size);
-
-  if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
-    m_lua_loader.clearError();
-  }
-
-  return retv;
-}
-
-QRect Theme::getRect(const QString& key, int size) {
-  if(m_lua_loader.error())
-    return QRect();
-
-  Cache::iterator it = m_cache.find(size);
-  if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
-    return QRect();
-  }
-
-  QRect retv = m_lua_loader.getRect(key, size);
-
-  if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
-    m_lua_loader.clearError();
-  }
-
-  return retv;
-}
-
-QBrush Theme::getBrush(const QString& key, int size) {
-  if(m_lua_loader.error())
-    return QBrush();
-
-  Cache::iterator it = m_cache.find(size);
-  if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
-    return QBrush();
-  }
-
-  QBrush retv = m_lua_loader.getBrush(key, size);
-
-  if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
-    m_lua_loader.clearError();
-  }
-
-  return retv;
-}
+template double Theme::getValue<double>(const QString& /*id*/, int /*size*/);
+template QPointF Theme::getValue<QPointF>(const QString& /*id*/, int /*size*/);
+template QRectF Theme::getValue<QRectF>(const QString& /*id*/, int /*size*/);
+template QBrush Theme::getValue<QBrush>(const QString& /*id*/, int /*size*/);
+template QColor Theme::getValue<QColor>(const QString& /*id*/, int /*size*/);
 
 } //end namespace Loader
