@@ -90,27 +90,4 @@ public:
   }
 };
 
-//BEGIN MovementFactory
-
-//NOTE for Paolo: WTF?
-class AbstractMovementFactory {
-public:
-  virtual ~AbstractMovementFactory() { }
-  virtual Movement* create(const QPoint& from, const QPoint& to) const = 0;
-};
-
-/**
-  * MovementFactory is used to pass around Movement information
-  * whenever movement parameters @a from and @a to are not yet known.
-  */
-template <typename Mov>
-class MovementFactory : public AbstractMovementFactory {
-public:
-  virtual Mov* create(const QPoint& from, const QPoint& to) const {
-    return new HalfSigmoidalMovement<Mov>(from, to);
-  }
-};
-
-//END MovementFactory
-
 #endif // MOVEMENT_H
