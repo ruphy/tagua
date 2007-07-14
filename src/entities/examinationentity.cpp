@@ -21,8 +21,7 @@
 ExaminationEntity::ExaminationEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
                   int game_number, const boost::shared_ptr<ICSConnection>& connection,
                   AgentGroup* group)
-: UserEntity(QUEEN)
-, GameBasedEntity(game)
+: UserEntity(game, QUEEN)
 , m_variant(variant)
 , m_game_number(game_number)
 , m_connection(connection)

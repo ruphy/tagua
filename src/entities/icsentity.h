@@ -12,7 +12,6 @@
 #define ICSENTITY_H
 
 #include "entity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "agentgroup.h"
 #include "icslistener.h"
@@ -22,7 +21,6 @@ class ICSConnection;
 
 class ICSEntity : public Entity
                 , public Agent
-                , public GameBasedEntity
                 , public ICSListener {
 protected:
   VariantInfo* m_variant;

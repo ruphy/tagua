@@ -12,7 +12,6 @@
 #define ENGINEENTITY_H
 
 #include "entity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "enginenotifier.h"
 #include "kboard.h"
@@ -21,7 +20,6 @@
 class Engine;
 
 class EngineEntity : public Entity
-                   , public GameBasedEntity
                    , public Agent
                    , public EngineNotifier {
   VariantInfo* m_variant;

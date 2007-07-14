@@ -12,14 +12,12 @@
 #define GAMEENTITY_H
 
 #include "userentity.h"
-#include "gamebasedentity.h"
 #include "agent.h"
 #include "agentgroup.h"
 
 class Board;
 
-class GameEntity : public UserEntity
-                 , public GameBasedEntity {
+class GameEntity : public UserEntity {
   VariantInfo* m_variant;
   Board* m_chessboard;
   AgentGroupDispatcher m_dispatcher;

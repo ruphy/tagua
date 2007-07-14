@@ -9,12 +9,21 @@
 */
 
 #include "entity.h"
+#include "game.h"
 
-Entity::Entity()
+Entity::Entity(const GamePtr& game)
 : m_premove(true)
 , m_enabled(true)
-, m_highlight(true) { }
+, m_highlight(true)
+, m_game(game) { }
 
 Entity::~Entity() { }
 
+GamePtr Entity::game() const {
+  return m_game;
+}
+
+PositionPtr Entity::position() const {
+  return m_game->position();
+}
 

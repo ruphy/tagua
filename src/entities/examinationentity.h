@@ -15,13 +15,11 @@
 #include "kboard.h"
 #include "icslistener.h"
 #include "agent.h"
-#include "gamebasedentity.h"
 #include "agentgroup.h"
 
 class ICSConnection;
 
 class ExaminationEntity : public UserEntity
-                        , public GameBasedEntity
                         , public ICSListener {
   VariantInfo* m_variant;
   int m_game_number;
