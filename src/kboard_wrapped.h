@@ -17,6 +17,7 @@
 #include "kboard.h"
 #include "movefactory.h"
 #include "moveserializer.h"
+#include "nopool.h"
 #include "algebraicnotation.h"
 
 template <typename V> class WrappedPiece;
@@ -178,15 +179,13 @@ public:
   }
 };
 
-
-template <typename Variant>
-class WrappedPool : public AbstractPool {
-  typedef typename Variant::Pool Pool;
+template <typename Variant, typename Pool>
+class WrappedPoolBase {
   typedef typename Variant::Piece Piece;
 
   Pool m_pool;
 public:
-  WrappedPool(Pool pool)
+  WrappedPoolBase(Pool pool)
   : m_pool(pool) { }
 
   virtual int size() {
@@ -224,6 +223,20 @@ public:
     else
       return AbstractPiece::Ptr();
   }
+};
+
+// simple special case for NoPool
+template <typename Variant>
+class WrappedPoolBase<Variant, NoPool> : public AbstractPool {
+public:
+  WrappedPoolBase(NoPool) { }
+};
+
+template <typename Variant>
+class WrappedPool : public WrappedPoolBase<Variant, typename Variant::Pool> {
+public:
+  WrappedPool(typename Variant::Pool pool)
+  : WrappedPoolBase<Variant, typename Variant::Pool>(pool) { }
 };
 
 

@@ -11,7 +11,7 @@
 #include "variants.h"
 #include "kboard.h"
 #include "variants/chess.h"
-#include "variants/crazyhouse.h"
+// #include "variants/crazyhouse.h"
 
 #if 0
 #include "variants/atomic.h"

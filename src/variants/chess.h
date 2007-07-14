@@ -16,6 +16,7 @@
 #include "variants/xchess/piece.h"
 #include "variants/xchess/move.h"
 #include "option.h"
+#include "nopool.h"
 #include "piecegrid.h"
 
 class ChessPiece;
@@ -31,8 +32,8 @@ struct ChessVariant {
   typedef ChessPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef Position::PoolReference Pool;
   typedef ChessAnimator Animator;
+  typedef NoPool Pool;
 
   static const bool m_simple_moves = false;
   static const char *m_name;
