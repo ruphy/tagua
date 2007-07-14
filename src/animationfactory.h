@@ -106,9 +106,9 @@ public:
 private:
   const NamedSprite& m_sprite;
   Point m_to;
-  MovementType m_type;
+  int m_type;
 public:
-  move(const NamedSprite& sprite, const Point& to, MovementType type = Straight);
+  move(const NamedSprite& sprite, const Point& to, int type = Straight);
   virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 

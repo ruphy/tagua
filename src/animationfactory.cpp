@@ -30,7 +30,7 @@ namespace Animate {
 
 Scheme::~Scheme() { }
 
-move::move(const NamedSprite& sprite, const Point& to, MovementType type)
+move::move(const NamedSprite& sprite, const Point& to, int type)
 : m_sprite(sprite)
 , m_to(to)
 , m_type(type) { }
