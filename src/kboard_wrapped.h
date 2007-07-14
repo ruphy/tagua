@@ -180,7 +180,7 @@ public:
 };
 
 template <typename Variant, typename Pool>
-class WrappedPoolBase {
+class WrappedPoolBase : public AbstractPool {
   typedef typename Variant::Piece Piece;
 
   Pool m_pool;
@@ -239,6 +239,24 @@ public:
   : WrappedPoolBase<Variant, typename Variant::Pool>(pool) { }
 };
 
+/** 
+  * Metafunction that returns a null pointer when
+  * its template argument is NoPool.
+  */
+template <typename Variant, typename Pool>
+struct ReturnPool {
+  static AbstractPool::Ptr apply(typename Variant::Position& position, int player) {
+    return AbstractPool::Ptr(
+      new WrappedPool<Variant>(position.pool(player)));
+  }
+};
+
+template <typename Variant>
+struct ReturnPool<Variant, NoPool> {
+  static AbstractPool::Ptr apply(typename Variant::Position&, int) {
+    return AbstractPool::Ptr();
+  }
+};
 
 template <typename Variant>
 class WrappedPosition : public AbstractPosition {
@@ -289,10 +307,9 @@ public:
     }
   }
 
-//   virtual AbstractPool::Ptr pool(int player) {
-// //     return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
-//     return AbstractPool::Ptr();
-//   }
+  virtual AbstractPool::Ptr pool(int player) {
+    return ReturnPool<Variant, Pool>::apply(m_pos, player);
+  }
 
   virtual InteractionType movable(const Point& p) const {
     return m_pos.movable(p);
