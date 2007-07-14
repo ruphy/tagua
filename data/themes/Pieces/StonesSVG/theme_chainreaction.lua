@@ -109,6 +109,6 @@ theme.black_6  = addShadow(fromSVG6("blue.svg"))
 theme.white_7  = addShadow(fromSVG7("red.svg"))
 theme.black_7  = addShadow(fromSVG7("blue.svg"))
 
-name = "Red/Blue"
-description = "Red/Blue SVG stones\n  by Maurizio Monge\n"
-variants = { "ChainReaction[Default]" }
+theme.name = "Red/Blue"
+theme.description = "Red/Blue SVG stones\n  by Maurizio Monge\n"
+theme.variants = { "ChainReaction[Default]" }

@@ -9,6 +9,6 @@ shadow_grow=5
 theme.white_stone  = fromSVG("red.svg")
 theme.black_stone  = fromSVG("yellow.svg")
 
-name = "Red/Yellow"
-description = "Red/Yellow SVG stones\n  by Maurizio Monge\n"
-variants = { "Reversi", "Connect4[Default]" }
+theme.name = "Red/Yellow"
+theme.description = "Red/Yellow SVG stones\n  by Maurizio Monge\n"
+theme.variants = { "Reversi", "Connect4[Default]" }

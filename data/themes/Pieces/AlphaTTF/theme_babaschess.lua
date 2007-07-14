@@ -34,6 +34,6 @@ theme.black_pawn   = fromGlyphB("0xF070")
 theme.black_queen  = fromGlyphB("0xF071")
 theme.black_rook   = fromGlyphB("0x00A0")
 
-name = "Alpha (BabasChess style)"
-description = "Alpha TTF theme,\nas BabasChess's default.\n  by Eric Bentzen"
-variants = { "Chess" }
+theme.name = "Alpha (BabasChess style)"
+theme.description = "Alpha TTF theme,\nas BabasChess's default.\n  by Eric Bentzen"
+theme.variants = { "Chess" }

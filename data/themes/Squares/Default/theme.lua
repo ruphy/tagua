@@ -1,6 +1,6 @@
 import("../../Pieces/common.lua")
 
-function theme.background(size)
+theme.background = function (size)
   local dark_square = Color("#6b829c")
   local light_square = Color("#b8c0c0")
   dark_square.a = 224
@@ -20,7 +20,7 @@ function addShadow(i, size)
   return s
 end
 
-function theme.border(size)
+theme.border = function(size)
   local b = math.floor(size*2/3);
   local rb = math.floor(b*2/3);
   local s8 = size*8;
@@ -44,21 +44,24 @@ function theme.border(size)
   }
 end
 
-theme.wallpaper =
-  function(size)
-    local i
-    --i = Image("Wallpapers/autumn.jpg", false)
-    --i = Image("Wallpapers/winter.jpg", false)
-    i = Image("Wallpapers/dragonballz.jpg", false)
-    --i = Image("Wallpapers/Bled (nastja).jpg", false)
-    i:exp_blur(5);
-    return i
-  end
+print "hello!!!"
+
+theme.wallpaper = function()
+  print "wallpaper."
+  local i
+  --i = Image("Wallpapers/autumn.jpg", false)
+  --i = Image("Wallpapers/winter.jpg", false)
+  i = Image("Wallpapers/dragonballz.jpg", false)
+  --i = Image("Wallpapers/Bled (nastja).jpg", false)
+  i:exp_blur(5);
+  return i
+end
 
 ratio = 2.6;
 
 function create_clock(file, col)
   return function(size)
+    print("clock ",size)
     local w = size*ratio
     local h = math.floor(w*2/5)
     local i = Image(w,h)
@@ -142,6 +145,6 @@ theme.highlighting = alone2("#80ff80")
 theme.premove = alone2("#4040ff")
 theme.selection = alone2("#ff4040")
 
-name = "Default"
-description = "Default squares"
-variants = { "Chess[default]", "Shogi", "XiangQi" }
+theme.name = "Default"
+theme.description = "Default squares"
+theme.variants = { "Chess[default]", "Shogi", "XiangQi" }

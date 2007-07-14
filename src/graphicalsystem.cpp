@@ -71,6 +71,9 @@ void GraphicalSystem::settingsChanged() {
   QString theme = PrefTheme::getBestTheme(m_variant);
   QString sqtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Squares);
   QString figtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Figurines);
+  std::cout << "theme: " << theme << std::endl;
+  std::cout << "sqtheme: " << sqtheme << std::endl;
+  std::cout << "figtheme: " << figtheme << std::endl;
 
   m_board->loader()->setBasePath( theme );
   m_board->tagsLoader()->setBasePath( sqtheme );

@@ -1,11 +1,11 @@
 import("../../Pieces/common.lua")
 
-options = OptList {
+theme.options = OptList {
     ColorOpt("light", "Light square", "white"),
     ColorOpt("dark", "Dark square", "black")
 }
 
-function theme.background(size)
+theme.background = function(size)
   local dark_square = options.dark.value
   local light_square = options.light.value
   local i = Image(size*2,size*2)
@@ -21,6 +21,6 @@ theme.highlighting = fromPixmap("square_last.png")
 theme.premove = fromPixmap("square_premove.png")
 theme.selection = fromPixmap("square_select.png")
 
-name = "Custom Color"
-description = "Squares with a solid custom color."
-variants = { "Chess", "Shogi", "XiangQi" }
+theme.name = "Custom Color"
+theme.description = "Squares with a solid custom color."
+theme.variants = { "Chess", "Shogi", "XiangQi" }

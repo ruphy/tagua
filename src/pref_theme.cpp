@@ -71,22 +71,32 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
       LuaApi::Loader l(NULL);
       l.runFile(files[i]);
 
-      if(l.error()) {
-        allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
-        std::cout << " --> Error loading " << files[i] << std::endl
-              << l.errorString() << std::endl;
+      {
+        if(l.error())
+          goto fail;
+
+        QString name = l.getValue<QString>("name");
+        if(name.isEmpty() || l.error())
+          goto fail;
+
+        QString description = l.getValue<QString>("description");
+        if(l.error())
+          goto fail;
+
+        QStringList variants = l.getValue<QStringList>("variants");
+        if(l.error())
+          goto fail;
+
+        ThemeInfo t(files[i], name, l.getValue<QString>("description"),
+                                    l.getValue<QStringList>("variants"), lm);
+        retv << t;
+        allluafiles << t;
         continue;
       }
-
-      QString name = l.getString("name");
-      if(name.isEmpty()) {
-        allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
-        continue;
-      }
-
-      ThemeInfo t(files[i], name, l.getString("description"), l.getStringList("variants"), lm);
-      retv << t;
-      allluafiles << t;
+    fail:
+      allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
+      ERROR("Loading " << files[i] << std::endl
+              << l.errorString());
     }
   }
 
@@ -119,7 +129,12 @@ OptList PrefTheme::get_file_options(const QString& f) {
   LuaApi::Loader l(NULL);
   l.runFile(f);
 
-  boost::shared_ptr<OptList> o = boost::shared_ptr<OptList>(new OptList(l.getOptList("options")));
+  boost::shared_ptr<OptList> o(new OptList(l.getValue<OptList>("options")));
+  if(l.error()) {
+    ERROR(l.errorString());
+    l.clearError();
+  }
+
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(f);
   options_list_load_from_settings(*o, entry.group("options"));

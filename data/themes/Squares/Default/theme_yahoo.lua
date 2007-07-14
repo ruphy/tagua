@@ -1,6 +1,6 @@
 import("../../Pieces/common.lua")
 
-function theme.background(size)
+theme.background = function(size)
   local dark_square = "#319231"
   local light_square = "#cecf9c"
   local i = Image(size*2,size*2)
@@ -16,6 +16,6 @@ theme.highlighting = fromPixmap("square_last.png")
 theme.premove = fromPixmap("square_premove.png")
 theme.selection = fromPixmap("square_select.png")
 
-name = "Yahoo"
-description = "Yahoo games squares"
-variants = { "Chess" }
+theme.name = "Yahoo"
+theme.description = "Yahoo games squares"
+theme.variants = { "Chess" }

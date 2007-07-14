@@ -9,6 +9,8 @@
 */
 
 #include <map>
+#include <iostream>
+#include "common.h"
 #include "loader/theme.h"
 #include "pixmaploader.h"
 
@@ -53,8 +55,6 @@ void PixmapLoader::flush() {
 }
 
 void PixmapLoader::setBasePath(const QString& base) {
-  //QString base = PixmapLoader::ThemeLoader::resolveBasePath(__base);
-
   if(base == m_base)
     return;
 

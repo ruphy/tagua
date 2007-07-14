@@ -1,6 +1,6 @@
 import("../../Pieces/common.lua")
 
-options = OptList {
+theme.options = OptList {
     ColorOpt("square", "Square color", "#D9C48F"),
     ColorOpt("table", "Table color", "#B9A46F"),
     BoolOpt("useborder", "Use border", true, OptList {
@@ -13,7 +13,7 @@ function Pt(x, y)
   return Point(math.floor(x), math.floor(y))
 end
 
-function theme.background(size)
+theme.background = function(size)
   local square = options.square.value
   local table  = options.table.value
   local border = options.useborder.sub_options.border.value
@@ -172,6 +172,6 @@ theme.highlighting = alone(Color(255,255,128,192))
 theme.premove =      alone(Color(0,0,255,192))
 theme.selection =    alone(Color(255,0,0,192))
 
-name = "XiangQi"
-description = "XiangQi squares"
-variants = { "Shogi", "XiangQi[default]", "Chess", "ChainReaction" }
+theme.name = "XiangQi"
+theme.description = "XiangQi squares"
+theme.variants = { "Shogi", "XiangQi[default]", "Chess", "ChainReaction" }

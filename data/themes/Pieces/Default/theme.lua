@@ -13,6 +13,6 @@ theme.white_pawn   = fromPixmap("white_pawn.png")
 theme.white_queen  = fromPixmap("white_queen.png")
 theme.white_rook   = fromPixmap("white_rook.png")
 
-name = "Fantasy (PNG version)"
-description = "Fantasy PNG theme,\n  by Maurizio Monge"
-variants = { "Chess" }
+theme.name = "Fantasy (PNG version)"
+theme.description = "Fantasy PNG theme,\n  by Maurizio Monge"
+theme.variants = { "Chess" }

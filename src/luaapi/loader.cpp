@@ -140,6 +140,10 @@ T Loader::getValue(const QString& key, int size) {
   return data.out;
 }
 
+template ::Loader::Glyph Loader::getValue< ::Loader::Glyph>(const QString& /*id*/, int /*size*/);
+template OptList Loader::getValue<OptList>(const QString& /*id*/, int /*size*/);
+template QString Loader::getValue<QString>(const QString& /*id*/, int /*size*/);
+template QStringList Loader::getValue<QStringList>(const QString& /*id*/, int /*size*/);
 template QImage Loader::getValue<QImage>(const QString& /*id*/, int /*size*/);
 template ImageOrMap Loader::getValue<ImageOrMap>(const QString& /*id*/, int /*size*/);
 template double Loader::getValue<double>(const QString& /*id*/, int /*size*/);
@@ -147,61 +151,6 @@ template QPointF Loader::getValue<QPointF>(const QString& /*id*/, int /*size*/);
 template QRectF Loader::getValue<QRectF>(const QString& /*id*/, int /*size*/);
 template QBrush Loader::getValue<QBrush>(const QString& /*id*/, int /*size*/);
 template QColor Loader::getValue<QColor>(const QString& /*id*/, int /*size*/);
-
-
-::Loader::Glyph Loader::getGlyph(const QString& l) {
-  StackCheck check(m_state);
-
-  lua_getglobal(m_state, l.toAscii().constData());
-  ::Loader::Glyph *g = Wrapper< ::Loader::Glyph>::retrieve(m_state, -1);
-  lua_pop(m_state, 1);
-  if(!g) {
-    std::cout << "Error looking up " << l << std::endl;
-    return ::Loader::Glyph();
-  }
-  std::cout << "Looking up " << l << " " << g->m_char.unicode() << std::endl;
-  return *g;
-}
-
-OptList Loader::getOptList(const QString& l) {
-  StackCheck check(m_state);
-
-  lua_getglobal(m_state, l.toAscii().constData());
-  OptList *list = Wrapper<OptList>::retrieve(m_state, -1);
-  lua_pop(m_state, 1);
-  return list ? *list : OptList();
-}
-
-QStringList Loader::getStringList(const QString& s) {
-  StackCheck check(m_state);
-  QStringList retv;
-
-  lua_getglobal(m_state, s.toAscii().constData());
-  if(lua_isstring(m_state, -1))
-    retv << QString(lua_tostring(m_state, -1));
-  else if(lua_istable(m_state, -1)) {
-    lua_pushnil(m_state);
-    while (lua_next(m_state, -2) != 0) {
-      if(lua_isstring(m_state, -1))
-        retv << QString(lua_tostring(m_state, -1));
-      lua_pop(m_state, 1);
-    }
-  }
-  lua_pop(m_state, 1);
-  return retv;
-}
-
-QString Loader::getString(const QString& s) {
-  StackCheck check(m_state);
-  QString retv;
-
-  lua_getglobal(m_state, s.toAscii().constData());
-  if(lua_isstring(m_state, -1))
-    retv = QString(lua_tostring(m_state, -1));
-  lua_pop(m_state, 1);
-  return retv;
-}
-
 
 template<typename T>
 void Loader::retrieve(create_value_data<T>* d, lua_State *l, int pos) {
@@ -211,6 +160,25 @@ void Loader::retrieve(create_value_data<T>* d, lua_State *l, int pos) {
 template<>
 void Loader::retrieve<double>(create_value_data<double>* d, lua_State *l, int pos) {
   d->out = lua_tonumber(l, pos);
+}
+
+template<>
+void Loader::retrieve<QString>(create_value_data<QString>* d, lua_State *l, int pos) {
+  d->out = lua_tostring(l, pos);
+}
+
+template<>
+void Loader::retrieve<QStringList>(create_value_data<QStringList>* d, lua_State *l, int pos) {
+  if(lua_isstring(l, pos))
+    d->out << QString(lua_tostring(l, -1));
+  else { //if(lua_istable(m_state, pos)) DON'T CHECK, FAIL! (EXCEPTION WILL BE TRAPPED)
+    lua_pushnil(l);
+    while (lua_next(l, pos-1) != 0) {
+      //if(lua_isstring(m_state, -1))
+      d->out << QString(lua_tostring(l, -1));
+      lua_pop(l, 1);
+    }
+  }
 }
 
 template<>
@@ -251,8 +219,16 @@ int Loader::create_value_func(lua_State *l) {
   lua_getfield(l, -1, data->key.toAscii().constData());
   lua_remove(l, -2);
 
-  lua_pushnumber(l, data->size);
-  lua_call(l, 1, 1);
+  /* If it is a function call it, or else try to retrieve directly the value */
+  if(lua_isfunction(l, -1)) {
+    if(data->size) {
+      lua_pushnumber(l, data->size);
+      lua_call(l, 1, 1);
+    }
+    else
+      lua_call(l, 0, 1);
+  }
+
   retrieve<T>(data, l, -1);
   lua_pop(l, 1);
 

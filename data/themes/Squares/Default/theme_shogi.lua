@@ -1,6 +1,6 @@
 import("../../Pieces/common.lua")
 
-options = OptList {
+theme.options = OptList {
     ColorOpt("square", "Square color", "#EBD6A0"),
     BoolOpt("useborder", "Use border", true, OptList {
         ColorOpt("border", "Border color", "#9C8755"),
@@ -8,7 +8,7 @@ options = OptList {
     })
 }
 
-function theme.background(size)
+theme.background = function(size)
   local i = Image(size,size)
   local square = options.square.value
   local useborder = options.useborder.value
@@ -30,6 +30,6 @@ theme.highlighting = fromPixmap("square_last.png")
 theme.premove = fromPixmap("square_premove.png")
 theme.selection = fromPixmap("square_select.png")
 
-name = "Shogi"
-description = "Shogi-like squares"
-variants = { "Shogi[default]", "Chess" }
+theme.name = "Shogi"
+theme.description = "Shogi-like squares"
+theme.variants = { "Shogi[default]", "Chess" }

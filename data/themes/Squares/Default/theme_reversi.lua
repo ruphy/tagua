@@ -1,6 +1,6 @@
 import("../../Pieces/common.lua")
 
-function theme.background(size)
+theme.background = function(size)
   local i = Image(size,size)
   i:clear("#008040");
   i:draw_line(Point(0,0),Point(size,0), "black", 2);
@@ -15,6 +15,6 @@ theme.highlighting = fromPixmap("square_last.png")
 theme.premove = fromPixmap("square_premove.png")
 theme.selection = fromPixmap("square_select.png")
 
-name = "Default"
-description = "Default squares"
-variants = { "Reversi[default]" }
+theme.name = "Default"
+theme.description = "Default squares"
+theme.variants = { "Reversi[default]" }

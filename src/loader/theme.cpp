@@ -53,7 +53,13 @@ Theme::~Theme() {
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
-  OptList ol = m_lua_loader.getOptList("options");
+  OptList ol = m_lua_loader.getValue<OptList>("options");
+  if(m_lua_loader.error()) {
+    ERROR(m_lua_loader.errorString());
+    m_lua_loader.clearError();
+    return;
+  }
+
   if(options_list_load_from_settings(ol, entry.group("options")))
   for(Cache::iterator it = m_cache.begin(); it != m_cache.end(); ++it)
     it->second.m_pixmaps_cache.clear();
@@ -143,14 +149,14 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size) {
   if(pix != it->second.m_glyphs_cache.end())
     return pix->second;
 
-  Glyph retv = m_lua_loader.getGlyph(key);
-  retv.m_font.setPointSize(size+retv.m_delta);
+  Glyph retv = m_lua_loader.getValue<Glyph>(key);
 
   if(m_lua_loader.error()) {
     ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
     m_lua_loader.clearError();
   }
 
+  retv.m_font.setPointSize(size+retv.m_delta);
   it->second.m_glyphs_cache[key] = retv;
   return retv;
 }

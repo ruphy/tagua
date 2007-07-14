@@ -62,14 +62,8 @@ public:
 
   lua_State* state() const { return m_state; }
   bool runFile(const QString& file, bool set_dir = true);
-  QImage getImage(const QString& key, int size);
-  ImageOrMap getImageMap(const QString& key, int size);
-  ::Loader::Glyph getGlyph(const QString& key);
-  QStringList getStringList(const QString&);
-  QString getString(const QString&);
-  OptList getOptList(const QString&);
 
-  template<typename T> T getValue(const QString& key, int size);
+  template<typename T> T getValue(const QString& key, int size = 0);
 
   bool error(){ return m_error; }
   void clearError(){ m_error = false; }

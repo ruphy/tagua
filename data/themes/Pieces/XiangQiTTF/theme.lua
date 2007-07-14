@@ -58,6 +58,6 @@ theme.white_pawn   = theme.red_soldier
 theme.white_queen  = theme.red_elephant
 theme.white_rook   = theme.red_chariot
 
-name = "XiangQi"
-description = "XiangQi TTF theme,\n  created with potrace"
-variants = { "Chess", "XiangQi[Default]" }
+theme.name = "XiangQi"
+theme.description = "XiangQi TTF theme,\n  created with potrace"
+theme.variants = { "Chess", "XiangQi[Default]" }
