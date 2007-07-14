@@ -90,7 +90,8 @@ CrazyhousePosition::CrazyhousePosition(const OptList&) {
 }
 
 CrazyhousePosition::CrazyhousePosition(const CrazyhousePosition& other)
-: Base(other) {
+: Base(other)
+, m_pool(other.m_pool) {
 }
 
 CrazyhousePosition::CrazyhousePosition(const ChessPosition& other)
@@ -120,13 +121,31 @@ CrazyhousePosition::createLegalGenerator() const {
       LegalMove<CrazyhousePosition> >(*this));
 }
 
+CrazyhousePosition::PoolReference CrazyhousePosition::pool(int index) {
+  Color c = static_cast<Color>(index);
+  return PoolReference(&m_pool[c], c);
+}
+
+CrazyhousePosition::PoolConstReference CrazyhousePosition::pool(int index) const {
+  Color c = static_cast<Color>(index);
+  return PoolConstReference(&m_pool.find(c)->second, c);
+}
+
+CrazyhousePosition::Pool& CrazyhousePosition::rawPool() {
+  return m_pool;
+}
+
+const CrazyhousePosition::Pool& CrazyhousePosition::rawPool() const {
+  return m_pool;
+}
+
 bool CrazyhousePosition::pseudolegal(Move& move) const {
 
   if(!move.m_drop.valid() && move.m_pool != -1 && move.m_pool_index != -1) {
-    move.m_drop = const_cast<CrazyhousePosition*>(this)->pool(move.m_pool).get(move.m_pool_index);
+    move.m_drop = pool(move.m_pool).get(move.m_pool_index);
     dump();
     std::cout << move.m_drop << " " << move.m_pool << " " << move.m_pool_index << " " <<
-       const_cast<CrazyhousePosition*>(this)->pool(move.m_pool).size() << std::endl;
+       pool(move.m_pool).size() << std::endl;
   }
 
   if (move.m_drop.valid()) {
