@@ -157,6 +157,7 @@ Clock::Clock(int col, Board* b, KGameCanvasAbstract* canvas)
   setTime(0);
   setPlayer(Player());
   m_caption->setText(col == 0 ? "White" : "Black");
+  connect(&m_timer, SIGNAL(timeout()), this, SLOT(tick()));
 }
 
 Clock::~Clock() {
@@ -168,11 +169,15 @@ Clock::~Clock() {
 }
 
 void Clock::start() {
-
+  m_running = true;
+  m_time.start();
+  m_timer.start(100);
 }
 
 void Clock::stop() {
-
+  if (m_running) m_total_time -= m_time.elapsed();
+  m_running = false;
+  m_timer.stop();
 }
 
 void Clock::activate(bool a) {
