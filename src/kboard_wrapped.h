@@ -276,9 +276,10 @@ public:
     }
   }
 
-  virtual AbstractPool::Ptr pool(int player) {
-    return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
-  }
+//   virtual AbstractPool::Ptr pool(int player) {
+// //     return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
+//     return AbstractPool::Ptr();
+//   }
 
   virtual InteractionType movable(const Point& p) const {
     return m_pos.movable(p);

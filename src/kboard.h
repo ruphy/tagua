@@ -205,7 +205,7 @@ public:
   /**
     * \return an interface to modify the pool of the board relative to \a player
     */
-  virtual AbstractPool::Ptr pool(int player) = 0;
+//   virtual AbstractPool::Ptr pool(int player) = 0;
 
   /**
     * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
