@@ -232,8 +232,9 @@ void ChessTable::leaveEvent(QEvent*) {
 void ChessTable::flip() {
   m_board->flip();
 
+  int delta = qAbs(m_pools[0]->pos().y() - m_pools[1]->pos().y());
   for(int i=0;i<2;i++)
-    m_pools[i]->flipAndMoveBy( QPoint(0, m_board->squareSize()*8+m_board->squareSize()*2/3) );
+    m_pools[i]->flipAndMoveBy( QPoint(0, delta) );
 }
 
 void ChessTable::flip(bool flipped) {
