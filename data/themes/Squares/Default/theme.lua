@@ -49,29 +49,29 @@ theme.wallpaper =
     local i
     --i = Image("Wallpapers/autumn.jpg", false)
     --i = Image("Wallpapers/winter.jpg", false)
-    --i = Image("Wallpapers/dragonballz.jpg", false)
-    i = Image("Wallpapers/Bled (nastja).jpg", false)
-    i:exp_blur(10);
+    i = Image("Wallpapers/dragonballz.jpg", false)
+    --i = Image("Wallpapers/Bled (nastja).jpg", false)
+    i:exp_blur(5);
     return i
   end
 
 ratio = 2.6;
 
-function create_clock(file)
+function create_clock(file, col)
   return function(size)
     local w = size*ratio
     local h = math.floor(w*2/5)
     local i = Image(w,h)
     i:clear()
     i:draw_svg(Rect(0,0,w,h), file)
-    local s = i:create_shadow( size/6, "#ffffff", Point(math.floor(size/2.5), math.floor(size/2.5)), Point(0, 0) )
+    local s = i:create_shadow( size/6, col, Point(math.floor(size/2.5), math.floor(size/2.5)), Point(0, 0) )
     s:draw_image(Rect(math.floor(size/5), math.floor(size/5), i.width, i.height), i)
     return s
   end
 end
 
-theme.clock_active_background = create_clock("active_clock.svg")
-theme.clock_inactive_background = create_clock("inactive_clock.svg")
+theme.clock_active_background = create_clock("active_clock.svg", "#ff8080")
+theme.clock_inactive_background = create_clock("inactive_clock.svg", "#e0e0e0")
 
 theme.clock_active_text = function(size)
   return Brush("#000000")
@@ -107,10 +107,40 @@ theme.clock_player_rect = function(size)
   return Rect(w*0.14, h*0.68, w*0.69, h*0.28)
 end
 
+function alone(color)
+  return function(size)
+    local i = Image(size,size)
+    local g = RadialGradient(Point(size*0.485,size*0.485), size*0.54)
+    g[0] = Color(0,0,0,0)
+    g[0.2] = Color(0,0,0,0)
+    g[0.85] = color
+    g[1] = color
+    i:clear()
+    i:fill_rect(Rect(0,0,size,size), g)
+    return i
+  end
+end
+
+function alone2(color)
+  return function(size)
+    local i = Image(size,size)
+    i:clear()
+    i:draw_line(Point(size*0.1,size*0.1), Point(size*0.9,size*0.1), color, size*0.1);
+    i:draw_line(Point(size*0.1,size*0.9), Point(size*0.9,size*0.9), color, size*0.1);
+    i:draw_line(Point(size*0.1,size*0.1), Point(size*0.1,size*0.9), color, size*0.1);
+    i:draw_line(Point(size*0.9,size*0.1), Point(size*0.9,size*0.9), color, size*0.1);
+    local a = Color(color)
+    a.a = 64
+    i:fill_rect(Rect(size*0.1,size*0.1,size*0.8,size*0.8), a);
+    i:exp_blur(size*0.1);
+    return i
+  end
+end
+
 theme.validmove = fromColor("#cd9eee")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
+theme.highlighting = alone2("#80ff80")
+theme.premove = alone2("#4040ff")
+theme.selection = alone2("#ff4040")
 
 name = "Default"
 description = "Default squares"
