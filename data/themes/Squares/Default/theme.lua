@@ -3,8 +3,8 @@ import("../../Pieces/common.lua")
 function theme.background(size)
   local dark_square = Color("#6b829c")
   local light_square = Color("#b8c0c0")
-  dark_square.a = 192
-  light_square.a = 192
+  dark_square.a = 224
+  light_square.a = 224
   local i = Image(size*2,size*2)
   i:set_paint_over(false);
   i:fill_rect(Rect(0,0,size,size), light_square)
@@ -46,8 +46,10 @@ end
 
 theme.wallpaper =
   function(size)
-    --return Image("Wallpapers/dragonballz.jpg", false)
-    return Image("Wallpapers/Bled (nastja).jpg", false)
+    --return Image("Wallpapers/autumn.jpg", false)
+    --return Image("Wallpapers/winter.jpg", false)
+    return Image("Wallpapers/dragonballz.jpg", false)
+    --return Image("Wallpapers/Bled (nastja).jpg", false)
   end
 
 ratio = 2.6;
