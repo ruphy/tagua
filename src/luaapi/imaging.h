@@ -183,6 +183,7 @@ public:
   static int drawImage(lua_State* l);
   static int drawSVG(lua_State* l);
   static int drawGlyph(lua_State* l);
+  static int expBlur(lua_State* l);
   static int createShadow(lua_State* l);
 };
 

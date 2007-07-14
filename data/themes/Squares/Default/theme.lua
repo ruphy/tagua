@@ -46,10 +46,13 @@ end
 
 theme.wallpaper =
   function(size)
-    --return Image("Wallpapers/autumn.jpg", false)
-    --return Image("Wallpapers/winter.jpg", false)
-    return Image("Wallpapers/dragonballz.jpg", false)
-    --return Image("Wallpapers/Bled (nastja).jpg", false)
+    local i
+    --i = Image("Wallpapers/autumn.jpg", false)
+    --i = Image("Wallpapers/winter.jpg", false)
+    --i = Image("Wallpapers/dragonballz.jpg", false)
+    i = Image("Wallpapers/Bled (nastja).jpg", false)
+    i:exp_blur(10);
+    return i
   end
 
 ratio = 2.6;
@@ -61,7 +64,7 @@ function create_clock(file)
     local i = Image(w,h)
     i:clear()
     i:draw_svg(Rect(0,0,w,h), file)
-    local s = i:create_shadow( size/5, "#ffffff", Point(math.floor(size/2.5), math.floor(size/2.5)), Point(0, 0) )
+    local s = i:create_shadow( size/6, "#ffffff", Point(math.floor(size/2.5), math.floor(size/2.5)), Point(0, 0) )
     s:draw_image(Rect(math.floor(size/5), math.floor(size/5), i.width, i.height), i)
     return s
   end

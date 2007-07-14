@@ -240,6 +240,12 @@ public:
                  double border = 0.0,
                  bool draw_inner_bg = true);
 
+
+  /**
+   * Blurs the image itself.
+   */
+  void expBlur(double radius);
+
   /**
    * Returns a shadow image for the current image.
    * @param radius The shadow radius.

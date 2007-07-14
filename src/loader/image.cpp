@@ -354,6 +354,15 @@ bool Image::drawGlyph(Context* ctx,
 }
 
 
+void Image::expBlur(double radius) {
+  if(m_image.format() != QImage::Format_RGB32
+      && m_image.format() != QImage::Format_ARGB32
+      && m_image.format() != QImage::Format_ARGB32_Premultiplied)
+    m_image = m_image.convertToFormat(QImage::Format_ARGB32_Premultiplied);
+  ImageEffects::expBlur(m_image, int(radius) );
+}
+
+
 Image Image::createShadow(double radius,
                     const QColor& color,
                     const QPoint& grow,

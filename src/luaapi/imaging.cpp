@@ -541,6 +541,7 @@ void Wrapper<Image>::create_index_table(lua_State* l) {
   set_method(l, &drawImage, "draw_image");
   set_method(l, &drawSVG, "draw_svg");
   set_method(l, &drawGlyph, "draw_glyph");
+  set_method(l, &expBlur, "exp_blur");
   set_method(l, &createShadow, "create_shadow");
 }
 
@@ -789,6 +790,19 @@ int Wrapper<Image>::drawGlyph(lua_State* l) {
                                           fg, bg, border, draw_inner_bg);
   lua_pushboolean(l, res);
   return 1;
+}
+
+int Wrapper<Image>::expBlur(lua_State* l) {
+  int n = lua_gettop(l);
+  if (n != 2) luaL_error(l, "Wrong argument count for Image::exp_blur");
+
+  Image* img = retrieve(l, 1, AssertOk);
+  double radius = lua_tonumber(l, 2);
+
+  img->expBlur(radius);
+
+  lua_pop(l, n);
+  return 0;
 }
 
 int Wrapper<Image>::createShadow(lua_State* l) {
