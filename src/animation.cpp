@@ -35,13 +35,15 @@ ConcreteAnimation::ConcreteAnimation(const SpritePtr& piece)
 //BEGIN MovementAnimation
 
 MovementAnimation::MovementAnimation(const SpritePtr& piece,
-                            const QPoint& destination, double speed)
+                            const QPoint& destination, 
+                            bool rotate, double speed)
 : ConcreteAnimation(piece)
 , m_source(piece)
 , m_target(piece)
 , m_destination(destination)
 , m_speed(speed)
-, m_state(Inactive) {
+, m_state(Inactive)
+, m_rotate(rotate) {
 #ifdef ANIMATION_DEBUG
   cout << "creating animation " << this << " for piece " << piece.get() << endl;
 #endif
@@ -66,7 +68,7 @@ void MovementAnimation::setSource(const SpritePtr& source) {
 
 boost::shared_ptr<Movement>
 MovementAnimation::createMovement(const QPoint& from, const QPoint& to) const {
-  return boost::shared_ptr<Movement>(new SigmoidalMovement<LinearMovement>(from, to));
+  return boost::shared_ptr<Movement>(new SigmoidalMovement<LinearMovement>(from, to, m_rotate));
 }
 
 void MovementAnimation::start() {
@@ -164,8 +166,7 @@ void MovementAnimation::abort() {
 
 KnightMovementAnimation::KnightMovementAnimation(const SpritePtr& piece, const QPoint& destination,
                                                                        bool rotate, double speed)
-: MovementAnimation(piece, destination, speed)
-, m_rotate(rotate) {
+: MovementAnimation(piece, destination, rotate, speed){
 }
 
 boost::shared_ptr<Movement>
