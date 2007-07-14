@@ -115,6 +115,46 @@ bool Loader::runFile(const QString& file, bool setdir) {
   return retv;
 }
 
+struct Loader::create_number_data {
+  const QString& key;
+  int size;
+  double out;
+  create_number_data(const QString& _key, int _size)
+    : key(_key)
+    , size(_size) {
+  }
+};
+
+struct Loader::create_point_data {
+  const QString& key;
+  int size;
+  QPoint out;
+  create_point_data(const QString& _key, int _size)
+    : key(_key)
+    , size(_size) {
+  }
+};
+
+struct Loader::create_rect_data {
+  const QString& key;
+  int size;
+  QRect out;
+  create_rect_data(const QString& _key, int _size)
+    : key(_key)
+    , size(_size) {
+  }
+};
+
+struct Loader::create_brush_data {
+  const QString& key;
+  int size;
+  QBrush out;
+  create_brush_data(const QString& _key, int _size)
+    : key(_key)
+    , size(_size) {
+  }
+};
+
 struct Loader::create_image_data {
   const QString& key;
   int size;
@@ -134,6 +174,58 @@ struct Loader::create_image_map_data {
     , size(_size) {
   }
 };
+
+double Loader::getNumber(const QString& key, int size) {
+  StackCheck s(m_state);
+
+  create_number_data data(key, size);
+  if(lua_cpcall(m_state, create_number_func, &data) != 0) {
+    m_error = true;
+    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
+    lua_pop(m_state, 1);
+    return 0;
+  }
+  return data.out;
+}
+
+QPoint Loader::getPoint(const QString& key, int size) {
+  StackCheck s(m_state);
+
+  create_point_data data(key, size);
+  if(lua_cpcall(m_state, create_point_func, &data) != 0) {
+    m_error = true;
+    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
+    lua_pop(m_state, 1);
+    return QPoint();
+  }
+  return data.out;
+}
+
+QRect Loader::getRect(const QString& key, int size) {
+  StackCheck s(m_state);
+
+  create_rect_data data(key, size);
+  if(lua_cpcall(m_state, create_rect_func, &data) != 0) {
+    m_error = true;
+    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
+    lua_pop(m_state, 1);
+    return QRect();
+  }
+  return data.out;
+}
+
+QBrush Loader::getBrush(const QString& key, int size) {
+  StackCheck s(m_state);
+
+  create_brush_data data(key, size);
+  if(lua_cpcall(m_state, create_brush_func, &data) != 0) {
+    m_error = true;
+    m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
+    lua_pop(m_state, 1);
+    return QBrush();
+  }
+  return data.out;
+}
 
 QImage Loader::getImage(const QString& key, int size) {
   StackCheck s(m_state);
@@ -212,6 +304,74 @@ QString Loader::getString(const QString& s) {
     retv = QString(lua_tostring(m_state, -1));
   lua_pop(m_state, 1);
   return retv;
+}
+
+int Loader::create_number_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_number_data* data = reinterpret_cast<create_number_data*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+  data->out = lua_tonumber(l, -1);
+  lua_pop(l, 1);
+
+  return 0;
+}
+
+int Loader::create_point_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_point_data* data = reinterpret_cast<create_point_data*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+  data->out = Wrapper<QPointF>::retrieve(l, -1, AssertOk)->toPoint();
+  lua_pop(l, 1);
+
+  return 0;
+}
+
+int Loader::create_rect_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_rect_data* data = reinterpret_cast<create_rect_data*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+  data->out = Wrapper<QRectF>::retrieve(l, -1, AssertOk)->toRect();
+  lua_pop(l, 1);
+
+  return 0;
+}
+
+int Loader::create_brush_func(lua_State *l) {
+  StackCheck s(l, -1);
+  create_brush_data* data = reinterpret_cast<create_brush_data*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  lua_getglobal(l, "theme");
+  lua_getfield(l, -1, data->key.toAscii().constData());
+  lua_remove(l, -2);
+
+  lua_pushnumber(l, data->size);
+  lua_call(l, 1, 1);
+  data->out = *Wrapper<QBrush>::retrieve(l, -1, AssertOk);
+  lua_pop(l, 1);
+
+  return 0;
 }
 
 int Loader::create_image_func(lua_State *l) {

@@ -117,3 +117,43 @@ Loader::Glyph PixmapLoader::getGlyph(const QString& id) {
   return m_loader->getGlyph(id, m_size);
 }
 
+double PixmapLoader::getNumber(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return 0;
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getNumber(id, m_size);
+}
+
+QPoint PixmapLoader::getPoint(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return QPoint();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getPoint(id, m_size);
+}
+
+QRect PixmapLoader::getRect(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return QRect();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getRect(id, m_size);
+}
+
+QBrush PixmapLoader::getBrush(const QString& id) {
+  if(!m_size || m_base.isEmpty())
+    return QBrush();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getBrush(id, m_size);
+}
+

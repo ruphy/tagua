@@ -91,7 +91,7 @@ MainWindow::MainWindow()
   console_dock->show();
 
   connect(board, SIGNAL(error(ErrorCode)), this, SLOT(displayErrorMessage(ErrorCode)));
-  connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
+  //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
 
 //  start in edit game mode
   newGame("chess", AbstractPosition::Ptr());
@@ -130,7 +130,7 @@ void MainWindow::setupEngineMenu() {
       // this way the menu is created only if there is at least one engine
       engine_menu = menuBar()->addMenu(i18n("E&ngines"));
     }
-    
+
     QString name;
     EngineDetails engine_details;
     s["name"] >> engine_details.name;
@@ -138,14 +138,14 @@ void MainWindow::setupEngineMenu() {
     engine_details.type = EngineDetails::typeFromName(s["type"].value<QString>());
     if (s["work-path"])
       s["work-path"] >> engine_details.workPath;
-    
+
     kDebug() << "creating engine " << engine_details.name << endl;
     EngineInfo* engine = new EngineInfo(engine_details, ui());
 
     m_engines.push_back(engine);
-    
+
     QMenu* menu = engine_menu->addMenu(engine_details.name);
-    
+
     {
       KAction* play_white = new KAction(i18n("Play as &white"), this);
       connect(play_white, SIGNAL(triggered()), engine, SLOT(playAsWhite()));
@@ -176,7 +176,7 @@ void MainWindow::setupActions() {
   m_promote_rook = addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
   m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
   m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
-  
+
   m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), i18n("Do &promotion"), &ui(),SLOT(setDoPromotion(bool)));
   m_do_promotion->setCheckable(true);
 
@@ -189,12 +189,12 @@ void MainWindow::setupActions() {
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
-  
+
   installRegularAction("pgnCopy", KIcon("edit-copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
   installRegularAction("pgnPaste", KIcon("edit-paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
   installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
   installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
-  installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"), 
+  installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"),
       &ui(), SLOT(setStartingPosition()));
   installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
   installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
@@ -231,7 +231,7 @@ void MainWindow::updatePromotionType() {
       m_promote_group->setEnabled(false);
     }
   }
-  
+
   std::cout << "do promotion: " << m_ui.doPromotion() << std::endl;
   m_do_promotion->setChecked(m_ui.doPromotion());
 #endif
@@ -657,7 +657,7 @@ void MainWindow::prefClock() {
   int result = dialog.exec();
   if (result == QDialog::Accepted) {
     dialog.apply();
-    table()->clock()->reload();
+    //BROKEN table()->clock()->reload();
   }
 }
 

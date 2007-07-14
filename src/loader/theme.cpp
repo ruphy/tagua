@@ -131,5 +131,84 @@ Glyph Theme::getGlyph(const QString& key, int size) {
   return retv;
 }
 
+double Theme::getNumber(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return 0;
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    ERROR("Size " << size << " not referenced.");
+    return 0;
+  }
+
+  double retv = m_lua_loader.getNumber(key, size);
+
+  if(m_lua_loader.error()) {
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    m_lua_loader.clearError();
+  }
+
+  return retv;
+}
+
+QPoint Theme::getPoint(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return QPoint();
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    ERROR("Size " << size << " not referenced.");
+    return QPoint();
+  }
+
+  QPoint retv = m_lua_loader.getPoint(key, size);
+
+  if(m_lua_loader.error()) {
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    m_lua_loader.clearError();
+  }
+
+  return retv;
+}
+
+QRect Theme::getRect(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return QRect();
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    ERROR("Size " << size << " not referenced.");
+    return QRect();
+  }
+
+  QRect retv = m_lua_loader.getRect(key, size);
+
+  if(m_lua_loader.error()) {
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    m_lua_loader.clearError();
+  }
+
+  return retv;
+}
+
+QBrush Theme::getBrush(const QString& key, int size) {
+  if(m_lua_loader.error())
+    return QBrush();
+
+  Cache::iterator it = m_cache.find(size);
+  if(it == m_cache.end()) {
+    ERROR("Size " << size << " not referenced.");
+    return QBrush();
+  }
+
+  QBrush retv = m_lua_loader.getBrush(key, size);
+
+  if(m_lua_loader.error()) {
+    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    m_lua_loader.clearError();
+  }
+
+  return retv;
+}
 
 } //end namespace Loader

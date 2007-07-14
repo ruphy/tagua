@@ -44,10 +44,63 @@ function theme.border(size)
   }
 end
 
-theme.wallpaper = function(size)
-                    --return Image("Wallpapers/dragonballz.jpg", false)
-                    return Image("Wallpapers/Bled (nastja).jpg", false)
-                  end
+theme.wallpaper =
+  function(size)
+    --return Image("Wallpapers/dragonballz.jpg", false)
+    return Image("Wallpapers/Bled (nastja).jpg", false)
+  end
+
+ratio = 2.6;
+
+function create_clock(file)
+  return function(size)
+    local w = size*ratio
+    local h = math.floor(w*2/5)
+    local i = Image(w,h)
+    i:clear()
+    i:draw_svg(Rect(0,0,w,h), file)
+    local s = i:create_shadow( size/5, "#ffffff", Point(math.floor(size/2.5), math.floor(size/2.5)), Point(0, 0) )
+    s:draw_image(Rect(math.floor(size/5), math.floor(size/5), i.width, i.height), i)
+    return s
+  end
+end
+
+theme.clock_active_background = create_clock("active_clock.svg")
+theme.clock_inactive_background = create_clock("inactive_clock.svg")
+
+theme.clock_active_text = function(size)
+  return Brush("#000000")
+end
+
+theme.clock_inactive_text = function(size)
+  return Brush("#808080")
+end
+
+theme.clock_background_offset = function(size)
+  return Point(-math.floor(size/5), -math.floor(size/5))
+end
+
+theme.clock_height = function(size)
+  return math.floor((size*ratio)*2/5);
+end
+
+theme.clock_caption_rect = function(size)
+  local w = size*ratio
+  local h = math.floor(w*2/5)
+  return Rect(w*0.02, h*0.2, w*0.4, h*0.38)
+end
+
+theme.clock_time_rect = function(size)
+  local w = size*ratio
+  local h = math.floor(w*2/5)
+  return Rect(w*0.4, h*0.06, w*0.58, h*0.66)
+end
+
+theme.clock_player_rect = function(size)
+  local w = size*ratio
+  local h = math.floor(w*2/5)
+  return Rect(w*0.14, h*0.68, w*0.69, h*0.28)
+end
 
 theme.validmove = fromColor("#cd9eee")
 theme.highlighting = fromPixmap("square_last.png")

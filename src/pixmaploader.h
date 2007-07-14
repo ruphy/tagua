@@ -71,6 +71,18 @@ public:
 
   /** looks up a font + char */
   Loader::Glyph getGlyph(const QString& id);
+
+  /** gets a number */
+  double getNumber(const QString& id);
+
+  /** gets a point */
+  QPoint getPoint(const QString& id);
+
+  /** gets a rectangle */
+  QRect getRect(const QString& id);
+
+  /** gets a brush */
+  QBrush getBrush(const QString& id);
 };
 
 #endif // PIXMAPLOADER_H

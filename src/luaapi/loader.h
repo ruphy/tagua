@@ -51,9 +51,17 @@ class Loader {
   static const luaL_Reg lualibs[];
   struct create_image_data;
   struct create_image_map_data;
+  struct create_number_data;
+  struct create_point_data;
+  struct create_rect_data;
+  struct create_brush_data;
   static int import_func(lua_State *l);
   static int create_image_func(lua_State *l);
   static int create_image_map_func(lua_State *l);
+  static int create_number_func(lua_State *l);
+  static int create_point_func(lua_State *l);
+  static int create_rect_func(lua_State *l);
+  static int create_brush_func(lua_State *l);
 
 public:
   Loader(::Loader::Context *ctx);
@@ -67,6 +75,10 @@ public:
   QStringList getStringList(const QString&);
   QString getString(const QString&);
   OptList getOptList(const QString&);
+  double getNumber(const QString& key, int size);
+  QPoint getPoint(const QString& key, int size);
+  QRect getRect(const QString& key, int size);
+  QBrush getBrush(const QString& key, int size);
 
   bool error(){ return m_error; }
   void clearError(){ m_error = false; }

@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -11,15 +11,79 @@
 #ifndef CLOCK_H
 #define CLOCK_H
 
-#include <boost/array.hpp>
+#include <QPixmap>
 #include <QTimer>
 #include <QTime>
 #include "kgamecanvas.h"
 #include "player.h"
 #include "clickablecanvas.h"
 
+class Board;
+class ConstrainedText;
+
 class Clock : public QObject, public ClickableCanvas {
 Q_OBJECT
+
+  int m_color;
+  Board *m_board;
+  QTimer m_timer;
+  QTime m_time;
+  int m_total_time;
+
+  bool m_running;
+  bool m_active;
+
+  KGameCanvasPixmap* m_background;
+  ConstrainedText* m_caption;
+  ConstrainedText* m_time_label;
+  ConstrainedText* m_player_name;
+  ConstrainedText* m_decs;
+
+  QPixmap m_active_pixmap;
+  QPixmap m_inactive_pixmap;
+
+  QColor m_active_text;
+  QColor m_inactive_text;
+
+  int m_height;
+
+  void computeTime();
+  static QString playerString(const Player& player);
+
+public:
+  Clock(int col, Board* b, KGameCanvasAbstract* canvas);
+  ~Clock();
+
+  bool running() { return m_running; }
+  void start();
+  void stop();
+  bool active() { return m_active; }
+  void activate(bool);
+
+  void setPlayer(const Player& p);
+  void setTime(int t);
+
+  virtual void onMousePress(const QPoint& pos, int button);
+  virtual void onMouseRelease(const QPoint& /*pos*/, int /*button*/) { }
+  virtual void onMouseMove(const QPoint& /*pos*/, int /*button*/) { }
+
+  void resize();
+  int height() { return m_height; }
+  void settingsChanged() { }
+
+private slots:
+  void tick();
+
+signals:
+  void labelClicked(int);
+};
+
+
+#if 1-1
+
+class Clock : public QObject, public ClickableCanvas {
+Q_OBJECT
+
   /**
     * Structure containing information for a player.
     */
@@ -92,5 +156,7 @@ private slots:
 signals:
   void labelClicked(int);
 };
+
+#endif
 
 #endif // CLOCK_H

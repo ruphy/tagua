@@ -78,6 +78,18 @@ public:
 
   /** Loads a glyph */
   Glyph getGlyph(const QString& key, int size);
+
+  /** gets a number */
+  double getNumber(const QString& id, int size);
+
+  /** gets a point */
+  QPoint getPoint(const QString& id, int size);
+
+  /** gets a rectangle */
+  QRect getRect(const QString& id, int size);
+
+  /** gets a brush */
+  QBrush getBrush(const QString& id, int size);
 };
 
 } //end namespace loader

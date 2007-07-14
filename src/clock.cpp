@@ -1,13 +1,288 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 */
 
+#include "clock.h"
+#include "board.h"
+#include <math.h>
+#include <iostream>
+
+class ConstrainedText : public KGameCanvasItem
+{
+private:
+    QString m_text;
+    QColor m_color;
+    QFont m_font;
+    QRect m_constr;
+    QRect m_bounding_rect;
+    QRect m_bounding_rect_max;
+
+    void calcBoundingRect();
+
+public:
+    ConstrainedText(const QString& text, const QColor& color,
+                    const QFont& font, const QRect& rect,
+                    KGameCanvasAbstract* canvas = NULL);
+
+    ConstrainedText(KGameCanvasAbstract* canvas = NULL);
+
+    virtual ~ConstrainedText();
+
+    QRect constrainRect() const { return m_constr; }
+    void setConstrainRect(const QRect& );
+    QString text() const { return m_text; }
+    void setText(const QString& text);
+    QColor color() const { return m_color; }
+    void setColor(const QColor& color);
+    QFont font() const { return m_font; }
+    void setFont(const QFont& font);
+
+    virtual void paint(QPainter* p);
+    virtual QRect rect() const;
+    virtual bool layered() const { return false; }
+};
+
+
+
+ConstrainedText::ConstrainedText(const QString& text, const QColor& color,
+                        const QFont& font, const QRect& rect,
+                        KGameCanvasAbstract* Constrained)
+    : KGameCanvasItem(Constrained)
+    , m_text(text)
+    , m_color(color)
+    , m_font(font)
+    , m_constr(rect)  {
+    calcBoundingRect();
+}
+
+ConstrainedText::ConstrainedText(KGameCanvasAbstract* Constrained)
+    : KGameCanvasItem(Constrained)
+    //, m_text("")
+    , m_color(Qt::black)
+    , m_font(QApplication::font()) {
+
+}
+
+ConstrainedText::~ConstrainedText() {
+
+}
+
+void ConstrainedText::calcBoundingRect() {
+  QString test;
+  for(int i=0;i<m_text.length();i++)
+    test += 'H';
+  m_bounding_rect_max = QFontMetrics(m_font).boundingRect(test);
+
+  m_bounding_rect = QFontMetrics(m_font).boundingRect(m_text);
+}
+
+void ConstrainedText::setConstrainRect(const QRect& rect) {
+  if(m_constr == rect)
+    return;
+
+  m_constr = rect;
+  if(visible() && canvas() )
+    changed();
+}
+
+void ConstrainedText::setText(const QString& text) {
+  if(m_text == text)
+    return;
+  m_text = text;
+  calcBoundingRect();
+
+  if(visible() && canvas() )
+    changed();
+}
+
+void ConstrainedText::setColor(const QColor& color) {
+  m_color = color;
+}
+
+void ConstrainedText::setFont(const QFont& font) {
+  m_font = font;
+  calcBoundingRect();
+
+  if(visible() && canvas() )
+    changed();
+}
+
+void ConstrainedText::paint(QPainter* p) {
+  if(m_bounding_rect_max.width() == 0 || m_bounding_rect_max.height() == 0)
+    return;
+
+  p->setPen(m_color);
+  p->setFont(m_font);
+
+  double fact = qMin(double(m_constr.width())/m_bounding_rect_max.width(),
+                      double(m_constr.height())/m_bounding_rect_max.height());
+  QMatrix savem = p->matrix();
+  //p->fillRect( m_constr, Qt::blue );
+  p->translate(QRectF(m_constr).center());
+  p->scale(fact, fact);
+  p->translate(-QRectF(m_bounding_rect_max).center());
+  //p->fillRect( m_bounding_rect_max, Qt::red );
+  p->drawText( QPoint((m_bounding_rect_max.width()-m_bounding_rect.width())/2,0), m_text);
+  p->setMatrix(savem);
+}
+
+QRect ConstrainedText::rect() const {
+    return m_constr; //suboptimal. oh, well...
+}
+
+
+
+
+Clock::Clock(int col, Board* b, KGameCanvasAbstract* canvas)
+  : ClickableCanvas(canvas)
+  , m_color(col)
+  , m_board(b) {
+  m_background   = new KGameCanvasPixmap(this);
+  m_caption      = new ConstrainedText(this);
+  m_time_label   = new ConstrainedText(this);
+  m_player_name  = new ConstrainedText(this);
+  m_decs         = new ConstrainedText(this);
+
+  m_background->show();
+  m_caption->show();
+  m_time_label->show();
+  m_player_name->show();
+
+  setTime(0);
+  setPlayer(Player());
+  m_caption->setText(col == 0 ? "White" : "Black");
+}
+
+Clock::~Clock() {
+  delete m_background;
+  delete m_caption;
+  delete m_time_label;
+  delete m_player_name;
+  delete m_decs;
+}
+
+void Clock::start() {
+
+}
+
+void Clock::stop() {
+
+}
+
+void Clock::activate(bool a) {
+  if(m_active == a)
+    return;
+
+  m_active = a;
+  m_background->setPixmap(m_active ? m_active_pixmap : m_inactive_pixmap);
+
+  m_time_label->setColor(m_active ? m_active_text : m_inactive_text);
+  m_player_name->setColor(m_active ? m_active_text : m_inactive_text);
+  m_caption->setColor(m_active ? m_active_text : m_inactive_text);
+}
+
+void Clock::tick() {
+  computeTime();
+}
+
+void Clock::computeTime() {
+  int time = m_total_time;
+  if (m_running) time -= m_time.elapsed();
+  bool positive;
+  int total_secs;
+  int decs = -1;
+
+  if (time > 0 && time < 10000) {
+    int total_decs = static_cast<int>(ceil(time / 100.0));
+    positive = total_decs >= 0;
+    if (!positive) total_decs = -total_decs;
+    decs = total_decs % 10;
+    total_secs = total_decs / 10;
+  }
+  else {
+    total_secs = static_cast<int>(ceil(time / 1000.0));
+    positive = total_secs >= 0;
+    if (!positive) total_secs = -total_secs;
+  }
+
+
+  int secs = total_secs % 60;
+  int mins = total_secs / 60;
+  QString timeText;
+
+  {
+    QString secText = QString::number(secs);
+    if (secText.length() < 2) secText = "0" + secText;
+
+    QString minText = QString::number(mins);
+    if (minText.length() < 2) minText = "0" + minText;
+
+    timeText = minText + ":" + secText;
+    if (!positive)
+      timeText = "-" + timeText;
+
+#if 0
+    if (positive && decs != -1) {
+      int dec = static_cast<int>(ceil(time / 100.0)) % 10;
+
+      m_decs->moveTo(m_time_label->rect().bottomRight() + QPoint(2, 0));
+      m_decs->setText(":" + QString::number(dec));
+      m_decs->show();
+    }
+    else
+      m_decs->hide();
+#endif
+  }
+
+  m_time_label->setText(timeText);
+}
+
+QString Clock::playerString(const Player& player) {
+  QString rating = player.rating != -1 ? QString(" (%1)").arg(player.rating) : QString();
+  return QString("%1").arg(player.name) + rating;
+}
+
+void Clock::setPlayer(const Player& player) {
+  m_player_name->setText(playerString(player));
+}
+
+void Clock::setTime(int t) {
+  m_total_time = t;
+  tick();
+}
+
+void Clock::onMousePress(const QPoint& pos, int button) {
+}
+
+void Clock::resize() {
+  m_height = (int)m_board->tagsLoader()->getNumber("clock_height");
+
+  m_active_pixmap = m_board->tagsLoader()->operator()("clock_active_background");
+  m_inactive_pixmap = m_board->tagsLoader()->operator()("clock_inactive_background");
+
+  m_active_text = m_board->tagsLoader()->getBrush("clock_active_text").color();
+  m_inactive_text = m_board->tagsLoader()->getBrush("clock_inactive_text").color();
+
+  m_background->setPixmap(m_active ? m_active_pixmap : m_inactive_pixmap);
+  m_background->moveTo(m_board->tagsLoader()->getPoint("clock_background_offset"));
+
+  m_time_label->setConstrainRect(m_board->tagsLoader()->getRect("clock_time_rect"));
+  m_time_label->setColor(m_active ? m_active_text : m_inactive_text);
+
+  m_player_name->setConstrainRect(m_board->tagsLoader()->getRect("clock_player_rect"));
+  m_player_name->setColor(m_active ? m_active_text : m_inactive_text);
+
+  m_caption->setConstrainRect(m_board->tagsLoader()->getRect("clock_caption_rect"));
+  m_caption->setColor(m_active ? m_active_text : m_inactive_text);
+}
+
+#if 1-1
 #include <math.h>
 #include <iostream>
 #include <QResizeEvent>
@@ -339,4 +614,4 @@ void Clock::onMousePress(const QPoint& pos, int button) {
   }
 }
 
-
+#endif

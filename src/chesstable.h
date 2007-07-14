@@ -33,7 +33,7 @@ class ChessTable : public KGameCanvasWidget {
   Q_OBJECT
   KGameCanvasTiledPixmap* m_wallpaper;
 
-  Clock*           m_clock;
+  Clock*           m_clocks[2];
   Board*           m_board;
   PiecePool*       m_pools[2];
   MoveList::Table* m_movelist;
@@ -54,7 +54,7 @@ public:
   inline Board*           board() const { return m_board; }
   inline PiecePool*       pool(int index) const { return m_pools[index]; }
   inline MoveList::Table* moveListTable() const { return m_movelist; }
-  inline Clock*           clock() const { return m_clock; }
+  inline Clock*           clock(int index) const { return m_clocks[index]; }
   inline InfoDisplay*     info() const { return m_info; }
 
   void flip(bool);

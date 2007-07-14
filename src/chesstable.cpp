@@ -40,11 +40,12 @@ ChessTable::ChessTable(QWidget* parent)
   // create move list
   m_movelist = new MoveList::Table;
 
-  // create clock
-  m_clock = new Clock(this);
-  m_clock->show();
-  m_clock->activate(0);
-
+  // create clocks
+  for(int i=0;i<2;i++) {
+    m_clocks[i] = new Clock(i, m_board, this);
+    m_clocks[i]->show();
+  }
+  m_clocks[0]->activate(0);
 
   // create info display
   m_info = new InfoDisplay(this);
@@ -61,7 +62,8 @@ ChessTable::ChessTable(QWidget* parent)
 }
 
 ChessTable::~ChessTable() {
-  delete m_clock;
+  for(int i=0;i<2;i++)
+  delete m_clocks[i];
   delete m_movelist;
   delete m_board;
   for(int i=0;i<2;i++)
@@ -71,7 +73,8 @@ ChessTable::~ChessTable() {
 
 void ChessTable::settingsChanged() {
   m_board->settingsChanged();
-  m_clock->settingsChanged();
+  for(int i=0;i<2;i++)
+    m_clocks[i]->settingsChanged();
   m_info->settingsChanged();
   for(int i=0;i<2;i++)
     m_pools[i]->settingsChanged();
@@ -106,8 +109,9 @@ ClickableCanvas* ChessTable::eventItemAt(QPoint pos) {
   if (m_pools[i]->boardRect().contains(pos))
     return m_pools[i];
 
-  if (m_clock->rect().contains(pos))
-    return m_clock;
+  for (int i=0; i<2; i++)
+  if (m_clocks[i]->rect().contains(pos))
+    return m_clocks[i];
 
   return NULL;
 }
@@ -127,25 +131,27 @@ void ChessTable::layout(bool force_reload) {
   }
 
   Point gs = m_board->gridSize();
-  int sq_size = std::max(0, std::min(int(width()/(gs.x+2.2+4.0/3.0)),
-                        int(gs.y == 0 ? 100000 : (height()-80)/(gs.y+6.0/3.0))) );
+  int sq_size = std::max(0, std::min(int(width()/(gs.x+2.6+(2.0/3.0)*3)),
+                        int(gs.y == 0 ? 100000 : height()/(gs.y+4.0/3.0))) );
   int b = sq_size*2/3;
-  m_board->moveTo(b,80+2*b);
+  m_board->moveTo(b,b);
   m_board->onResize( sq_size, force_reload);
 
-  m_clock->moveTo(0, b/2);
-  m_clock->resize(QSize(m_board->rect().width(), 80) /*, force_reload*/);
+  m_clocks[0]->resize();
+  m_clocks[1]->resize();
+  m_clocks[0]->moveTo(sq_size*gs.x+2*b+b/2, b/2);
+  m_clocks[1]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b+b/2-m_clocks[1]->height());
 
   int x = !!m_board->flipped();
   m_pools[x]->m_flipped = false;
   m_pools[x]->setGridWidth(3);
-  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, 80+b+b/2);
+  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, b+m_clocks[0]->height());
   m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
 
   x = !x;
   m_pools[x]->m_flipped = true;
   m_pools[x]->setGridWidth(3);
-  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, 80+sq_size*gs.y+b*2+b/2);
+  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b-m_clocks[1]->height());
   m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
 
   m_info->moveTo(sq_size*gs.x+4*b, 80+sq_size*gs.y/2+b+b/2);
@@ -236,36 +242,53 @@ void ChessTable::flip(bool flipped) {
 }
 
 void ChessTable::changeClock(int color) {
-  if (m_clock->running()) {
-    m_clock->start(color);
+  std::cout << "change " << color << std::endl;
+  if(m_clocks[0]->running() || m_clocks[1]->running())
+  for(int i=0;i<2;i++) {
+    if ( (i == color) != m_clocks[i]->running() )
+    if( i==color )
+      m_clocks[i]->start();
+    else
+      m_clocks[i]->stop();
   }
 }
 
 void ChessTable::updateTurn(int color) {
-  m_clock->activate(color);
+  std::cout << "updatet" << std::endl;
+  for(int i=0;i<2;i++)
+    m_clocks[i]->activate(color == i);
 }
 
 void ChessTable::stopClocks() {
-  m_clock->stop();
+  for(int i=0;i<2;i++)
+    m_clocks[i]->stop();
 }
 
 void ChessTable::updateTime(int white, int black) {
-  m_clock->setTime(0, white);
-  m_clock->setTime(1, black);
+  std::cout << "update" << std::endl;
+  m_clocks[0]->setTime(white);
+  m_clocks[1]->setTime(black);
 }
 
 void ChessTable::resetClock() {
+  std::cout << "reset" << std::endl;
   stopClocks();
   updateTime(0, 0);
-  m_clock->setPlayers(Player(), Player());
+  for(int i=0;i<2;i++)
+    m_clocks[i]->setPlayer(Player());
 }
 
 void ChessTable::setPlayers(const Player& white, const Player& black) {
-  m_clock->setPlayers(white, black);
+  std::cout << "set players " << std::endl;
+  m_clocks[0]->setPlayer(white);
+  m_clocks[1]->setPlayer(black);
 }
 
 void ChessTable::run() {
-  if (!m_clock->running()) m_clock->start(0);
+  std::cout << "run" << std::endl;
+  for(int i=0;i<2;i++)
+  if(m_clocks[i]->active() && !m_clocks[i]->running())
+    m_clocks[i]->start();
 }
 
 void ChessTable::displayMessage(const QString& msg) {
