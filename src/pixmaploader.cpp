@@ -41,6 +41,7 @@ void PixmapLoader::flush() {
     /* unref the size */
     if(m_size)
       m_loader->unrefSize(m_size);
+    m_loader->unrefSize(0);
 
     /* unref the loader, and possibly destroy it */
     if(!--m_loader->m_ref_count) {
@@ -62,6 +63,9 @@ void PixmapLoader::setBasePath(const QString& base) {
 }
 
 void PixmapLoader::setSize(int s) {
+  if(s == m_size)
+    return;
+
   if(m_loader) {
     if(s)
       m_loader->refSize(s);
@@ -76,15 +80,18 @@ void PixmapLoader::initialize() {
     return;
 
   /* try to get a loader */
-  if(s_loaders.count(m_base))
-    m_loader = s_loaders[m_base];
+  ThemeLoadersCache::iterator it = s_loaders.find(m_base);
+  if(it != s_loaders.end())
+    m_loader = it->second;
   else {
     m_loader = new ThemeLoader(m_base);
     s_loaders[m_base] = m_loader;
   }
 
   m_loader->m_ref_count++;
-  m_loader->refSize(m_size);
+  if(m_size)
+    m_loader->refSize(m_size);
+  m_loader->refSize(0);
 }
 
 template<typename T>
@@ -100,9 +107,30 @@ T PixmapLoader::getValue(const QString& id) {
 
 template QPixmap PixmapLoader::getValue<QPixmap>(const QString& /*id*/);
 template Loader::PixmapOrMap PixmapLoader::getValue<Loader::PixmapOrMap>(const QString& /*id*/);
-template Loader::Glyph PixmapLoader::getValue<Loader::Glyph>(const QString& /*id*/);
-template double PixmapLoader::getValue<double>(const QString& /*id*/);
+template Loader::Glyph       PixmapLoader::getValue<Loader::Glyph>(const QString& /*id*/);
+template double  PixmapLoader::getValue<double>(const QString& /*id*/);
 template QPointF PixmapLoader::getValue<QPointF>(const QString& /*id*/);
-template QRectF PixmapLoader::getValue<QRectF>(const QString& /*id*/);
-template QBrush PixmapLoader::getValue<QBrush>(const QString& /*id*/);
-template QColor PixmapLoader::getValue<QColor>(const QString& /*id*/);
+template QRectF  PixmapLoader::getValue<QRectF>(const QString& /*id*/);
+template QBrush  PixmapLoader::getValue<QBrush>(const QString& /*id*/);
+template QColor  PixmapLoader::getValue<QColor>(const QString& /*id*/);
+
+
+template<typename T>
+T PixmapLoader::getStaticValue(const QString& id) {
+  if(m_base.isEmpty())
+    return T();
+
+  if(!m_loader)
+    initialize();
+
+  return m_loader->getValue<T>(id, 0);
+}
+
+template QPixmap PixmapLoader::getStaticValue<QPixmap>(const QString& /*id*/);
+template Loader::PixmapOrMap PixmapLoader::getStaticValue<Loader::PixmapOrMap>(const QString& /*id*/);
+template Loader::Glyph       PixmapLoader::getStaticValue<Loader::Glyph>(const QString& /*id*/);
+template double  PixmapLoader::getStaticValue<double>(const QString& /*id*/);
+template QPointF PixmapLoader::getStaticValue<QPointF>(const QString& /*id*/);
+template QRectF  PixmapLoader::getStaticValue<QRectF>(const QString& /*id*/);
+template QBrush  PixmapLoader::getStaticValue<QBrush>(const QString& /*id*/);
+template QColor  PixmapLoader::getStaticValue<QColor>(const QString& /*id*/);

@@ -76,6 +76,10 @@ public:
   /** returns a value */
   template<typename T>
   T getValue(const QString& id);
+
+  /** returns a static value (not depending on the size) */
+  template<typename T>
+  T getStaticValue(const QString& id);
 };
 
 #endif // PIXMAPLOADER_H
