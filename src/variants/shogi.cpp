@@ -13,7 +13,7 @@
 #include "xchess/piece.h"
 #include "xchess/move.h"
 #include "moveserializer.impl.h"
-#include "xchess/animator.impl.h"
+#include "xchess/dropanimator.impl.h"
 #include "crazyhouse_p.h"
 #include "kboard_wrapped.h"
 
@@ -170,7 +170,11 @@ QString ShogiPiece::typeSymbol(ShogiPiece::Type t) {
 // ------------------------------
 
 class ShogiMove {
-  ShogiPiece m_dropped;
+  ShogiPiece m_drop;
+  
+  int m_pool;
+  int m_pool_index;
+  
   bool m_promote;
   template<typename T> friend class MoveSerializer;
 public:
@@ -179,29 +183,38 @@ public:
 
   ShogiMove();
   ShogiMove(const Point& from, const Point& to, bool promote);
-  ShogiMove(const ShogiPiece& piece, const Point& to);
+  ShogiMove(int pool, int pool_index, const Point& to);
 
   QString toString(int) const;
 
   bool operator==(const ShogiMove& other) const;
 
-  const ShogiPiece& dropped() const { return m_dropped; }
+  const ShogiPiece& drop() const { return m_drop; }
+  void setDrop(const ShogiPiece& piece) { m_drop = piece; }
+  int pool() const { return m_pool; }
+  int poolIndex() const { return m_pool_index; }
+  
   bool promote() const { return m_promote; }
   bool valid() const { return to.valid(); }
 };
 
 ShogiMove::ShogiMove()
-: m_promote(true)
+: m_pool(-1)
+, m_pool_index(-1)
+, m_promote(true)
 , from(Point::invalid())
 , to(Point::invalid()) { }
 
 ShogiMove::ShogiMove(const Point& from, const Point& to, bool promote)
-: m_promote(promote)
+: m_pool(-1)
+, m_pool_index(-1)
+, m_promote(promote)
 , from(from)
 , to(to) { }
 
-ShogiMove::ShogiMove(const ShogiPiece& piece, const Point& to)
-: m_dropped(piece)
+ShogiMove::ShogiMove(int pool, int pool_index, const Point& to)
+: m_pool(pool)
+, m_pool_index(pool_index)
 , m_promote(false)
 , from(Point::invalid())
 , to(to) { }
@@ -211,8 +224,8 @@ QString ShogiMove::toString(int) const {
 }
 
 bool ShogiMove::operator==(const ShogiMove& other) const {
-  if (m_dropped)
-    return m_dropped == other.m_dropped
+  if (m_drop)
+    return m_drop == other.m_drop
         && to == other.to;
   else
     return m_promote == other.m_promote
@@ -250,8 +263,8 @@ public:
   bool testMove(Move&) const;
   bool pseudolegal(Move& m) const;
 
-  Pool& pool() { return m_pool; }
-  const Pool& pool() const { return m_pool; }
+  PoolReference pool(int);
+  PoolConstReference pool(int) const;
   
   PlayerPool& rawPool(Piece::Color color) { return m_pool[color]; }
   const PlayerPool& rawPool(Piece::Color color) const { return const_cast<Pool&>(m_pool)[color]; }
@@ -422,13 +435,23 @@ void ShogiPosition::set(const Point& p, const ShogiPiece& piece) {
   }
 }
 
+ShogiPosition::PoolReference ShogiPosition::pool(int index) {
+  ShogiPiece::Color color = static_cast<ShogiPiece::Color>(index);
+  return PoolReference(&m_pool[color], color);
+}
+
+ShogiPosition::PoolConstReference ShogiPosition::pool(int index) const {
+  ShogiPiece::Color color = static_cast<ShogiPiece::Color>(index);
+  return PoolConstReference(&m_pool.find(color)->second, color);
+}
+
 bool ShogiPosition::operator==(const ShogiPosition& p) const {
   return m_turn == p.m_turn
       && m_board == p.m_board;
 }
 
 boost::shared_ptr<ShogiPiece> ShogiPosition::moveHint(const ShogiMove& m) const {
-  if (m.dropped()) return boost::shared_ptr<ShogiPiece>(new ShogiPiece(m.dropped()));
+  if (m.drop()) return boost::shared_ptr<ShogiPiece>(new ShogiPiece(m.drop()));
   else return boost::shared_ptr<ShogiPiece>();
 }
 
@@ -519,7 +542,11 @@ bool ShogiPosition::stuckPiece(const ShogiPiece& piece, const Point& p) {
 }
 
 bool ShogiPosition::pseudolegal(Move& m) const {
-  if (ShogiPiece dropped = m.dropped()) {
+  if (!m.drop() && m.pool() != -1 && m.poolIndex() != -1) {
+    m.setDrop(pool(m.pool()).get(m.poolIndex()));
+  }
+
+  if (ShogiPiece dropped = m.drop()) {
     if (m_board[m.to]) return false;
     if (stuckPiece(dropped, m.to)) return false;
     if (dropped.type() == Piece::PAWN) {
@@ -536,7 +563,7 @@ bool ShogiPosition::pseudolegal(Move& m) const {
 }
 
 void ShogiPosition::move(const ShogiMove& m) {
-  if (Piece dropped = m.dropped()) {
+  if (Piece dropped = m.drop()) {
     m_board[m.to] = dropped;
     if (!--rawPool(dropped.color())[dropped.type()])
       rawPool(dropped.color()).erase(dropped.type());
@@ -561,7 +588,7 @@ void ShogiPosition::move(const ShogiMove& m) {
   switchTurn();
 }
 
-class ShogiAnimator;
+class ShogiAnimatorBase;
 
 class ShogiVariantInfo {
 public:
@@ -574,7 +601,7 @@ public:
   typedef ShogiPosition Position;
   typedef Position::Move Move;
   typedef Position::Piece Piece;
-  typedef ShogiAnimator Animator;
+  typedef DropAnimatorMixin<ShogiAnimatorBase> Animator;
   typedef NoPool Pool;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
@@ -600,11 +627,14 @@ VariantInfo* ShogiVariant::info() {
   return static_shogi_variant;
 }
 
-class ShogiAnimator : public BaseAnimator<ShogiVariantInfo> {
+class ShogiAnimatorBase : public BaseAnimator<ShogiVariantInfo> {
+public:
+  typedef ShogiVariantInfo Variant;
+protected:
   typedef BaseAnimator<ShogiVariantInfo> Base;
   typedef Base::API API;
 public:
-  ShogiAnimator(API cinterface)
+  ShogiAnimatorBase(API cinterface)
   : Base(cinterface) { }
 };
 
@@ -613,9 +643,9 @@ class MoveSerializer<ShogiPosition> {
   const ShogiMove&     m_move;
   const ShogiPosition& m_ref;
   bool isAmbiguous() const {
-    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    ShogiPiece p = m_move.drop() ? m_move.drop() : m_ref.m_board[m_move.from];
     bool ambiguous = false;
-    if (!m_move.m_dropped)
+    if (!m_move.drop())
     for (Point i = m_ref.m_board.first(); i <= m_ref.m_board.last(); i = m_ref.m_board.next(i) ) {
       if (i==m_move.from || m_ref.m_board[i] != p)
         continue;
@@ -632,7 +662,7 @@ public:
     : m_move(m), m_ref(r) { }
 
   QString SAN() const {
-    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    ShogiPiece p = m_move.drop() ? m_move.drop() : m_ref.m_board[m_move.from];
     bool ambiguous = isAmbiguous();
     QString retv;
     if (p.promoted())
@@ -642,7 +672,7 @@ public:
       retv += QString::number(9-m_move.from.x);
       retv += QString(m_move.from.y+'a');
     }
-    if (m_move.m_dropped)
+    if (m_move.drop())
       retv += "*";
     else if (m_ref.m_board[m_move.to])
       retv += "x";
@@ -650,7 +680,7 @@ public:
       retv += "-";
     retv += QString::number(9-m_move.to.x);
     retv += QString(m_move.to.y+'a');
-    if (!p.promoted() && !m_move.dropped() &&
+    if (!p.promoted() && !m_move.drop() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
       if (m_move.m_promote)
         retv += "+";
@@ -661,7 +691,7 @@ public:
   }
 
   DecoratedMove toDecoratedMove() const {
-    ShogiPiece p = m_move.dropped() ? m_move.dropped() : m_ref.m_board[m_move.from];
+    ShogiPiece p = m_move.drop() ? m_move.drop() : m_ref.m_board[m_move.from];
     bool ambiguous = isAmbiguous();
     DecoratedMove retv;
     if(p.type() == ShogiPiece::KING)
@@ -673,7 +703,7 @@ public:
       retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
     }
     QString mmm;
-    if (m_move.m_dropped)
+    if (m_move.drop())
       mmm += "*";
     else if (m_ref.m_board[m_move.to])
       mmm += "x";
@@ -682,7 +712,7 @@ public:
     mmm += QString::number(9-m_move.to.x);
     retv += MovePart(mmm);
     retv += MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine);
-    if (!p.promoted() && !m_move.dropped() &&
+    if (!p.promoted() && !m_move.drop() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
       if (m_move.m_promote)
         retv += MovePart("+");
@@ -700,10 +730,7 @@ struct MoveFactory<ShogiVariantInfo> {
     return ShogiMove(move.from, move.to, move.promotionType >= 0);
   }
   static ShogiMove createDropMove(const DropUserMove& move) {
-    ShogiPiece dropped(
-      static_cast<ShogiPiece::Color>(move.m_pool),
-      static_cast<ShogiPiece::Type>(move.m_piece_index));
-    return ShogiMove(dropped, move.m_to);
+    return ShogiMove(move.m_pool, move.m_piece_index, move.m_to);
   }
 
   static NormalUserMove toNormal(const ShogiMove& move) {
