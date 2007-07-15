@@ -15,7 +15,7 @@ class QWidget;
 
 class Flash {
 public:
-  static void flash(QWidget*);
+  static void flash(QWidget*) { }
 };
 
 #endif // FLASH_H
