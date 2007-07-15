@@ -8,17 +8,20 @@
   (at your option) any later version.
 */
 
+#ifndef XCHESS__ANIMATOR_IMPL_H
+#define XCHESS__ANIMATOR_IMPL_H
+
 #include "animator.h"
 #include "animationfactory.h"
 
 template <typename Variant>
 AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
-  const ChessPosition* current = m_cinterface->position();
+  const Position* current = m_cinterface->position();
   AnimationFactory res(m_cinterface->inner());
   
   for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
-    ChessPiece c = current->get(i);
-    ChessPiece f = final.get(i);
+    Piece c = current->get(i);
+    Piece f = final.get(i);
   
     if( !c && f ) {
       //current->set(i, f);
@@ -36,6 +39,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
     }
   }
   
+  updatePool(final);
   return res;
 }
 
@@ -105,6 +109,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const Position& final, const 
     res.addPreAnimation(Animate::move(rook, rookDestination));
   }
 
+  updatePool(final);
   return res;
 }
 
@@ -166,52 +171,15 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const Position& final, const Mov
   }
   
   res.addPreAnimation(*movement(piece, move.to, move.from));
+  updatePool(final);
   
   return res;
 
 }
 
 template <typename Variant>
-void SimpleAnimator<Variant>::updatePool(const Position& final) {
-  final.dump();
+void SimpleAnimator<Variant>::updatePool(const Position&) { }
 
-  for(int color = 0; color < 2; color++) {
-    typename Piece::Color c = static_cast<typename Piece::Color>(color);
-    const typename Position::PlayerPool& before = m_cinterface->position()->rawPool().find(c)->second;
-    const typename Position::PlayerPool& after = final.rawPool().find(c)->second;
-    typename Position::PlayerPool::const_iterator before_it = before.begin();
-    typename Position::PlayerPool::const_iterator after_it = after.begin();
+#endif // XCHESS__ANIMATOR_IMPL_H
 
-    int pos = 0;
-
-    // oh, a nice bunch of write-only magic shit
-    while(before_it != before.end() || after_it != after.end()) {
-      if(after_it == after.end() || (before_it != before.end()
-              && before_it->first < after_it->first )) {
-        for(int i=0;i<before_it->second;i++)
-          m_cinterface->takePoolSprite(color, pos);
-        ++before_it;
-      }
-      else if (before_it == before.end() || (after_it != after.end()
-              && after_it->first < before_it->first )) {
-        for(int i=0;i<after_it->second;i++)
-          m_cinterface->insertPoolPiece(color, pos, Piece(c, after_it->first) );
-        pos += after_it->second;
-        ++after_it;
-      }
-      else {
-        Q_ASSERT(after_it->first == before_it->first);
-        if(before_it->second < after_it->second)
-        for(int i=0;i<after_it->second - before_it->second;i++)
-          m_cinterface->insertPoolPiece(color, pos, Piece(c, after_it->first) );
-        else if(before_it->second > after_it->second)
-        for(int i=0;i<before_it->second - after_it->second;i++)
-          m_cinterface->takePoolSprite(color, pos);
-        pos += after_it->second;
-        ++after_it;
-        ++before_it;
-      }
-    }
-  }
-}
 

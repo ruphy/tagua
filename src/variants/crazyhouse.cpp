@@ -11,6 +11,7 @@
 #include "crazyhouse_p.h"
 #include "crazyhouse.h"
 #include "kboard_wrapped.h"
+#include "xchess/dropanimator.impl.h"
 #include "animation.h"
 #include "animationfactory.h"
 #include "moveserializer.impl.h"
@@ -22,7 +23,8 @@ public:
   typedef Position::Piece Piece;
   typedef Position::PoolReference Pool;
 
-  typedef class CrazyhouseAnimator Animator;
+  typedef DropAnimator<CrazyhouseVariantInfo> Animator;
+  
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }
