@@ -26,7 +26,7 @@ set(kboard_SRC
   variants/xchess/piece.cpp
   variants/chess.cpp
   variants/crazyhouse.cpp
-  
+
   animationfactory.cpp
   movelist.cpp
   infodisplay.cpp
@@ -94,6 +94,7 @@ kde4_add_ui_files(kboard_SRC
   ui/pref_movelist.ui
   ui/quickconnect.ui
   ui/pref_theme.ui
+  ui/pref_theme_page.ui
   ui/pref_board.ui
 )
 

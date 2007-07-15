@@ -5,27 +5,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>439</height>
+    <width>448</width>
+    <height>458</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Form</string>
-  </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
    <property name="spacing" >
     <number>6</number>
    </property>
+   <property name="leftMargin" >
+    <number>9</number>
+   </property>
+   <property name="topMargin" >
+    <number>9</number>
+   </property>
+   <property name="rightMargin" >
+    <number>9</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>9</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="label_1" >
@@ -43,78 +58,12 @@
     </layout>
    </item>
    <item>
-    <widget class="QTabWidget" name="tabWidget" >
-     <property name="currentIndex" >
-      <number>1</number>
-     </property>
-     <widget class="QWidget" name="tab" >
-      <attribute name="title" >
-       <string>&amp;Pieces</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QCheckBox" name="checkPieces" />
-       </item>
-       <item>
-        <widget class="QListWidget" name="listPieces" />
-       </item>
-       <item>
-        <widget class="QWidget" native="1" name="widgetPieces" />
-       </item>
-       <item>
-        <widget class="QLabel" name="labelPieces" >
-         <property name="text" >
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="tab_2" >
-      <attribute name="title" >
-       <string>&amp;Squares</string>
-      </attribute>
-      <layout class="QVBoxLayout" >
-       <property name="margin" >
-        <number>9</number>
-       </property>
-       <property name="spacing" >
-        <number>6</number>
-       </property>
-       <item>
-        <widget class="QCheckBox" name="checkSquares" />
-       </item>
-       <item>
-        <widget class="QListWidget" name="listSquares" />
-       </item>
-       <item>
-        <widget class="QWidget" native="1" name="widgetSquares" />
-       </item>
-       <item>
-        <widget class="QLabel" name="labelSquares" >
-         <property name="text" >
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </widget>
+    <widget class="QTabWidget" name="tabWidget" />
    </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>comboVariant</tabstop>
-  <tabstop>checkPieces</tabstop>
-  <tabstop>listPieces</tabstop>
-  <tabstop>checkSquares</tabstop>
-  <tabstop>listSquares</tabstop>
  </tabstops>
  <resources/>
  <connections/>

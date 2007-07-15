@@ -129,30 +129,29 @@ PrefTheme::PrefTheme(QWidget *parent)
 : QWidget(parent) {
   setupUi(this);
 
-  m_categories["pieces"].m_list   = listPieces;
-  m_categories["pieces"].m_widget = widgetPieces;
-  m_categories["pieces"].m_label  = labelPieces;
-  m_categories["pieces"].m_check  = checkPieces;
+  Category *c;
 
-  m_categories["squares"].m_list   = listSquares;
-  m_categories["squares"].m_widget = widgetSquares;
-  m_categories["squares"].m_label  = labelSquares;
-  m_categories["squares"].m_check  = checkSquares;
+  c = new Category(NULL, this);
+  m_categories["pieces"] = c;
+  tabWidget->addTab(c, "&Pieces");
+
+  c = new Category(NULL, this);
+  m_categories["squares"] = c;
+  tabWidget->addTab(c, "&Squares");
 
   MasterSettings s(".kboard_config_cache");
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
-    Category& c = cit->second;
+    Category* c = cit->second;
 
-    c.m_parent = this;
-    c.m_list->setSelectionMode(QAbstractItemView::SingleSelection);
-    connect(c.m_list, SIGNAL(itemSelectionChanged()), &c, SLOT(themeChanged()));
-    connect(c.m_check, SIGNAL(toggled(bool)), &c, SLOT(themeChecked(bool)));
-    c.m_opt_layout = new QHBoxLayout(c.m_widget);
-    c.m_opt_layout->setMargin(0);
+    c->m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+    connect(c->m_list, SIGNAL(itemSelectionChanged()), c, SLOT(themeChanged()));
+    connect(c->m_check, SIGNAL(toggled(bool)), c, SLOT(themeChecked(bool)));
+    c->m_opt_layout = new QHBoxLayout(c->m_widget);
+    c->m_opt_layout->setMargin(0);
 
-    c.m_themes = to_theme_info_list(
+    c->m_themes = to_theme_info_list(
       KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.lua", KStandardDirs::Recursive),
       s.group(cit->first)
     );
@@ -173,15 +172,15 @@ void PrefTheme::apply() {
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
-    Category& c = cit->second;
+    Category* c = cit->second;
 
-    for(std::map<QString, QString>::iterator it = c.m_new_themes.begin();
-                                              it != c.m_new_themes.end(); ++it) {
+    for(std::map<QString, QString>::iterator it = c->m_new_themes.begin();
+                                              it != c->m_new_themes.end(); ++it) {
       Settings var = variants.insert(it->first);
       var[cit->first+"-theme"] = it->second;
     }
-    for(std::map<QString, bool>::iterator it = c.m_new_use_def.begin();
-                                              it != c.m_new_use_def.end(); ++it) {
+    for(std::map<QString, bool>::iterator it = c->m_new_use_def.begin();
+                                              it != c->m_new_use_def.end(); ++it) {
       Settings var = variants.insert(it->first);
       var[cit->first+"-use-def"] = it->second;
     }
@@ -196,19 +195,21 @@ void PrefTheme::apply() {
 }
 
 void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
-                                    QString variant, QString settings) {
+                                    QString variant, QString settings_theme) {
   list->clear();
 
   int selected = 0;
   QListWidgetItem *prev_sel = 0;
 
   for(int i=0;i<themes.size();i++) {
-    bool ok1 = themes[i].variants.contains(variant, Qt::CaseInsensitive);
-    bool ok2 = themes[i].variants.contains(variant+"[default]", Qt::CaseInsensitive);
-    if(!ok1 && !ok2)
+    int ok = 0;
+    ok = themes[i].variants.contains("any", Qt::CaseInsensitive) ? 1 : ok;
+    ok = themes[i].variants.contains("any[default]", Qt::CaseInsensitive) ? 2 : ok;
+    ok = themes[i].variants.contains(variant, Qt::CaseInsensitive) ? 3 : ok;
+    ok = themes[i].variants.contains(variant+"[default]", Qt::CaseInsensitive) ? 4 : ok;
+    if(!ok)
       continue;
-
-    int ok = themes[i].file_name == settings ? 3 : ok2 ? 2 : 1;
+    ok = (themes[i].file_name == settings_theme) ? 5 : ok;
     QListWidgetItem *w = new QListWidgetItem(themes[i].name, list);
 
     w->setData(Qt::UserRole, i);
@@ -227,13 +228,13 @@ void PrefTheme::variantChanged() {
   VariantInfo *vi = Variant::variant(c);
   if(!vi) {
     for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
-      Category& c = cit->second;
+      Category* c = cit->second;
 
-      c.m_check->hide();
-      c.m_list->clear();
-      c.m_list->setEnabled(false);
-      c.m_label->setText(QString());
-      c.m_label->setEnabled(false);
+      c->m_check->hide();
+      c->m_list->clear();
+      c->m_list->setEnabled(false);
+      c->m_label->setText(QString());
+      c->m_label->setEnabled(false);
     }
 
     return;
@@ -246,63 +247,26 @@ void PrefTheme::variantChanged() {
   bool ck = vname != vproxy;
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
-    Category& c = cit->second;
+    Category* c = cit->second;
 
-    c.m_check->setVisible(ck);
+    c->m_check->setVisible(ck);
     if(ck) {
-      bool d = c.m_new_use_def.count(vname) ? c.m_new_use_def[vname]
+      bool d = c->m_new_use_def.count(vname) ? c->m_new_use_def[vname]
                                 : (var[cit->first+"-use-def"] | true).value();
-      c.m_check->setText("Same as "+vproxy);
-      c.m_check->setChecked(d);
-      c.m_list->setEnabled(!d);
-      c.m_label->setEnabled(!d);
+      c->m_check->setText("Same as "+vproxy);
+      c->m_check->setChecked(d);
+      c->m_list->setEnabled(!d);
+      c->m_label->setEnabled(!d);
     }
     else {
-      c.m_list->setEnabled(true);
-      c.m_label->setEnabled(true);
+      c->m_list->setEnabled(true);
+      c->m_label->setEnabled(true);
     }
 
-    QString th = c.m_new_themes.count(vname) ? c.m_new_themes[vname]
+    QString th = c->m_new_themes.count(vname) ? c->m_new_themes[vname]
                                 : (var[cit->first+"-theme"] | QString()).value();
-    update_list_view(c.m_list, c.m_themes, vproxy, th);
+    update_list_view(c->m_list, c->m_themes, vproxy, th);
   }
-}
-
-void PrefThemeCategory::themeChanged() {
-  QList<QListWidgetItem *> l = m_list->selectedItems();
-  if(!l.isEmpty()) {
-    int i = l[0]->data(Qt::UserRole).toInt();
-    if(i>=0 && i<m_themes.size()) {
-      m_label->setText(m_themes[i].description);
-
-      QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-      VariantInfo *vi = Variant::variant(c);
-      if(vi)
-        m_new_themes[vi->name()] = m_themes[i].file_name;
-
-      if(m_opt_widget) {
-        delete m_opt_widget;
-        m_opt_widget = NULL;
-      }
-      OptList ol = m_parent->get_file_options(m_themes[i].file_name);
-      if(ol.size() != 0) {
-        m_opt_widget = new OptionWidget(ol, m_widget);
-        m_opt_layout->addWidget(m_opt_widget);
-      }
-      return;
-    }
-  }
-  m_label->setText(QString());
-}
-
-void PrefThemeCategory::themeChecked(bool ck) {
-  m_list->setEnabled(!ck);
-  m_label->setEnabled(!ck);
-
-  QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-  VariantInfo *vi = Variant::variant(c);
-  if(vi)
-    m_new_use_def[vi->name()] = ck;
 }
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
@@ -328,12 +292,14 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
   int best = 0;
   QString retv;
   for(int i=0;i<themes.size();i++) {
-    bool ok1 = themes[i].variants.contains(v, Qt::CaseInsensitive);
-    bool ok2 = themes[i].variants.contains(v+"[default]", Qt::CaseInsensitive);
-    if(!ok1 && !ok2)
+    int ok = 0;
+    ok = themes[i].variants.contains("any", Qt::CaseInsensitive) ? 1 : ok;
+    ok = themes[i].variants.contains("any[default]", Qt::CaseInsensitive) ? 2 : ok;
+    ok = themes[i].variants.contains(v, Qt::CaseInsensitive) ? 3 : ok;
+    ok = themes[i].variants.contains(v+"[default]", Qt::CaseInsensitive) ? 4 : ok;
+    if(!ok)
       continue;
 
-    int ok = ok2 ? 2 : 1;
     if(ok > best) {
       retv = themes[i].file_name;
       best = ok;
@@ -343,5 +309,62 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
   if (!retv.isEmpty())
     var[tag] = retv;
   return retv;
+}
+
+PrefThemeCategory::PrefThemeCategory(QWidget* parent, PrefTheme* owner)
+  : QWidget(parent)
+  , m_parent(owner)
+  , m_opt_layout(NULL)
+  , m_opt_widget(NULL) {
+  setupUi(this);
+  m_reset = new QAction(KIcon("eraser"), "&Reset to default", this);
+  m_reset->setShortcut(Qt::CTRL+Qt::Key_Z);
+  connect(m_reset, SIGNAL(triggered()), this, SLOT(reset()));
+  m_resetButton->setDefaultAction(m_reset);
+  m_resetButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+}
+
+void PrefThemeCategory::reset() {
+
+}
+
+void PrefThemeCategory::themeChanged() {
+  QList<QListWidgetItem *> l = m_list->selectedItems();
+  if(!l.isEmpty()) {
+    int i = l[0]->data(Qt::UserRole).toInt();
+    if(i>=0 && i<m_themes.size()) {
+      m_label->setText(m_themes[i].description);
+
+      QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
+      VariantInfo *vi = Variant::variant(c);
+      if(vi)
+        m_new_themes[vi->name()] = m_themes[i].file_name;
+
+      if(m_opt_widget) {
+        delete m_opt_widget;
+        m_opt_widget = NULL;
+      }
+      OptList ol = m_parent->get_file_options(m_themes[i].file_name);
+      if(ol.size() != 0) {
+        m_opt_widget = new OptionWidget(ol, m_widget);
+        m_opt_layout->addWidget(m_opt_widget);
+        m_reset->setEnabled(true);
+      }
+      else
+        m_reset->setEnabled(false);
+      return;
+    }
+  }
+  m_label->setText(QString());
+}
+
+void PrefThemeCategory::themeChecked(bool ck) {
+  m_list->setEnabled(!ck);
+  m_label->setEnabled(!ck);
+
+  QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
+  VariantInfo *vi = Variant::variant(c);
+  if(vi)
+    m_new_use_def[vi->name()] = ck;
 }
 

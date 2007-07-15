@@ -18,10 +18,11 @@
 #include <QDir>
 #include "option.h"
 #include "ui_pref_theme.h"
+#include "ui_pref_theme_page.h"
 
 class VariantInfo;
 class Settings;
-
+class QAction;
 
 class PrefTheme : public QWidget
                 , private Ui::PrefTheme {
@@ -48,7 +49,7 @@ Q_OBJECT
   };
 
   typedef QList<ThemeInfo> ThemeInfoList;
-  typedef std::map<QString, class PrefThemeCategory> CategoryMap;
+  typedef std::map<QString, Category*> CategoryMap;
 
   std::map<QString, boost::shared_ptr<OptList> > m_new_theme_options;
   CategoryMap m_categories;
@@ -78,11 +79,13 @@ public:
 };
 
 
-class PrefThemeCategory : public QObject {
+class PrefThemeCategory : public QWidget
+                        , private Ui::PrefThemePage {
 Q_OBJECT
 
 public:
   friend class PrefTheme;
+  QAction*   m_reset;
   PrefTheme* m_parent;
   QString    m_id;
   PrefTheme::ThemeInfoList m_themes;
@@ -92,32 +95,10 @@ public:
   QLayout *m_opt_layout;
   QWidget *m_opt_widget;
 
-  QListWidget *m_list;
-  QWidget *m_widget;
-  QLabel *m_label;
-  QCheckBox *m_check;
-
-  PrefThemeCategory()
-    : QObject()
-    , m_parent(NULL)
-    , m_opt_layout(NULL)
-    , m_opt_widget(NULL) {
-  }
-  PrefThemeCategory(const PrefThemeCategory& k)
-    : QObject()
-    , m_parent(k.m_parent)
-    , m_themes(k.m_themes)
-    , m_new_themes(k.m_new_themes)
-    , m_new_use_def(k.m_new_use_def)
-    , m_opt_layout(k.m_opt_layout)
-    , m_opt_widget(k.m_opt_widget)
-    , m_list(k.m_list)
-    , m_widget(k.m_widget)
-    , m_label(k.m_label)
-    , m_check(k.m_check) {
-  }
+  PrefThemeCategory(QWidget* parent, PrefTheme* owner);
 
 public slots:
+  void reset();
   void themeChanged();
   void themeChecked(bool ck);
 };
