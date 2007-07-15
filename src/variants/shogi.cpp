@@ -271,6 +271,15 @@ public:
   Piece::Color previousTurn() const { return Piece::oppositeColor(m_turn); }
   void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
 
+  InteractionType movable(const Point& p) const {
+    if(!valid(p) || !m_board[p])
+      return NoAction;
+    return m_board[p].color() == m_turn ? Moving : Premoving;
+  }
+  InteractionType droppable(int p) const {
+    ShogiPiece::Color c = static_cast<ShogiPiece::Color>(p);
+    return c == m_turn ? Moving : Premoving;
+  }
   void move(const ShogiMove& m);
 
   void fromFEN(const QString&, bool& ok) { ok = false; }
@@ -591,17 +600,12 @@ VariantInfo* ShogiVariant::info() {
   return static_shogi_variant;
 }
 
-class ShogiAnimator {
-  typedef UnwrappedGraphicalPosition<ShogiVariantInfo>::Ptr API;
-  
-  API m_api;
+class ShogiAnimator : public BaseAnimator<ShogiVariantInfo> {
+  typedef BaseAnimator<ShogiVariantInfo> Base;
+  typedef Base::API API;
 public:
-  ShogiAnimator(API api)
-  : m_api(api) { }
-  
-  AnimationGroupPtr warp(const ShogiPosition& final) {
-  
-  }
+  ShogiAnimator(API cinterface)
+  : Base(cinterface) { }
 };
 
 template <>

@@ -27,6 +27,7 @@ set(kboard_SRC
   
   variants/chess.cpp
   variants/crazyhouse.cpp
+  variants/shogi.cpp
   
   animationfactory.cpp
   movelist.cpp
