@@ -2,16 +2,16 @@ import("../../pieces/common.lua")
 
 
 theme.options = OptList {
-  BoolOpt("wallpaper", "Draw wallpaper", true, OptList {
+  BoolOpt("wallpaper", "Draw wallpaper", false, OptList {
       BoolOpt("blur", "Enable blur", false),
-      UrlOpt("file", "File:", "Wallpapers/dragonballz.jpg")
+      UrlOpt("file", "File:", "")
   })
 }
 
 local border_ratio = 0.67
-local clock_ratio = 2.6
-local clock_height_ratio = 0.4
-local clock_border_ratio = 0.33
+local clock_ratio = 2.8
+local clock_height_ratio = 0.6
+local clock_border_ratio = 0.16
 local pool_width = 3
 local pool_piece_ratio = clock_ratio/pool_width
 
@@ -46,21 +46,15 @@ theme.layout = function(args)
 end
 
 
-function addShadow(i, size)
-  local s = i:create_shadow( size, "#ffffff", Point(0, 0), Point(0, 0) )
-  s:draw_image(Rect(0, 0, i.width, i.height), i)
-  return s
-end
-
 theme.border = function(b, args)
-  local rb = math.floor(b*2/3);
+  b = b*0.7
   local w = args.width;
   local h = args.height;
-  local tr = Image(b, b);  tr:clear(); tr:draw_svg(Rect(0,b-rb,rb,rb), "border_corner.svg"); tr = addShadow(tr, b/3)
+  local tr = Image(b, b);  tr:clear(); tr:draw_svg(Rect(0,0,b,b), "border_corner.svg");
   local tl = Image(b, b);  tl:set_paint_over(false); tl:rotate(270); tl:translate(0,b); tl:draw_image(Rect(0,0,b,b), tr)
   local bl = Image(b, b);  bl:set_paint_over(false); bl:rotate(180); bl:translate(b,b); bl:draw_image(Rect(0,0,b,b), tr)
   local br = Image(b, b);  br:set_paint_over(false); br:rotate(90); br:translate(b,0); br:draw_image(Rect(0,0,b,b), tr)
-  local t = Image(w, b);  t:clear(); t:draw_svg(Rect(0,b-rb,w,rb), "border_top.svg"); t = addShadow(t, b/6)
+  local t = Image(w, b);  t:clear(); t:draw_svg(Rect(0,0,w,b), "border_top.svg");
   local bt = Image(w, b); bt:set_paint_over(false); bt:rotate(180); bt:translate(w,b); bt:draw_image(Rect(0,0,w,b), t)
   local l = Image(b, h);  l:set_paint_over(false); l:rotate(270); l:translate(0,h); l:draw_image(Rect(0,0,h,b), t)
   local r = Image(b, h);  r:set_paint_over(false); r:rotate(90); r:translate(b,0); r:draw_image(Rect(0,0,h,b), t)
@@ -94,9 +88,7 @@ function create_clock(file, col)
     local i = Image(w,h)
     i:clear()
     i:draw_svg(Rect(0,0,w,h), file)
-    local s = i:create_shadow( w/16, col, Point(math.floor(w/7), math.floor(w/7)), Point(0, 0) )
-    s:draw_image(Rect(math.floor(w/14), math.floor(w/14), i.width, i.height), i)
-    return s
+    return i
   end
 end
 
@@ -108,12 +100,11 @@ theme.clock_active_text = function(size)
 end
 
 theme.clock_inactive_text = function(size)
-  return Brush("#808080")
+  return Brush("#a0a0a0")
 end
 
 theme.clock_background_offset = function(w)
-  local d = math.floor(w/14)
-  return Point(-d, -d)
+  return Point()
 end
 
 theme.clock_height = function(w)
@@ -122,19 +113,19 @@ end
 
 theme.clock_caption_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.02, h*0.22, w*0.4, h*0.38)
+  return Rect(0, h*0.04, w, h*0.2)
 end
 
 theme.clock_time_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.4, h*0.08, w*0.58, h*0.66)
+  return Rect(0, h*0.23, w, h*0.6)
 end
 
 theme.clock_player_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.14, h*0.68, w*0.69, h*0.28)
+  return Rect(0, h*0.78, w, h*0.21)
 end
 
-theme.name = "Cool"
-theme.description = "Cool controls"
+theme.name = "Google"
+theme.description = "Google-like controls"
 theme.variants = { "any" }
