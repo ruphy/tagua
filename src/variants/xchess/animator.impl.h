@@ -58,9 +58,8 @@ AnimationGroupPtr BaseAnimator<Variant>::back(const Position& final, const Move&
 template <typename Variant>
 AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
   AnimationFactory res(m_cinterface->inner());
-  res.setGroup(Base::warp(final));
   
-  updatePool(final);
+  res.setGroup(Base::warp(final));
   
   return res;
 }
@@ -131,7 +130,6 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const Position& final, const 
     res.addPreAnimation(Animate::move(rook, rookDestination));
   }
 
-  updatePool(final);
   return res;
 }
 
@@ -193,14 +191,10 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const Position& final, const Mov
   }
   
   res.addPreAnimation(*movement(piece, move.to, move.from));
-  updatePool(final);
   
   return res;
 
 }
-
-template <typename Variant>
-void SimpleAnimator<Variant>::updatePool(const Position&) { }
 
 #endif // XCHESS__ANIMATOR_IMPL_H
 

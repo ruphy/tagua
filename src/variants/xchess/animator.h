@@ -16,6 +16,7 @@
 
 class NamedSprite;
 class Point;
+class AnimationFactory;
 
 /**
   * A generic animator. 
@@ -52,7 +53,6 @@ protected:
   using Base::m_cinterface;
   
   virtual SchemePtr movement(const NamedSprite& sprite, const Point& from, const Point& to);
-  virtual void updatePool(const Position& final);
 public:
   SimpleAnimator(API cinterface)
   : Base(cinterface) { }
