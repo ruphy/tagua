@@ -57,21 +57,8 @@ PositionInfo::PositionRow::PositionRow(VariantInfo* variant, const QString& str)
   row.resize(str.length());
   for (int i = 0; i < str.length(); ++i) {
     QChar c = str[i];
-    int color;
-    int type;
-
-    if (c.category() == QChar::Letter_Uppercase)
-      color = WHITE;
-    else if (c.category() == QChar::Letter_Lowercase)
-      color = BLACK;
-    else {
-      row[i] = AbstractPiece::Ptr();
-      continue;
-    }
-
-    //BROKEN
-    //type = variant->type(c);
-    //row[i] = variant->createPiece(color, type);
+    
+    row[i] = variant->createPiece(c);
   }
 }
 
