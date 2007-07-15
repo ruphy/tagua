@@ -110,8 +110,8 @@ CrazyhousePosition* CrazyhousePosition::clone() const {
 }
 
 CrazyhousePiece::Color CrazyhousePosition::moveTurn(const Move& move) const {
-  if (move.m_drop.valid() )
-    return move.m_drop.color();
+  if (move.drop())
+    return move.drop().color();
   else
     return Base::moveTurn(move);
 }
@@ -143,21 +143,21 @@ const CrazyhousePosition::PlayerPool& CrazyhousePosition::rawPool(Piece::Color c
 
 bool CrazyhousePosition::pseudolegal(Move& move) const {
 
-  if(!move.m_drop.valid() && move.m_pool != -1 && move.m_pool_index != -1) {
-    move.m_drop = pool(move.m_pool).get(move.m_pool_index);
+  if (!move.drop() && move.pool() != -1 && move.poolIndex() != -1) {
+    move.setDrop(pool(move.pool()).get(move.poolIndex()));
     dump();
-    std::cout << move.m_drop << " " << move.m_pool << " " << move.m_pool_index << " " <<
-       pool(move.m_pool).size() << std::endl;
+    std::cout << move.drop() << " " << move.pool() << " " << move.poolIndex() << " " <<
+       pool(move.pool()).size() << std::endl;
   }
 
-  if (move.m_drop.valid()) {
+  if (move.drop()) {
     Q_ASSERT(valid(move.to));
 
     // cannot drop on occupied squares
     if (m_board[move.to]) return false;
 
     // cannot drop pawns in first or eighth rank
-    if (move.m_drop.type() == PAWN &&
+    if (move.drop().type() == PAWN &&
         (move.to.y == 0 || move.to.y == 7))
       return false;
 
@@ -170,13 +170,13 @@ bool CrazyhousePosition::pseudolegal(Move& move) const {
 
 void CrazyhousePosition::move(const Move& move) {
   // drop
-  if (move.m_drop.valid()) {
-    Q_ASSERT(m_pool[move.m_drop.color()].count(move.m_drop.type()));
+  if (move.drop()) {
+    Q_ASSERT(m_pool[move.drop().color()].count(move.drop().type()));
     Q_ASSERT(!m_board[move.to]);
 
-    basicDropPiece(new Piece(move.m_drop), move.to);
-    if(!--m_pool[move.m_drop.color()][move.m_drop.type()])
-      m_pool[move.m_drop.color()].erase(move.m_drop.type());
+    basicDropPiece(new Piece(move.drop()), move.to);
+    if(!--m_pool[move.drop().color()][move.drop().type()])
+      m_pool[move.drop().color()].erase(move.drop().type());
   }
   else {
     // normal move

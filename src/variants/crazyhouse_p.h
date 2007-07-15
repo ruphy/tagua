@@ -35,11 +35,10 @@ public:
 };
 
 class CrazyhouseMove : public ChessMove {
-public:
   CrazyhousePiece m_drop;
   int m_pool;
   int m_pool_index;
-
+public:
   CrazyhouseMove(const ChessMove& move);
   CrazyhouseMove(const Point& from, const Point& to, PieceType promotionType = INVALID_TYPE);
   CrazyhouseMove(const CrazyhousePiece& p, const Point& to);
@@ -54,6 +53,11 @@ public:
   static CrazyhouseMove createDropMove(int pool, int m_pool_index, const Point& to) {
     return CrazyhouseMove(pool, m_pool_index, to);
   }
+  
+  CrazyhousePiece drop() const { return m_drop; }
+  void setDrop(const CrazyhousePiece& piece) { m_drop = piece; }
+  int pool() const { return m_pool; }
+  int poolIndex() const { return m_pool_index; }
 };
 
 class CrazyhousePosition : public Position<CrazyhouseMove, CrazyhousePiece, Grid<CrazyhousePiece> > {
@@ -90,9 +94,9 @@ public:
   static Move getVerboseMove(Color turn, const VerboseNotation& m) {
     Move retv = ChessPosition::getVerboseMove(turn, m);
     if(retv.from == Point::invalid())
-      retv.m_drop = CrazyhousePiece(turn, static_cast<ChessPiece::Type>(m.type) );
+      retv.setDrop(CrazyhousePiece(turn, static_cast<ChessPiece::Type>(m.type)));
     else
-      retv.m_drop = CrazyhousePiece(INVALID_COLOR, INVALID_TYPE);
+      retv.setDrop(CrazyhousePiece(INVALID_COLOR, INVALID_TYPE));
     return retv;
   }
 
@@ -152,10 +156,10 @@ public:
   : MoveSerializerBase<Position>(move, ref) { }
 
   QString SAN() const {
-    if (m_move.m_drop.valid()) {
+    if (m_move.drop()) {
 
       return QString("%1@%2")
-              .arg(CrazyhousePiece::typeSymbol(m_move.m_drop.type()))
+              .arg(CrazyhousePiece::typeSymbol(m_move.drop().type()))
               .arg(m_move.to.toString(m_ref.size().y)) + checkSuffix();
     }
     else

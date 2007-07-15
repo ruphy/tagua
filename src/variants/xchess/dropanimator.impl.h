@@ -64,18 +64,17 @@ template <typename Base>
 AnimationGroupPtr DropAnimatorMixin<Base>::forward(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
   
-  if(move.m_drop) {
+  if(move.drop()) {
     std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
     if(dropped.first != -1 && dropped.second != -1
-        && const_cast<CrazyhousePosition*>(m_cinterface->position())
-            ->pool(dropped.first).get(dropped.second) == move.m_drop) {
+        && m_cinterface->position()->pool(dropped.first).get(dropped.second) == move.drop()) {
       NamedSprite drop = m_cinterface->takePoolSprite(dropped.first, dropped.second);
       m_cinterface->setSprite(move.to, drop);
       res.addPreAnimation(Animate::move(drop, move.to));
       return res;
     }
     else {
-      NamedSprite drop = m_cinterface->setPiece(move.to, move.m_drop, false);
+      NamedSprite drop = m_cinterface->setPiece(move.to, move.drop(), false);
       res.addPreAnimation(Animate::appear(drop));
     }
   }
@@ -91,7 +90,7 @@ template <typename Base>
 AnimationGroupPtr DropAnimatorMixin<Base>::back(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
   
-  if(move.m_drop) {
+  if(move.drop()) {
     NamedSprite drop = m_cinterface->takeSprite(move.to);
     res.addPostAnimation(Animate::destroy(drop));
     
