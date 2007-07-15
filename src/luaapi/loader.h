@@ -63,7 +63,7 @@ public:
   lua_State* state() const { return m_state; }
   bool runFile(const QString& file, bool set_dir = true);
 
-  template<typename T> T getValue(const QString& key, int size = 0);
+  template<typename T> T getValue(const QString& key, int size = 0, bool allow_nil = false);
 
   bool error(){ return m_error; }
   void clearError(){ m_error = false; }

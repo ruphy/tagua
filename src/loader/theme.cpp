@@ -53,9 +53,8 @@ Theme::~Theme() {
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
-  OptList ol = m_lua_loader.getValue<OptList>("options");
+  OptList ol = m_lua_loader.getValue<OptList>("options", 0, true);
   if(m_lua_loader.error()) {
-    ERROR(m_lua_loader.errorString());
     m_lua_loader.clearError();
     return;
   }

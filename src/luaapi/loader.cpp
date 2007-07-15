@@ -119,18 +119,20 @@ template<typename T>
 struct Loader::create_value_data {
   const QString& key;
   int size;
+  bool allow_nil;
   T out;
-  create_value_data(const QString& _key, int _size)
+  create_value_data(const QString& _key, int _size, bool _allow_nil)
     : key(_key)
-    , size(_size) {
+    , size(_size)
+    , allow_nil(_allow_nil) {
   }
 };
 
 template<typename T>
-T Loader::getValue(const QString& key, int size) {
+T Loader::getValue(const QString& key, int size, bool allow_nil) {
   StackCheck s(m_state);
 
-  create_value_data<T> data(key, size);
+  create_value_data<T> data(key, size, allow_nil);
   if(lua_cpcall(m_state, create_value_func<T>, &data) != 0) {
     m_error = true;
     m_error_string = QString(lua_tostring(m_state, -1))+"\nsearched key was: "+key;
@@ -140,17 +142,17 @@ T Loader::getValue(const QString& key, int size) {
   return data.out;
 }
 
-template ::Loader::Glyph Loader::getValue< ::Loader::Glyph>(const QString& /*id*/, int /*size*/);
-template OptList Loader::getValue<OptList>(const QString& /*id*/, int /*size*/);
-template QString Loader::getValue<QString>(const QString& /*id*/, int /*size*/);
-template QStringList Loader::getValue<QStringList>(const QString& /*id*/, int /*size*/);
-template QImage Loader::getValue<QImage>(const QString& /*id*/, int /*size*/);
-template ImageOrMap Loader::getValue<ImageOrMap>(const QString& /*id*/, int /*size*/);
-template double Loader::getValue<double>(const QString& /*id*/, int /*size*/);
-template QPointF Loader::getValue<QPointF>(const QString& /*id*/, int /*size*/);
-template QRectF Loader::getValue<QRectF>(const QString& /*id*/, int /*size*/);
-template QBrush Loader::getValue<QBrush>(const QString& /*id*/, int /*size*/);
-template QColor Loader::getValue<QColor>(const QString& /*id*/, int /*size*/);
+template ::Loader::Glyph Loader::getValue< ::Loader::Glyph>(const QString&, int, bool);
+template OptList Loader::getValue<OptList>(const QString&, int, bool);
+template QString Loader::getValue<QString>(const QString&, int, bool);
+template QStringList Loader::getValue<QStringList>(const QString&, int, bool);
+template QImage Loader::getValue<QImage>(const QString&, int, bool);
+template ImageOrMap Loader::getValue<ImageOrMap>(const QString&, int, bool);
+template double Loader::getValue<double>(const QString&, int, bool);
+template QPointF Loader::getValue<QPointF>(const QString&, int, bool);
+template QRectF Loader::getValue<QRectF>(const QString&, int, bool);
+template QBrush Loader::getValue<QBrush>(const QString&, int, bool);
+template QColor Loader::getValue<QColor>(const QString&, int, bool);
 
 template<typename T>
 void Loader::retrieve(create_value_data<T>* d, lua_State *l, int pos) {
@@ -224,18 +226,24 @@ int Loader::create_value_func(lua_State *l) {
   lua_remove(l, -2);
 
   /* If it is a function call it, or else try to retrieve directly the value */
-  if(lua_isfunction(l, -1)) {
-    if(data->size) {
-      lua_pushnumber(l, data->size);
-      lua_call(l, 1, 1);
+  if(lua_isnil(l, -1)) {
+    if(!data->allow_nil)
+      luaL_error(l, "No such entry: %s", data->key.toAscii().constData());
+  }
+  else {
+    if(lua_isfunction(l, -1)) {
+      if(data->size) {
+        lua_pushnumber(l, data->size);
+        lua_call(l, 1, 1);
+      }
+      else
+        lua_call(l, 0, 1);
     }
-    else
-      lua_call(l, 0, 1);
+
+    retrieve<T>(data, l, -1);
   }
 
-  retrieve<T>(data, l, -1);
   lua_pop(l, 1);
-
   return 0;
 }
 
