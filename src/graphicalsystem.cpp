@@ -317,7 +317,9 @@ void GraphicalSystem::warp(const AbstractMove::Ptr& lastMove,
 
   AnimationPtr animation = m_animator->warp(pos);
   //??? animation->setChainAbortions(false);
-  m_board->enqueue(animation);
+  if (animation) {
+    m_board->enqueue(animation);
+  }
 
   m_pos->copyFrom(pos);
 

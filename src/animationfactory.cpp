@@ -14,6 +14,10 @@ AnimationGroupPtr AnimationFactory::group() const {
   return m_group;
 }
 
+void AnimationFactory::setGroup(const AnimationGroupPtr& group) {
+  m_group = group;
+}
+
 void AnimationFactory::addPreAnimation(const Animate::Scheme& scheme, Animate::AnimationType type) {
   m_group->addPreAnimation(m_api->animate(scheme, type));
 }

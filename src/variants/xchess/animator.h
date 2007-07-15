@@ -22,21 +22,40 @@ class Point;
   * Can be used as a base class for other specialized animators.
   */
 template <typename Variant>
-class SimpleAnimator {
+class BaseAnimator {
 protected:
   typedef typename UnwrappedGraphicalAPIPtr<Variant>::type API;
   typedef typename Variant::Position Position;
   typedef typename Variant::Move Move;
   typedef typename Variant::Piece Piece;
   API m_cinterface;
+public:
+  BaseAnimator(API cinterface)
+    : m_cinterface(cinterface) { }
+  virtual ~BaseAnimator() { }
+
+  virtual AnimationGroupPtr warp(const Position& final);
+  virtual AnimationGroupPtr forward(const Position& final, const Move& move);
+  virtual AnimationGroupPtr back(const Position& final, const Move& move);
+};
+  
+  
+template <typename Variant>
+class SimpleAnimator : BaseAnimator<Variant> {
+  typedef BaseAnimator<Variant> Base;
+protected:
+  typedef typename Base::API API;
+  typedef typename Base::Position Position;
+  typedef typename Base::Move Move;
+  typedef typename Base::Piece Piece;
+  
+  using Base::m_cinterface;
   
   virtual SchemePtr movement(const NamedSprite& sprite, const Point& from, const Point& to);
   virtual void updatePool(const Position& final);
 public:
   SimpleAnimator(API cinterface)
-    : m_cinterface(cinterface) {
-  }
-  virtual ~SimpleAnimator() { }
+  : Base(cinterface) { }
 
   virtual AnimationGroupPtr warp(const Position& final);
   virtual AnimationGroupPtr forward(const Position& final, const Move& move);

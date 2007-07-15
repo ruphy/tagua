@@ -67,6 +67,9 @@ public:
   /** \return The wrapped animation group. */
   AnimationGroupPtr group() const;
   
+  /** Change the wrapped animation group. */
+  void setGroup(const AnimationGroupPtr& group);
+  
   /**
     * Add a pre-animation to the group.
     * \param scheme The scheme producing the animation to be added.

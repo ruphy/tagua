@@ -13,9 +13,11 @@
 
 #include "animator.h"
 #include "animationfactory.h"
+#include "namedsprite.h"
+
 
 template <typename Variant>
-AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
+AnimationGroupPtr BaseAnimator<Variant>::warp(const Position& final) {
   const Position* current = m_cinterface->position();
   AnimationFactory res(m_cinterface->inner());
   
@@ -39,7 +41,27 @@ AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
     }
   }
   
+  return res;
+}
+
+template <typename Variant>
+AnimationGroupPtr BaseAnimator<Variant>::forward(const Position& final, const Move&) {
+  return warp(final);
+}
+
+
+template <typename Variant>
+AnimationGroupPtr BaseAnimator<Variant>::back(const Position& final, const Move&) {
+  return warp(final);
+}
+
+template <typename Variant>
+AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
+  AnimationFactory res(m_cinterface->inner());
+  res.setGroup(Base::warp(final));
+  
   updatePool(final);
+  
   return res;
 }
 
