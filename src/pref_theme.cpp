@@ -104,8 +104,8 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   return retv;
 }
 
-OptList PrefTheme::get_file_options(const QString& f, bool reset_settings) {
-  if(!reset_settings)
+OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
+  if(!reload_defaults)
   if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
     return *o;
 
@@ -118,13 +118,13 @@ OptList PrefTheme::get_file_options(const QString& f, bool reset_settings) {
     l.clearError();
   }
 
-  if(!reset_settings) {
+  if(!reload_defaults) {
     SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(f);
     options_list_load_from_settings(*o, entry.group("options"));
-  }
 
-  m_new_theme_options[f] = o;
+    m_new_theme_options[f] = o;
+  }
   return *o;
 }
 

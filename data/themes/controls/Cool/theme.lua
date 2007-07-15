@@ -1,6 +1,12 @@
 import("../../pieces/common.lua")
 
 
+theme.options = OptList {
+  BoolOpt("wallpaper", "Draw wallpaper", true, OptList {
+      BoolOpt("blur", "Enable blur", true),
+      StringOpt("file", "File:", "Wallpapers/dragonballz.jpg")
+  })
+}
 
 local border_ratio = 0.67
 local clock_ratio = 2.6
@@ -71,18 +77,19 @@ theme.border = function(b, args)
 end
 
 theme.wallpaper = function()
-  local i
-  --i = Image("Wallpapers/autumn.jpg", false)
-  --i = Image("Wallpapers/winter.jpg", false)
-  i = Image("Wallpapers/dragonballz.jpg", false)
-  --i = Image("Wallpapers/Bled (nastja).jpg", false)
-  i:exp_blur(5);
-  return i
+  if(theme.options.wallpaper.value) then
+    local i = Image(theme.options.wallpaper.sub_options.file.value, false)
+    if(theme.options.wallpaper.sub_options.blur.value) then
+      i:exp_blur(5);
+    end
+    return i
+  else
+    return Image()
+  end
 end
 
 function create_clock(file, col)
   return function(w)
-    print("clock ",w)
     local h = math.floor(w*clock_height_ratio)
     local i = Image(w,h)
     i:clear()
