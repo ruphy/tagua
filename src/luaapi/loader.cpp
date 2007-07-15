@@ -171,14 +171,15 @@ template<>
 void Loader::retrieve<QStringList>(create_value_data<QStringList>* d, lua_State *l, int pos) {
   if(lua_isstring(l, pos))
     d->out << QString(lua_tostring(l, -1));
-  else { //if(lua_istable(m_state, pos)) DON'T CHECK, FAIL! (EXCEPTION WILL BE TRAPPED)
+  else if(lua_istable(l, pos)) {
     lua_pushnil(l);
-    while (lua_next(l, pos-1) != 0) {
-      //if(lua_isstring(m_state, -1))
+    while (lua_next(l, pos<0 ? pos-1 : pos) != 0) {
       d->out << QString(lua_tostring(l, -1));
       lua_pop(l, 1);
     }
   }
+  else
+    luaL_error(l, "Can't convert to a QStringList (not string nor table)");
 }
 
 template<>
@@ -191,22 +192,25 @@ template<>
 void Loader::retrieve<ImageOrMap>(create_value_data<ImageOrMap>* d, lua_State *l, int pos) {
   if(::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, pos))
      d->out = img->m_image;
-  else {
-    ImageMap m;
+  else if(lua_istable(l, pos)) {
+
+    //collect the images in this way to avoid leaking memory if Wrapper::retrieve raises an exception
+    d->out = ImageMap();
+    ImageMap& out = boost::get<ImageMap>(d->out);
 
     lua_pushnil(l);
-    while (lua_next(l, pos-1) != 0) {
+    while (lua_next(l, pos<0 ? pos-1 : pos) != 0) {
       QRectF *rect = Wrapper<QRectF>::retrieve(l, -2, AssertOk);
       ::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
 
       QRect r = rect->toRect();
-      m[rect->toRect()] = img->m_image;
+      out[rect->toRect()] = img->m_image;
 
       lua_pop(l, 1);
     }
-
-    d->out = m;
   }
+  else
+    luaL_error(l, "Can't convert to a ImageOrMap (not image nor table)");
 }
 
 template<typename T>
