@@ -577,7 +577,7 @@ void ShogiPosition::move(const ShogiMove& m) {
     m_board[m.from] = Piece();
   }
 
-  if (promotionZone(m_turn, m.to) | promotionZone(m_turn, m.from)) {
+  if (promotionZone(m_turn, m.to) || promotionZone(m_turn, m.from)) {
     if (m.promote() || stuckPiece(m_board[m.to], m.to)) {
       Piece::Type type = m_board[m.to].type();
       if (type != ShogiPiece::KING && type != ShogiPiece::GOLD)
@@ -636,6 +636,69 @@ protected:
 public:
   ShogiAnimatorBase(API cinterface)
   : Base(cinterface) { }
+  
+  virtual AnimationGroupPtr forward(const ShogiPosition& final, const ShogiMove& move) {
+    AnimationFactory res(m_cinterface->inner());
+  
+    NamedSprite piece = m_cinterface->takeSprite(move.from);
+    NamedSprite captured = m_cinterface->takeSprite(move.to);
+    m_cinterface->setSprite(move.to, piece);
+  
+    if (piece)
+      res.addPreAnimation(Animate::move(piece, move.to));
+  
+    if (captured)
+      res.addPostAnimation(Animate::destroy(captured));
+  
+    if (final.get(move.to) != m_cinterface->position()->get(move.from)) {
+      Piece promoted = final.get(move.to);
+  
+      if (promoted) {
+        QPoint real = m_cinterface->converter()->toReal(move.to);
+        NamedSprite old_sprite = m_cinterface->getSprite(move.to);
+        NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false);
+  
+        res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
+      }
+    }
+  
+    return res;
+  }
+  
+  virtual AnimationGroupPtr back(const ShogiPosition& final, const ShogiMove& move) {
+    AnimationFactory res(m_cinterface->inner());
+  
+    NamedSprite piece = m_cinterface->takeSprite(move.to);
+    NamedSprite captured;
+    if (Piece captured_piece = final.get(move.to)) {
+      captured = m_cinterface->setPiece(move.to, captured_piece, false);
+      res.addPreAnimation(Animate::appear(captured));
+    }
+  
+    if (!piece) {
+      piece = m_cinterface->createPiece(move.to, final.get(move.from), false);
+      res.addPreAnimation(Animate::appear(piece));
+    }
+  
+    m_cinterface->setSprite(move.from, piece);
+  
+    if (final.get(move.from) != m_cinterface->position()->get(move.to)) {
+      Piece old_piece = final.get(move.from);
+      if (old_piece) {
+        NamedSprite old = m_cinterface->createPiece(move.to, old_piece, false);
+        res.addPreAnimation(Animate::morph(piece, old));
+  
+        // replace piece with pawn
+        m_cinterface->setSprite(move.from, old);
+        piece = old;
+      }
+    }
+        
+    res.addPreAnimation(Animate::move(piece, move.from));
+    
+    return res;
+
+  }
 };
 
 template <>
