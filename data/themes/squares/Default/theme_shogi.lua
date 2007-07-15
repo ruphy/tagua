@@ -1,4 +1,4 @@
-import("../../Pieces/common.lua")
+import("../../pieces/common.lua")
 
 theme.options = OptList {
     ColorOpt("square", "Square color", "#EBD6A0"),

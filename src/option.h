@@ -43,6 +43,8 @@ typedef boost::shared_ptr<SelectOpt> SelectOptPtr;
 typedef boost::shared_ptr<UrlOpt> UrlOptPtr;
 typedef QList<OptPtr> OptList;
 typedef QList<BoolOptPtr> BoolOptList;
+typedef boost::shared_ptr<OptList> OptListPtr;
+typedef boost::shared_ptr<BoolOptList> BoolOptListPtr;
 
 template<typename O>
 QList<boost::shared_ptr<O> > options_list_duplicate(const QList<boost::shared_ptr<O> >& o) {

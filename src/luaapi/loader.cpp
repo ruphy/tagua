@@ -261,7 +261,7 @@ int Loader::import_func(lua_State *l) {
 
   if(!api->runFile(file, false))
     luaL_error(l, "Error importing \"%s\":\n%s", file.toAscii().constData(),
-                                            wrap_cptr(lua_tostring(l, -1)));
+                                          api->errorString().toAscii().constData() );
   return 0;
 }
 

@@ -8,7 +8,6 @@
   (at your option) any later version.
 */
 
-#include <QDateTime>
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
@@ -20,22 +19,6 @@
 #include "kboard.h"
 #include "pref_theme.h"
 
-class PrefTheme::ThemeInfo {
-public:
-  QString file_name;
-  QString name;
-  QString description;
-  QStringList variants;
-  QDateTime last_modified;
-
-  ThemeInfo(const QString& f, const QString& n,
-                const QString& d, const QStringList& v, const QDateTime& t)
-  : file_name(f)
-  , name(n)
-  , description(d)
-  , variants(v)
-  , last_modified(t) {}
-};
 
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
   std::map<QString, ThemeInfo> cache;
@@ -87,8 +70,7 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
         if(l.error())
           goto fail;
 
-        ThemeInfo t(files[i], name, l.getValue<QString>("description"),
-                                    l.getValue<QStringList>("variants"), lm);
+        ThemeInfo t(files[i], name, description, variants, lm);
         retv << t;
         allluafiles << t;
         continue;
@@ -144,31 +126,37 @@ OptList PrefTheme::get_file_options(const QString& f) {
 }
 
 PrefTheme::PrefTheme(QWidget *parent)
-: QWidget(parent)
-, m_pieces_opt_widget(NULL)
-, m_squares_opt_widget(NULL) {
+: QWidget(parent) {
   setupUi(this);
-  listPieces->setSelectionMode(QAbstractItemView::SingleSelection);
-  listSquares->setSelectionMode(QAbstractItemView::SingleSelection);
-  connect(listPieces, SIGNAL(itemSelectionChanged()), this, SLOT(piecesThemeChanged()));
-  connect(listSquares, SIGNAL(itemSelectionChanged()), this, SLOT(squaresThemeChanged()));
-  connect(checkPieces, SIGNAL(toggled(bool)), this, SLOT(piecesThemeChecked(bool)));
-  connect(checkSquares, SIGNAL(toggled(bool)), this, SLOT(squaresThemeChecked(bool)));
-  connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
-  m_pieces_opt_layout = new QHBoxLayout(widgetPieces);
-  m_pieces_opt_layout->setMargin(0);
-  m_squares_opt_layout = new QHBoxLayout(widgetSquares);
-  m_squares_opt_layout->setMargin(0);
+
+  m_categories["pieces"].m_list   = listPieces;
+  m_categories["pieces"].m_widget = widgetPieces;
+  m_categories["pieces"].m_label  = labelPieces;
+  m_categories["pieces"].m_check  = checkPieces;
+
+  m_categories["squares"].m_list   = listSquares;
+  m_categories["squares"].m_widget = widgetSquares;
+  m_categories["squares"].m_label  = labelSquares;
+  m_categories["squares"].m_check  = checkSquares;
 
   MasterSettings s(".kboard_config_cache");
+  connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
-  KStandardDirs* dirs = KGlobal::dirs();
-  m_pieces_themes = to_theme_info_list(
-    dirs->findAllResources("appdata", "themes/Pieces/*.lua", KStandardDirs::Recursive),
-    s.group("pieces"));
-  m_squares_themes = to_theme_info_list(
-    dirs->findAllResources("appdata", "themes/Squares/*.lua", KStandardDirs::Recursive),
-    s.group("squares"));
+  for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
+    Category& c = cit->second;
+
+    c.m_parent = this;
+    c.m_list->setSelectionMode(QAbstractItemView::SingleSelection);
+    connect(c.m_list, SIGNAL(itemSelectionChanged()), &c, SLOT(themeChanged()));
+    connect(c.m_check, SIGNAL(toggled(bool)), &c, SLOT(themeChecked(bool)));
+    c.m_opt_layout = new QHBoxLayout(c.m_widget);
+    c.m_opt_layout->setMargin(0);
+
+    c.m_themes = to_theme_info_list(
+      KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.lua", KStandardDirs::Recursive),
+      s.group(cit->first)
+    );
+  }
 
   const Variant::Variants& all = Variant::allVariants();
   for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)
@@ -184,25 +172,19 @@ PrefTheme::~PrefTheme() {
 void PrefTheme::apply() {
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
 
-  for(std::map<QString, QString>::iterator it = m_new_piece_themes.begin();
-                                            it != m_new_piece_themes.end(); ++it) {
-    Settings var = variants.insert(it->first);
-    var["pieces-theme"] = it->second;
-  }
-  for(std::map<QString, bool>::iterator it = m_new_use_def_pieces.begin();
-                                            it != m_new_use_def_pieces.end(); ++it) {
-    Settings var = variants.insert(it->first);
-    var["use-def-pieces"] = it->second;
-  }
-  for(std::map<QString, QString>::iterator it = m_new_square_themes.begin();
-                                            it != m_new_square_themes.end(); ++it) {
-    Settings var = variants.insert(it->first);
-    var["squares-theme"] = it->second;
-  }
-  for(std::map<QString, bool>::iterator it = m_new_use_def_squares.begin();
-                                            it != m_new_use_def_squares.end(); ++it) {
-    Settings var = variants.insert(it->first);
-    var["use-def-squares"] = it->second;
+  for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
+    Category& c = cit->second;
+
+    for(std::map<QString, QString>::iterator it = c.m_new_themes.begin();
+                                              it != c.m_new_themes.end(); ++it) {
+      Settings var = variants.insert(it->first);
+      var[cit->first+"-theme"] = it->second;
+    }
+    for(std::map<QString, bool>::iterator it = c.m_new_use_def.begin();
+                                              it != c.m_new_use_def.end(); ++it) {
+      Settings var = variants.insert(it->first);
+      var[cit->first+"-use-def"] = it->second;
+    }
   }
 
   for(std::map<QString, boost::shared_ptr<OptList> >::iterator it = m_new_theme_options.begin();
@@ -244,16 +226,16 @@ void PrefTheme::variantChanged() {
   QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
   VariantInfo *vi = Variant::variant(c);
   if(!vi) {
-    checkPieces->hide();
-    listPieces->clear();
-    listPieces->setEnabled(false);
-    labelPieces->setText(QString());
-    labelPieces->setEnabled(false);
-    checkSquares->hide();
-    listSquares->clear();
-    listSquares->setEnabled(false);
-    labelSquares->setText(QString());
-    labelSquares->setEnabled(false);
+    for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
+      Category& c = cit->second;
+
+      c.m_check->hide();
+      c.m_list->clear();
+      c.m_list->setEnabled(false);
+      c.m_label->setText(QString());
+      c.m_label->setEnabled(false);
+    }
+
     return;
   }
 
@@ -261,120 +243,73 @@ void PrefTheme::variantChanged() {
   QString vproxy = vi->themeProxy();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(vname);
-
   bool ck = vname != vproxy;
-  checkSquares->setVisible(ck);
-  checkPieces->setVisible(ck);
-  if(ck) {
-    bool dp = m_new_use_def_pieces.count(vname) ? m_new_use_def_pieces[vname]
-                 : (var["use-def-pieces"] | true).value();
-    bool ds = m_new_use_def_squares.count(vname) ? m_new_use_def_squares[vname]
-                 : (var["use-def-squares"] | true).value();
-    checkPieces->setText("Same as "+vproxy);
-    checkPieces->setChecked(dp);
-    listPieces->setEnabled(!dp);
-    labelPieces->setEnabled(!dp);
-    checkSquares->setText("Same as "+vproxy);
-    checkSquares->setChecked(ds);
-    listSquares->setEnabled(!ds);
-    labelSquares->setEnabled(!ds);
-  }
-  else {
-    listPieces->setEnabled(true);
-    labelPieces->setEnabled(true);
-    listSquares->setEnabled(true);
-    labelSquares->setEnabled(true);
-  }
 
-  QString pth = m_new_piece_themes.count(vname) ? m_new_piece_themes[vname]
-          : (var["pieces-theme"] | QString()).value();
-  QString sth = m_new_square_themes.count(vname) ? m_new_square_themes[vname]
-          : (var["squares-theme"] | QString()).value();
-  update_list_view(listPieces, m_pieces_themes, vproxy, pth);
-  update_list_view(listSquares, m_squares_themes, vproxy, sth);
+  for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
+    Category& c = cit->second;
+
+    c.m_check->setVisible(ck);
+    if(ck) {
+      bool d = c.m_new_use_def.count(vname) ? c.m_new_use_def[vname]
+                                : (var[cit->first+"-use-def"] | true).value();
+      c.m_check->setText("Same as "+vproxy);
+      c.m_check->setChecked(d);
+      c.m_list->setEnabled(!d);
+      c.m_label->setEnabled(!d);
+    }
+    else {
+      c.m_list->setEnabled(true);
+      c.m_label->setEnabled(true);
+    }
+
+    QString th = c.m_new_themes.count(vname) ? c.m_new_themes[vname]
+                                : (var[cit->first+"-theme"] | QString()).value();
+    update_list_view(c.m_list, c.m_themes, vproxy, th);
+  }
 }
 
-void PrefTheme::piecesThemeChanged() {
-  QList<QListWidgetItem *> l = listPieces->selectedItems();
+void PrefThemeCategory::themeChanged() {
+  QList<QListWidgetItem *> l = m_list->selectedItems();
   if(!l.isEmpty()) {
     int i = l[0]->data(Qt::UserRole).toInt();
-    if(i>=0 && i<m_pieces_themes.size()) {
-      labelPieces->setText(m_pieces_themes[i].description);
+    if(i>=0 && i<m_themes.size()) {
+      m_label->setText(m_themes[i].description);
 
-      QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
+      QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
       VariantInfo *vi = Variant::variant(c);
       if(vi)
-        m_new_piece_themes[vi->name()] = m_pieces_themes[i].file_name;
+        m_new_themes[vi->name()] = m_themes[i].file_name;
 
-      if(m_pieces_opt_widget) {
-        delete m_pieces_opt_widget;
-        m_pieces_opt_widget = NULL;
+      if(m_opt_widget) {
+        delete m_opt_widget;
+        m_opt_widget = NULL;
       }
-      OptList ol = get_file_options(m_pieces_themes[i].file_name);
+      OptList ol = m_parent->get_file_options(m_themes[i].file_name);
       if(ol.size() != 0) {
-        m_pieces_opt_widget = new OptionWidget(ol, widgetPieces);
-        m_pieces_opt_layout->addWidget(m_pieces_opt_widget);
+        m_opt_widget = new OptionWidget(ol, m_widget);
+        m_opt_layout->addWidget(m_opt_widget);
       }
       return;
     }
   }
-  labelPieces->setText(QString());
+  m_label->setText(QString());
 }
 
-void PrefTheme::piecesThemeChecked(bool ck) {
-  listPieces->setEnabled(!ck);
-  labelPieces->setEnabled(!ck);
+void PrefThemeCategory::themeChecked(bool ck) {
+  m_list->setEnabled(!ck);
+  m_label->setEnabled(!ck);
 
-  QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
+  QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
   VariantInfo *vi = Variant::variant(c);
   if(vi)
-    m_new_use_def_pieces[vi->name()] = ck;
-}
-
-void PrefTheme::squaresThemeChanged() {
-  QList<QListWidgetItem *> l = listSquares->selectedItems();
-  if(!l.isEmpty()) {
-    int i = l[0]->data(Qt::UserRole).toInt();
-    if(i>=0 && i<m_squares_themes.size()) {
-      labelSquares->setText(m_squares_themes[i].description);
-
-      QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
-      VariantInfo *vi = Variant::variant(c);
-      if(vi)
-        m_new_square_themes[vi->name()] = m_squares_themes[i].file_name;
-
-      if(m_squares_opt_widget) {
-        delete m_squares_opt_widget;
-        m_squares_opt_widget = NULL;
-      }
-      OptList ol = get_file_options(m_squares_themes[i].file_name);
-      if(ol.size() != 0) {
-        m_squares_opt_widget = new OptionWidget(ol, widgetSquares);
-        m_squares_opt_layout->addWidget(m_squares_opt_widget);
-      }
-      return;
-    }
-  }
-  labelSquares->setText(QString());
-}
-
-void PrefTheme::squaresThemeChecked(bool ck) {
-  listSquares->setEnabled(!ck);
-  labelSquares->setEnabled(!ck);
-
-    QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
-    VariantInfo *vi = Variant::variant(c);
-  if(vi)
-    m_new_use_def_squares[vi->name()] = ck;
+    m_new_use_def[vi->name()] = ck;
 }
 
 QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
-  QString group = type == Pieces ? "pieces" :
+  QString category = type == Pieces ? "pieces" :
                   type == Squares ? "squares" : "figurines";
-  QString pattern = type == Pieces ? "themes/Pieces/*.lua" :
-                  type == Squares ? "themes/Squares/*.lua" : "themes/Figurines/*.lua";
-  QString tag = group + "-theme";
-  QString deftag = "use-def-" + group;
+  QString tag = category + "-theme";
+  QString deftag = category + "-use-def";
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(v);
@@ -387,7 +322,8 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
 
   MasterSettings s(".kboard_config_cache.xml");
   KStandardDirs* dirs = KGlobal::dirs();
-  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", pattern, KStandardDirs::Recursive), s.group(group));
+  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", "themes/"+category+"/*.lua",
+                                                  KStandardDirs::Recursive), s.group(category));
 
   int best = 0;
   QString retv;

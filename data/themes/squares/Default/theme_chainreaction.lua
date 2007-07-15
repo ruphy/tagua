@@ -1,4 +1,4 @@
-import("../../Pieces/common.lua")
+import("../../pieces/common.lua")
 
 theme.background = function(size)
   local i = Image(size,size)

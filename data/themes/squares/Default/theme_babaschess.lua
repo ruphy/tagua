@@ -1,4 +1,4 @@
-import("../../Pieces/common.lua")
+import("../../pieces/common.lua")
 
 theme.background = function(size)
   local dark_square = "#008284"
