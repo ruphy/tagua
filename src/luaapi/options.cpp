@@ -9,6 +9,7 @@
 */
 
 #include "options.h"
+#include "luaapi/loader.h"
 
 namespace LuaApi {
 
@@ -299,11 +300,8 @@ int Wrapper<StringOptPtr>::constructor(lua_State* l) {
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
   const char* value = lua_tostring(l, 3);
-  OptList sub_opt;
-  if(n==4)
-    sub_opt = *Wrapper<OptList>::retrieve(l, 4, AssertOk);
-
   lua_pop(l, n);
+
   create(l, StringOptPtr(new StringOpt(name, label, value)));
   return 1;
 }
@@ -320,7 +318,7 @@ const char* Wrapper<UrlOptPtr>::class_name() {
 int Wrapper<UrlOptPtr>::to_string(lua_State* l) {
   UrlOptPtr r = *retrieve(l, 1, AssertOk);
   lua_pop(l, 1);
-  lua_pushfstring(l, "string[%s] = %s", r->name().toAscii().constData(), r->value().toAscii().constData() );
+  lua_pushfstring(l, "url[%s] = %s", r->name().toAscii().constData(), r->value().toAscii().constData() );
   return 1;
 }
 
@@ -342,12 +340,14 @@ int Wrapper<UrlOptPtr>::constructor(lua_State* l) {
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
   const char* value = lua_tostring(l, 3);
-  OptList sub_opt;
-  if(n==4)
-    sub_opt = *Wrapper<OptList>::retrieve(l, 4, AssertOk);
-
   lua_pop(l, n);
-  create(l, UrlOptPtr(new UrlOpt(name, label, value)));
+
+  // retrieve the api and current base directory for the url
+  lua_getfield(l, LUA_REGISTRYINDEX, API_LOADER);
+  LuaApi::Loader* api = reinterpret_cast<Loader*>(lua_touserdata(l, -1));
+  lua_pop(l, 1);
+
+  create(l, UrlOptPtr(new UrlOpt(name, label, api->currDir().absoluteFilePath(value) )));
   return 1;
 }
 
@@ -385,11 +385,8 @@ int Wrapper<ColorOptPtr>::constructor(lua_State* l) {
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
   const char* value = lua_tostring(l, 3);
-  OptList sub_opt;
-  if(n==4)
-    sub_opt = *Wrapper<OptList>::retrieve(l, 4, AssertOk);
-
   lua_pop(l, n);
+
   create(l, ColorOptPtr(new ColorOpt(name, label, value)));
   return 1;
 }
@@ -428,11 +425,8 @@ int Wrapper<FontOptPtr>::constructor(lua_State* l) {
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
   const char* value = lua_tostring(l, 3);
-  OptList sub_opt;
-  if(n==4)
-    sub_opt = *Wrapper<OptList>::retrieve(l, 4, AssertOk);
-
   lua_pop(l, n);
+
   create(l, FontOptPtr(new FontOpt(name, label, QFont(value))));
   return 1;
 }

@@ -164,7 +164,7 @@ private:
   QString m_value;
 public:
   typedef QString ValueType;
-  UrlOpt(const QString& name, const QString& label, QString def = QString())
+  UrlOpt(const QString& name, const QString& label, QString def = QString() )
     : BaseOpt(name, label)
     , m_value(def) {}
   QString value() const { return m_value; }
@@ -308,6 +308,8 @@ void options_list_save_to_settings(const OptList&, Settings s);
 
 class OptionWidget : public QWidget {
   Q_OBJECT
+  bool m_changed;
+  bool m_dont_fire;
   QList<OptPtr> m_options;
   void setupOptionWidget(QWidget*, OptList&, bool indent = false);
   void setOptionWidgetValues(QWidget*, OptList&);

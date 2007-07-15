@@ -138,10 +138,10 @@ void ChessTable::layout(bool force_reload) {
   if(double* val = boost::get<double>(&it.value()))
     std::cout << "lvals[" << it.key() << "] = " << *val << std::endl;
   else if(QPointF* val = boost::get<QPointF>(&it.value()))
-    std::cout << "lvals[" << it.key() << "] = Point(" << val->x() << "," << val->y() << std::endl;
+    std::cout << "lvals[" << it.key() << "] = Point(" << val->x() << "," << val->y() << ")" << std::endl;
   else if(QRectF* val = boost::get<QRectF>(&it.value()))
     std::cout << "lvals[" << it.key() << "] = Rect(" << val->x() << "," << val->y()
-                                            << "," << val->width() << "," << val->height() << std::endl;
+                                   << "," << val->width() << "," << val->height() << ")" << std::endl;
 
 #define GET_INT(name)                                    \
   int name = 0;                                          \

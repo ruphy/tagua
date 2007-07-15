@@ -3,8 +3,8 @@ import("../../pieces/common.lua")
 
 theme.options = OptList {
   BoolOpt("wallpaper", "Draw wallpaper", true, OptList {
-      BoolOpt("blur", "Enable blur", true),
-      StringOpt("file", "File:", "Wallpapers/dragonballz.jpg")
+      BoolOpt("blur", "Enable blur", false),
+      UrlOpt("file", "File:", "Wallpapers/dragonballz.jpg")
   })
 }
 
@@ -78,6 +78,7 @@ end
 
 theme.wallpaper = function()
   if(theme.options.wallpaper.value) then
+    print("--> file", theme.options.wallpaper.sub_options.file.value)
     local i = Image(theme.options.wallpaper.sub_options.file.value, false)
     if(theme.options.wallpaper.sub_options.blur.value) then
       i:exp_blur(5);

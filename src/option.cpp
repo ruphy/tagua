@@ -81,7 +81,7 @@ OptUrlRequester::OptUrlRequester(boost::shared_ptr<UrlOpt> opt, OptionWidget *ow
 , m_owner(owner)
 , m_opt(opt) {
   setUrl(m_opt->value());
-  connect(this, SIGNAL(urlSelected(const QString&)), this, SLOT(setOpt(const QString&)));
+  connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(setOpt(const QString&)));
 }
 
 void OptUrlRequester::setOpt(const QString& s) {
@@ -131,17 +131,27 @@ void OptFontRequester::setOpt(const QFont& f) {
 
 OptionWidget::OptionWidget(const OptList& options, QWidget* parent)
 : QWidget(parent)
+, m_dont_fire(false)
 , m_options(options) {
   setupOptionWidget(this, m_options);
 }
 
 void OptionWidget::notifyChange() {
-  dump_options_list(m_options);
-  emit changed(m_options);
+  if(m_dont_fire)
+    m_changed = true;
+  else {
+    dump_options_list(m_options);
+    emit changed(m_options);
+  }
 }
 
 void OptionWidget::setValues(OptList& newopts) {
+  m_changed = false;
+  m_dont_fire = true;
   setOptionWidgetValues(this, newopts);
+  m_dont_fire = false;
+  if(m_changed)
+    notifyChange();
 }
 
 void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool indent) {

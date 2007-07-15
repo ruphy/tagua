@@ -70,6 +70,8 @@ public:
   bool error(){ return m_error; }
   void clearError(){ m_error = false; }
   QString errorString(){ return m_error_string; }
+
+  QDir currDir() { return m_curr_dir; }
 };
 
 } //end namespace LuaApi
