@@ -82,11 +82,6 @@ void ChessTable::settingsChanged() {
   if(m_wallpaper)
     delete m_wallpaper;
 
-  ::LuaApi::LuaValueMap test;
-  test["pluto"] = 7;
-  test["pippo"] = 13;
-  m_board->controlsLoader()->getStaticValue<double>("layout", &test);
-
   QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper");
   if(!bg.isNull()) {
     m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
@@ -132,31 +127,88 @@ void ChessTable::layout(bool force_reload) {
     m_wallpaper->setOrigin(QPoint(delta.width(), delta.height()));
   }
 
-  Point gs = m_board->gridSize();
-  int sq_size = std::max(0, std::min(int(width()/(gs.x+2.6+(2.0/3.0)*3)),
-                        int(gs.y == 0 ? 100000 : height()/(gs.y+4.0/3.0))) );
-  int b = sq_size*2/3;
-  m_board->moveTo(b,b);
-  m_board->onResize( sq_size, force_reload);
+  ::LuaApi::LuaValueMap params;
+  params["width"] = width();
+  params["height"] = height();
+  params["grid_size"] = QPointF(m_board->gridSize());
+
+  ::LuaApi::LuaValueMap lvals = m_board->controlsLoader()->getStaticValue< ::LuaApi::LuaValueMap>("layout", &params);
+
+  for(::LuaApi::LuaValueMap::iterator it = lvals.begin(); it != lvals.end(); ++it)
+  if(double* val = boost::get<double>(&it.value()))
+    std::cout << "lvals[" << it.key() << "] = " << *val << std::endl;
+  else if(QPointF* val = boost::get<QPointF>(&it.value()))
+    std::cout << "lvals[" << it.key() << "] = Point(" << val->x() << "," << val->y() << std::endl;
+  else if(QRectF* val = boost::get<QRectF>(&it.value()))
+    std::cout << "lvals[" << it.key() << "] = Rect(" << val->x() << "," << val->y()
+                                            << "," << val->width() << "," << val->height() << std::endl;
+
+#define GET_INT(name)                                    \
+  int name = 0;                                          \
+  if(double* val = boost::get<double>(&lvals[#name]))    \
+    name = (int)*val;                                    \
+  else                                                   \
+    ERROR("Hey Jack, please set "<<#name<<" to a number in the layout!");
+
+#define GET_POINT(name)                                  \
+  QPoint name;                                           \
+  if(QPointF* val = boost::get<QPointF>(&lvals[#name]))  \
+    name = val->toPoint();                               \
+  else                                                   \
+    ERROR("Hey Jack, please set "<<#name<<" to a point in the layout!");
+
+  GET_POINT(board_position);
+  GET_INT(square_size);
+  GET_INT(border_size);
+  GET_POINT(clock0_position);
+  GET_POINT(clock1_position);
+  GET_INT(clock_size);
+  GET_POINT(pool0_position);
+  GET_POINT(pool1_position);
+  GET_INT(pool_piece_size);
+
+  m_board->moveTo(board_position.x(), board_position.y());
+  m_board->onResize( square_size, border_size, force_reload);
 
   int x = !m_board->flipped();
 
-  m_clocks[x]->resize(sq_size);
-  m_clocks[!x]->resize(sq_size);
-  m_clocks[x]->moveTo(sq_size*gs.x+2*b+b/2, b/2);
-  m_clocks[!x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b+b/2-m_clocks[1]->height());
+  m_clocks[x]->resize(clock_size);
+  m_clocks[x]->moveTo(clock0_position.x(), clock0_position.y());
 
-  m_pools[x]->m_flipped = false;
-  m_pools[x]->setGridWidth(3);
-  m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, b+m_clocks[0]->height());
-  m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
+  m_clocks[!x]->resize(clock_size);
+  m_clocks[!x]->moveTo(clock1_position.x(), clock1_position.y());
 
-  m_pools[!x]->m_flipped = true;
-  m_pools[!x]->setGridWidth(3);
-  m_pools[!x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b-m_clocks[1]->height());
-  m_pools[!x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
+  m_pools[x]->onResize(pool_piece_size);
+  m_pools[x]->moveTo(pool0_position.x(), pool0_position.y());
 
-  m_info->moveTo(sq_size*gs.x+4*b, 80+sq_size*gs.y/2+b+b/2);
+  m_pools[!x]->onResize(pool_piece_size);
+  m_pools[!x]->moveTo(pool1_position.x(), pool1_position.y());
+
+//   Point gs = m_board->gridSize();
+//   int sq_size = std::max(0, std::min(int(width()/(gs.x+2.6+(2.0/3.0)*3)),
+//                         int(gs.y == 0 ? 100000 : height()/(gs.y+4.0/3.0))) );
+//   int b = sq_size*2/3;
+//   m_board->moveTo(b,b);
+//   m_board->onResize( sq_size, force_reload);
+//
+//   int x = !m_board->flipped();
+//
+//   m_clocks[x]->resize(sq_size);
+//   m_clocks[!x]->resize(sq_size);
+//   m_clocks[x]->moveTo(sq_size*gs.x+2*b+b/2, b/2);
+//   m_clocks[!x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b+b/2-m_clocks[1]->height());
+//
+//   m_pools[x]->m_flipped = false;
+//   m_pools[x]->setGridWidth(3);
+//   m_pools[x]->moveTo(sq_size*gs.x+2*b+b/2, b+m_clocks[0]->height());
+//   m_pools[x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
+//
+//   m_pools[!x]->m_flipped = true;
+//   m_pools[!x]->setGridWidth(3);
+//   m_pools[!x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b-m_clocks[1]->height());
+//   m_pools[!x]->onResize(static_cast<int>(sq_size*2.2/3), force_reload);
+//
+//   m_info->moveTo(sq_size*gs.x+4*b, 80+sq_size*gs.y/2+b+b/2);
 }
 
 void ChessTable::resizeEvent(QResizeEvent* /*e*/) {

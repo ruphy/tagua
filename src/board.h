@@ -278,7 +278,7 @@ public:
   virtual void onMouseLeave();
 
   /** resize event (new_size is the new size of a SQUARE) */
-  virtual void onResize(int new_size, bool force_reload = false);
+  virtual void onResize(int new_size, int border_size, bool force_reload = false);
 
   /** the position changed (will update the move highlighting) */
   virtual void onPositionChanged();

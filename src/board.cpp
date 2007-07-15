@@ -95,7 +95,7 @@ void Board::updateBackground() {
   if(!m_square_size)
     return;
 
-  Loader::PixmapOrMap bg = m_tags_loader.getPixmapMap("background");
+  Loader::PixmapOrMap bg = m_tags_loader.getValue<Loader::PixmapOrMap>("background");
   if(const QPixmap* p = boost::get<QPixmap>(&bg)) {
     KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
                                     true, m_canvas_background);
@@ -227,7 +227,10 @@ void Board::updateBorder() {
     m_border_items[at++]->moveTo(x, y);
   }
 
-  Loader::PixmapOrMap bord = m_controls_loader.getPixmapMap("border");
+  ::LuaApi::LuaValueMap params;
+  params["width"] = m_square_size*m_sprites.getSize().x;
+  params["height"] = m_square_size*m_sprites.getSize().y;
+  Loader::PixmapOrMap bord = m_controls_loader.getValue<Loader::PixmapOrMap>("border", &params);
   if(const QPixmap* p = boost::get<QPixmap>(&bord)) {
     KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
                                     true, m_canvas_border);
@@ -341,7 +344,7 @@ bool Board::doMove(const NormalUserMove& m) {
 }
 
 
-void Board::onResize(int new_size, bool force_reload) {
+void Board::onResize(int new_size, int border_size, bool force_reload) {
   if(m_square_size == new_size && !force_reload)
     return;
 
@@ -354,7 +357,7 @@ void Board::onResize(int new_size, bool force_reload) {
   m_tags_loader.setSize(m_square_size);
 
   // update the size of the controls loader
-  m_controls_loader.setSize(m_square_size);
+  m_controls_loader.setSize(border_size);
 
   // update canvas background
   updateBackground();

@@ -28,8 +28,8 @@ void lua_pushvaluemap(lua_State* l, const LuaValueMap* valuemap) {
   lua_newtable(l); // metatable
 
   for(LuaValueMap::const_iterator it = valuemap->begin(); it != valuemap->end(); ++it) {
-    lua_pushvalue(l, it->second);
-    lua_setfield(l, -2, it->first.toAscii().constData());
+    lua_pushvalue(l, it.value());
+    lua_setfield(l, -2, it.key().toAscii().constData());
   }
 }
 

@@ -113,6 +113,7 @@ template QPointF PixmapLoader::getValue<QPointF>(const QString&, const ::LuaApi:
 template QRectF  PixmapLoader::getValue<QRectF>(const QString&, const ::LuaApi::LuaValueMap*);
 template QBrush  PixmapLoader::getValue<QBrush>(const QString&, const ::LuaApi::LuaValueMap*);
 template QColor  PixmapLoader::getValue<QColor>(const QString&, const ::LuaApi::LuaValueMap*);
+template ::LuaApi::LuaValueMap  PixmapLoader::getValue< ::LuaApi::LuaValueMap>(const QString&, const ::LuaApi::LuaValueMap*);
 
 
 template<typename T>
@@ -134,3 +135,4 @@ template QPointF PixmapLoader::getStaticValue<QPointF>(const QString&, const ::L
 template QRectF  PixmapLoader::getStaticValue<QRectF>(const QString&, const ::LuaApi::LuaValueMap*);
 template QBrush  PixmapLoader::getStaticValue<QBrush>(const QString&, const ::LuaApi::LuaValueMap*);
 template QColor  PixmapLoader::getStaticValue<QColor>(const QString&, const ::LuaApi::LuaValueMap*);
+template ::LuaApi::LuaValueMap  PixmapLoader::getStaticValue< ::LuaApi::LuaValueMap>(const QString&, const ::LuaApi::LuaValueMap*);

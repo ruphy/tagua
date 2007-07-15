@@ -155,6 +155,7 @@ template QPointF Loader::getValue<QPointF>(const QString&, int, const LuaValueMa
 template QRectF Loader::getValue<QRectF>(const QString&, int, const LuaValueMap*,  bool);
 template QBrush Loader::getValue<QBrush>(const QString&, int, const LuaValueMap*,  bool);
 template QColor Loader::getValue<QColor>(const QString&, int, const LuaValueMap*,  bool);
+template LuaValueMap Loader::getValue<LuaValueMap>(const QString&, int, const LuaValueMap*,  bool);
 
 template<typename T>
 void Loader::retrieve(create_value_data<T>* d, lua_State *l, int pos) {
@@ -184,6 +185,25 @@ void Loader::retrieve<QStringList>(create_value_data<QStringList>* d, lua_State 
   }
   else
     luaL_error(l, "Can't convert to a QStringList (not string nor table)");
+}
+
+template<>
+void Loader::retrieve<LuaValueMap>(create_value_data<LuaValueMap>* d, lua_State *l, int pos) {
+  if(lua_istable(l, pos)) {
+    lua_pushnil(l);
+    while (lua_next(l, pos<0 ? pos-1 : pos) != 0) {
+      QString key = lua_tostring(l, -2);
+      if(QPointF *res = Wrapper<QPointF>::retrieve(l, -1, Check))
+        d->out[key] = *res;
+      else if(QRectF *res = Wrapper<QRectF>::retrieve(l, -1, Check))
+        d->out[key] = *res;
+      else
+        d->out[key] = lua_tonumber(l, -1);
+      lua_pop(l, 1);
+    }
+  }
+  else
+    luaL_error(l, "Can't convert to a LuaValueMap (not table)");
 }
 
 template<>

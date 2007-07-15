@@ -11,9 +11,9 @@
 #ifndef LUAAPI__LUAVALUE_H
 #define LUAAPI__LUAVALUE_H
 
-#include <map>
 #include <boost/variant.hpp>
 #include <QString>
+#include <QMap>
 
 class QPointF;
 class QRectF;
@@ -22,7 +22,7 @@ class lua_State;
 namespace LuaApi {
 
 typedef boost::variant<double, QPointF, QRectF> LuaValue;
-typedef std::map<QString, LuaValue> LuaValueMap;
+typedef QMap<QString, LuaValue> LuaValueMap;
 void lua_pushvalue(lua_State* l, const LuaValue& value);
 void lua_pushvaluemap(lua_State* l, const LuaValueMap* valuemap);
 

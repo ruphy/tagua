@@ -68,11 +68,6 @@ public:
     return getValue<QPixmap>(id);
   }
 
-  /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  Loader::PixmapOrMap getPixmapMap(const QString& id) {
-    return getValue<Loader::PixmapOrMap>(id);
-  }
-
   /** returns a value */
   template<typename T>
   T getValue(const QString& id, const ::LuaApi::LuaValueMap* args = NULL);
