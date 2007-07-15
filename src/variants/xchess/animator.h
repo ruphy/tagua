@@ -41,8 +41,11 @@ public:
 };
   
   
-template <typename Variant>
-class SimpleAnimator : BaseAnimator<Variant> {
+template <typename _Variant>
+class SimpleAnimator : BaseAnimator<_Variant> {
+public:
+  typedef _Variant Variant;
+private:
   typedef BaseAnimator<Variant> Base;
 protected:
   typedef typename Base::API API;

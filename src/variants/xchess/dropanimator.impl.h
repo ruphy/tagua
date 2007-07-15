@@ -6,13 +6,13 @@
 
 #include <KDebug>
 
-template <typename Variant>
-DropAnimator<Variant>::DropAnimator(API cinterface)
+template <typename Base>
+DropAnimatorMixin<Base>::DropAnimatorMixin(API cinterface)
 : Base(cinterface) { }
 
 
-template <typename Variant>
-void DropAnimator<Variant>::updatePool(const Position& final) {
+template <typename Base>
+void DropAnimatorMixin<Base>::updatePool(const Position& final) {
   for(int color = 0; color < 2; color++) {
     typename Piece::Color c = static_cast<typename Piece::Color>(color);
 //     const typename Position::PlayerPool& before = m_cinterface->position()->rawPool().find(c)->second;
@@ -60,8 +60,8 @@ void DropAnimator<Variant>::updatePool(const Position& final) {
 }
 
 
-template <typename Variant>
-AnimationGroupPtr DropAnimator<Variant>::forward(const Position& final, const Move& move) {
+template <typename Base>
+AnimationGroupPtr DropAnimatorMixin<Base>::forward(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
   
   if(move.m_drop) {
@@ -87,8 +87,8 @@ AnimationGroupPtr DropAnimator<Variant>::forward(const Position& final, const Mo
   return res;
 }
 
-template <typename Variant>
-AnimationGroupPtr DropAnimator<Variant>::back(const Position& final, const Move& move) {
+template <typename Base>
+AnimationGroupPtr DropAnimatorMixin<Base>::back(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
   
   if(move.m_drop) {

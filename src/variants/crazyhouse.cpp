@@ -23,7 +23,7 @@ public:
   typedef Position::Piece Piece;
   typedef Position::PoolReference Pool;
 
-  typedef DropAnimator<CrazyhouseVariantInfo> Animator;
+  typedef DropAnimatorMixin<SimpleAnimator<CrazyhouseVariantInfo> > Animator;
   
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);

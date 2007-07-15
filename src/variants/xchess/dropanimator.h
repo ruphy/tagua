@@ -3,10 +3,9 @@
 
 #include "animator.h"
 
-template <typename Variant>
-class DropAnimator : public SimpleAnimator<Variant> {
-  typedef SimpleAnimator<Variant> Base;
-  
+template <typename Base>
+class DropAnimatorMixin : public Base {
+  typedef typename Base::Variant Variant;  
   using Base::m_cinterface;
 protected:
   typedef typename Base::API API;
@@ -16,7 +15,7 @@ protected:
   
   virtual void updatePool(const Position& final);
 public:
-  DropAnimator(API cinterface);
+  DropAnimatorMixin(API cinterface);
   
   virtual AnimationGroupPtr forward(const Position& final, const Move& move);
   virtual AnimationGroupPtr back(const Position& final, const Move& move);
