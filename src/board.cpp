@@ -33,6 +33,7 @@ Board::Board(KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_flipped(false)
 , m_square_size(0)
+, m_border_size(0)
 , m_sprites(0,0)
 , m_hinting_pos(Point::invalid())
 , selection(Point::invalid())
@@ -173,7 +174,6 @@ void Board::recreateBorder() {
     return;
 
   QFontMetrics fm(m_border_font);
-  int m_border_size = std::max( fm.height(), fm.boundingRect("H").width() );
   m_border_asc = fm.ascent() + (m_border_size-fm.height())/2;
 
   Point s = m_sprites.getSize();
@@ -209,13 +209,12 @@ void Board::updateBorder() {
   if(!m_show_border || !m_square_size)
     return;
 
-  int m_border_size = m_square_size * 3 / 9;
-
   int at = 0;
   for(int w = 0; w<2; w++)
   for(int i = 0;i<m_sprites.getSize().x;i++) {
     int x = (m_flipped ? (m_sprites.getSize().x-1-i):i)*m_square_size+m_square_size/2;
     int y = +m_border_asc/2+(w?0:m_square_size*3/9+m_square_size*m_sprites.getSize().y)-m_square_size*2/9;
+    m_border_items[at]->setVisible(m_border_size!=0);
     m_border_items[at++]->moveTo(x, y);
   }
 
@@ -224,6 +223,7 @@ void Board::updateBorder() {
     int x = -m_border_size/2+(w?0:m_border_size+m_square_size*m_sprites.getSize().x);
     int y = (!m_flipped ? (m_sprites.getSize().y-1-i):i)*m_square_size
                         +m_square_size/2+m_border_asc/2;
+    m_border_items[at]->setVisible(m_border_size!=0);
     m_border_items[at++]->moveTo(x, y);
   }
 
@@ -349,6 +349,7 @@ void Board::onResize(int new_size, int border_size, bool force_reload) {
     return;
 
   m_square_size = new_size;
+  m_border_size = border_size;
 
   // update the size of the piece loader
   m_loader.setSize(m_square_size);
@@ -357,7 +358,7 @@ void Board::onResize(int new_size, int border_size, bool force_reload) {
   m_tags_loader.setSize(m_square_size);
 
   // update the size of the controls loader
-  m_controls_loader.setSize(border_size);
+  m_controls_loader.setSize(m_border_size);
 
   // update canvas background
   updateBackground();

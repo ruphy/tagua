@@ -115,6 +115,9 @@ int Wrapper<QPointF>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
   switch(n) {
+  case 0:
+    create(l);
+    break;
   case 1: {
       QPointF res = *retrieve(l, 1, AssertOk);
       lua_pop(l,1);

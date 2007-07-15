@@ -83,6 +83,9 @@ private:
   /** size of a square in points */
   int         m_square_size;
 
+  /** size of the border */
+  int         m_border_size;
+
   /** loader class, to load pieces */
   PixmapLoader m_loader;
 
