@@ -101,8 +101,11 @@ public:
   PoolReference pool(int index);
   PoolConstReference pool(int index) const;
     
-  Pool& rawPool();
-  const Pool& rawPool() const;
+  PlayerPool& rawPool(Piece::Color color);
+  const PlayerPool& rawPool(Piece::Color color) const;
+  
+  Pool& rawPool() { return m_pool; }
+  const Pool& rawPool() const { return m_pool; }
 };
 
 template <typename MoveTest>

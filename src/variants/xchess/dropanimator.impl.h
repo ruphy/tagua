@@ -4,6 +4,8 @@
 #include "dropanimator.h"
 #include "animator.impl.h"
 
+#include <KDebug>
+
 template <typename Variant>
 DropAnimator<Variant>::DropAnimator(API cinterface)
 : Base(cinterface) { }
@@ -11,17 +13,14 @@ DropAnimator<Variant>::DropAnimator(API cinterface)
 template <typename Variant>
 void DropAnimator<Variant>::updatePool(const Position& final) {
   for(int color = 0; color < 2; color++) {
-//     typename Piece::Color c = static_cast<typename Piece::Color>(color);
+    typename Piece::Color c = static_cast<typename Piece::Color>(color);
 //     const typename Position::PlayerPool& before = m_cinterface->position()->rawPool().find(c)->second;
 //     const typename Position::PlayerPool& after = final.rawPool().find(c)->second;
 //     typename Position::PlayerPool::const_iterator before_it = before.begin();
 //     typename Position::PlayerPool::const_iterator after_it = after.begin();
     
-    typename Position::Color c = static_cast<typename Piece::Color>(color);
-    const typename Position::PlayerPool& before = const_cast<Position*>(
-                                                    m_cinterface->position())->rawPool()[c];
-    const typename Position::PlayerPool& after = const_cast<Position*>(
-                                                                  &final)->rawPool()[c];
+    const typename Position::PlayerPool& before = m_cinterface->position()->rawPool(c);
+    const typename Position::PlayerPool& after = final.rawPool(c);
     typename Position::PlayerPool::const_iterator before_it = before.begin();
     typename Position::PlayerPool::const_iterator after_it = after.begin();
 
