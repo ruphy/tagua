@@ -17,6 +17,9 @@ protected:
   virtual void updatePool(const Position& final);
 public:
   DropAnimator(API cinterface);
+  
+  virtual AnimationGroupPtr forward(const Position& final, const Move& move);
+  virtual AnimationGroupPtr back(const Position& final, const Move& move);
 };
 
 #endif // XCHESS__DROPANIMATOR_H
