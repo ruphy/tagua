@@ -13,57 +13,27 @@
 
 #include <boost/shared_ptr.hpp>
 #include "animation.h"
-#include "random.h"
+#include "fwd.h"
 
-class AnimationGroup;
-class PointConverter;
-class GraphicalPosition;
-#if 0
 /**
-  * A variant-agnostic animator. 
+  * A generic animator. 
   * Can be used as a base class for other specialized animators.
   */
 template <typename Variant>
 class SimpleAnimator {
-protected:
-  typedef boost::shared_ptr<AnimationGroup> AnimationPtr;
-  typedef GenericGraphicalPosition<Variant> GPosition;
-  typedef typename WrappedGraphicalPosition<Variant>::GElement GElement;
+  typedef typename UnwrappedGraphicalAPIPtr<Variant>::type API;
   typedef typename Variant::Position Position;
-  typedef typename Variant::Piece Piece;
   typedef typename Variant::Move Move;
-  
-  PointConverter* m_converter;
-  boost::shared_ptr<GPosition> m_position;
-  Random m_random;
-  
-  bool m_anim_movement;
-  bool m_anim_explode;
-  bool m_anim_fade;
-  bool m_anim_rotate;
-  
-  virtual boost::shared_ptr<MovementAnimation>
-    createMovementAnimation(const GElement& element, const QPoint& destination);
-
-  virtual boost::shared_ptr<Animation> createCapture(const Point& p,
-                                                     const GElement& piece,
-                                                     const GElement& captured,
-                                                     const Position& pos);
-
-  virtual void finalizeBackAnimation(AnimationPtr,
-                                     const Position&,
-                                     const Move&) { }
-  virtual void finalizeForwardAnimation(AnimationPtr,
-                                        const Position&,
-                                        const Move&) { }
+  API m_cinterface;
 public:
-  SimpleAnimator(PointConverter* converter, const boost::shared_ptr<GPosition>& position);
-  virtual ~SimpleAnimator() { }
-  AnimationPtr warp(const Position&);
-  AnimationPtr forward(const Position&, const Move& move);
-  AnimationPtr back(const Position&, const Move& move);
+  SimpleAnimator(API cinterface)
+    : m_cinterface(cinterface) {
+  }
+
+  AnimationGroupPtr warp(const Position& final);
+  AnimationGroupPtr forward(const Position& final, const Move&);
+  AnimationGroupPtr back(const Position& final, const Move&);
 };
-#endif
 
 
 #endif // ANIMATOR_H

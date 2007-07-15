@@ -25,9 +25,7 @@ const char *ChessVariant::m_name = "Chess";
 const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
 
-
-typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
-
+#if 0
 class ChessAnimator {
   ChessGraphicalAPI::Ptr m_cinterface;
 public:
@@ -194,6 +192,7 @@ public:
     return res;
   }
 };
+#endif
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);
