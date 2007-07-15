@@ -92,7 +92,7 @@ AnimationGroupPtr DropAnimatorMixin<Base>::back(const Position& final, const Mov
   
   if(move.drop()) {
     NamedSprite drop = m_cinterface->takeSprite(move.to);
-    res.addPostAnimation(Animate::destroy(drop));
+    res.addPostAnimation(Animate::disappear(drop));
     
   }
   else {
