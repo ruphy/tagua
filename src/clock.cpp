@@ -9,7 +9,6 @@
 */
 
 #include "clock.h"
-#include "board.h"
 #include <math.h>
 #include <iostream>
 
@@ -139,10 +138,9 @@ QRect ConstrainedText::rect() const {
 
 
 
-Clock::Clock(int col, Board* b, KGameCanvasAbstract* canvas)
+Clock::Clock(int col, KGameCanvasAbstract* canvas)
   : ClickableCanvas(canvas)
-  , m_color(col)
-  , m_board(b) {
+  , m_color(col) {
   m_background   = new KGameCanvasPixmap(this);
   m_caption      = new ConstrainedText(this);
   m_time_label   = new ConstrainedText(this);
@@ -262,28 +260,30 @@ void Clock::setTime(int t) {
   tick();
 }
 
-void Clock::onMousePress(const QPoint& pos, int button) {
+void Clock::onMousePress(const QPoint& /*pos*/, int /*button*/) {
 }
 
-void Clock::resize() {
-  m_height = (int)m_board->tagsLoader()->getValue<double>("clock_height");
+void Clock::resize(int size) {
+  m_controls_loader.setSize(size);
 
-  m_active_pixmap = m_board->tagsLoader()->getValue<QPixmap>("clock_active_background");
-  m_inactive_pixmap = m_board->tagsLoader()->getValue<QPixmap>("clock_inactive_background");
+  m_height = (int)m_controls_loader.getValue<double>("clock_height");
 
-  m_active_text = m_board->tagsLoader()->getValue<QBrush>("clock_active_text").color();
-  m_inactive_text = m_board->tagsLoader()->getValue<QBrush>("clock_inactive_text").color();
+  m_active_pixmap = m_controls_loader.getValue<QPixmap>("clock_active_background");
+  m_inactive_pixmap = m_controls_loader.getValue<QPixmap>("clock_inactive_background");
+
+  m_active_text = m_controls_loader.getValue<QBrush>("clock_active_text").color();
+  m_inactive_text = m_controls_loader.getValue<QBrush>("clock_inactive_text").color();
 
   m_background->setPixmap(m_active ? m_active_pixmap : m_inactive_pixmap);
-  m_background->moveTo(m_board->tagsLoader()->getValue<QPointF>("clock_background_offset").toPoint());
+  m_background->moveTo(m_controls_loader.getValue<QPointF>("clock_background_offset").toPoint());
 
-  m_time_label->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_time_rect").toRect());
+  m_time_label->setConstrainRect(m_controls_loader.getValue<QRectF>("clock_time_rect").toRect());
   m_time_label->setColor(m_active ? m_active_text : m_inactive_text);
 
-  m_player_name->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_player_rect").toRect());
+  m_player_name->setConstrainRect(m_controls_loader.getValue<QRectF>("clock_player_rect").toRect());
   m_player_name->setColor(m_active ? m_active_text : m_inactive_text);
 
-  m_caption->setConstrainRect(m_board->tagsLoader()->getValue<QRectF>("clock_caption_rect").toRect());
+  m_caption->setConstrainRect(m_controls_loader.getValue<QRectF>("clock_caption_rect").toRect());
   m_caption->setColor(m_active ? m_active_text : m_inactive_text);
 }
 

@@ -16,16 +16,16 @@
 #include <QTime>
 #include "kgamecanvas.h"
 #include "player.h"
+#include "pixmaploader.h"
 #include "clickablecanvas.h"
 
-class Board;
+
 class ConstrainedText;
 
 class Clock : public QObject, public ClickableCanvas {
 Q_OBJECT
 
   int m_color;
-  Board *m_board;
   QTimer m_timer;
   QTime m_time;
   int m_total_time;
@@ -47,12 +47,20 @@ Q_OBJECT
 
   int m_height;
 
+
+  /** the @a PixmapLoader used for controls */
+  PixmapLoader m_controls_loader;
+
+
   void computeTime();
   static QString playerString(const Player& player);
 
 public:
-  Clock(int col, Board* b, KGameCanvasAbstract* canvas);
+  Clock(int col, KGameCanvasAbstract* canvas);
   ~Clock();
+
+  /** returns a reference to the loader used to load controls pixmaps */
+  PixmapLoader* controlsLoader() { return &m_controls_loader; }
 
   bool running() { return m_running; }
   void start();
@@ -67,7 +75,7 @@ public:
   virtual void onMouseRelease(const QPoint& /*pos*/, int /*button*/) { }
   virtual void onMouseMove(const QPoint& /*pos*/, int /*button*/) { }
 
-  void resize();
+  void resize(int size);
   int height() { return m_height; }
   void settingsChanged() { }
 

@@ -11,6 +11,7 @@
 #include "graphicalsystem.h"
 #include "chesstable.h"
 #include "board.h"
+#include "clock.h"
 #include "piecepool.h"
 #include "pointconverter.h"
 #include "sprite.h"
@@ -68,18 +69,20 @@ void GraphicalSystem::settingsChanged() {
   /* recreate the animator to reload its settings */
   m_animator = m_variant->createAnimator(this);
 
-  QString theme = PrefTheme::getBestTheme(m_variant);
-  QString sqtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Squares);
-  QString figtheme = PrefTheme::getBestTheme(m_variant, PrefTheme::Figurines);
-  std::cout << "theme: " << theme << std::endl;
-  std::cout << "sqtheme: " << sqtheme << std::endl;
-  std::cout << "figtheme: " << figtheme << std::endl;
+  QString theme = PrefTheme::getBestTheme(m_variant, "pieces");
+  QString sqtheme = PrefTheme::getBestTheme(m_variant, "squares");
+  QString figtheme = PrefTheme::getBestTheme(m_variant, "figurines");
+  QString ctrltheme = PrefTheme::getBestTheme(m_variant, "controls");
 
   m_board->loader()->setBasePath( theme );
   m_board->tagsLoader()->setBasePath( sqtheme );
+  m_board->controlsLoader()->setBasePath( ctrltheme );
 
-  m_view->pool(0)->loader()->setBasePath( theme );
-  m_view->pool(1)->loader()->setBasePath( theme );
+  for(int i=0;i<2;i++)
+    m_view->pool(i)->loader()->setBasePath( theme );
+
+  for(int i=0;i<2;i++)
+    m_view->clock(i)->controlsLoader()->setBasePath( ctrltheme );
 
   m_view->moveListTable()->setLoaderBasePath( figtheme );
   m_view->moveListTable()->settingsChanged();

@@ -14,10 +14,10 @@ function Pt(x, y)
 end
 
 theme.background = function(size)
-  local square = options.square.value
-  local table  = options.table.value
-  local border = options.useborder.sub_options.border.value
-  local bwidth = options.useborder.sub_options.bwidth.value
+  local square = theme.options.square.value
+  local table  = theme.options.table.value
+  local border = theme.options.useborder.sub_options.border.value
+  local bwidth = theme.options.useborder.sub_options.bwidth.value
   local rb = Image(size,size)
   local rt = Image(size,size)
   local lb = Image(size,size)

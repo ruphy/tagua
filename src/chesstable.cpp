@@ -42,7 +42,7 @@ ChessTable::ChessTable(QWidget* parent)
 
   // create clocks
   for(int i=0;i<2;i++) {
-    m_clocks[i] = new Clock(i, m_board, this);
+    m_clocks[i] = new Clock(i, this);
     m_clocks[i]->show();
   }
   m_clocks[0]->activate(0);
@@ -82,7 +82,7 @@ void ChessTable::settingsChanged() {
   if(m_wallpaper)
     delete m_wallpaper;
 
-  QPixmap bg = m_board->tagsLoader()->getStaticValue<QPixmap>("wallpaper");
+  QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper");
   if(!bg.isNull()) {
     m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
     m_wallpaper->lower();
@@ -136,8 +136,8 @@ void ChessTable::layout(bool force_reload) {
 
   int x = !m_board->flipped();
 
-  m_clocks[x]->resize();
-  m_clocks[!x]->resize();
+  m_clocks[x]->resize(sq_size);
+  m_clocks[!x]->resize(sq_size);
   m_clocks[x]->moveTo(sq_size*gs.x+2*b+b/2, b/2);
   m_clocks[!x]->moveTo(sq_size*gs.x+2*b+b/2, sq_size*gs.y+b+b/2-m_clocks[1]->height());
 

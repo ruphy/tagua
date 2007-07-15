@@ -114,6 +114,9 @@ private:
   /** the @a PixmapLoader used to create tags */
   PixmapLoader m_tags_loader;
 
+  /** the @a PixmapLoader used for controls */
+  PixmapLoader m_controls_loader;
+
   /** the entity responsible of all the interctions with the board */
   boost::weak_ptr<UserEntity> m_entity;
 
@@ -236,6 +239,9 @@ public:
 
   /** returns a reference to the loader used to load tag pixmaps */
   PixmapLoader* tagsLoader() { return &m_tags_loader; }
+
+  /** returns a reference to the loader used to load controls pixmaps */
+  PixmapLoader* controlsLoader() { return &m_controls_loader; }
 
 
   void cancelPremove();

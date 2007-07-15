@@ -6,7 +6,7 @@
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
-*/
+// */
 
 #include <QDir>
 #include <QFileInfo>
@@ -142,6 +142,10 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_categories["squares"] = c;
   tabWidget->addTab(c, "&Squares");
 
+  c = new Category(NULL, this);
+  m_categories["controls"] = c;
+  tabWidget->addTab(c, "&Controls");
+
   MasterSettings s(".kboard_config_cache");
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
@@ -272,9 +276,7 @@ void PrefTheme::variantChanged() {
   }
 }
 
-QString PrefTheme::getBestTheme(VariantInfo* vi, ThemeType type) {
-  QString category = type == Pieces ? "pieces" :
-                  type == Squares ? "squares" : "figurines";
+QString PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   QString tag = category + "-theme";
   QString deftag = category + "-use-def";
   QString v = vi->name();

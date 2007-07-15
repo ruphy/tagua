@@ -227,7 +227,7 @@ void Board::updateBorder() {
     m_border_items[at++]->moveTo(x, y);
   }
 
-  Loader::PixmapOrMap bord = m_tags_loader.getPixmapMap("border");
+  Loader::PixmapOrMap bord = m_controls_loader.getPixmapMap("border");
   if(const QPixmap* p = boost::get<QPixmap>(&bord)) {
     KGameCanvasTiledPixmap *t = new KGameCanvasTiledPixmap(*p, boardRect().size(), QPoint(),
                                     true, m_canvas_border);
@@ -352,6 +352,9 @@ void Board::onResize(int new_size, bool force_reload) {
 
   // update the size of the tag loader
   m_tags_loader.setSize(m_square_size);
+
+  // update the size of the controls loader
+  m_controls_loader.setSize(m_square_size);
 
   // update canvas background
   updateBackground();
