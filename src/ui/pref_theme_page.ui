@@ -1,0 +1,49 @@
+<ui version="4.0" >
+ <class>PrefThemePage</class>
+ <widget class="QWidget" name="PrefThemePage" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>430</width>
+    <height>467</height>
+   </rect>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QCheckBox" name="m_check" />
+   </item>
+   <item>
+    <widget class="QListWidget" name="m_list" />
+   </item>
+   <item>
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLabel" name="m_label" >
+       <property name="text" >
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="m_resetButton" >
+       <property name="text" >
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QWidget" native="1" name="m_widget" />
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>m_check</tabstop>
+  <tabstop>m_list</tabstop>
+  <tabstop>m_resetButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
