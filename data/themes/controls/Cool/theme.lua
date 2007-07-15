@@ -5,7 +5,7 @@ import("../../pieces/common.lua")
 local border_ratio = 0.67
 local clock_ratio = 2.6
 local clock_height_ratio = 0.4
-local clock_border_ratio = 0.67
+local clock_border_ratio = 0.33
 local pool_width = 3
 local pool_piece_ratio = clock_ratio/pool_width
 
