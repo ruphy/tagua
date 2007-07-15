@@ -92,13 +92,13 @@ end
 theme.clock_caption_rect = function(size)
   local w = size*ratio
   local h = math.floor(w*2/5)
-  return Rect(w*0.02, h*0.2, w*0.4, h*0.38)
+  return Rect(w*0.02, h*0.22, w*0.4, h*0.38)
 end
 
 theme.clock_time_rect = function(size)
   local w = size*ratio
   local h = math.floor(w*2/5)
-  return Rect(w*0.4, h*0.06, w*0.58, h*0.66)
+  return Rect(w*0.4, h*0.08, w*0.58, h*0.66)
 end
 
 theme.clock_player_rect = function(size)
