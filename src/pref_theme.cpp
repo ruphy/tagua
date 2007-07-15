@@ -104,8 +104,8 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   return retv;
 }
 
-OptList PrefTheme::get_file_options(const QString& f) {
-  if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
+OptList PrefTheme::get_file_options(const QString& f, bool load_settings) {
+  if(!reset_settings && boost::shared_ptr<OptList> o = m_new_theme_options[f])
     return *o;
 
   LuaApi::Loader l(NULL);
@@ -117,9 +117,11 @@ OptList PrefTheme::get_file_options(const QString& f) {
     l.clearError();
   }
 
-  SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
-  Settings entry = s_lua.insert(f);
-  options_list_load_from_settings(*o, entry.group("options"));
+  if(!reset_settings) {
+    SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+    Settings entry = s_lua.insert(f);
+    options_list_load_from_settings(*o, entry.group("options"));
+  }
 
   m_new_theme_options[f] = o;
   return *o;

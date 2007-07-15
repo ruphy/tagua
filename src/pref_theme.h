@@ -54,7 +54,7 @@ Q_OBJECT
   std::map<QString, boost::shared_ptr<OptList> > m_new_theme_options;
   CategoryMap m_categories;
 
-  OptList              get_file_options(const QString&);
+  static OptList       get_file_options(const QString&, bool reset_settings = false);
   static ThemeInfoList to_theme_info_list(const QStringList& files, const Settings& s);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);
@@ -63,7 +63,6 @@ private slots:
   void variantChanged();
 
 public:
-
   PrefTheme(QWidget *parent = 0);
   ~PrefTheme();
 
