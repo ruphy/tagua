@@ -44,10 +44,7 @@ theme.border = function(size)
   }
 end
 
-print "hello!!!"
-
 theme.wallpaper = function()
-  print "wallpaper."
   local i
   --i = Image("Wallpapers/autumn.jpg", false)
   --i = Image("Wallpapers/winter.jpg", false)

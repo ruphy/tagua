@@ -84,7 +84,6 @@ void ChessTable::settingsChanged() {
 
   QPixmap bg = m_board->tagsLoader()->getStaticValue<QPixmap>("wallpaper");
   if(!bg.isNull()) {
-    std::cout << "Size is " << bg.size().width() << " "<< bg.size().height()  << std::endl;
     m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
     m_wallpaper->lower();
     m_wallpaper->show();
