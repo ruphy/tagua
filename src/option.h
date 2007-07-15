@@ -310,6 +310,7 @@ class OptionWidget : public QWidget {
   Q_OBJECT
   QList<OptPtr> m_options;
   void setupOptionWidget(QWidget*, OptList&, bool indent = false);
+  void setOptionWidgetValues(QWidget*, OptList&);
   void notifyChange();
 
   friend class OptCheckBox;
@@ -323,6 +324,7 @@ class OptionWidget : public QWidget {
 
 public:
   OptionWidget(const OptList& options, QWidget* parent = NULL);
+  void setValues(OptList& newopts);
 
 signals:
   void changed(const OptList& options);

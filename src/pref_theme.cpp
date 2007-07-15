@@ -104,8 +104,9 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   return retv;
 }
 
-OptList PrefTheme::get_file_options(const QString& f, bool load_settings) {
-  if(!reset_settings && boost::shared_ptr<OptList> o = m_new_theme_options[f])
+OptList PrefTheme::get_file_options(const QString& f, bool reset_settings) {
+  if(!reset_settings)
+  if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
     return *o;
 
   LuaApi::Loader l(NULL);
@@ -327,7 +328,18 @@ PrefThemeCategory::PrefThemeCategory(QWidget* parent, PrefTheme* owner)
 }
 
 void PrefThemeCategory::reset() {
+  if(!m_opt_widget)
+    return;
 
+  QList<QListWidgetItem *> l = m_list->selectedItems();
+  if(l.isEmpty())
+    return;
+
+  int i = l[0]->data(Qt::UserRole).toInt();
+  if(i>=0 && i<m_themes.size()) {
+    OptList ol = m_parent->get_file_options(m_themes[i].file_name, true);
+    qobject_cast<OptionWidget*>(m_opt_widget)->setValues(ol);
+  }
 }
 
 void PrefThemeCategory::themeChanged() {
