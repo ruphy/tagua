@@ -47,12 +47,12 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
     foreach (Settings s_var, s_variants) {
       variants.append(s_var["name"].value<QString>());
     }
-    QString f = s_theme["file-name"].value<QString>();
-    cache.insert(std::make_pair(f, ThemeInfo(f,
+    QString filename = s_theme["file-name"].value<QString>();
+    cache[filename] = ThemeInfo(filename,
                  s_theme["name"].value<QString>(),
                  s_theme["description"].value<QString>(),
                  variants,
-                 QDateTime::fromString(s_theme["last-modified"].value<QString>()))));
+                 QDateTime::fromString(s_theme["last-modified"].value<QString>()));
   }
 
   ThemeInfoList allluafiles;
