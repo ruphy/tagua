@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.background = function(size)
   local dark_square = "#73a26b"
@@ -18,10 +19,7 @@ theme.background = function(size)
 end
 
 theme.validmove = fromColor("#bdaede")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "XBoard"
 theme.description = "XBoard default squares"
-theme.variants = { "Chess" }
+theme.variants = { "Chess[default]" }

@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.options = OptList {
     ColorOpt("square", "Square color", "#EBD6A0"),
@@ -26,9 +27,6 @@ theme.background = function(size)
 end
 
 theme.validmove = fromColor("#bdaede")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "Shogi"
 theme.description = "Shogi-like squares"

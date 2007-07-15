@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.options = OptList {
     ColorOpt("light", "Light square", "white"),
@@ -19,11 +20,6 @@ theme.background = function(size)
   i:fill_rect(Rect(size,size,size,size), light_square)
   return i
 end
-
-theme.validmove = fromColor("#ffff8c")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "Custom Color"
 theme.description = "Squares with a solid custom color."

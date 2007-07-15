@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.background = function(size)
   local upper = Image(size,size)
@@ -12,8 +13,6 @@ end
 
 theme.highlighting = fromSVG("arrow_yellow.svg")
 theme.validmove = fromColor("#bdaede")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "Default"
 theme.description = "Default squares"

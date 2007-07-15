@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.background = function (size)
   local dark_square = Color("#6b829c")
@@ -30,11 +31,6 @@ function alone(color)
   end
 end
 
-theme.validmove = fromColor("#cd9eee")
-theme.highlighting = alone("#80ff80")
-theme.premove = alone("#4040ff")
-theme.selection = alone("#ff4040")
-
 theme.name = "Default"
 theme.description = "Default squares"
-theme.variants = { "Chess[default]", "Shogi", "XiangQi" }
+theme.variants = { "Chess", "Shogi", "XiangQi" }

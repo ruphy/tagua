@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.background = function(size)
   local dark_square = "#008284"
@@ -12,9 +13,6 @@ theme.background = function(size)
 end
 
 theme.validmove = fromColor("#ffff8c")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "BabasChess"
 theme.description = "BabasChess default squares"

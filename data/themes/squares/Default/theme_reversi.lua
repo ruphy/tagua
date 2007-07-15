@@ -1,4 +1,5 @@
 import("../../pieces/common.lua")
+import("selection.lua")
 
 theme.background = function(size)
   local i = Image(size,size)
@@ -11,9 +12,6 @@ theme.background = function(size)
 end
 
 theme.validmove = fromColor("#bdaede")
-theme.highlighting = fromPixmap("square_last.png")
-theme.premove = fromPixmap("square_premove.png")
-theme.selection = fromPixmap("square_select.png")
 
 theme.name = "Default"
 theme.description = "Default squares"

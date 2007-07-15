@@ -20,4 +20,4 @@ theme.white_rook   = fromGlyph("0x0072")
 
 theme.name = "XBoard"
 theme.description = "XBoard pieces, converted\nto TTF with potrace.\n  by Elmar Bartel"
-theme.variants = { "Chess" }
+theme.variants = { "Chess[default]" }

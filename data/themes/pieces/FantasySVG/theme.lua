@@ -43,4 +43,4 @@ theme.white_rook   = fromSVG("wr.svg")
 
 theme.name = "Fantasy"
 theme.description = "Fantasy SVG theme,\n  by Maurizio Monge"
-theme.variants = { "Chess[default]", "Shogi" }
+theme.variants = { "Chess", "Shogi" }

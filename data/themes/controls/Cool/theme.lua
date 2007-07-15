@@ -23,15 +23,18 @@ theme.layout = function(args)
   retv.pool_width  = pool_width;
   retv.pool_piece_size = math.floor(retv.square_size*pool_piece_ratio)
 
+  local d = Point(math.floor((args.width-retv.square_size*(args.grid_size.x+
+                                2*border_ratio+clock_ratio+2*clock_border_ratio))/2),
+                 math.floor((args.height-retv.square_size*(args.grid_size.y+2*border_ratio))/2));
   local clock_border = math.floor(retv.square_size*clock_border_ratio)
   local clock_height = math.floor(retv.clock_size*clock_height_ratio)
   local panel_x = retv.square_size*args.grid_size.x + 2*retv.border_size + clock_border;
-  retv.board_position = Point(retv.border_size, retv.border_size)
-  retv.clock0_position = Point(panel_x, clock_border_ratio*retv.square_size)
-  retv.clock1_position = Point(panel_x, retv.square_size*args.grid_size.y + 2*retv.border_size
+  retv.board_position = d + Point(retv.border_size, retv.border_size)
+  retv.clock0_position = d + Point(panel_x, clock_border_ratio*retv.square_size)
+  retv.clock1_position = d + Point(panel_x, retv.square_size*args.grid_size.y + 2*retv.border_size
                                      - clock_height - clock_border)
-  retv.pool0_position = Point(panel_x, retv.clock0_position.y+clock_height+clock_border);
-  retv.pool1_position = Point(panel_x, retv.clock1_position.y-clock_border);
+  retv.pool0_position = d + Point(panel_x, retv.clock0_position.y+clock_height+clock_border);
+  retv.pool1_position = d + Point(panel_x, retv.clock1_position.y-clock_border);
 
   return retv
 end

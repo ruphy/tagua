@@ -26,10 +26,11 @@ theme.layout = function(args)
   local clock_border = math.floor(retv.square_size*clock_border_ratio)
   local clock_height = math.floor(retv.clock_size*clock_height_ratio)
 
-  retv.board_position = Point(retv.border_size, retv.border_size+clock_height+2*clock_border)
-  retv.clock0_position = Point(args.grid_size.x*retv.square_size+2*retv.border_size
+  local x = math.floor(args.width/2 - retv.border_size-args.grid_size.y*retv.square_size/2)
+  retv.board_position = Point(x + retv.border_size, retv.border_size+clock_height+2*clock_border)
+  retv.clock0_position = Point(x + args.grid_size.x*retv.square_size+2*retv.border_size
                                             -retv.clock_size-clock_border,   clock_border)
-  retv.clock1_position = Point(clock_border, clock_border)
+  retv.clock1_position = Point(x + clock_border, clock_border)
   retv.pool0_position = Point();
   retv.pool1_position = Point();
 
@@ -50,6 +51,10 @@ function create_clock(col)
     local h = math.floor(w*clock_height_ratio)
     local i = Image(w,h)
     i:clear(col)
+    i:draw_line(Point(0,0),Point(w,0), "black", 2);
+    i:draw_line(Point(0,0),Point(0,h), "black", 2);
+    i:draw_line(Point(w,h),Point(w,0), "black", 2);
+    i:draw_line(Point(w,h),Point(0,h), "black", 2);
     return i
   end
 end
@@ -75,17 +80,17 @@ end
 
 theme.clock_caption_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.02, h*0.22, w*0.4, h*0.38)
+  return Rect(0, h*0.1, w*0.5, h*0.7)
 end
 
 theme.clock_time_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.4, h*0.08, w*0.58, h*0.66)
+  return Rect(w*0.4, h*0.05, w*0.7, h*0.8)
 end
 
 theme.clock_player_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.14, h*0.68, w*0.69, h*0.28)
+  return Rect(0, h*0.68, w, h*0.28)
 end
 
 theme.name = "XBoard"
