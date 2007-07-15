@@ -30,14 +30,23 @@ namespace Animate {
 
 Scheme::~Scheme() { }
 
-move::move(const NamedSprite& sprite, const Point& to)
+move::move(const NamedSprite& sprite, const Point& to, int type)
 : m_sprite(sprite)
-, m_to(to) { }
+, m_to(to)
+, m_type(type) { }
 
 AnimationPtr move::run(const PointConverter* converter, AnimationType type) const {
   switch (type) {
-  case Normal:
-    return AnimationPtr(new MovementAnimation(m_sprite.sprite(), converter->toReal(m_to)));
+  case Normal: {
+    MovementAnimation* mov;
+    if (m_type & LShaped) {
+      mov = new KnightMovementAnimation(m_sprite.sprite(), converter->toReal(m_to), m_type & Rotating);
+    }
+    else {
+      mov = new MovementAnimation(m_sprite.sprite(), converter->toReal(m_to), m_type & Rotating);
+    }
+    return AnimationPtr(mov);
+  }
   case Instant:
   default:
     return AnimationPtr(new InstantAnimation(m_sprite.sprite(), converter->toReal(m_to)));

@@ -41,29 +41,10 @@ class Position {
 public:
   typedef typename P::Type  Type;
   typedef typename P::Color Color;
-  typedef std::map<Type, int> PlayerPool;
-  typedef std::map<Color, PlayerPool> Pool;
-
-  class PoolReference {
-    PlayerPool* m_p_pool;
-    Color m_color;
-  public:
-
-    PoolReference(PlayerPool* p, Color color)
-      : m_p_pool(p)
-      , m_color(color) {
-    }
-    int size();
-    int insert(int idx, const P& p);
-    P get(int idx);
-    P take(int idx);
-  };
-
 protected:
   Color m_turn;
 
   B m_board;
-  Pool m_pool;
   Point m_enPassantSquare;
 
   bool m_castleWhiteKing : 1;
@@ -109,13 +90,6 @@ public:
 
   PathInfo path(const Point&, const Point&) const;
   const Point& enPassantSquare() const { return m_enPassantSquare; }
-
-  virtual Pool& rawPool() { return m_pool; }
-  virtual const Pool& rawPool() const { return m_pool; }
-  virtual PoolReference pool(int index) {
-    Color c = static_cast<Color>(index);
-    return PoolReference(&m_pool[c], c);
-  }
 
   virtual P get(const Point& p) const {
     return valid(p) ? m_board[p] : P();
@@ -206,68 +180,6 @@ std::ostream& operator<<(std::ostream& os, const class GenericPosition&);
 #include "algebraicnotation.h"
 
 template <typename M, typename P, typename B>
-int Position<M, P, B>::PoolReference::size() {
-  if(!m_p_pool)
-    return 0;
-
-  int retv = 0;
-  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i)
-    retv += i->second;
-  return retv;
-}
-
-template <typename M, typename P, typename B>
-int Position<M, P, B>::PoolReference::insert(int idx, const P& p) {
-  if(m_color != p.color()) {
-    ERROR("Inserting a piece in the wrong pool?");
-    return -1;
-  }
-
-  int fill = 0;
-  for(typename PlayerPool::iterator i = m_p_pool->begin(); (i != m_p_pool->end()) && i->first < p.type(); ++i)
-    fill += i->second;
-  int nump = ++(*m_p_pool)[p.type()];
-
-  if(idx < fill)
-    return fill;
-  if(idx >= fill + nump)
-    return fill + nump - 1;
-  return idx;
-}
-
-template <typename M, typename P, typename B>
-P Position<M, P, B>::PoolReference::get(int idx) {
-  if(idx < 0)
-    return P();
-
-  int fill = 0;
-  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i) {
-    if(idx < fill + i->second)
-      return P(m_color, i->first);
-    fill += i->second;
-  }
-  return P();
-}
-
-template <typename M, typename P, typename B>
-P Position<M, P, B>::PoolReference::take(int idx) {
-  if(idx < 0)
-    return P();
-
-  int fill = 0;
-  for(typename PlayerPool::iterator i = m_p_pool->begin(); i != m_p_pool->end(); ++i) {
-    if(idx < fill + i->second) {
-      Type t = i->first;
-      if(!--i->second)
-        m_p_pool->erase(i);
-      return P(m_color, t);
-    }
-    fill += i->second;
-  }
-  return P();
-}
-
-template <typename M, typename P, typename B>
 Position<M, P, B>::Position(int width, int height)
 : m_turn(WHITE)
 , m_board(width, height)
@@ -305,7 +217,6 @@ template <typename M, typename P, typename B>
 Position<M, P, B>::Position(const Position<M, P, B>& other)
 : m_turn(other.m_turn)
 , m_board(other.m_board)
-, m_pool(other.m_pool)
 , m_enPassantSquare(other.m_enPassantSquare)
 , m_castleWhiteKing(other.m_castleWhiteKing)
 , m_castleWhiteQueen(other.m_castleWhiteQueen)

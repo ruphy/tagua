@@ -97,10 +97,18 @@ namespace Animate {
   * Used to animate the movement of a piece to a destination square.
   */
 class move : public Scheme {
+public:
+  enum MovementType {
+    Straight = 0x00,
+    Rotating = 0x01,
+    LShaped = 0x02
+  };
+private:
   const NamedSprite& m_sprite;
   Point m_to;
+  int m_type;
 public:
-  move(const NamedSprite& sprite, const Point& to);
+  move(const NamedSprite& sprite, const Point& to, int type = Straight);
   virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
 };
 

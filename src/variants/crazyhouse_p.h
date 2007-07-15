@@ -13,6 +13,7 @@
 
 #include <map>
 #include "chess.h"
+#include "xchess/pool.h"
 
 class CrazyhousePiece : public ChessPiece {
   bool m_promoted;
@@ -33,10 +34,6 @@ public:
   }
 };
 
-// here we use inheritance, but the best approach would be
-// composition + delegation, since inheriting we get an unwanted
-// automatic conversion CrazyhouseMove -> ChessMove
-/*      UPDATE: is this still true? Maurizio               */
 class CrazyhouseMove : public ChessMove {
 public:
   CrazyhousePiece m_drop;
@@ -64,6 +61,10 @@ public:
   typedef CrazyhouseMove Move;
   typedef CrazyhousePiece Piece;
   typedef Position<Move, Piece, Grid<Piece> > Base;
+  typedef PoolReference<CrazyhousePosition> PoolReference;
+  typedef PoolConstReference<CrazyhousePosition> PoolConstReference;
+  typedef PoolReference::Pool Pool;
+  typedef PoolReference::PlayerPool PlayerPool;
 
   CrazyhousePosition();
   CrazyhousePosition(const OptList& l);
@@ -73,6 +74,8 @@ public:
                                           bool bk, bool bq, const Point& ep);
   virtual CrazyhousePosition* clone() const;
 
+
+  Pool m_pool;
 public:
   virtual CrazyhousePiece::Color moveTurn(const Move&) const;
   virtual bool pseudolegal(Move&) const;
@@ -94,6 +97,12 @@ public:
   }
 
   void dump() const;
+  
+  PoolReference pool(int index);
+  PoolConstReference pool(int index) const;
+    
+  Pool& rawPool();
+  const Pool& rawPool() const;
 };
 
 template <typename MoveTest>

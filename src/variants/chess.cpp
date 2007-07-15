@@ -72,8 +72,13 @@ public:
     NamedSprite captured = m_cinterface->takeSprite(move.to);
     m_cinterface->setSprite(move.to, piece);
 
-    if (piece)
-      res.addPreAnimation(Animate::move(piece, move.to));
+    if (piece) {
+      bool knight = m_cinterface->position()->get(move.from).type() == KNIGHT;
+      int mtype = knight
+        ? Animate::move::LShaped | Animate::move::Rotating 
+        : Animate::move::Straight;
+      res.addPreAnimation(Animate::move(piece, move.to, mtype));
+    }
     else
       ERROR("Bug!!!");
 
@@ -179,7 +184,13 @@ public:
       res.addPreAnimation(Animate::move(rook, rookSquare));
     }
 
-    res.addPreAnimation(Animate::move(piece, move.from));
+    {
+      bool knight = m_cinterface->position()->get(move.to).type() == KNIGHT;
+      int mtype = knight
+        ? Animate::move::LShaped | Animate::move::Rotating 
+        : Animate::move::Straight;
+      res.addPreAnimation(Animate::move(piece, move.from, mtype));
+    }
     return res;
   }
 };

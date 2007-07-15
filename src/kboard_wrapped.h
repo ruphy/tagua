@@ -17,6 +17,7 @@
 #include "kboard.h"
 #include "movefactory.h"
 #include "moveserializer.h"
+#include "nopool.h"
 #include "algebraicnotation.h"
 
 template <typename V> class WrappedPiece;
@@ -178,15 +179,13 @@ public:
   }
 };
 
-
-template <typename Variant>
-class WrappedPool : public AbstractPool {
-  typedef typename Variant::Pool Pool;
+template <typename Variant, typename Pool>
+class WrappedPoolBase : public AbstractPool {
   typedef typename Variant::Piece Piece;
 
   Pool m_pool;
 public:
-  WrappedPool(Pool pool)
+  WrappedPoolBase(Pool pool)
   : m_pool(pool) { }
 
   virtual int size() {
@@ -226,6 +225,38 @@ public:
   }
 };
 
+// simple special case for NoPool
+template <typename Variant>
+class WrappedPoolBase<Variant, NoPool> : public AbstractPool {
+public:
+  WrappedPoolBase(NoPool) { }
+};
+
+template <typename Variant>
+class WrappedPool : public WrappedPoolBase<Variant, typename Variant::Pool> {
+public:
+  WrappedPool(typename Variant::Pool pool)
+  : WrappedPoolBase<Variant, typename Variant::Pool>(pool) { }
+};
+
+/** 
+  * Metafunction that returns a null pointer when
+  * its template argument is NoPool.
+  */
+template <typename Variant, typename Pool>
+struct ReturnPool {
+  static AbstractPool::Ptr apply(typename Variant::Position& position, int player) {
+    return AbstractPool::Ptr(
+      new WrappedPool<Variant>(position.pool(player)));
+  }
+};
+
+template <typename Variant>
+struct ReturnPool<Variant, NoPool> {
+  static AbstractPool::Ptr apply(typename Variant::Position&, int) {
+    return AbstractPool::Ptr();
+  }
+};
 
 template <typename Variant>
 class WrappedPosition : public AbstractPosition {
@@ -277,7 +308,7 @@ public:
   }
 
   virtual AbstractPool::Ptr pool(int player) {
-    return AbstractPool::Ptr(new WrappedPool<Variant>(m_pos.pool(player)));
+    return ReturnPool<Variant, Pool>::apply(m_pos, player);
   }
 
   virtual InteractionType movable(const Point& p) const {

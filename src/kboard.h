@@ -125,7 +125,6 @@ public:
 
 };
 
-
 /**
   * @brief Superclass for pools
   *

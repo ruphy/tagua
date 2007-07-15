@@ -86,11 +86,12 @@ protected:
   double m_time;
   int m_start;
   boost::shared_ptr<Movement> m_movement;
+  bool m_rotate;
 
   virtual boost::shared_ptr<Movement> createMovement(const QPoint& from, const QPoint& to) const;
   void start();
 public:
-  MovementAnimation(const SpritePtr& piece, const QPoint& destination, double speed = 1.0);
+  MovementAnimation(const SpritePtr& piece, const QPoint& destination, bool rotate = false, double speed = 1.0);
   virtual ~MovementAnimation();
   virtual State animationAdvance(int msec);
   virtual void stop();
@@ -102,7 +103,6 @@ public:
 
 class KnightMovementAnimation : public MovementAnimation {
 protected:
-  bool m_rotate;
   virtual boost::shared_ptr<Movement> createMovement(const QPoint& from, const QPoint& to) const;
 public:
   KnightMovementAnimation(const SpritePtr& piece, const QPoint& destination,
