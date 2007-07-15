@@ -39,6 +39,9 @@ typedef boost::shared_ptr<class ExplodeAnimation> ExplodeAnimationPtr;
 typedef boost::shared_ptr<class TeleportAnimation> TeleportAnimationPtr;
 typedef boost::shared_ptr<class CrossFadingAnimation> CrossFadingAnimationPtr;
 
+namespace Animate { class Scheme; }
+typedef boost::shared_ptr<Animate::Scheme> SchemePtr;
+
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 
 typedef boost::shared_ptr<class Game> GamePtr;

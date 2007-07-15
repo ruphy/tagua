@@ -15,6 +15,9 @@
 #include "animation.h"
 #include "fwd.h"
 
+class NamedSprite;
+class Point;
+
 /**
   * A generic animator. 
   * Can be used as a base class for other specialized animators.
@@ -24,15 +27,21 @@ class SimpleAnimator {
   typedef typename UnwrappedGraphicalAPIPtr<Variant>::type API;
   typedef typename Variant::Position Position;
   typedef typename Variant::Move Move;
+  typedef typename Variant::Piece Piece;
   API m_cinterface;
+protected:
+  void updatePool(const Position& final);
+  
+  virtual SchemePtr movement(const NamedSprite& sprite, const Point& from, const Point& to);
 public:
   SimpleAnimator(API cinterface)
     : m_cinterface(cinterface) {
   }
+  virtual ~SimpleAnimator() { }
 
   AnimationGroupPtr warp(const Position& final);
-  AnimationGroupPtr forward(const Position& final, const Move&);
-  AnimationGroupPtr back(const Position& final, const Move&);
+  AnimationGroupPtr forward(const Position& final, const Move& move);
+  AnimationGroupPtr back(const Position& final, const Move& move);
 };
 
 
