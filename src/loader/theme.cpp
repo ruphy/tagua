@@ -53,7 +53,7 @@ Theme::~Theme() {
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_file);
-  OptList ol = m_lua_loader.getValue<OptList>("options", 0, true);
+  OptList ol = m_lua_loader.getValue<OptList>("options", 0, NULL, true);
   if(m_lua_loader.error()) {
     m_lua_loader.clearError();
     return;
@@ -80,7 +80,7 @@ void Theme::unrefSize(int size) {
 }
 
 template<typename T>
-T Theme::getValue(const QString& key, int size) {
+T Theme::getValue(const QString& key, int size, const ::LuaApi::LuaValueMap* args) {
   if(m_lua_loader.error())
     return T();
 
@@ -90,7 +90,7 @@ T Theme::getValue(const QString& key, int size) {
     return T();
   }
 
-  T retv = m_lua_loader.getValue<T>(key, size);
+  T retv = m_lua_loader.getValue<T>(key, size, args);
 
   if(m_lua_loader.error()) {
     ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
@@ -101,7 +101,7 @@ T Theme::getValue(const QString& key, int size) {
 }
 
 template<>
-PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size) {
+PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size, const ::LuaApi::LuaValueMap* args) {
   if(m_lua_loader.error())
     return PixmapOrMap();
 
@@ -111,30 +111,33 @@ PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size) {
     return PixmapOrMap();
   }
 
-  SizeCache::PixmapsCache::iterator pix = it->second.m_pixmaps_cache.find(key);
-  if(pix != it->second.m_pixmaps_cache.end())
-    return pix->second;
+  if(!args) {
+    SizeCache::PixmapsCache::iterator pix = it->second.m_pixmaps_cache.find(key);
+    if(pix != it->second.m_pixmaps_cache.end())
+      return pix->second;
+  }
 
-  PixmapOrMap retv = to_pixmap_map(m_lua_loader.getValue< ::LuaApi::ImageOrMap>(key, size));
+  PixmapOrMap retv = to_pixmap_map(m_lua_loader.getValue< ::LuaApi::ImageOrMap>(key, size, args));
   if(m_lua_loader.error()) {
     ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
     m_lua_loader.clearError();
   }
 
-  it->second.m_pixmaps_cache[key] = retv;
+  if(!args)
+    it->second.m_pixmaps_cache[key] = retv;
   return retv;
 }
 
 template<>
-QPixmap Theme::getValue<QPixmap>(const QString& key, int size) {
-  PixmapOrMap p = getValue<PixmapOrMap>(key, size);
+QPixmap Theme::getValue<QPixmap>(const QString& key, int size, const ::LuaApi::LuaValueMap* args) {
+  PixmapOrMap p = getValue<PixmapOrMap>(key, size, args);
   if(QPixmap *px = boost::get<QPixmap>(&p))
     return *px;
   return QPixmap();
 }
 
 template<>
-Glyph Theme::getValue<Glyph>(const QString& key, int size) {
+Glyph Theme::getValue<Glyph>(const QString& key, int size, const ::LuaApi::LuaValueMap* args) {
   if(m_lua_loader.error())
     return Glyph();
 
@@ -144,11 +147,13 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size) {
     return Glyph();
   }
 
-  SizeCache::GlyphsCache::iterator pix = it->second.m_glyphs_cache.find(key);
-  if(pix != it->second.m_glyphs_cache.end())
-    return pix->second;
+  if(!args) {
+    SizeCache::GlyphsCache::iterator pix = it->second.m_glyphs_cache.find(key);
+    if(pix != it->second.m_glyphs_cache.end())
+      return pix->second;
+  }
 
-  Glyph retv = m_lua_loader.getValue<Glyph>(key);
+  Glyph retv = m_lua_loader.getValue<Glyph>(key, size, args);
 
   if(m_lua_loader.error()) {
     ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
@@ -156,14 +161,15 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size) {
   }
 
   retv.m_font.setPointSize(size+retv.m_delta);
-  it->second.m_glyphs_cache[key] = retv;
+  if(!args)
+    it->second.m_glyphs_cache[key] = retv;
   return retv;
 }
 
-template double Theme::getValue<double>(const QString& /*id*/, int /*size*/);
-template QPointF Theme::getValue<QPointF>(const QString& /*id*/, int /*size*/);
-template QRectF Theme::getValue<QRectF>(const QString& /*id*/, int /*size*/);
-template QBrush Theme::getValue<QBrush>(const QString& /*id*/, int /*size*/);
-template QColor Theme::getValue<QColor>(const QString& /*id*/, int /*size*/);
+template double Theme::getValue<double>(const QString&, int, const ::LuaApi::LuaValueMap* args);
+template QPointF Theme::getValue<QPointF>(const QString&, int, const ::LuaApi::LuaValueMap* args);
+template QRectF Theme::getValue<QRectF>(const QString&, int, const ::LuaApi::LuaValueMap* args);
+template QBrush Theme::getValue<QBrush>(const QString&, int, const ::LuaApi::LuaValueMap* args);
+template QColor Theme::getValue<QColor>(const QString&, int, const ::LuaApi::LuaValueMap* args);
 
 } //end namespace Loader

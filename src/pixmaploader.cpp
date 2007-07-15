@@ -95,42 +95,42 @@ void PixmapLoader::initialize() {
 }
 
 template<typename T>
-T PixmapLoader::getValue(const QString& id) {
+T PixmapLoader::getValue(const QString& id, const ::LuaApi::LuaValueMap* args) {
   if(!m_size || m_base.isEmpty())
     return T();
 
   if(!m_loader)
     initialize();
 
-  return m_loader->getValue<T>(id, m_size);
+  return m_loader->getValue<T>(id, m_size, args);
 }
 
-template QPixmap PixmapLoader::getValue<QPixmap>(const QString& /*id*/);
-template Loader::PixmapOrMap PixmapLoader::getValue<Loader::PixmapOrMap>(const QString& /*id*/);
-template Loader::Glyph       PixmapLoader::getValue<Loader::Glyph>(const QString& /*id*/);
-template double  PixmapLoader::getValue<double>(const QString& /*id*/);
-template QPointF PixmapLoader::getValue<QPointF>(const QString& /*id*/);
-template QRectF  PixmapLoader::getValue<QRectF>(const QString& /*id*/);
-template QBrush  PixmapLoader::getValue<QBrush>(const QString& /*id*/);
-template QColor  PixmapLoader::getValue<QColor>(const QString& /*id*/);
+template QPixmap PixmapLoader::getValue<QPixmap>(const QString&, const ::LuaApi::LuaValueMap*);
+template Loader::PixmapOrMap PixmapLoader::getValue<Loader::PixmapOrMap>(const QString&, const ::LuaApi::LuaValueMap*);
+template Loader::Glyph       PixmapLoader::getValue<Loader::Glyph>(const QString&, const ::LuaApi::LuaValueMap*);
+template double  PixmapLoader::getValue<double>(const QString&, const ::LuaApi::LuaValueMap*);
+template QPointF PixmapLoader::getValue<QPointF>(const QString&, const ::LuaApi::LuaValueMap*);
+template QRectF  PixmapLoader::getValue<QRectF>(const QString&, const ::LuaApi::LuaValueMap*);
+template QBrush  PixmapLoader::getValue<QBrush>(const QString&, const ::LuaApi::LuaValueMap*);
+template QColor  PixmapLoader::getValue<QColor>(const QString&, const ::LuaApi::LuaValueMap*);
 
 
 template<typename T>
-T PixmapLoader::getStaticValue(const QString& id) {
+T PixmapLoader::getStaticValue(const QString& id, const ::LuaApi::LuaValueMap* args) {
   if(m_base.isEmpty())
     return T();
 
   if(!m_loader)
     initialize();
 
-  return m_loader->getValue<T>(id, 0);
+  return m_loader->getValue<T>(id, 0, args);
 }
 
-template QPixmap PixmapLoader::getStaticValue<QPixmap>(const QString& /*id*/);
-template Loader::PixmapOrMap PixmapLoader::getStaticValue<Loader::PixmapOrMap>(const QString& /*id*/);
-template Loader::Glyph       PixmapLoader::getStaticValue<Loader::Glyph>(const QString& /*id*/);
-template double  PixmapLoader::getStaticValue<double>(const QString& /*id*/);
-template QPointF PixmapLoader::getStaticValue<QPointF>(const QString& /*id*/);
-template QRectF  PixmapLoader::getStaticValue<QRectF>(const QString& /*id*/);
-template QBrush  PixmapLoader::getStaticValue<QBrush>(const QString& /*id*/);
-template QColor  PixmapLoader::getStaticValue<QColor>(const QString& /*id*/);
+template QPixmap PixmapLoader::getStaticValue<QPixmap>(const QString&, const ::LuaApi::LuaValueMap*);
+template Loader::PixmapOrMap PixmapLoader::getStaticValue<Loader::PixmapOrMap>(const QString&, const ::LuaApi::LuaValueMap*);
+template Loader::Glyph       PixmapLoader::getStaticValue<Loader::Glyph>(const QString&, const ::LuaApi::LuaValueMap*);
+template double  PixmapLoader::getStaticValue<double>(const QString&, const ::LuaApi::LuaValueMap*);
+template QPointF PixmapLoader::getStaticValue<QPointF>(const QString&, const ::LuaApi::LuaValueMap*);
+template QRectF  PixmapLoader::getStaticValue<QRectF>(const QString&, const ::LuaApi::LuaValueMap*);
+template QBrush  PixmapLoader::getStaticValue<QBrush>(const QString&, const ::LuaApi::LuaValueMap*);
+template QColor  PixmapLoader::getStaticValue<QColor>(const QString&, const ::LuaApi::LuaValueMap*);

@@ -13,6 +13,7 @@ set(kboard_SRC
   luaapi/genericwrapper.cpp
   luaapi/loader.cpp
   luaapi/imaging.cpp
+  luaapi/luavalue.cpp
 
   entities/gameentity.cpp
   entities/userentity.cpp

@@ -82,6 +82,11 @@ void ChessTable::settingsChanged() {
   if(m_wallpaper)
     delete m_wallpaper;
 
+  ::LuaApi::LuaValueMap test;
+  test["pluto"] = 7;
+  test["pippo"] = 13;
+  m_board->controlsLoader()->getStaticValue<double>("layout", &test);
+
   QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper");
   if(!bg.isNull()) {
     m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);

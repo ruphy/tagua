@@ -20,7 +20,7 @@ namespace LuaApi {
 //BEGIN Wrapper<QRectF> -------------------------------------------------------
 
 template <>
-class Wrapper<QRectF> : public GenericWrapper<QRectF> {
+class Wrapper<QRectF> : public GenericWrapperByValue<QRectF> {
 public:
   PROPERTY_RW(x, x, setX, number)
   PROPERTY_RW(y, y, setY, number)
@@ -45,7 +45,7 @@ public:
 //BEGIN Wrapper<QPointF> ------------------------------------------------------
 
 template <>
-class Wrapper<QPointF> : public GenericWrapper<QPointF> {
+class Wrapper<QPointF> : public GenericWrapperByValue<QPointF> {
 public:
   PROPERTY_RW(x, x, setX, number)
   PROPERTY_RW(y, y, setY, number)
@@ -97,8 +97,8 @@ public:
 template <>
 class Wrapper<QLinearGradient> : public GradientWrapper<QLinearGradient> {
 public:
-  PROPERTY_RW_CLASS(start, start, setStart, QPointF)
-  PROPERTY_RW_CLASS(finish, finalStop, setFinalStop, QPointF)
+  PROPERTY_RW_P_CLASS(start, start, setStart, QPointF)
+  PROPERTY_RW_P_CLASS(finish, finalStop, setFinalStop, QPointF)
 
   static const char* class_name();
   static void create_index_table(lua_State* l);
@@ -113,9 +113,9 @@ public:
 template <>
 class Wrapper<QRadialGradient> : public GradientWrapper<QRadialGradient> {
 public:
-  PROPERTY_RW_CLASS(center, center, setCenter, QPointF)
+  PROPERTY_RW_P_CLASS(center, center, setCenter, QPointF)
   PROPERTY_RW(radius, radius, setRadius, number)
-  PROPERTY_RW_CLASS(focus, focalPoint, setFocalPoint, QPointF)
+  PROPERTY_RW_P_CLASS(focus, focalPoint, setFocalPoint, QPointF)
 
   static const char* class_name();
   static void create_index_table(lua_State* l);
@@ -130,7 +130,7 @@ public:
 template <>
 class Wrapper<QConicalGradient> : public GradientWrapper<QConicalGradient> {
 public:
-  PROPERTY_RW_CLASS(center, center, setCenter, QPointF)
+  PROPERTY_RW_P_CLASS(center, center, setCenter, QPointF)
   PROPERTY_RW(angle, angle, setAngle, number)
 
   static const char* class_name();

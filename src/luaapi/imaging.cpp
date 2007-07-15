@@ -55,14 +55,17 @@ void Wrapper<QRectF>::create_index_table(lua_State* l) {
 int Wrapper<QRectF>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  QRectF* res;
   switch (n) {
   case 0:
-    res = new QRectF;
+    create(l);
     break;
   case 1:
-    res = new QRectF(*retrieve(l, 1, AssertOk));
-    break;
+    {
+      QRectF res = *retrieve(l, 1, AssertOk);
+      lua_pop(l, 1);
+      create(l,res);
+      break;
+    }
   case 4:
     {
       double x = lua_tonumber(l, 1);
@@ -70,16 +73,14 @@ int Wrapper<QRectF>::constructor(lua_State* l) {
       double width = lua_tonumber(l, 3);
       double height = lua_tonumber(l, 4);
 
-      res = new QRectF(x, y, width, height);
+      lua_pop(l, 4);
+      create(l, x, y, width, height);
     }
     break;
   default:
-    res = 0;
     luaL_error(l, "Wrong parameter list for Rect constructor");
   }
-  lua_pop(l, n);
 
-  allocate(l, res);
   return 1;
 }
 
@@ -113,26 +114,25 @@ void Wrapper<QPointF>::create_index_table(lua_State* l) {
 int Wrapper<QPointF>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  QPointF* res;
   switch(n) {
-  case 1:
-    res = new QPointF(*retrieve(l, 1, AssertOk));
-    break;
+  case 1: {
+      QPointF res = *retrieve(l, 1, AssertOk);
+      lua_pop(l,1);
+      create(l, res);
+      break;
+    }
   case 2: {
     double x = lua_tonumber(l, 1);
     double y = lua_tonumber(l, 2);
-    res = new QPointF(x, y);
+    lua_pop(l,2);
+    create(l, x, y);
     }
     break;
   default:
-    res = 0;
     luaL_error(l, "Wrong argument count for Point constructor");
     break;
   }
 
-  lua_pop(l, n);
-
-  allocate(l, res);
   return 1;
 }
 

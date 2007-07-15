@@ -133,6 +133,23 @@ namespace LuaApi {
     return 1;                                         \
   }
 
+#define PROPERTY_RW_P_CLASS(PROP, GET, SET, CLASS)      \
+  static int get_##PROP(lua_State* l) {               \
+    Wrapper<CLASS>::create(l, retrieve(l, 1, DontCheck)->GET());      \
+    return 1;                                         \
+  }                                                   \
+                                                      \
+  static int set_##PROP(lua_State* l) {               \
+    retrieve(l, 1, DontCheck)->SET( *Wrapper<CLASS>::retrieve(l, 2, AssertOk) );     \
+    return 0;                                         \
+  }
+
+#define PROPERTY_RO_P_CLASS(PROP, GET, CLASS)      \
+  static int get_##PROP(lua_State* l) {               \
+    Wrapper<CLASS>::create(l, retrieve(l, 1, DontCheck)->GET());      \
+    return 1;                                         \
+  }
+
 #define P_PROPERTY_RO(PROP, GET, restype)               \
   static int get_##PROP(lua_State* l) {               \
     lua_push##restype(l, (*retrieve(l, 1, DontCheck))->GET());      \
@@ -587,7 +604,7 @@ int Summable<T>::add_event(lua_State* l) {
   T *p2 = Wrapper<T>::retrieve(l, 2, AssertOk);
   lua_pop(l, n);
 
-  Wrapper<T>::allocate(l, new T(*p1 + *p2));
+  Wrapper<T>::create(l, *p1 + *p2);
 
   return 1;
 }
@@ -601,7 +618,7 @@ int Summable<T>::sub_event(lua_State* l) {
   T *p2 = Wrapper<T>::retrieve(l, 2, AssertOk);
   lua_pop(l, n);
 
-  Wrapper<T>::allocate(l, new T(*p1 - *p2));
+  Wrapper<T>::create(l, *p1 - *p2);
 
   return 1;
 }
@@ -616,7 +633,7 @@ int Summable<T>::unm_event(lua_State* l) {
   T *p1 = Wrapper<T>::retrieve(l, 1, AssertOk);
   lua_pop(l, n);
 
-  Wrapper<T>::allocate(l, new T(-*p1));
+  Wrapper<T>::create(l, -*p1);
 
   return 1;
 }

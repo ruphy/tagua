@@ -112,7 +112,7 @@ OptList PrefTheme::get_file_options(const QString& f, bool reset_settings) {
   LuaApi::Loader l(NULL);
   l.runFile(f);
 
-  boost::shared_ptr<OptList> o(new OptList(l.getValue<OptList>("options", 0, true)));
+  boost::shared_ptr<OptList> o(new OptList(l.getValue<OptList>("options", 0, NULL, true)));
   if(l.error()) {
     ERROR(l.errorString());
     l.clearError();
