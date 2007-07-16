@@ -7,18 +7,18 @@
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:xlink="http://www.w3.org/1999/xlink"
-   xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    width="700pt"
    height="700pt"
    id="svg36220"
    sodipodi:version="0.32"
-   inkscape:version="0.43"
+   inkscape:version="0.44.1"
    version="1.0"
    inkscape:export-filename="/home/maurizio/out/bk.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   sodipodi:docbase="/home/maurizio/out1"
+   sodipodi:docbase="/nfs/home/monge/chess_pieces/svg_fantasy"
    sodipodi:docname="bk.svg">
   <defs
      id="defs36222">
@@ -158,14 +158,14 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.3"
+     inkscape:zoom="1.2"
      inkscape:cx="449.28046"
      inkscape:cy="432.43572"
      inkscape:current-layer="layer1"
      inkscape:document-units="px"
-     inkscape:window-width="838"
-     inkscape:window-height="647"
-     inkscape:window-x="305"
+     inkscape:window-width="1084"
+     inkscape:window-height="739"
+     inkscape:window-x="187"
      inkscape:window-y="52" />
   <metadata
      id="metadata36225">
@@ -241,9 +241,9 @@
        style="fill:url(#linearGradient5312);fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
        style="fill:url(#linearGradient5309);fill-opacity:1;fill-rule:evenodd;stroke:#808080;stroke-width:16;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 328.15625,572.21875 C 212.88335,519.75182 214.26076,419.32727 294.90625,400.90625 C 308.04118,397.90597 347.13794,401.36983 372.96875,400.1875 C 364.74345,377.47191 355.77704,361.36375 364.28125,331.125 C 346.05303,319.3931 321.79339,310.98061 294.15625,309.34375 C 285.90453,308.85503 277.52511,308.64657 269.125,308.75 C 187.92394,309.74981 103.67373,339.28589 91.71875,414 C 74.27,523.0482 170.81113,587.31522 205.5625,702.65625 C 315.87004,639.7479 570.22714,643.75358 675.90625,698.125 C 703.95405,608.9629 815.75708,504.76439 790.75,413.875 C 767.5916,329.70485 655.00768,305.07367 580.71875,309.28125 C 550.61014,310.98654 521.70616,320.73355 500,334.125 C 504.20201,358.09614 495.68511,377.69442 488.625,398.40625 C 522.97011,398.4211 583.22654,390.43444 606.875,403.8125 C 659.1045,433.359 663.0869,539.70911 553.53125,574.03125"
+       d="M 553.53125,574.03125 C 517.29025,558.71802 476.82697,515.20482 431.55311,513.80939 C 387.97852,514.81873 352.99718,552.37314 328.15625,572.21875 C 212.88335,519.75182 214.26076,419.32727 294.90625,400.90625 C 308.04118,397.90597 347.13794,401.36983 372.96875,400.1875 C 364.74345,377.47191 355.77704,361.36375 364.28125,331.125 C 346.05303,319.3931 321.79339,310.98061 294.15625,309.34375 C 285.90453,308.85503 277.52511,308.64657 269.125,308.75 C 187.92394,309.74981 103.67373,339.28589 91.71875,414 C 74.27,523.0482 170.81113,587.31522 205.5625,702.65625 C 315.87004,639.7479 570.22714,643.75358 675.90625,698.125 C 703.95405,608.9629 815.75708,504.76439 790.75,413.875 C 767.5916,329.70485 655.00768,305.07367 580.71875,309.28125 C 550.61014,310.98654 521.70616,320.73355 500,334.125 C 504.20201,358.09614 495.68511,377.69442 488.625,398.40625 C 522.97011,398.4211 583.22654,390.43444 606.875,403.8125 C 659.1045,433.359 663.0869,539.70911 553.53125,574.03125 z "
        id="path23833"
-       sodipodi:nodetypes="csccscsccssccsc" />
+       sodipodi:nodetypes="cccsccscsccssccsc" />
     <path
        sodipodi:nodetypes="cssssc"
        id="path2408"
