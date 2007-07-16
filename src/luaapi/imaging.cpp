@@ -186,14 +186,17 @@ QColor Wrapper<QColor>::get(lua_State* l, int index) {
 int Wrapper<QColor>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  QColor* res;
   switch (n) {
   case 0:
-    res = new QColor();
+    create(l);
     break;
   case 1:
-    res = new QColor(get(l, 1));
-    break;
+    {
+      QColor c = get(l, 1);
+      lua_pop(l, 1);
+      create(l);
+      break;
+    }
   case 3:
   case 4:
     {
@@ -202,16 +205,14 @@ int Wrapper<QColor>::constructor(lua_State* l) {
       int b = int(lua_tonumber(l, 3));
       int a = (n == 3) ? 255 : int(lua_tonumber(l, 4));
 
-      res = new QColor(r, g, b, a);
+      lua_pop(l, n);
+      create(l, r, g, b, a);
     }
     break;
   default:
-    res = 0;
     luaL_error(l, "Wrong parameter list for Color constructor");
   }
-  lua_pop(l, n);
 
-  allocate(l, res);
   return 1;
 }
 
@@ -227,7 +228,7 @@ int GradientWrapper<T>::index_event(lua_State* l) {
   lua_pop(l, 1);
 
   QGradientStops s = g->stops();
-  QColor retv;
+  int retv;
   if(s.size()) {
     int min = 0;
     int max = s.size();
@@ -238,17 +239,13 @@ int GradientWrapper<T>::index_event(lua_State* l) {
       else
         max = mid;
     }
-    if(qAbs(s[max].first-stopnum) < qAbs(s[min].first-stopnum)) {
-      stopnum = s[max].first;
-      retv = s[max].second;
-    }
-    else {
-      stopnum = s[min].first;
-      retv = s[min].second;
-    }
+    if(qAbs(s[max].first-stopnum) < qAbs(s[min].first-stopnum))
+      retv = max;
+    else
+      retv = min;
   }
-  Wrapper<QColor>::allocate(l, new QColor(retv));
-  lua_pushnumber(l, stopnum);
+  Wrapper<QColor>::create(l, s[retv].second);
+  lua_pushnumber(l, s[retv].first);
 
   return 2;
 }
@@ -284,27 +281,23 @@ void Wrapper<QLinearGradient>::create_index_table(lua_State* l) {
 
 int Wrapper<QLinearGradient>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
-  QLinearGradient* res;
 
   switch(n) {
     case 0:
-      res =  new QLinearGradient();
+      create(l);
       break;
     case 2: {
       QPointF* start = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       QPointF* final = Wrapper<QPointF>::retrieve(l, 2, AssertOk);
-      res =  new QLinearGradient(*start, *final);
+      lua_pop(l, 2);
+      create(l, *start, *final);
       break;
     }
     default:
-      res = 0;
       luaL_error(l, "Wrong parameter list for LinearGradient constructor");
       break;
   }
 
-  lua_pop(l, n);
-
-  allocate(l, res);
   return 1;
 }
 
@@ -328,34 +321,31 @@ void Wrapper<QRadialGradient>::create_index_table(lua_State* l) {
 
 int Wrapper<QRadialGradient>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
-  QRadialGradient* res;
 
   switch(n) {
     case 0:
-      res =  new QRadialGradient();
+      create(l);
       break;
     case 2: {
       QPointF* center = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       double radius = lua_tonumber(l, 2);
-      res =  new QRadialGradient(*center, radius);
+      lua_pop(l, 2);
+      create(l, *center, radius);
       break;
     }
     case 3: {
       QPointF* center = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       double radius = lua_tonumber(l, 2);
       QPointF* focus = Wrapper<QPointF>::retrieve(l, 3, AssertOk);
-      res =  new QRadialGradient(*center, radius, *focus);
+      lua_pop(l, 3);
+      create(l, *center, radius, *focus);
       break;
     }
     default:
-      res = 0;
       luaL_error(l, "Wrong parameter list for RadialGradient constructor");
       break;
   }
 
-  lua_pop(l, n);
-
-  allocate(l, res);
   return 1;
 }
 
@@ -377,27 +367,23 @@ void Wrapper<QConicalGradient>::create_index_table(lua_State* l) {
 
 int Wrapper<QConicalGradient>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
-  QConicalGradient* res;
 
   switch(n) {
     case 0:
-      res =  new QConicalGradient();
+      create(l);
       break;
     case 2: {
       QPointF* center = Wrapper<QPointF>::retrieve(l, 1, AssertOk);
       double angle = lua_tonumber(l, 2);
-      res =  new QConicalGradient(*center, angle);
+      lua_pop(l, 2);
+      create(l, *center, angle);
       break;
     }
     default:
-      res = 0;
       luaL_error(l, "Wrong parameter list for Color constructor");
       break;
   }
 
-  lua_pop(l, n);
-
-  allocate(l, res);
   return 1;
 }
 
@@ -435,21 +421,21 @@ QBrush Wrapper<QBrush>::get(lua_State* l, int index) {
 int Wrapper<QBrush>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  QBrush* res;
   switch (n) {
   case 0:
-    res = new QBrush(Qt::NoBrush);
+    create(l, Qt::NoBrush);
     break;
   case 1:
-    res = new QBrush(get(l, 1));
-    break;
+    {
+      QBrush b = get(l, 1);
+      lua_pop(l, n);
+      create(l, b);
+      break;
+    }
   default:
-    res = 0;
     luaL_error(l, "Wrong parameter list for Brush constructor");
   }
-  lua_pop(l, n);
 
-  allocate(l, res);
   return 1;
 }
 
@@ -462,11 +448,7 @@ int Wrapper<QBrush>::rotate(lua_State* l) {
   lua_pop(l, n);
 
   QMatrix m = brush->matrix();
-//   printf("Rbefore:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   m = m * QMatrix().rotate(r);
-//   printf("Rafter:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   brush->setMatrix(m);
   return 0;
 }
@@ -481,12 +463,8 @@ int Wrapper<QBrush>::scale(lua_State* l) {
   lua_pop(l, n);
 
   QMatrix m = brush->matrix();
-//   printf("before:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   m = m * QMatrix().scale(x, y);
   brush->setMatrix(m);
-//   printf("after:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
   return 0;
 }
 
@@ -501,11 +479,7 @@ int Wrapper<QBrush>::translate(lua_State* l) {
     lua_pop(l, n);
 
     QMatrix m = brush->matrix();
-//   printf("before:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
     m = m * QMatrix().translate(x, y);
-//   printf("after:\n");
-//   printf("%g %g\n%g %g\n%g %g\n", m.m11(), m.m12(), m.m21(), m.m22(), m.dx(), m.dy());
     brush->setMatrix(m);
   }
   else {
@@ -550,17 +524,21 @@ void Wrapper<Image>::create_index_table(lua_State* l) {
 
 int Wrapper<Image>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
-  Image* res;
+
   switch (n) {
   case 1:
     {
       if(lua_isstring(l, 1)) {
-        const char* file = lua_tostring(l, 1);
+        QString path = file_path(l, lua_tostring(l, 1));
         Context* context = retrieve_context(l);
-        res = new Image(context, file_path(l, file) );
+        lua_pop(l, 1);
+        create(l, context, path );
       }
-      else
-        res = new Image(*retrieve(l, 1, AssertOk));
+      else {
+        Image *res = retrieve(l, 1, AssertOk);
+        lua_pop(l, 1);
+        create(l, *res );
+      }
     }
     break;
   case 2:
@@ -568,23 +546,22 @@ int Wrapper<Image>::constructor(lua_State* l) {
       if(lua_isnumber(l, 1)) {
         int width = static_cast<int>(lua_tonumber(l, 1));
         int height = static_cast<int>(lua_tonumber(l, 2));
-        res = new Image(width, height);
+        lua_pop(l, 2);
+        create(l, width, height);
       }
       else {
-        const char* file = lua_tostring(l, 1);
+        QString path = file_path(l, lua_tostring(l, 1));
         bool use_cache = lua_toboolean(l, 2);
         Context* context = retrieve_context(l);
-        res = new Image(context, file_path(l, file), use_cache );
+        lua_pop(l, 2);
+        create(l, context, path, use_cache );
       }
     }
     break;
   default:
-    res = 0;
     luaL_error(l, "Wrong argument count for Image constructor");
   }
-  lua_pop(l, n);
 
-  allocate(l, res);
   return 1;
 }
 
@@ -829,7 +806,7 @@ int Wrapper<Image>::createShadow(lua_State* l) {
   }
   lua_pop(l, n);
 
-  allocate(l, new Image(img->createShadow(radius, color, grow, offset)));
+  create(l, img->createShadow(radius, color, grow, offset));
   return 1;
 }
 
@@ -848,37 +825,38 @@ void Wrapper<Glyph>::create_index_table(lua_State* /*l*/) {
 int Wrapper<Glyph>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  Glyph* res;
   switch(n) {
-  case 1: {
-    unsigned int c = strtoul(lua_tostring(l, 1), NULL, 0);
-    res = new Glyph(c);
+  case 1:
+    {
+      unsigned int c = strtoul(lua_tostring(l, 1), NULL, 0);
+      lua_pop(l, 1);
+      create(l, c);
     }
     break;
-  case 2: {
-    Context* context = retrieve_context(l);
-    const char* f = lua_tostring(l, 1);
-    unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
-    res = new Glyph(context, file_path(l, f), c);
+  case 2:
+    {
+      Context* context = retrieve_context(l);
+      QString path = file_path(l, lua_tostring(l, 1));
+      unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
+      lua_pop(l, 2);
+      create(l, context, path, c);
     }
     break;
-  case 3: {
-    Context* context = retrieve_context(l);
-    const char* f = lua_tostring(l, 1);
-    unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
-    int d = int(lua_tonumber(l, 3));
-    res = new Glyph(context, file_path(l, f), c, d);
+  case 3:
+    {
+      Context* context = retrieve_context(l);
+      QString path = file_path(l, lua_tostring(l, 1));
+      unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
+      int d = int(lua_tonumber(l, 3));
+      lua_pop(l, 3);
+      create(l, context, path, c, d);
     }
     break;
   default:
-    res = 0;
     luaL_error(l, "Wrong argument count for Glyph constructor");
     break;
   }
 
-  lua_pop(l, n);
-
-  allocate(l, res);
   return 1;
 }
 

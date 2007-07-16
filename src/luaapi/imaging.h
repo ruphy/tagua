@@ -63,7 +63,7 @@ public:
 //BEGIN Wrapper<QColor>--------------------------------------------------------
 
 template <>
-class Wrapper<QColor> : public GenericWrapper<QColor> {
+class Wrapper<QColor> : public GenericWrapperByValue<QColor> {
 public:
   PROPERTY_RW_TYPE(r, red, setRed, number, int)
   PROPERTY_RW_TYPE(g, green, setGreen, number, int)
@@ -83,7 +83,7 @@ public:
 //BEGIN GradientWrapper--------------------------------------------------------
 
 template<typename T>
-class GradientWrapper : public GenericWrapper<T> {
+class GradientWrapper : public GenericWrapperByValue<T> {
 public:
   static int index_event(lua_State* l);
   static int newindex_event(lua_State* l);
@@ -144,7 +144,7 @@ public:
 //BEGIN Wrapper<QBrush>--------------------------------------------------------
 
 template <>
-class Wrapper<QBrush> : public GenericWrapper<QBrush> {
+class Wrapper<QBrush> : public GenericWrapperByValue<QBrush> {
 public:
   static const char* class_name();
   static void create_index_table(lua_State* l);
@@ -162,7 +162,7 @@ public:
 //BEGIN Wrapper<Image> --------------------------------------------------------
 
 template<>
-class Wrapper<Loader::Image> : public GenericWrapper<Loader::Image> {
+class Wrapper<Loader::Image> : public GenericWrapperByValue<Loader::Image> {
 public:
   PROPERTY_RO(width, width, number)
   PROPERTY_RO(height, height, number)
@@ -192,7 +192,7 @@ public:
 //BEGIN Wrapper<Glyph> --------------------------------------------------------
 
 template<>
-class Wrapper<Loader::Glyph> : public GenericWrapper<Loader::Glyph> {
+class Wrapper<Loader::Glyph> : public GenericWrapperByValue<Loader::Glyph> {
 public:
   static const char* class_name();
   static void create_index_table(lua_State* l);

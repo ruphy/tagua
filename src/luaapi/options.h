@@ -128,7 +128,7 @@ class Wrapper<ColorOptPtr> : public GenericWrapperByValue<ColorOptPtr> {
 public:
   P_PROPERTY_RO_QSTRING(name, name)
   P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RW_CLASS(value, value, setValue, QColor)
+  PROPERTY_RW_P_CLASS(value, get()->value, get()->setValue, QColor)
 
   static const char* class_name();
   static int to_string(lua_State* l);
