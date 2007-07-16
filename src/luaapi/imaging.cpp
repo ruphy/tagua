@@ -194,7 +194,7 @@ int Wrapper<QColor>::constructor(lua_State* l) {
     {
       QColor c = get(l, 1);
       lua_pop(l, 1);
-      create(l);
+      create(l, c);
       break;
     }
   case 3:
