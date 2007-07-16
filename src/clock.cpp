@@ -139,8 +139,9 @@ QRect ConstrainedText::rect() const {
 
 
 Clock::Clock(int col, KGameCanvasAbstract* canvas)
-  : ClickableCanvas(canvas)
-  , m_color(col) {
+: ClickableCanvas(canvas)
+, m_color(col)
+, m_running(false) {
   m_background   = new KGameCanvasPixmap(this);
   m_caption      = new ConstrainedText(this);
   m_time_label   = new ConstrainedText(this);
@@ -197,6 +198,7 @@ void Clock::tick() {
 void Clock::computeTime() {
   int time = m_total_time;
   if (m_running) time -= m_time.elapsed();
+  
   bool positive;
   int total_secs;
   int decs = -1;

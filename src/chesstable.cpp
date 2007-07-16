@@ -288,27 +288,24 @@ void ChessTable::changeClock(int color) {
 }
 
 void ChessTable::updateTurn(int color) {
-  std::cout << "updatet" << std::endl;
-  for(int i=0;i<2;i++)
+  for(int i=0; i<2; i++)
     m_clocks[i]->activate(color == i);
 }
 
 void ChessTable::stopClocks() {
-  for(int i=0;i<2;i++)
+  for(int i=0; i<2; i++)
     m_clocks[i]->stop();
 }
 
 void ChessTable::updateTime(int white, int black) {
-  std::cout << "update" << std::endl;
   m_clocks[0]->setTime(white);
   m_clocks[1]->setTime(black);
 }
 
 void ChessTable::resetClock() {
-  std::cout << "reset" << std::endl;
   stopClocks();
   updateTime(0, 0);
-  for(int i=0;i<2;i++)
+  for(int i=0; i<2; i++)
     m_clocks[i]->setPlayer(Player());
 }
 
