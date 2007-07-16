@@ -39,8 +39,8 @@ theme.layout = function(args)
   retv.clock0_position = d + Point(panel_x, clock_border_ratio*retv.square_size)
   retv.clock1_position = d + Point(panel_x, retv.square_size*args.grid_size.y + 2*retv.border_size
                                      - clock_height - clock_border)
-  retv.pool0_position = d + Point(panel_x, retv.clock0_position.y+clock_height+clock_border);
-  retv.pool1_position = d + Point(panel_x, retv.clock1_position.y-clock_border);
+  retv.pool0_position = Point(d.x + panel_x, retv.clock0_position.y+clock_height+clock_border);
+  retv.pool1_position = Point(d.x + panel_x, retv.clock1_position.y-clock_border);
 
   return retv
 end
