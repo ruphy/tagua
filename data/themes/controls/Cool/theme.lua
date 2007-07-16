@@ -137,4 +137,4 @@ end
 
 theme.name = "Cool"
 theme.description = "Cool controls"
-theme.variants = { "any" }
+theme.variants = { "any[default]" }

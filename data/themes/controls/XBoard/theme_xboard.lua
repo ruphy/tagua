@@ -95,4 +95,4 @@ end
 
 theme.name = "XBoard"
 theme.description = "XBoard style"
-theme.variants = { "any[default]" }
+theme.variants = { "any" }

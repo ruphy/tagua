@@ -3,6 +3,7 @@ import("selection.lua")
 
 theme.options = OptList {
     ColorOpt("square", "Square color", "#EBD6A0"),
+    IntOpt("alpha", "Alpha", 192, 0, 255),
     BoolOpt("useborder", "Use border", true, OptList {
         ColorOpt("border", "Border color", "#9C8755"),
         IntOpt("bwidth", "Border width", 3, 1, 10)
@@ -11,10 +12,11 @@ theme.options = OptList {
 
 theme.background = function(size)
   local i = Image(size,size)
-  local square = options.square.value
-  local useborder = options.useborder.value
-  local border = options.useborder.sub_options.border.value
-  local bwidth = options.useborder.sub_options.bwidth.value
+  local square = theme.options.square.value
+  local useborder = theme.options.useborder.value
+  local border = theme.options.useborder.sub_options.border.value
+  local bwidth = theme.options.useborder.sub_options.bwidth.value
+  square.a = theme.options.alpha.value
 
   i:clear(square);
   if(useborder) then

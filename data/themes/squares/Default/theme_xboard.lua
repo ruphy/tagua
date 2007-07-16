@@ -22,4 +22,4 @@ theme.validmove = fromColor("#bdaede")
 
 theme.name = "XBoard"
 theme.description = "XBoard default squares"
-theme.variants = { "Chess[default]" }
+theme.variants = { "Chess" }

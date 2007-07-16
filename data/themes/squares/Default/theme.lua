@@ -33,4 +33,4 @@ end
 
 theme.name = "Default"
 theme.description = "Default squares"
-theme.variants = { "Chess", "Shogi", "XiangQi" }
+theme.variants = { "Chess[default]", "Shogi", "XiangQi" }
