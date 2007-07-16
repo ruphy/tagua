@@ -281,11 +281,11 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   QString deftag = category + "-use-def";
   QString v = vi->name();
   SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
-  Settings var = variants.insert(v);
   if (v != vi->themeProxy() &&
-      (var[deftag] | true) )
+      (variants.insert(v)[deftag] | true) )
     v = vi->themeProxy();
 
+  Settings var = variants.insert(v);
   if (var[tag])
     return var[tag].value<QString>();
 
