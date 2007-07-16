@@ -14,8 +14,8 @@
    id="svg2160"
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
-   sodipodi:docbase="/home/maurizio/git/kboard/data/themes/Squares/Default"
-   sodipodi:docname="corner.svg"
+   sodipodi:docbase="/home/maurizio/git/kboard/data/themes/controls/Cool"
+   sodipodi:docname="border_corner.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape">
   <defs
      id="defs2162">
@@ -53,16 +53,16 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.8890873"
-     inkscape:cx="31.918861"
-     inkscape:cy="24.119496"
+     inkscape:cx="48.663583"
+     inkscape:cy="32.914289"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
      inkscape:window-width="872"
-     inkscape:window-height="622"
-     inkscape:window-x="377"
-     inkscape:window-y="116" />
+     inkscape:window-height="705"
+     inkscape:window-x="70"
+     inkscape:window-y="0" />
   <metadata
      id="metadata2165">
     <rdf:RDF>
@@ -80,7 +80,8 @@
      inkscape:groupmode="layer">
     <path
        style="fill:url(#radialGradient3160);fill-opacity:1.0;fill-rule:evenodd;stroke:#000000;stroke-width:3.89244843;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       d="M 0.09375 2.03125 C -2.016491 2.03125 -4.099677 2.1714282 -6.15625 2.375 L -6.15625 70.6875 L 62.125 70.6875 C 62.361981 68.494058 62.46875 66.255614 62.46875 64 C 62.46875 29.800253 34.528672 2.03125 0.09375 2.03125 z "
-       id="path2168" />
+       d="M 0.09375,2.03125 C -2.016491,2.03125 -4.099677,2.1714282 -6.15625,2.375 L -6.15625,70.6875 L 62.125,70.6875 C 62.361981,68.494058 61.98965,66.319623 61.95449,64.064283 C 61.504513,35.199978 34.528672,2.03125 0.09375,2.03125 z "
+       id="path2168"
+       sodipodi:nodetypes="ccccsc" />
   </g>
 </svg>

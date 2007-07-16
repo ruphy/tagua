@@ -56,11 +56,11 @@ theme.border = function(b, args)
   local rb = math.floor(b*2/3);
   local w = args.width;
   local h = args.height;
-  local tr = Image(b, b);  tr:clear(); tr:draw_svg(Rect(0,b-rb,rb,rb), "border_corner.svg"); tr = addShadow(tr, b/3)
+  local tr = Image(b, b);  tr:clear(); tr:draw_svg(Rect(0,b-rb,rb,rb), "border_corner.svg"); tr = addShadow(tr, b/5)
   local tl = Image(b, b);  tl:set_paint_over(false); tl:rotate(270); tl:translate(0,b); tl:draw_image(Rect(0,0,b,b), tr)
   local bl = Image(b, b);  bl:set_paint_over(false); bl:rotate(180); bl:translate(b,b); bl:draw_image(Rect(0,0,b,b), tr)
   local br = Image(b, b);  br:set_paint_over(false); br:rotate(90); br:translate(b,0); br:draw_image(Rect(0,0,b,b), tr)
-  local t = Image(w, b);  t:clear(); t:draw_svg(Rect(0,b-rb,w,rb), "border_top.svg"); t = addShadow(t, b/6)
+  local t = Image(w, b);  t:clear(); t:draw_svg(Rect(0,b-rb,w,rb), "border_top.svg"); t = addShadow(t, b/5)
   local bt = Image(w, b); bt:set_paint_over(false); bt:rotate(180); bt:translate(w,b); bt:draw_image(Rect(0,0,w,b), t)
   local l = Image(b, h);  l:set_paint_over(false); l:rotate(270); l:translate(0,h); l:draw_image(Rect(0,0,h,b), t)
   local r = Image(b, h);  r:set_paint_over(false); r:rotate(90); r:translate(b,0); r:draw_image(Rect(0,0,h,b), t)
