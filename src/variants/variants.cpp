@@ -12,6 +12,7 @@
 #include "kboard.h"
 #include "variants/chess.h"
 #include "variants/crazyhouse.h"
+#include "variants/shogi.h"
 
 #if 0
 #include "variants/atomic.h"
@@ -21,7 +22,6 @@
 #include "variants/connect4.h"
 #include "variants/chainreaction.h"
 #include "variants/dummy.h"
-#include "variants/shogi.h"
 #include "variants/xiangqi.h"
 #endif
 

@@ -361,6 +361,14 @@ public:
   virtual AbstractMove::Ptr getVerboseMove(int turn, const class VerboseNotation&) const = 0;
 
   /**
+    * Create a new piece using the given description string.
+    * \param description A string representing the piece to be created. Its
+    *                     meaning is defined by the variant.
+    * \return A newly created piece.
+    */
+  virtual AbstractPiece::Ptr createPiece(const QString& description) = 0;
+
+  /**
     * \return if moves are done by just clicking
     */
   virtual bool simpleMoves() = 0;

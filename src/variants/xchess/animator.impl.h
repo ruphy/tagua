@@ -8,219 +8,194 @@
   (at your option) any later version.
 */
 
-#if 0
-#include <iostream>
-#include <memory>
+#ifndef XCHESS__ANIMATOR_IMPL_H
+#define XCHESS__ANIMATOR_IMPL_H
 
-#include "variants/xchess/animator.h"
-#include "variants/xchess/move.h"
-#include "animation.h"
-#include "graphicalposition.h"
-#include "piecesprite.h"
-#include "kboard.h"
-#include "pointconverter.h"
-#include "position.h"
+#include "animator.h"
+#include "animationfactory.h"
+#include "namedsprite.h"
 
-using namespace boost;
 
 template <typename Variant>
-SimpleAnimator<Variant>::SimpleAnimator(PointConverter* converter,
-                                        const shared_ptr<GPosition>& position)
-: m_converter(converter)
-, m_position(position) {
-  if(position->getBoolSetting("animations", true)) {
-    m_anim_movement = (bool)position->getBoolSetting("animations.movement", true);
-    m_anim_explode = (bool)position->getBoolSetting("animations.explode", true);
-    m_anim_fade = (bool)position->getBoolSetting("animations.fading", true);
-    m_anim_rotate = (bool)position->getBoolSetting("animations.transform", true);
+AnimationGroupPtr BaseAnimator<Variant>::warp(const Position& final) {
+  const Position* current = m_cinterface->position();
+  AnimationFactory res(m_cinterface->inner());
+  
+  for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
+    Piece c = current->get(i);
+    Piece f = final.get(i);
+  
+    if( !c && f ) {
+      //current->set(i, f);
+      NamedSprite sprite = m_cinterface->setPiece(i, f, false);
+      res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
+    }
+    else if (c && !f) {
+      NamedSprite old_sprite = m_cinterface->takeSprite(i);
+      res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
+    }
+    else if(c && f && !(c == f) ) {
+      NamedSprite old_sprite = m_cinterface->takeSprite(i);
+      NamedSprite sprite = m_cinterface->setPiece(i, f, false);
+      res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
+    }
   }
+  
+  return res;
 }
 
 template <typename Variant>
-shared_ptr<AnimationGroup> SimpleAnimator<Variant>::warp(const Position& final) {
-  AnimationPtr res(new AnimationGroup);
-  // for each point
-  for (Point i = m_position->first(); i <= m_position->last(); i = m_position->next(i)) {
-    QPoint real = m_converter->toReal(i);
-    
-    // retrieve graphical element
-    GElement p = m_position->getElement(i);
-    
-    // retrieve piece
-    const Piece* q = final.get(i);
-    
-    // create animation
-    shared_ptr<Animation> a;
+AnimationGroupPtr BaseAnimator<Variant>::forward(const Position& final, const Move&) {
+  return warp(final);
+}
 
-    // if the graphical element is valid
-    if (p) {
-      // assert that its sprite is valid as well
-      shared_ptr<PieceSprite> sprite = p.sprite();
-      Q_ASSERT(sprite);
 
-      // if the piece differs
-      if (!p.piece().equals(q)) {
-        shared_ptr<PieceSprite> sprite = p.sprite();
+template <typename Variant>
+AnimationGroupPtr BaseAnimator<Variant>::back(const Position& final, const Move&) {
+  return warp(final);
+}
 
-        if (q) {
-          // replace sprite        
-          a = shared_ptr<Animation>(new PromotionAnimation( sprite,
-                                          m_position->setPiece(i, *q, false, false) ));
-        }
-        else {
-          // remove it
-          m_position->removeElement(i);
-          a = shared_ptr<Animation>(new CaptureAnimation(sprite));
-        }
-      }
+template <typename Variant>
+AnimationGroupPtr SimpleAnimator<Variant>::warp(const Position& final) {
+  AnimationFactory res(m_cinterface->inner());
+  
+  res.setGroup(Base::warp(final));
+  
+  return res;
+}
+
+template <typename Variant>
+SchemePtr SimpleAnimator<Variant>::movement(const NamedSprite& sprite, const Point& from, const Point& to) {
+  bool knight = m_cinterface->position()->get(from).type() == KNIGHT;
+  int mtype = knight
+    ? Animate::move::LShaped | Animate::move::Rotating 
+    : Animate::move::Straight;
+  return SchemePtr(new Animate::move(sprite, to, mtype));
+}
+
+template <typename Variant>
+AnimationGroupPtr SimpleAnimator<Variant>::forward(const Position& final, const Move& move) {
+  AnimationFactory res(m_cinterface->inner());
+
+  NamedSprite piece = m_cinterface->takeSprite(move.from);
+  NamedSprite captured = m_cinterface->takeSprite(move.to);
+  m_cinterface->setSprite(move.to, piece);
+
+  if (piece)
+    res.addPreAnimation(*movement(piece, move.from, move.to));
+  else
+    ERROR("Bug!!!");
+
+  if (captured)
+    res.addPostAnimation(Animate::destroy(captured));
+
+  if (move.type() == Move::EnPassantCapture) {
+    Point phantom(move.to.x, move.from.y);
+    NamedSprite capturedPawn = m_cinterface->takeSprite(phantom);
+
+    if (capturedPawn) {
+      QPoint real = m_cinterface->converter()->toReal(phantom);
+      res.addPostAnimation(Animate::disappear(capturedPawn));
     }
-    // if there is no graphical element, simply add it
-    else if (q) {
-      a = shared_ptr<Animation>(new DropAnimation( m_position->setPiece(i, *q, false, false) ));
-    }
+    else
+      ERROR("Bug!!!");
+  }
+  else if (move.type() == Move::Promotion) {
+    Piece promoted = final.get(move.to);
 
-    // add animation to the group
-    if (a) res->addPreAnimation(a);
+    if (promoted) {
+      QPoint real = m_cinterface->converter()->toReal(move.to);
+      NamedSprite old_sprite = m_cinterface->getSprite(move.to);
+      NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, /*false,*/ false);
+
+      res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
+    }
+    else
+      ERROR("Bug!!!");
+  }
+  else if (move.type() == Move::KingSideCastling) {
+    Point rookSquare = move.to + Point(1,0);
+    Point rookDestination = move.from + Point(1,0);
+
+    NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+    m_cinterface->setSprite(rookDestination, rook);
+    res.addPreAnimation(Animate::move(rook, rookDestination));
+  }
+  else if (move.type() == Move::QueenSideCastling) {
+    Point rookSquare = move.to + Point(-2,0);
+    Point rookDestination = move.from + Point(-1,0);
+
+    NamedSprite rook = m_cinterface->takeSprite(rookSquare);
+    m_cinterface->setSprite(rookDestination, rook);
+    res.addPreAnimation(Animate::move(rook, rookDestination));
   }
 
   return res;
 }
 
 template <typename Variant>
-shared_ptr<MovementAnimation> SimpleAnimator<Variant>::createMovementAnimation(
-                                const GElement& element,
-                                const QPoint& destination) {
-  return shared_ptr<MovementAnimation>(new MovementAnimation(element.sprite(),
-                                                             destination, 1.0));
-}
+AnimationGroupPtr SimpleAnimator<Variant>::back(const Position& final, const Move& move) {
+  AnimationFactory res(m_cinterface->inner());
+
+  NamedSprite piece = m_cinterface->takeSprite(move.to);
+  NamedSprite captured;
+  if (Piece captured_piece = final.get(move.to)) {
+    captured = m_cinterface->setPiece(move.to, captured_piece, false);
+    res.addPreAnimation(Animate::appear(captured));
+  }
+
+  if (!piece) {
+    piece = m_cinterface->createPiece(move.to, final.get(move.from), false);
+    res.addPreAnimation(Animate::appear(piece));
+  }
+
+  m_cinterface->setSprite(move.from, piece);
 
 
-template <typename Variant>
-shared_ptr<Animation> SimpleAnimator<Variant>::createCapture(const Point& p,
-                                                         const GElement& /*piece*/,
-                                                         const GElement& captured,
-                                                         const Position& /*pos*/) {
-  if (!captured)
-    return shared_ptr<Animation>();
-  else if(m_anim_explode)
-    return shared_ptr<Animation>(new ExplodeAnimation(captured.sprite(), m_random));
-  else if(m_anim_fade)
-    return shared_ptr<Animation>(new FadeAnimation(captured.sprite(),
-                                              m_converter->toReal(p), 255, 0));
-  else
-    return shared_ptr<Animation>(new CaptureAnimation(captured.sprite()));
-}
+  if (move.type() == Move::EnPassantCapture) {
+    Point phantom(move.to.x, move.from.y);
 
-template <typename Variant>
-shared_ptr<AnimationGroup> SimpleAnimator<Variant>::forward(const Position& final, 
-                                                            const Move& move) {
-  Q_ASSERT(m_position->consistent());
-
-  AnimationPtr res(new AnimationGroup);
-
-  GElement piece = m_position->getElement(move.from);
-  
-  if (piece) {
-    m_position->removeElement(move.from);
-    Q_ASSERT(m_position->consistent());
-    
-    if (move.to.valid()) {
-      GElement captured = m_position->getElement(move.to);
-    
-      m_position->setElement(move.to, piece);
-      Q_ASSERT(m_position->consistent());
-      
-      shared_ptr<Animation> mainAnimation;
-      QPoint hotSpot = piece.sprite()->pos();
-      hotSpot += QPoint(piece.sprite()->pixmap().width() / 2, piece.sprite()->pixmap().height() / 2);
-    
-      // do not animate forward
-      if (!m_anim_movement) {
-        mainAnimation = shared_ptr<InstantAnimation>(
-          new InstantAnimation(piece.sprite(), m_converter->toReal(move.to))
-        );
-      }
-      // the piece is already on the destination square:
-      // do a direct animation
-      else if (m_converter->toLogical(hotSpot) == move.to) {
-        mainAnimation = shared_ptr<MovementAnimation>(
-          new MovementAnimation(piece.sprite(), m_converter->toReal(move.to))
-        );
-      }
-      else
-      // do an animation according to preferences
-        mainAnimation = createMovementAnimation(piece, m_converter->toReal(move.to));
-        
-      res->addPreAnimation(mainAnimation);
-      res->addPostAnimation(createCapture(move.to, piece, captured, final));
+    if (Piece pawn_piece = final.get(phantom)) {
+      NamedSprite captured_pawn = m_cinterface->setPiece(phantom, pawn_piece, false);
+      res.addPreAnimation(Animate::appear(captured_pawn));
     }
   }
-  // if it is a one-click move, do nothing
-  // the warping animation will adjust everything
+  else if (move.type() == Move::Promotion) {
+    Piece pawn_piece = final.get(move.from);
+    if (pawn_piece) {
+      NamedSprite pawn = m_cinterface->createPiece(move.to, pawn_piece, false);
+      res.addPreAnimation(Animate::morph(piece, pawn));
 
-  // add main animation
-  // the animation must be direct when the piece is already
-  // near the destination square
+      // replace piece with pawn
+      m_cinterface->setSprite(move.from, pawn);
+      piece = pawn;
+    }
+  }
+  else if (move.type() == Move::KingSideCastling) {
+    Point rookSquare = move.to + Point(1,0);
+    Point rookDestination = move.from + Point(1,0);
 
-  Q_ASSERT(m_position->consistent());
+    NamedSprite rook = m_cinterface->takeSprite(rookDestination);
+    m_cinterface->setSprite(rookSquare, rook);
 
-  finalizeForwardAnimation(res, final, move);
+    res.addPreAnimation(Animate::move(rook, rookSquare));
+  }
+  else if (move.type() == Move::QueenSideCastling) {
+    Point rookSquare = move.to + Point(-2,0);
+    Point rookDestination = move.from + Point(-1,0);
 
-  AnimationPtr warpingAnimation(new AnimationGroup);
-  warpingAnimation->addPreAnimation(res);
-  warpingAnimation->addPostAnimation(warp(final));
+    NamedSprite rook = m_cinterface->takeSprite(rookDestination);
+    m_cinterface->setSprite(rookSquare, rook);
 
-  return warpingAnimation;
+    res.addPreAnimation(Animate::move(rook, rookSquare));
+  }
+  
+  res.addPreAnimation(*movement(piece, move.to, move.from));
+  
+  return res;
+
 }
 
-
-template <typename Variant>
-shared_ptr<AnimationGroup> SimpleAnimator<Variant>::back(const Position& final,
-                                                         const Move& move) {
-  AnimationPtr res(new AnimationGroup);
-  const Piece* captured = final.get(move.to);
-  GElement piece = m_position->getElement(move.to);
-
-  // the piece could have disappeared
-  // make it reappear!
-  if (!piece) {
-    Q_ASSERT(final.get(move.from));
-    const Piece* disappeared = final.get(move.from);
-    shared_ptr<PieceSprite> sprite = m_position->setPiece(move.to, *disappeared, false, false);
-    res->addPreAnimation(shared_ptr<Animation>(new DropAnimation(sprite)));
-    piece = m_position->getElement(move.to);
-  }
-
-  m_position->setElement(move.from, piece);
-
-  if (captured) {
-    // recreate captured piece sprite
-    QPoint real = m_converter->toReal(move.to);
-    if(m_anim_fade)
-      res->addPreAnimation( shared_ptr<Animation>(new FadeAnimation(
-              m_position->setPiece(move.to, *captured, false, false), real, 0, 255 ) ));
-    else
-      res->addPreAnimation( shared_ptr<Animation>(new DropAnimation(
-              m_position->setPiece(move.to, *captured, false, false) ) ));
-  }
-  else
-    m_position->removeElement(move.to);
-
-  res->addPreAnimation(
-    m_anim_movement
-    ? shared_ptr<Animation>(createMovementAnimation(piece, m_converter->toReal(move.from)))
-    : shared_ptr<Animation>(new InstantAnimation(piece.sprite(), m_converter->toReal(move.from)))
-  );
-
-  finalizeBackAnimation(res, final, move);
-
-  AnimationPtr warpingAnimation(new AnimationGroup);
-  warpingAnimation->addPreAnimation(res);
-  warpingAnimation->addPostAnimation(warp(final));
-
-  return warpingAnimation;
-}
-
-#endif
+#endif // XCHESS__ANIMATOR_IMPL_H
 
 

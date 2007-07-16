@@ -16,6 +16,7 @@
 #include "common.h"
 #include "kboard.h"
 #include "movefactory.h"
+#include "piecefactory.h"
 #include "moveserializer.h"
 #include "nopool.h"
 #include "algebraicnotation.h"
@@ -553,6 +554,12 @@ public:
     Move res = Position::getVerboseMove(static_cast<typename Piece::Color>(turn), m);
     return AbstractMove::Ptr(new WrappedMove<Variant>(res));
   }
+  
+  virtual AbstractPiece::Ptr createPiece(const QString& description) {
+    return AbstractPiece::Ptr(new WrappedPiece<Variant>(
+      PieceFactory<Variant>::createPiece(description)));
+  }
+  
   virtual int type(const QString& str) {
     return Piece::getType(str);
   }

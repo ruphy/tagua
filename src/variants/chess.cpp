@@ -25,9 +25,7 @@ const char *ChessVariant::m_name = "Chess";
 const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
 
-
-typedef UnwrappedGraphicalAPI<ChessVariant> ChessGraphicalAPI;
-
+#if 0
 class ChessAnimator {
   ChessGraphicalAPI::Ptr m_cinterface;
 public:
@@ -194,6 +192,7 @@ public:
     return res;
   }
 };
+#endif
 
 void ChessVariant::forallPieces(PieceFunction& f) {
   f(WHITE, KING);
@@ -215,3 +214,33 @@ VariantInfo* ChessVariant::info() {
     static_chess_variant = new WrappedVariantInfo<ChessVariant>;
   return static_chess_variant;
 }
+
+// piece factory
+template <>
+class PieceFactory<ChessVariant> {
+public:
+  static ChessPiece createPiece(const QString& description) {
+    if (description.size() == 1) {
+      QChar c = description[0];
+      ChessPiece::Color color;
+
+      if (c.category() == QChar::Letter_Uppercase) {
+        color = WHITE;
+      }
+      else if (c.category() == QChar::Letter_Lowercase) {
+        color = BLACK;
+      }
+      else {
+        return ChessPiece();
+      }
+      
+      ChessPiece::Type type = ChessPiece::getType(c);
+      
+      if (type != INVALID_TYPE) {
+        return ChessPiece(color, type);
+      }
+    }
+    
+    return ChessPiece();
+  }
+};

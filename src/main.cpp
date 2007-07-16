@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
   about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
   about.addAuthor(ki18n("Maurizio Monge"), KLocalizedString(), "p.capriotti@gmail.com");
   about.addCredit(ki18n("Jani Huhtanen"), KLocalizedString(), I18N_NOOP("Gaussian blur code") );
-  about.addCredit(ki18n("Marcin Jakubowski"), KLocalizedString(), I18N_NOOP("X11 taskbar flashing") );
   about.addCredit(ki18n("Rici Lake"), KLocalizedString(), I18N_NOOP("funclib lua library") );
 
   KCmdLineOptions options;

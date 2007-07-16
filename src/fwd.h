@@ -19,6 +19,12 @@ typedef boost::shared_ptr<class AbstractPiece> PiecePtr;
 typedef boost::shared_ptr<class AbstractAnimator> AnimatorPtr;
 typedef boost::shared_ptr<class VariantInfo> VariantPtr;
 
+template <typename Variant> class UnwrappedGraphicalAPI;
+template <typename Variant>
+struct UnwrappedGraphicalAPIPtr {
+  typedef boost::shared_ptr<UnwrappedGraphicalAPI<Variant> > type;
+};
+
 typedef boost::shared_ptr<class Animation> AnimationPtr;
 typedef boost::shared_ptr<class AnimationGroup> AnimationGroupPtr;
 typedef boost::shared_ptr<class DropAnimation> DropAnimationPtr;
@@ -32,6 +38,9 @@ typedef boost::shared_ptr<class GrowAnimation> GrowAnimationPtr;
 typedef boost::shared_ptr<class ExplodeAnimation> ExplodeAnimationPtr;
 typedef boost::shared_ptr<class TeleportAnimation> TeleportAnimationPtr;
 typedef boost::shared_ptr<class CrossFadingAnimation> CrossFadingAnimationPtr;
+
+namespace Animate { class Scheme; }
+typedef boost::shared_ptr<Animate::Scheme> SchemePtr;
 
 typedef boost::shared_ptr<class Sprite> SpritePtr;
 

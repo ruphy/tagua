@@ -25,9 +25,11 @@ set(kboard_SRC
   variants/variants.cpp
   variants/xchess/move.cpp
   variants/xchess/piece.cpp
+  
   variants/chess.cpp
   variants/crazyhouse.cpp
-
+  variants/shogi.cpp
+  
   animationfactory.cpp
   movelist.cpp
   infodisplay.cpp
