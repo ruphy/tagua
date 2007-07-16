@@ -78,7 +78,7 @@ theme.wallpaper = function()
     end
     return i
   else
-    return Image()
+    return {}
   end
 end
 
