@@ -31,6 +31,7 @@
 class DragInfo;
 class Animation;
 class UserEntity;
+class ConstrainedText;
 
 class BoardTags;
 typedef boost::shared_ptr<BoardTags> BoardTagsPtr;
@@ -86,6 +87,12 @@ private:
   /** size of the border */
   int         m_border_size;
 
+  /** margin for text */
+  int         m_border_text_near;
+
+  /** far margin for text */
+  int         m_border_text_far;
+
   /** loader class, to load pieces */
   PixmapLoader m_loader;
 
@@ -110,6 +117,9 @@ private:
 
   /** the canvas item that holds board border */
   KGameCanvasGroup *m_canvas_border;
+
+  /** the canvas item that holds board border text */
+  KGameCanvasGroup *m_canvas_border_text;
 
   /** all the tags on the board */
   BoardTagsPtr m_tags;
@@ -151,7 +161,7 @@ private:
   int m_dropped_index;
 
   /** the text items for the border */
-  std::vector<boost::shared_ptr<KGameCanvasItem> > m_border_items;
+  std::vector<ConstrainedText*> m_border_text;
 
   /** this internal function updates the background after the board has been resized  */
   void updateBackground();
@@ -281,7 +291,8 @@ public:
   virtual void onMouseLeave();
 
   /** resize event (new_size is the new size of a SQUARE) */
-  virtual void onResize(int new_size, int border_size, bool force_reload = false);
+  virtual void onResize(int new_size, int border_size, int border_text_near,
+                                   int border_text_far, bool force_reload = false);
 
   /** the position changed (will update the move highlighting) */
   virtual void onPositionChanged();

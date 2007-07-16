@@ -22,6 +22,7 @@
 #include "entities/userentity.h"
 #include "mainanimation.h"
 #include "premove.h"
+#include "constrainedtext.h"
 
 using namespace boost;
 
@@ -45,13 +46,14 @@ Board::Board(KGameCanvasAbstract* parent)
 
   m_tags = BoardTagsPtr(new BoardTags);
 
+  m_canvas_background = new KGameCanvasGroup(this);
+  m_canvas_background->show();
+
   m_canvas_border = new KGameCanvasGroup(this);
-  m_canvas_border->lower();
   m_canvas_border->show();
 
-  m_canvas_background = new KGameCanvasGroup(this);
-  m_canvas_background->lower();
-  m_canvas_background->show();
+  m_canvas_border_text = new KGameCanvasGroup(this);
+  m_canvas_border_text->show();
 
   m_pieces_group = new KGameCanvasGroup(this);
   m_pieces_group->show();
@@ -168,7 +170,9 @@ void Board::setTags(const QString& name, Point p1, Point p2, Point p3,
 }
 
 void Board::recreateBorder() {
-  m_border_items.clear();
+  m_border_text.clear();
+  while(!m_canvas_border_text->items()->isEmpty())
+    delete m_canvas_border_text->items()->first();
 
   if(!m_show_border || m_border_coords.size() == 0)
     return;
@@ -181,20 +185,24 @@ void Board::recreateBorder() {
   for(int i = 0;i<s.x;i++) {
     int c = w ? i : i+s.x+s.y;
     QString l = m_border_coords.size()>c ? m_border_coords[c] : QString();
-    KGameCanvasItem *item = new KGameCanvasText( l, m_border_text_color, m_border_font,
-                                KGameCanvasText::HCenter, KGameCanvasText::VBaseline, this);
+    ConstrainedText *item = new ConstrainedText(m_canvas_border_text);
+    item->setColor(m_border_text_color);
+    item->setText(l);
+    item->setFont(m_border_font);
     item->show();
-    m_border_items.push_back( boost::shared_ptr<KGameCanvasItem>( item ));
+    m_border_text.push_back(item);
   }
 
   for(int w = 0; w<2; w++)
   for(int i = 0;i<s.y;i++) {
     int c = w ? i+s.x : i+2*s.x+s.y;
     QString n = m_border_coords.size()>c ? m_border_coords[c] : QString();
-    KGameCanvasItem *item = new KGameCanvasText( n, m_border_text_color, m_border_font,
-                KGameCanvasText::HCenter, KGameCanvasText::VBaseline, this);
+    ConstrainedText *item = new ConstrainedText(m_canvas_border_text);
+    item->setColor(m_border_text_color);
+    item->setText(n);
+    item->setFont(m_border_font);
     item->show();
-    m_border_items.push_back( boost::shared_ptr<KGameCanvasItem>( item ));
+    m_border_text.push_back(item);
   }
 
   m_pieces_group->raise();
@@ -212,19 +220,20 @@ void Board::updateBorder() {
   int at = 0;
   for(int w = 0; w<2; w++)
   for(int i = 0;i<m_sprites.getSize().x;i++) {
-    int x = (m_flipped ? (m_sprites.getSize().x-1-i):i)*m_square_size+m_square_size/2;
-    int y = +m_border_asc/2+(w?0:m_square_size*3/9+m_square_size*m_sprites.getSize().y)-m_square_size*2/9;
-    m_border_items[at]->setVisible(m_border_size!=0);
-    m_border_items[at++]->moveTo(x, y);
+    int x = (m_flipped  ?  (m_sprites.getSize().x-1-i)  :  i)*m_square_size;
+    int y = w  ?  -m_border_text_far  :  m_square_size*m_sprites.getSize().y+m_border_text_near;
+    m_border_text[at]->setConstrainRect(QRect(x,y,m_square_size,m_border_text_far-m_border_text_near));
+    at++;
   }
 
   for(int w = 0; w<2; w++)
   for(int i = 0;i<m_sprites.getSize().y;i++) {
-    int x = -m_border_size/2+(w?0:m_border_size+m_square_size*m_sprites.getSize().x);
-    int y = (!m_flipped ? (m_sprites.getSize().y-1-i):i)*m_square_size
-                        +m_square_size/2+m_border_asc/2;
-    m_border_items[at]->setVisible(m_border_size!=0);
-    m_border_items[at++]->moveTo(x, y);
+    int x = w  ?  (-m_border_text_far-m_border_text_near)/2
+               :  m_square_size*m_sprites.getSize().x + (m_border_text_far+m_border_text_near)/2;
+    int y = (!m_flipped  ?  (m_sprites.getSize().y-1-i)  :  i)*m_square_size
+                + (m_square_size-m_border_text_far-m_border_text_near)/2;
+    m_border_text[at]->setConstrainRect(QRect(x-m_square_size/2,y,m_square_size,m_border_text_far-m_border_text_near));
+    at++;
   }
 
   ::LuaApi::LuaValueMap params;
@@ -344,12 +353,15 @@ bool Board::doMove(const NormalUserMove& m) {
 }
 
 
-void Board::onResize(int new_size, int border_size, bool force_reload) {
+void Board::onResize(int new_size, int border_size, int border_text_near,
+                                   int border_text_far, bool force_reload) {
   if(m_square_size == new_size && !force_reload)
     return;
 
   m_square_size = new_size;
   m_border_size = border_size;
+  m_border_text_near = border_text_near;
+  m_border_text_far = border_text_far;
 
   // update the size of the piece loader
   m_loader.setSize(m_square_size);

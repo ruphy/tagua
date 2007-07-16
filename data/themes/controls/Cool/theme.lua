@@ -14,6 +14,8 @@ local clock_height_ratio = 0.4
 local clock_border_ratio = 0.33
 local pool_width = 3
 local pool_piece_ratio = clock_ratio/pool_width
+local border_text_near = 0.0
+local border_text_far  = 0.5
 
 theme.layout = function(args)
   for key,value in pairs(args) do
@@ -25,6 +27,8 @@ theme.layout = function(args)
                   args.width/(args.grid_size.x+2*border_ratio+clock_ratio+2*clock_border_ratio),
                                            args.height/(args.grid_size.y+2*border_ratio) ) )
   retv.border_size = math.floor(retv.square_size*border_ratio)
+  retv.border_text_near = math.floor(retv.border_size*border_text_near)
+  retv.border_text_far = math.floor(retv.border_size*border_text_far)
   retv.clock_size  = math.floor(retv.square_size*clock_ratio)
   retv.pool_width  = pool_width;
   retv.pool_piece_size = math.floor(retv.square_size*pool_piece_ratio)

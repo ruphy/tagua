@@ -145,21 +145,25 @@ void ChessTable::layout(bool force_reload) {
 
 #define GET_INT(name)                                    \
   int name = 0;                                          \
-  if(double* val = boost::get<double>(&lvals[#name]))    \
+  {::LuaApi::LuaValueMap::iterator it = lvals.find(#name);\
+  if(double* val = (it==lvals.end()) ? 0 : boost::get<double>(&lvals[#name]) )  \
     name = (int)*val;                                    \
   else                                                   \
-    ERROR("Hey Jack, please set "<<#name<<" to a number in the layout!");
+    ERROR("Hey Jack, please set "<<#name<<" to a number in the layout!");}
 
 #define GET_POINT(name)                                  \
   QPoint name;                                           \
-  if(QPointF* val = boost::get<QPointF>(&lvals[#name]))  \
+  {::LuaApi::LuaValueMap::iterator it = lvals.find(#name);\
+  if(QPointF* val = (it==lvals.end()) ? 0 : boost::get<QPointF>(&lvals[#name]) )  \
     name = val->toPoint();                               \
   else                                                   \
-    ERROR("Hey Jack, please set "<<#name<<" to a point in the layout!");
+    ERROR("Hey Jack, please set "<<#name<<" to a point in the layout!");}
 
   GET_POINT(board_position);
   GET_INT(square_size);
   GET_INT(border_size);
+  GET_INT(border_text_near);
+  GET_INT(border_text_far);
   GET_POINT(clock0_position);
   GET_POINT(clock1_position);
   GET_INT(clock_size);
@@ -169,7 +173,7 @@ void ChessTable::layout(bool force_reload) {
   GET_INT(pool_width);
 
   m_board->moveTo(board_position.x(), board_position.y());
-  m_board->onResize( square_size, border_size, force_reload);
+  m_board->onResize( square_size, border_size, border_text_near, border_text_far, force_reload);
 
   int x = !m_board->flipped();
 
