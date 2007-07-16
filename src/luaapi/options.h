@@ -52,10 +52,10 @@ public:
 template <>
 class Wrapper<BoolOptPtr> : public GenericWrapperByValue<BoolOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RO_P_CLASS(sub_options, subOptions, OptList)
-  P_PROPERTY_RW(value, value, setValue, boolean)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RO_CLASS(sub_options, get()->subOptions, OptList)
+  PROPERTY_RW(value, get()->value, get()->setValue, boolean)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -70,11 +70,11 @@ public:
 template <>
 class Wrapper<IntOptPtr> : public GenericWrapperByValue<IntOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RO_TYPE(min, min, number, int)
-  P_PROPERTY_RO_TYPE(max, max, number, int)
-  P_PROPERTY_RW_TYPE(value, value, setValue, number, int)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RO_TYPE(min, get()->min, number, int)
+  PROPERTY_RO_TYPE(max, get()->max, number, int)
+  PROPERTY_RW_TYPE(value, get()->value, get()->setValue, number, int)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -90,9 +90,9 @@ public:
 template <>
 class Wrapper<StringOptPtr> : public GenericWrapperByValue<StringOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RW_QSTRING(value, value, setValue)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RW_QSTRING(value, get()->value, get()->setValue)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -108,9 +108,9 @@ public:
 template <>
 class Wrapper<UrlOptPtr> : public GenericWrapperByValue<UrlOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RW_QSTRING(value, value, setValue)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RW_QSTRING(value, get()->value, get()->setValue)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -126,9 +126,9 @@ public:
 template <>
 class Wrapper<ColorOptPtr> : public GenericWrapperByValue<ColorOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  PROPERTY_RW_P_CLASS(value, get()->value, get()->setValue, QColor)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RW_CLASS(value, get()->value, get()->setValue, QColor)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -144,9 +144,9 @@ public:
 template <>
 class Wrapper<FontOptPtr> : public GenericWrapperByValue<FontOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  //P_PROPERTY_RW_QSTRING(value, value, setValue)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  //PROPERTY_RW_QSTRING(value, get()->value, get()->setValue)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -162,9 +162,9 @@ public:
 template <>
 class Wrapper<ComboOptPtr> : public GenericWrapperByValue<ComboOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RW_TYPE(selected, selected, setSelected, number, int)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RW_TYPE(selected, get()->selected, get()->setSelected, number, int)
 
   static const char* class_name();
   static int to_string(lua_State* l);
@@ -180,10 +180,10 @@ public:
 template <>
 class Wrapper<SelectOptPtr> : public GenericWrapperByValue<SelectOptPtr> {
 public:
-  P_PROPERTY_RO_QSTRING(name, name)
-  P_PROPERTY_RO_QSTRING(label, label)
-  P_PROPERTY_RO_P_CLASS(options, options, BoolOptList)
-  P_PROPERTY_RW_TYPE(selected, selected, setSelected, number, int)
+  PROPERTY_RO_QSTRING(name, get()->name)
+  PROPERTY_RO_QSTRING(label, get()->label)
+  PROPERTY_RO_CLASS(options, get()->options, BoolOptList)
+  PROPERTY_RW_TYPE(selected, get()->selected, get()->setSelected, number, int)
 
   static const char* class_name();
   static int to_string(lua_State* l);

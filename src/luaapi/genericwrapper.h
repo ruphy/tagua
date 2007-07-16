@@ -43,6 +43,12 @@ namespace LuaApi {
     return 0;                                         \
   }
 
+#define PROPERTY_RO(PROP, GET, restype)               \
+  static int get_##PROP(lua_State* l) {               \
+    lua_push##restype(l, retrieve(l, 1, DontCheck)->GET());      \
+    return 1;                                         \
+  }
+
 #define PROPERTY_RW_TYPE(PROP, GET, SET, restype, TYPE)     \
   static int get_##PROP(lua_State* l) {               \
     lua_push##restype(l, retrieve(l, 1, DontCheck)->GET());      \
@@ -54,86 +60,13 @@ namespace LuaApi {
     return 0;                                         \
   }
 
-#define PROPERTY_RW_CLASS(PROP, GET, SET, CLASS)      \
-  static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::allocate(l, new CLASS(retrieve(l, 1, DontCheck)->GET()));      \
-    return 1;                                         \
-  }                                                   \
-                                                      \
-  static int set_##PROP(lua_State* l) {               \
-    retrieve(l, 1, DontCheck)->SET( *Wrapper<CLASS>::retrieve(l, 2, AssertOk) );     \
-    return 0;                                         \
-  }
-
-#define PROPERTY_RO(PROP, GET, restype)               \
+#define PROPERTY_RO_TYPE(PROP, GET, restype, TYPE)     \
   static int get_##PROP(lua_State* l) {               \
     lua_push##restype(l, retrieve(l, 1, DontCheck)->GET());      \
     return 1;                                         \
   }
 
-#define P_PROPERTY_RW(PROP, GET, SET, restype)          \
-  static int get_##PROP(lua_State* l) {               \
-    lua_push##restype(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }                                                   \
-                                                      \
-  static int set_##PROP(lua_State* l) {               \
-    (*retrieve(l, 1, DontCheck))->SET( lua_to##restype(l, 2) );     \
-    return 0;                                         \
-  }
-
-#define P_PROPERTY_RW_TYPE(PROP, GET, SET, restype, TYPE)     \
-  static int get_##PROP(lua_State* l) {               \
-    lua_push##restype(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }                                                   \
-                                                      \
-  static int set_##PROP(lua_State* l) {               \
-    (*retrieve(l, 1, DontCheck))->SET( TYPE(lua_to##restype(l, 2)) );     \
-    return 0;                                         \
-  }
-
-#define P_PROPERTY_RO_TYPE(PROP, GET, restype, TYPE)     \
-  static int get_##PROP(lua_State* l) {               \
-    lua_push##restype(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }
-
-#define P_PROPERTY_RW_CLASS(PROP, GET, SET, CLASS)      \
-  static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::allocate(l, new CLASS((*retrieve(l, 1, DontCheck))->GET()));      \
-    return 1;                                         \
-  }                                                   \
-                                                      \
-  static int set_##PROP(lua_State* l) {               \
-    (*retrieve(l, 1, DontCheck))->SET( *Wrapper<CLASS>::retrieve(l, 2, AssertOk) );     \
-    return 0;                                         \
-  }
-
-#define P_PROPERTY_RO_CLASS(PROP, GET, CLASS)      \
-  static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::allocate(l, new CLASS((*retrieve(l, 1, DontCheck))->GET()));      \
-    return 1;                                         \
-  }
-
-#define P_PROPERTY_RW_P_CLASS(PROP, GET, SET, CLASS)      \
-  static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::create(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }                                                   \
-                                                      \
-  static int set_##PROP(lua_State* l) {               \
-    (*retrieve(l, 1, DontCheck))->SET( *Wrapper<CLASS>::retrieve(l, 2, AssertOk) );     \
-    return 0;                                         \
-  }
-
-#define P_PROPERTY_RO_P_CLASS(PROP, GET, CLASS)      \
-  static int get_##PROP(lua_State* l) {               \
-    Wrapper<CLASS>::create(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }
-
-#define PROPERTY_RW_P_CLASS(PROP, GET, SET, CLASS)      \
+#define PROPERTY_RW_CLASS(PROP, GET, SET, CLASS)      \
   static int get_##PROP(lua_State* l) {               \
     Wrapper<CLASS>::create(l, retrieve(l, 1, DontCheck)->GET());      \
     return 1;                                         \
@@ -144,34 +77,28 @@ namespace LuaApi {
     return 0;                                         \
   }
 
-#define PROPERTY_RO_P_CLASS(PROP, GET, CLASS)      \
+#define PROPERTY_RO_CLASS(PROP, GET, CLASS)      \
   static int get_##PROP(lua_State* l) {               \
     Wrapper<CLASS>::create(l, retrieve(l, 1, DontCheck)->GET());      \
     return 1;                                         \
   }
 
-#define P_PROPERTY_RO(PROP, GET, restype)               \
+#define PROPERTY_RO_QSTRING(PROP, GET)               \
   static int get_##PROP(lua_State* l) {               \
-    lua_push##restype(l, (*retrieve(l, 1, DontCheck))->GET());      \
-    return 1;                                         \
-  }
-
-#define P_PROPERTY_RO_QSTRING(PROP, GET)               \
-  static int get_##PROP(lua_State* l) {               \
-    QString s = (*retrieve(l, 1, DontCheck))->GET();  \
+    QString s = retrieve(l, 1, DontCheck)->GET();  \
     lua_pushstring(l, s.toAscii().constData());   \
     return 1;                                         \
   }
 
-#define P_PROPERTY_RW_QSTRING(PROP, GET, SET)         \
+#define PROPERTY_RW_QSTRING(PROP, GET, SET)         \
   static int get_##PROP(lua_State* l) {               \
-    QString s = (*retrieve(l, 1, DontCheck))->GET();  \
+    QString s = retrieve(l, 1, DontCheck)->GET();  \
     lua_pushstring(l, s.toAscii().constData());   \
     return 1;                                         \
   }                                                   \
                                                       \
   static int set_##PROP(lua_State* l) {               \
-    (*retrieve(l, 1, DontCheck))->SET( QString(lua_tostring(l, 2)) );     \
+    retrieve(l, 1, DontCheck)->SET( QString(lua_tostring(l, 2)) );     \
     return 0;                                         \
   }
 
