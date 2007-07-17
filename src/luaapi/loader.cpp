@@ -209,13 +209,13 @@ void Loader::retrieve<LuaValueMap>(create_value_data<LuaValueMap>* d, lua_State 
 template<>
 void Loader::retrieve<QImage>(create_value_data<QImage>* d, lua_State *l, int pos) {
   ::Loader::Image *retv = Wrapper< ::Loader::Image>::retrieve(l, pos, AssertOk);
-  d->out = retv->m_image;
+  d->out = retv->image();
 }
 
 template<>
 void Loader::retrieve<ImageOrMap>(create_value_data<ImageOrMap>* d, lua_State *l, int pos) {
   if(::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, pos))
-     d->out = img->m_image;
+     d->out = img->image();
   else if(lua_istable(l, pos)) {
 
     //collect the images in this way to avoid leaking memory if Wrapper::retrieve raises an exception
@@ -228,7 +228,7 @@ void Loader::retrieve<ImageOrMap>(create_value_data<ImageOrMap>* d, lua_State *l
       ::Loader::Image *img = Wrapper< ::Loader::Image>::retrieve(l, -1, AssertOk);
 
       QRect r = rect->toRect();
-      out[rect->toRect()] = img->m_image;
+      out[rect->toRect()] = img->image();
 
       lua_pop(l, 1);
     }

@@ -11,6 +11,7 @@
 #ifndef LOADER__IMAGE_H
 #define LOADER__IMAGE_H
 
+#include <boost/shared_ptr.hpp>
 #include <QColor>
 #include <QMatrix>
 #include <QBrush>
@@ -34,7 +35,7 @@ class Context;
   * @brief The image class to be used with lua
   */
 class Image {
-public:
+private:
   QImage  m_image;
   QMatrix m_draw_matrix;
   double  m_draw_opacity;
@@ -63,6 +64,9 @@ public:
         const QString& file,
         bool use_cache = true);
 
+
+  /** \return the QImage */
+  QImage image() { return m_image; }
 
   /** Returns the width of the image */
   int width() {
@@ -264,14 +268,46 @@ public:
   * @brief A simple class that represents a glyph in a font to be used with lua
   */
 class Glyph {
-public:
+private:
   bool m_font_valid;
   QFont m_font;
   QChar m_char;
   int m_delta;
+
+public:
   Glyph(Context* ctx, const QString&, QChar, int = 0);
   Glyph(QChar = QChar());
+
+  QFont font() { return m_font; }
+  bool fontValid() { return m_font_valid; }
+  QChar ch() { return m_char; }
+  int delta() { return m_delta; }
 };
+
+
+typedef boost::shared_ptr<class Font> FontPtr;
+
+class Font {
+private:
+  friend class Image;
+  friend class Glyph;
+
+  QString     m_file;
+  int         m_id;
+  QStringList m_families;
+  QFont       m_font;
+
+public:
+  Font(int id, int size = 128);
+  Font(const QFont& font);
+  ~Font();
+
+  QFont font() { return m_font; }
+  QStringList families() { return m_families; }
+
+  static FontPtr create(Context* ctx, const QString& file);
+};
+
 
 } //end namespace Loader
 

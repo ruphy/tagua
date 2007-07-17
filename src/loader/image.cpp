@@ -9,7 +9,6 @@
 */
 
 
-#include <boost/shared_ptr.hpp>
 #include <QFont>
 #include <QFontDatabase>
 #include <QPainter>
@@ -24,20 +23,6 @@
 namespace Loader {
 
 //BEGIN Font-------------------------------------------------------------------
-
-class Font {
-public:
-  friend class Image;
-
-  QString     m_file;
-  int         m_id;
-  QStringList m_families;
-  QFont       m_font;
-
-  Font(int id, int size = 128);
-  Font(const QFont& font);
-  ~Font();
-};
 
 Font::Font(int id, int size)
 : m_id(id)
@@ -58,6 +43,20 @@ Font::~Font() {
     QFontDatabase::removeApplicationFont(m_id);
 }
 
+FontPtr Font::create(Context* ctx, const QString& file) {
+  FontPtr retv;
+  if(FontPtr *f = ctx->get<FontPtr>(file))
+    retv = *f;
+  else {
+    int font_id = QFontDatabase::addApplicationFont(file);
+    if(font_id != -1) {
+      retv = FontPtr(new Font(font_id) );
+    }
+    ctx->put(file, retv);
+  }
+  return retv;
+}
+
 //END Font---------------------------------------------------------------------
 
 
@@ -76,7 +75,6 @@ public:
 //END FontGlyph----------------------------------------------------------------
 
 typedef boost::shared_ptr<QSvgRenderer> Svg;
-typedef boost::shared_ptr<Font> FontPtr;
 typedef boost::shared_ptr<FontGlyph> FontGlyphPtr;
 
 
@@ -224,16 +222,7 @@ bool Image::drawGlyph(Context* ctx,
     font_glyph = *f;
   else {
     /* get the font (from cache if possible) */
-    FontPtr font;
-
-    if(FontPtr *f = ctx->get<FontPtr>(file))
-      font = *f;
-    else {
-      int font_id = QFontDatabase::addApplicationFont(file);
-      if(font_id != -1)
-        font = FontPtr(new Font(font_id) );
-      ctx->put(file, font);
-    }
+    FontPtr font = Font::create(ctx, file);
 
     if(!font)
       return false;
@@ -394,17 +383,7 @@ Glyph::Glyph(Context* ctx, const QString& file, QChar c, int d)
   , m_char(c)
   , m_delta(d) {
   if(ctx) {
-    FontPtr ff;
-    if(FontPtr *f = ctx->get<FontPtr>(file))
-      ff = *f;
-    else {
-      int font_id = QFontDatabase::addApplicationFont(file);
-      if(font_id != -1) {
-        ff = FontPtr(new Font(font_id) );
-      }
-      ctx->put(file, ff);
-    }
-    if(ff) {
+    if(FontPtr ff = Font::create(ctx, file)) {
       m_font_valid = true;
       m_font = ff->m_font;
     }

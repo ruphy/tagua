@@ -160,7 +160,7 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size, const ::LuaApi::LuaVa
     m_lua_loader.clearError();
   }
 
-  retv.m_font.setPointSize(size+retv.m_delta);
+  retv.font().setPointSize(size+retv.delta());
   if(!args)
     it->second.m_glyphs_cache[key] = retv;
   return retv;

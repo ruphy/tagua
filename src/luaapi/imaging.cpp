@@ -413,7 +413,7 @@ QBrush Wrapper<QBrush>::get(lua_State* l, int index) {
   else if(QConicalGradient* g = Wrapper<QConicalGradient>::retrieve(l, index))
     return QBrush(*g);
   else if(Loader::Image* img = Wrapper<Image>::retrieve(l, index))
-    return QBrush(img->m_image);
+    return QBrush(img->image());
   else
     return QBrush(Wrapper<QColor>::get(l, index));
 }
