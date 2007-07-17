@@ -78,7 +78,7 @@ theme.border = function(b, args)
 end
 
 theme.border_color = function()
-  return "#ff0000";
+  return "#108060";
 end
 
 theme.border_font = function()

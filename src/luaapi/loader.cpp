@@ -175,6 +175,16 @@ void Loader::retrieve<QString>(create_value_data<QString>* d, lua_State *l, int 
 }
 
 template<>
+void Loader::retrieve<QColor>(create_value_data<QColor>* d, lua_State *l, int pos) {
+  d->out = Wrapper<QColor>::get(l, pos);
+}
+
+template<>
+void Loader::retrieve<QBrush>(create_value_data<QBrush>* d, lua_State *l, int pos) {
+  d->out = Wrapper<QBrush>::get(l, pos);
+}
+
+template<>
 void Loader::retrieve<QStringList>(create_value_data<QStringList>* d, lua_State *l, int pos) {
   if(lua_isstring(l, pos))
     d->out << QString(lua_tostring(l, -1));
