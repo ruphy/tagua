@@ -33,7 +33,7 @@ void DropAnimatorMixin<Base>::updatePool(const Position& final) {
 
       if(nb < na) {
         for(int i = nb; i < na; i++)
-          m_cinterface->insertPoolPiece(color, pos, Piece(c, after_it->first) );
+          m_cinterface->insertPoolPiece(color, pos + (i - nb), Piece(c, after_it->first) );
       }
       else if(na < nb) {
         for(int i = na; i < nb; i++)
@@ -42,8 +42,10 @@ void DropAnimatorMixin<Base>::updatePool(const Position& final) {
 
       if(!skip_before)
         ++before_it;
-      if(!skip_after)
+      if(!skip_after) {
+        pos += after_it->second;
         ++after_it;
+      }
     }
   }
 }
