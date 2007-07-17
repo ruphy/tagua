@@ -269,6 +269,7 @@ public:
   */
 class Glyph {
 private:
+  friend class Theme;
   bool m_font_valid;
   QFont m_font;
   QChar m_char;
