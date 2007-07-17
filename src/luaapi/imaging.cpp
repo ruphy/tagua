@@ -521,8 +521,8 @@ int Wrapper<QFont>::constructor(lua_State* l) {
     }
   case 3: {
       QString family = lua_tostring(l, 1);
-      bool bold = lua_toboolean(l, 1);
-      bool italic = lua_toboolean(l, 1);
+      bool bold = lua_toboolean(l, 2);
+      bool italic = lua_toboolean(l, 3);
       lua_pop(l, 3);
       create(l, family, 12, bold ? QFont::Bold : QFont::Normal, italic);
       break;

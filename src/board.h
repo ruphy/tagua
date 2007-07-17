@@ -143,14 +143,6 @@ private:
   Point m_premove_from;
   Point m_premove_to;
 
-  /** ascent of the font used for the border */
-  int m_border_asc;
-
-  /** show the border if true */
-  bool m_show_border;
-
-  QColor m_border_color;
-
   QColor m_border_text_color;
 
   QFont m_border_font;

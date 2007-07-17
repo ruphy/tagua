@@ -82,11 +82,8 @@ void Board::settingsChanged() {
   m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );
   m_main_animation->setDelay( int(70.0*pow(10.0, -smoothness/32.0)) );
 
-  Settings s_border = settings.group("board-border");
-  m_show_border = s_border.flag("visible", true);
-  m_border_color = (s_border["color"] |= QColor(Qt::white));
-  m_border_text_color = (s_border["text-color"] |= QColor(Qt::black));
-  m_border_font = (s_border["font"] |= QApplication::font());
+  m_border_text_color = m_controls_loader.getStaticValue<QColor>("border_color");
+  m_border_font = m_controls_loader.getStaticValue<QFont>("border_font");
 
   recreateBorder();
 }
@@ -174,11 +171,8 @@ void Board::recreateBorder() {
   while(!m_canvas_border_text->items()->isEmpty())
     delete m_canvas_border_text->items()->first();
 
-  if(!m_show_border || m_border_coords.size() == 0)
+  if(m_border_coords.size() == 0)
     return;
-
-  QFontMetrics fm(m_border_font);
-  m_border_asc = fm.ascent() + (m_border_size-fm.height())/2;
 
   Point s = m_sprites.getSize();
   for(int w = 0; w<2; w++)
@@ -189,6 +183,7 @@ void Board::recreateBorder() {
     item->setColor(m_border_text_color);
     item->setText(l);
     item->setFont(m_border_font);
+    item->setColor(m_border_text_color);
     item->show();
     m_border_text.push_back(item);
   }
@@ -201,6 +196,7 @@ void Board::recreateBorder() {
     item->setColor(m_border_text_color);
     item->setText(n);
     item->setFont(m_border_font);
+    item->setColor(m_border_text_color);
     item->show();
     m_border_text.push_back(item);
   }
@@ -214,7 +210,7 @@ void Board::updateBorder() {
   while(!m_canvas_border->items()->isEmpty())
     delete m_canvas_border->items()->first();
 
-  if(!m_show_border || !m_square_size)
+  if(!m_square_size)
     return;
 
   int at = 0;
@@ -222,6 +218,8 @@ void Board::updateBorder() {
   for(int i = 0;i<m_sprites.getSize().x;i++) {
     int x = (m_flipped  ?  (m_sprites.getSize().x-1-i)  :  i)*m_square_size;
     int y = w  ?  -m_border_text_far  :  m_square_size*m_sprites.getSize().y+m_border_text_near;
+
+    m_border_text[at]->setVisible(m_border_text_near != m_border_text_far);
     m_border_text[at]->setConstrainRect(QRect(x,y,m_square_size,m_border_text_far-m_border_text_near));
     at++;
   }
@@ -232,6 +230,8 @@ void Board::updateBorder() {
                :  m_square_size*m_sprites.getSize().x + (m_border_text_far+m_border_text_near)/2;
     int y = (!m_flipped  ?  (m_sprites.getSize().y-1-i)  :  i)*m_square_size
                 + (m_square_size-m_border_text_far-m_border_text_near)/2;
+
+    m_border_text[at]->setVisible(m_border_text_near != m_border_text_far);
     m_border_text[at]->setConstrainRect(QRect(x-m_square_size/2,y,m_square_size,m_border_text_far-m_border_text_near));
     at++;
   }

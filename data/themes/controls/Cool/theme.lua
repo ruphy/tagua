@@ -6,7 +6,9 @@ theme.options = OptList {
       BoolOpt("blur", "Enable blur", false),
       UrlOpt("file", "File:", "Wallpapers/dragonballz.jpg")
   }),
-  FontOpt("clock", "Clock font", Font("Sans", true, false))
+  FontOpt("clock_font1", "Clock text font", Font("Sans", true, true)),
+  FontOpt("clock_font2", "Clock time font", Font("Sans", true, false)),
+  FontOpt("border_font", "Border font", Font("Sans", false, false))
 }
 
 local border_ratio = 0.67
@@ -81,6 +83,14 @@ theme.border = function(b, args)
   }
 end
 
+theme.border_color = function()
+  return "#ff0000";
+end
+
+theme.border_font = function()
+  return theme.options.border_font.value;
+end
+
 theme.wallpaper = function()
   if(theme.options.wallpaper.value) then
     local i = Image(theme.options.wallpaper.sub_options.file.value, false)
@@ -132,12 +142,24 @@ end
 
 theme.clock_time_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
-  return Rect(w*0.4, h*0.08, w*0.58, h*0.66)
+  return Rect(w*0.4, h*0.1, w*0.6, h*0.62)
 end
 
 theme.clock_player_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
   return Rect(w*0.14, h*0.68, w*0.69, h*0.28)
+end
+
+theme.clock_caption_font = function()
+  return theme.options.clock_font1.value;
+end
+
+theme.clock_time_font = function()
+  return theme.options.clock_font2.value;
+end
+
+theme.clock_player_font = function()
+  return theme.options.clock_font1.value;
 end
 
 theme.name = "Cool"

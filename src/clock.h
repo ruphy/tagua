@@ -77,7 +77,7 @@ public:
 
   void resize(int size);
   int height() { return m_height; }
-  void settingsChanged() { }
+  void settingsChanged();
 
 private slots:
   void tick();

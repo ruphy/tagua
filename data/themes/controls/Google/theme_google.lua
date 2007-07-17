@@ -5,7 +5,10 @@ theme.options = OptList {
   BoolOpt("wallpaper", "Draw wallpaper", false, OptList {
       BoolOpt("blur", "Enable blur", false),
       UrlOpt("file", "File:", "")
-  })
+  }),
+  FontOpt("clock_font1", "Clock text font", Font("Sans", false, true)),
+  FontOpt("clock_font2", "Clock time font", Font("Sans", false, false)),
+  FontOpt("border_font", "Border font", Font("Sans", false, false))
 }
 
 local border_ratio = 0.67
@@ -74,6 +77,14 @@ theme.border = function(b, args)
   }
 end
 
+theme.border_color = function()
+  return "#ff0000";
+end
+
+theme.border_font = function()
+  return theme.options.border_font.value;
+end
+
 theme.wallpaper = function()
   if(theme.options.wallpaper.value) then
     local i = Image(theme.options.wallpaper.sub_options.file.value, false)
@@ -128,6 +139,18 @@ end
 theme.clock_player_rect = function(w)
   local h = math.floor(w*clock_height_ratio)
   return Rect(0, h*0.78, w, h*0.21)
+end
+
+theme.clock_caption_font = function()
+  return theme.options.clock_font1.value;
+end
+
+theme.clock_time_font = function()
+  return theme.options.clock_font2.value;
+end
+
+theme.clock_player_font = function()
+  return theme.options.clock_font1.value;
 end
 
 theme.name = "Google"

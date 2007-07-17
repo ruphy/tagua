@@ -73,7 +73,7 @@ void Clock::tick() {
 void Clock::computeTime() {
   int time = m_total_time;
   if (m_running) time -= m_time.elapsed();
-  
+
   bool positive;
   int total_secs;
   int decs = -1;
@@ -162,6 +162,12 @@ void Clock::resize(int size) {
 
   m_caption->setConstrainRect(m_controls_loader.getValue<QRectF>("clock_caption_rect").toRect());
   m_caption->setColor(m_active ? m_active_text : m_inactive_text);
+}
+
+void Clock::settingsChanged() {
+  m_caption->setFont(m_controls_loader.getStaticValue<QFont>("clock_caption_font"));
+  m_player_name->setFont(m_controls_loader.getStaticValue<QFont>("clock_player_font"));
+  m_time_label->setFont(m_controls_loader.getStaticValue<QFont>("clock_time_font"));
 }
 
 #if 1-1
