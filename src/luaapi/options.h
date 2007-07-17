@@ -146,7 +146,7 @@ class Wrapper<FontOptPtr> : public GenericWrapperByValue<FontOptPtr> {
 public:
   PROPERTY_RO_QSTRING(name, get()->name)
   PROPERTY_RO_QSTRING(label, get()->label)
-  //PROPERTY_RW_QSTRING(value, get()->value, get()->setValue)
+  PROPERTY_RW_CLASS(value, get()->value, get()->setValue, QFont)
 
   static const char* class_name();
   static int to_string(lua_State* l);

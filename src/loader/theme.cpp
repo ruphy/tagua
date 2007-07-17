@@ -171,6 +171,7 @@ template QPointF Theme::getValue<QPointF>(const QString&, int, const ::LuaApi::L
 template QRectF Theme::getValue<QRectF>(const QString&, int, const ::LuaApi::LuaValueMap* args);
 template QBrush Theme::getValue<QBrush>(const QString&, int, const ::LuaApi::LuaValueMap* args);
 template QColor Theme::getValue<QColor>(const QString&, int, const ::LuaApi::LuaValueMap* args);
+template QFont Theme::getValue<QFont>(const QString&, int, const ::LuaApi::LuaValueMap* args);
 template ::LuaApi::LuaValueMap Theme::getValue< ::LuaApi::LuaValueMap>(const QString&, int, const ::LuaApi::LuaValueMap* args);
 
 } //end namespace Loader

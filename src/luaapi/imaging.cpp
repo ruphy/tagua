@@ -9,6 +9,7 @@
 */
 
 #include <cmath>
+#include <QApplication>
 #include "luaapi/imaging.h"
 
 
@@ -425,10 +426,9 @@ int Wrapper<QBrush>::constructor(lua_State* l) {
   case 0:
     create(l, Qt::NoBrush);
     break;
-  case 1:
-    {
+  case 1: {
       QBrush b = get(l, 1);
-      lua_pop(l, n);
+      lua_pop(l, 1);
       create(l, b);
       break;
     }
@@ -496,6 +496,52 @@ int Wrapper<QBrush>::translate(lua_State* l) {
 //END Wrapper<QBrush>----------------------------------------------------------
 
 
+//BEGIN Wrapper<QFont>--------------------------------------------------------
+
+const char* Wrapper<QFont>::class_name() {
+  return "Font";
+}
+
+void Wrapper<QFont>::create_index_table(lua_State* l) {
+  set_meta_method(l, &to_string, "__tostring");
+}
+
+int Wrapper<QFont>::constructor(lua_State* l) {
+  const int n = lua_gettop(l);
+
+  switch (n) {
+  case 0:
+    create(l, QApplication::font());
+    break;
+  case 1: {
+      QFont *b = retrieve(l, 1, AssertOk);
+      lua_pop(l, 1);
+      create(l, *b);
+      break;
+    }
+  case 3: {
+      QString family = lua_tostring(l, 1);
+      bool bold = lua_toboolean(l, 1);
+      bool italic = lua_toboolean(l, 1);
+      lua_pop(l, 3);
+      create(l, family, 12, bold ? QFont::Bold : QFont::Normal, italic);
+      break;
+    }
+  default:
+    luaL_error(l, "Wrong parameter list for Font constructor");
+  }
+
+  return 1;
+}
+
+int Wrapper<QFont>::to_string(lua_State* l) {
+  QFont *r = retrieve(l, 1, AssertOk);
+  lua_pushstring(l, r->rawName().toAscii().constData());
+  return 1;
+}
+
+//END Wrapper<QFont>----------------------------------------------------------
+
 //BEGIN Wrapper<Image> --------------------------------------------------------
 
 const char* Wrapper<Image>::class_name() {
@@ -526,8 +572,7 @@ int Wrapper<Image>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
   switch (n) {
-  case 1:
-    {
+  case 1: {
       if(lua_isstring(l, 1)) {
         QString path = file_path(l, lua_tostring(l, 1));
         Context* context = retrieve_context(l);
@@ -541,8 +586,7 @@ int Wrapper<Image>::constructor(lua_State* l) {
       }
     }
     break;
-  case 2:
-    {
+  case 2: {
       if(lua_isnumber(l, 1)) {
         int width = static_cast<int>(lua_tonumber(l, 1));
         int height = static_cast<int>(lua_tonumber(l, 2));
@@ -826,15 +870,13 @@ int Wrapper<Glyph>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
   switch(n) {
-  case 1:
-    {
+  case 1: {
       unsigned int c = strtoul(lua_tostring(l, 1), NULL, 0);
       lua_pop(l, 1);
       create(l, c);
     }
     break;
-  case 2:
-    {
+  case 2: {
       Context* context = retrieve_context(l);
       QString path = file_path(l, lua_tostring(l, 1));
       unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
@@ -842,8 +884,7 @@ int Wrapper<Glyph>::constructor(lua_State* l) {
       create(l, context, path, c);
     }
     break;
-  case 3:
-    {
+  case 3: {
       Context* context = retrieve_context(l);
       QString path = file_path(l, lua_tostring(l, 1));
       unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);

@@ -5,7 +5,8 @@ theme.options = OptList {
   BoolOpt("wallpaper", "Draw wallpaper", true, OptList {
       BoolOpt("blur", "Enable blur", false),
       UrlOpt("file", "File:", "Wallpapers/dragonballz.jpg")
-  })
+  }),
+  FontOpt("clock", "Clock font", Font("Sans", true, false))
 }
 
 local border_ratio = 0.67

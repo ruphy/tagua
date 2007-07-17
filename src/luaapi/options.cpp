@@ -384,7 +384,7 @@ int Wrapper<ColorOptPtr>::constructor(lua_State* l) {
 
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
-  const char* value = lua_tostring(l, 3);
+  QColor value = Wrapper<QColor>::get(l, 3);
   lua_pop(l, n);
 
   create(l, ColorOptPtr(new ColorOpt(name, label, value)));
@@ -410,7 +410,7 @@ int Wrapper<FontOptPtr>::to_string(lua_State* l) {
 void Wrapper<FontOptPtr>::create_index_table(lua_State* l) {
   SET_PROPERTY_RO(l, name);
   SET_PROPERTY_RO(l, label);
-  //SET_PROPERTY_RW(l, value);
+  SET_PROPERTY_RW(l, value);
   set_meta_method(l, &to_string, "__tostring");
 
   Comparable<FontOptPtr>::register_in_index_table(l);
@@ -424,10 +424,10 @@ int Wrapper<FontOptPtr>::constructor(lua_State* l) {
 
   const char* name = lua_tostring(l, 1);
   const char* label = lua_tostring(l, 2);
-  const char* value = lua_tostring(l, 3);
+  QFont* value = Wrapper<QFont>::retrieve(l, 3, AssertOk);
   lua_pop(l, n);
 
-  create(l, FontOptPtr(new FontOpt(name, label, QFont(value))));
+  create(l, FontOptPtr(new FontOpt(name, label, *value)));
   return 1;
 }
 

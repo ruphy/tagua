@@ -158,6 +158,19 @@ public:
 
 //END Wrapper<QBrush>----------------------------------------------------------
 
+//BEGIN Wrapper<QFont> --------------------------------------------------------
+
+template<>
+class Wrapper<QFont> : public GenericWrapperByValue<QFont> {
+public:
+  static const char* class_name();
+  static void create_index_table(lua_State* l);
+  static int constructor(lua_State* l);
+
+  static int to_string(lua_State* l);
+};
+
+//END Wrapper<QFont> ----------------------------------------------------------
 
 //BEGIN Wrapper<Image> --------------------------------------------------------
 

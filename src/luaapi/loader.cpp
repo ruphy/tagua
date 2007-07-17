@@ -53,6 +53,7 @@ Loader::Loader(::Loader::Context *ctx)
   Wrapper<QRadialGradient>::register_class(l);
   Wrapper<QConicalGradient>::register_class(l);
   Wrapper<QBrush>::register_class(l);
+  Wrapper<QFont>::register_class(l);
   Wrapper< ::Loader::Image>::register_class(l);
   Wrapper< ::Loader::Glyph>::register_class(l);
 
@@ -153,8 +154,9 @@ template ImageOrMap Loader::getValue<ImageOrMap>(const QString&, int, const LuaV
 template double Loader::getValue<double>(const QString&, int, const LuaValueMap*,  bool);
 template QPointF Loader::getValue<QPointF>(const QString&, int, const LuaValueMap*,  bool);
 template QRectF Loader::getValue<QRectF>(const QString&, int, const LuaValueMap*,  bool);
-template QBrush Loader::getValue<QBrush>(const QString&, int, const LuaValueMap*,  bool);
 template QColor Loader::getValue<QColor>(const QString&, int, const LuaValueMap*,  bool);
+template QBrush Loader::getValue<QBrush>(const QString&, int, const LuaValueMap*,  bool);
+template QFont  Loader::getValue<QFont>(const QString&, int, const LuaValueMap*,  bool);
 template LuaValueMap Loader::getValue<LuaValueMap>(const QString&, int, const LuaValueMap*,  bool);
 
 template<typename T>
