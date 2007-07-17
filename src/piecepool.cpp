@@ -87,7 +87,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
     index--;
 
   if(index < 0 || index > fill() ) {
-    ERROR("invalid index " << index); TRAP();
+    ERROR("invalid index " << index);
     return;
   }
 
@@ -168,7 +168,7 @@ NamedSprite PiecePool::takeSprite(int index) {
 
 NamedSprite PiecePool::takeSpriteAt(int index) {
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index); TRAP();
+    ERROR("invalid index " << index);
     return NamedSprite();
   }
 
@@ -269,6 +269,8 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
   }
 
   int index = toLogical(pos);
+  if(index == -1)
+    return;
   NamedSprite got = takeSpriteAt(index);
   if(!got)
     return;
