@@ -113,16 +113,37 @@ add_definitions(
   ${LUA_CFLAGS}
 )
 
+if(NOT DEFINED COMPILER_HAVE_X86_MMX)
+  check_cxx_source_compiles(" int main() { __asm__(\"pxor %mm0, %mm0\") ; }" COMPILER_HAVE_X86_MMX)
+endif(NOT DEFINED COMPILER_HAVE_X86_MMX)
 
-kde4_add_executable(kboard ${kboard_SRC})
+if(NOT DEFINED COMPILER_HAVE_X86_SSE)
+  check_cxx_source_compiles(" int main() { __asm__(\"xorps %xmm0, %xmm0\") ; }" COMPILER_HAVE_X86_SSE)
+endif(NOT DEFINED COMPILER_HAVE_X86_SSE)
+
+if(COMPILER_HAVE_X86_MMX)
+  list(APPEND kboard_SRC imageeffects_mmx.cpp)
+  set_source_files_properties(imageeffects_mmx.cpp PROPERTIES COMPILE_FLAGS -mmmx)
+  set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_MMX)
+endif(COMPILER_HAVE_X86_MMX)
+
+if(COMPILER_HAVE_X86_SSE)
+  list(APPEND kboard_SRC imageeffects_sse.cpp)
+  set_source_files_properties(imageeffects_sse.cpp PROPERTIES COMPILE_FLAGS -msse)
+  set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_SSE)
+endif(COMPILER_HAVE_X86_SSE)
+
+
+kde4_add_executable(
+  kboard ${kboard_SRC}
+)
 
 link_directories(
   ${LUA_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
-
 )
 
-message("lua: " ${LUA_LINK_FLAGS})
+#message("lua: " ${LUA_LINK_FLAGS})
 
 target_link_libraries(kboard
   ${LUA_LINK_FLAGS}
@@ -133,6 +154,7 @@ target_link_libraries(kboard
 )
 
 
-
-INSTALL(TARGETS kboard
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(
+  TARGETS kboard
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
+)

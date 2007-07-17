@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -24,6 +24,6 @@ namespace ImageEffects {
   void floodFillBlueThreshold(QImage& image, QPoint point, QColor color, unsigned int thresh,
             bool invade_border = false, std::vector<QPoint>* border = NULL);
   QImage growBorder(const QImage& image);
-}
+} //end namespace ImageEffects
 
 #endif //IMAGEEFFECTS_H
