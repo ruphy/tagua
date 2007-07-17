@@ -15,11 +15,6 @@ template <typename Base>
 void DropAnimatorMixin<Base>::updatePool(const Position& final) {
   for(int color = 0; color < 2; color++) {
     typename Piece::Color c = static_cast<typename Piece::Color>(color);
-//     const typename Position::PlayerPool& before = m_cinterface->position()->rawPool().find(c)->second;
-//     const typename Position::PlayerPool& after = final.rawPool().find(c)->second;
-//     typename Position::PlayerPool::const_iterator before_it = before.begin();
-//     typename Position::PlayerPool::const_iterator after_it = after.begin();
-    
     const typename Position::PlayerPool& before = m_cinterface->position()->rawPool(c);
     const typename Position::PlayerPool& after = final.rawPool(c);
     typename Position::PlayerPool::const_iterator before_it = before.begin();
@@ -29,41 +24,40 @@ void DropAnimatorMixin<Base>::updatePool(const Position& final) {
 
     // oh, a nice bunch of write-only magic shit
     while(before_it != before.end() || after_it != after.end()) {
-      if(after_it == after.end() || (before_it != before.end()
-              && before_it->first < after_it->first )) {
-        for(int i=0;i<before_it->second;i++)
-          m_cinterface->takePoolSprite(color, pos);
-        ++before_it;
-      }
-      else if (before_it == before.end() || (after_it != after.end()
-              && after_it->first < before_it->first )) {
-        for(int i=0;i<after_it->second;i++)
+      bool skip_after = (after_it == after.end() || (before_it != before.end()
+                                && before_it->first < after_it->first ));
+      bool skip_before = (before_it == before.end() || (after_it != after.end()
+                                && after_it->first < before_it->first ));
+      int na = skip_after ? 0 : after_it->second;
+      int nb = skip_before ? 0 : before_it->second;
+
+      if(nb < na) {
+        for(int i = nb; i < na; i++)
           m_cinterface->insertPoolPiece(color, pos, Piece(c, after_it->first) );
-        pos += after_it->second;
-        ++after_it;
       }
-      else {
-        Q_ASSERT(after_it->first == before_it->first);
-        if(before_it->second < after_it->second)
-        for(int i=0;i<after_it->second - before_it->second;i++)
-          m_cinterface->insertPoolPiece(color, pos, Piece(c, after_it->first) );
-        else if(before_it->second > after_it->second)
-        for(int i=0;i<before_it->second - after_it->second;i++)
-          m_cinterface->takePoolSprite(color, pos);
-        pos += after_it->second;
-        ++after_it;
+      else if(na < nb) {
+        for(int i = na; i < nb; i++)
+          m_cinterface->removePoolSprite(color, pos);
+      }
+
+      if(!skip_before)
         ++before_it;
-      }
+      if(!skip_after)
+        ++after_it;
     }
-    
   }
 }
 
+template <typename Base>
+AnimationGroupPtr DropAnimatorMixin<Base>::warp(const Position& final) {
+  updatePool(final);
+  return Base::warp(final);
+}
 
 template <typename Base>
 AnimationGroupPtr DropAnimatorMixin<Base>::forward(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
-  
+
   if(move.drop()) {
     std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
     if(dropped.first != -1 && dropped.second != -1
@@ -81,7 +75,7 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const Position& final, const 
   else {
     res.setGroup(Base::forward(final, move));
   }
-  
+
   updatePool(final);
   return res;
 }
@@ -89,16 +83,16 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const Position& final, const 
 template <typename Base>
 AnimationGroupPtr DropAnimatorMixin<Base>::back(const Position& final, const Move& move) {
   AnimationFactory res(m_cinterface->inner());
-  
+
   if(move.drop()) {
     NamedSprite drop = m_cinterface->takeSprite(move.to);
     res.addPostAnimation(Animate::disappear(drop));
-    
+
   }
   else {
     res.setGroup(Base::back(final, move));
   }
-  
+
   updatePool(final);
   return res;
 }

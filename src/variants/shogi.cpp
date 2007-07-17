@@ -69,7 +69,7 @@ public:
 
   bool equals(const ShogiPiece* p) const {
     if (valid()) {
-      if (p) 
+      if (p)
         return (*this) == (*p);
       else
         return false;
@@ -171,10 +171,10 @@ QString ShogiPiece::typeSymbol(ShogiPiece::Type t) {
 
 class ShogiMove {
   ShogiPiece m_drop;
-  
+
   int m_pool;
   int m_pool_index;
-  
+
   bool m_promote;
   template<typename T> friend class MoveSerializer;
 public:
@@ -193,7 +193,7 @@ public:
   void setDrop(const ShogiPiece& piece) { m_drop = piece; }
   int pool() const { return m_pool; }
   int poolIndex() const { return m_pool_index; }
-  
+
   bool promote() const { return m_promote; }
   bool valid() const { return to.valid(); }
 };
@@ -239,7 +239,7 @@ class ShogiPosition {
 public:
   typedef ShogiPiece Piece;
   typedef ShogiMove Move;
-  
+
   typedef PoolReference<ShogiPosition> PoolReference;
   typedef PoolConstReference<ShogiPosition> PoolConstReference;
   typedef PoolReference::Pool Pool;
@@ -265,7 +265,7 @@ public:
 
   PoolReference pool(int);
   PoolConstReference pool(int) const;
-  
+
   PlayerPool& rawPool(Piece::Color color) { return m_pool[color]; }
   const PlayerPool& rawPool(Piece::Color color) const { return const_cast<Pool&>(m_pool)[color]; }
 
@@ -273,7 +273,7 @@ public:
   virtual const Point last() const { return m_board.last(); }
   virtual Point next(const Point& p) const { return m_board.next(p); }
   inline bool valid(const Point& p) const { return m_board.valid(p); }
-  
+
   ShogiPiece get(const Point& p) const;
   void set(const Point& p, const Piece& piece);
 
@@ -636,66 +636,66 @@ protected:
 public:
   ShogiAnimatorBase(API cinterface)
   : Base(cinterface) { }
-  
+
   virtual AnimationGroupPtr forward(const ShogiPosition& final, const ShogiMove& move) {
     AnimationFactory res(m_cinterface->inner());
-  
+
     NamedSprite piece = m_cinterface->takeSprite(move.from);
     NamedSprite captured = m_cinterface->takeSprite(move.to);
     m_cinterface->setSprite(move.to, piece);
-  
+
     if (piece)
       res.addPreAnimation(Animate::move(piece, move.to));
-  
+
     if (captured)
       res.addPostAnimation(Animate::destroy(captured));
-  
+
     if (final.get(move.to) != m_cinterface->position()->get(move.from)) {
       Piece promoted = final.get(move.to);
-  
+
       if (promoted) {
         QPoint real = m_cinterface->converter()->toReal(move.to);
         NamedSprite old_sprite = m_cinterface->getSprite(move.to);
         NamedSprite new_sprite = m_cinterface->setPiece(move.to, promoted, false);
-  
+
         res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
       }
     }
-  
+
     return res;
   }
-  
+
   virtual AnimationGroupPtr back(const ShogiPosition& final, const ShogiMove& move) {
     AnimationFactory res(m_cinterface->inner());
-  
+
     NamedSprite piece = m_cinterface->takeSprite(move.to);
     NamedSprite captured;
     if (Piece captured_piece = final.get(move.to)) {
       captured = m_cinterface->setPiece(move.to, captured_piece, false);
       res.addPreAnimation(Animate::appear(captured));
     }
-  
+
     if (!piece) {
       piece = m_cinterface->createPiece(move.to, final.get(move.from), false);
       res.addPreAnimation(Animate::appear(piece));
     }
-  
+
     m_cinterface->setSprite(move.from, piece);
-  
+
     if (final.get(move.from) != m_cinterface->position()->get(move.to)) {
       Piece old_piece = final.get(move.from);
       if (old_piece) {
         NamedSprite old = m_cinterface->createPiece(move.to, old_piece, false);
         res.addPreAnimation(Animate::morph(piece, old));
-  
+
         // replace piece with pawn
         m_cinterface->setSprite(move.from, old);
         piece = old;
       }
     }
-        
+
     res.addPreAnimation(Animate::move(piece, move.from));
-    
+
     return res;
 
   }

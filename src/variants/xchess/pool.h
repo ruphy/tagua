@@ -18,18 +18,18 @@ public:
   typedef std::map<Color, PP> Pool;
 protected:
   PP* m_p_pool;
-  const Color m_color;  
+  const Color m_color;
 public:
   PoolReferenceBase(PP* p, Color color)
   : m_p_pool(p)
   , m_color(color) { }
-  
+
   int size();
   Piece get(int idx);
 };
 
 template <typename Position>
-class PoolReference : public PoolReferenceBase<Position, 
+class PoolReference : public PoolReferenceBase<Position,
                           typename PlayerPoolType<Position>::type > {
 public:
   typedef typename PlayerPoolType<Position>::type PlayerPool;
@@ -37,16 +37,16 @@ public:
   typedef typename Base::Piece Piece;
   typedef typename Base::Type Type;
   typedef typename Base::Color Color;
-  
+
   PoolReference(PlayerPool* p, Color color)
   : PoolReferenceBase<Position, PlayerPool>(p, color) { }
-  
+
   int insert(int idx, const Piece& p);
   Piece take(int idx);
 };
 
 template <typename Position>
-class PoolConstReference : public PoolReferenceBase<Position, 
+class PoolConstReference : public PoolReferenceBase<Position,
                                   const typename PlayerPoolType<Position>::type> {
   typedef const typename PlayerPoolType<Position>::type PlayerPool;
   typedef typename Position::Piece::Color Color;
@@ -88,12 +88,12 @@ int PoolReference<Position>::insert(int idx, const Piece& p) {
   }
 
   int fill = 0;
-  for (typename PlayerPool::iterator i = this->m_p_pool->begin(); 
-        (i != this->m_p_pool->end()) && i->first < p.type(); 
+  for (typename PlayerPool::iterator i = this->m_p_pool->begin();
+        (i != this->m_p_pool->end()) && i->first < p.type();
         ++i) {
     fill += i->second;
   }
-  
+
   int nump = ++(*this->m_p_pool)[p.type()];
 
   if (idx < fill)
@@ -110,8 +110,8 @@ typename PoolReference<Position>::Piece PoolReference<Position>::take(int idx) {
     return Piece();
 
   int fill = 0;
-  for(typename PlayerPool::iterator i = this->m_p_pool->begin(); 
-        i != this->m_p_pool->end(); 
+  for(typename PlayerPool::iterator i = this->m_p_pool->begin();
+        i != this->m_p_pool->end();
         ++i) {
     if(idx < fill + i->second) {
       Type t = i->first;
