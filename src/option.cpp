@@ -507,6 +507,3 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
       ERROR("option of type " << prettyTypeName(typeid(*_o).name()) );
   }
 }
-
-#include "option.moc"
-#include "option_p.moc"

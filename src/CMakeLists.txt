@@ -87,6 +87,8 @@ set(kboard_SRC
   connection.cpp
   movelist_table.cpp
   newgame.cpp
+
+  option_p.h
 )
 
 kde4_add_ui_files(kboard_SRC
