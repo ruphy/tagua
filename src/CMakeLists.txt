@@ -48,7 +48,6 @@ set(kboard_SRC
   graphicalgame.cpp
   imageeffects.cpp
   crash.cpp
-  pref_clock.cpp
   flash.cpp
   histlineedit.cpp
   pathinfo.cpp

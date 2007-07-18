@@ -45,7 +45,6 @@
 #include "flash.h"
 #include "pgnparser.h"
 #include "pref_highlight.h"
-#include "pref_clock.h"
 #include "pref_preferences.h"
 
 using namespace Qt;
@@ -651,15 +650,6 @@ void MainWindow::prefHighlight() {
   }
 }
 #endif
-
-void MainWindow::prefClock() {
-  PrefClock dialog;
-  int result = dialog.exec();
-  if (result == QDialog::Accepted) {
-    dialog.apply();
-    //BROKEN table()->clock()->reload();
-  }
-}
 
 void MainWindow::preferences() {
   Preferences dialog;

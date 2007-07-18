@@ -133,7 +133,6 @@ public slots:
   void flash();
 
 //  void prefHighlight();
-  void prefClock();
   void preferences();
 };
 
