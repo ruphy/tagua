@@ -13,6 +13,8 @@
 
 #include <memory>
 #include <iostream>
+#include <set>
+#include <map>
 #include <QDir>
 #include "settings.h"
 #include "foreach.hpp"
@@ -22,19 +24,28 @@
 class MasterSettings : public QObject
                      , public Settings {
 Q_OBJECT
+
+private:
+  typedef std::set<std::pair<QObject*, const char*> > SlotSet;
+  typedef std::map<int, SlotSet> SlotMap;
+
+  SlotMap m_slots;
   QString m_filename;
   mutable QDomDocument m_doc;
+
+private slots:
+  void obj_destroyed(QObject* o);
+
 protected:
   virtual QDomElement node() const;
+
 public:
   MasterSettings(const QString& file);
   ~MasterSettings();
 
-  void onChange(QObject* receiver, const char* slot);
+  void onChange(QObject* receiver, const char* slot, int priority = 0);
   void changed();
   void sync();
-signals:
-  void settingsChanged();
 };
 
 extern MasterSettings settings; // yes, I know global objects are evil

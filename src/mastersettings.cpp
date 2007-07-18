@@ -55,8 +55,10 @@ MasterSettings::~MasterSettings() {
   sync();
 }
 
-void MasterSettings::onChange(QObject* obj, const char* slot) {
-  connect(this, SIGNAL(settingsChanged()), obj, slot);
+void MasterSettings::onChange(QObject* obj, const char* slot, int prority) {
+  std::cout << "register " << obj << " " << slot << std::endl;
+  m_slots[prority].insert( std::pair<QObject*, const char*>(obj, slot) );
+  connect(obj, SIGNAL(destroyed(QObject*)), this, SLOT(obj_destroyed(QObject*)));
 }
 
 void MasterSettings::sync() {
@@ -71,8 +73,37 @@ void MasterSettings::sync() {
 
 }
 
+void MasterSettings::obj_destroyed(QObject* obj) {
+  for (SlotMap::iterator it = m_slots.begin(); it != m_slots.end(); /*++it*/ ) {
+    SlotSet::iterator j = it->second.lower_bound( std::pair<QObject*, const char*>(obj, NULL) );
+    while(j->first == obj)
+      it->second.erase(j++);
+
+    if(it->second.empty())
+      m_slots.erase(it++);
+    else
+      ++it;
+  }
+}
+
 void MasterSettings::changed() {
-  emit settingsChanged();
+  for (SlotMap::iterator it = m_slots.begin(); it != m_slots.end(); ++it )
+  for (SlotSet::iterator j = it->second.begin(); j != it->second.end(); ++j ) {
+
+    //yes, moc is shit.
+    char* mystr = (char*)alloca(strlen(j->second)+1);
+    if(isdigit(j->second[0]))
+      strcpy(mystr, j->second+1);
+    else
+      strcpy(mystr, j->second);
+
+    if(char* par = index(mystr, '('))
+      *par = '\0';
+    if(char* par = index(mystr, ' '))
+      *par = '\0';
+
+    bool r = j->first->metaObject()->invokeMethod( j->first, mystr, Qt::DirectConnection);
+  }
   sync();
 }
 
