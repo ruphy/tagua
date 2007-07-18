@@ -11,7 +11,7 @@
 #include <QApplication>
 #include <QHBoxLayout>
 #include <kicon.h>
-#include "global.h"
+#include "mastersettings.h"
 #include "pref_board.h"
 #include "pref_movelist.h"
 #include "pref_theme.h"

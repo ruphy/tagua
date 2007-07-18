@@ -21,7 +21,7 @@
 #include <dom/dom_element.h>
 #include <dom/dom_text.h>
 #include <kstandarddirs.h>
-#include "global.h"
+#include "mastersettings.h"
 #include "decoratedmove.h"
 #include "movelist_p.h"
 #include "movelist_textual.h"

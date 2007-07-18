@@ -10,7 +10,7 @@
 
 
 #include <QApplication>
-#include "global.h"
+#include "mastersettings.h"
 #include "pref_board.h"
 
 

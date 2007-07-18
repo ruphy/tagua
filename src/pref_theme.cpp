@@ -13,7 +13,7 @@
 #include <QStringList>
 #include <QListWidgetItem>
 #include <kstandarddirs.h>
-#include "global.h"
+#include "mastersettings.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"
 #include "kboard.h"

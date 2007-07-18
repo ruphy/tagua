@@ -119,7 +119,7 @@ void Connection::lookedUp(const QHostInfo &hi) {
 
 void Connection::processLine() {
   if(!m_device) {
-    std::cout << " --> Connection::processLine, error, no m_device" << std::endl;
+    ERROR("No m_device");
     return;
   }
 
@@ -152,7 +152,7 @@ void Connection::sendText(const QString& text) {
   }
 
   if(!m_device) {
-    std::cout << " --> Connection::sendText, error, no m_device" << std::endl;
+    ERROR("No m_device");
     return;
   }
 

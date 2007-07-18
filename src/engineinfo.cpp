@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -39,15 +39,15 @@ EngineInfo::EngineInfo(const EngineDetails& details, UI& ui)
 
 shared_ptr<Engine> EngineInfo::engine() {
   shared_ptr<Engine> res;
-  if (m_details.type == EngineDetails::XBoard) 
+  if (m_details.type == EngineDetails::XBoard)
     res = shared_ptr<Engine>(new XBoardEngine(m_details.path, QStringList()));
   else {
-    std::cout << " --> Error in EngineInfo::engine, unimplemented engine type " << m_details.type << std::endl;
+    ERROR("Unimplemented engine type " << m_details.type);
     return shared_ptr<Engine>();
   }
-  
+
   if (res)
     res->setWorkingPath(m_details.workPath);
-  
+
   return res;
 }

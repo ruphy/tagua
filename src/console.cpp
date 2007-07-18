@@ -25,7 +25,7 @@
 #include <kstandarddirs.h>
 #include <kglobal.h>
 #include "common.h"
-#include "global.h"
+#include "mastersettings.h"
 
 #include "histlineedit.h"
 #include "highlighter.h"
@@ -69,11 +69,11 @@ void ConsoleOutput::operator()(const QString& text) {
 LuaConsoleHighlighter::LuaConsoleHighlighter()
 : m_display(0) {
   KStandardDirs* dirs = KGlobal::dirs();
-  
+
   QString luaHighlightingLibrary = dirs->locate("appdata", "scripts/hllib.lua");
   std::cout << "lua lib: " << luaHighlightingLibrary << std::endl;
   m_api.runFile(qPrintable(luaHighlightingLibrary));
-  
+
   QStringList highlighting = dirs->findAllResources("appdata", "highlighting/*.lua", KStandardDirs::Recursive);
   foreach (QString f, highlighting) {
     std::cout << "lua highlighting file: " << f << std::endl;

@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -9,7 +9,7 @@
 */
 
 #include "pref_engines.h"
-#include "global.h"
+#include "mastersettings.h"
 #include <kicon.h>
 
 class no_engine { };
@@ -19,7 +19,7 @@ PrefEngines::PrefEngines(QWidget* parent)
   setupUi(this);
 
   connect(m_engine_list, SIGNAL(itemChanged(QListWidgetItem*)), this, SLOT(setName(QListWidgetItem*)));
-  connect(m_engine_list, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)), 
+  connect(m_engine_list, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
     this, SLOT(changeEngine(QListWidgetItem*)));
   connect(m_add_engine, SIGNAL(clicked()), this, SLOT(add()));
   connect(m_remove_engine, SIGNAL(clicked()), this, SLOT(remove()));
@@ -29,7 +29,7 @@ PrefEngines::PrefEngines(QWidget* parent)
 
   m_add_engine->setIcon(KIcon("add"));
   m_remove_engine->setIcon(KIcon("remove.png"));
-  
+
   SettingArray s_engines = settings.group("engines").array("engine");
   foreach (Settings s, s_engines) {
     EngineDetails details;
@@ -37,7 +37,7 @@ PrefEngines::PrefEngines(QWidget* parent)
     s["path"] >> details.path;
     details.type = EngineDetails::typeFromName(s["type"].value<QString>());
     if (s["workPath"]) s["workPath"] >> details.workPath;
-    
+
     addEngine(details);
   }
 }
@@ -111,7 +111,7 @@ void PrefEngines::changeEngine(QListWidgetItem*) {
 void PrefEngines::apply() {
   SettingArray s_engines = settings.group("engines").newArray("engine");
   std::pair<QListWidgetItem*, EngineDetails> p;
-  
+
   for (int i = 0; i < m_engine_list->count(); i++) {
     EngineDetails& details = m_engines[m_engine_list->item(i)];
     Settings s = s_engines.append();

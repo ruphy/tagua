@@ -24,7 +24,7 @@
 #include <cmath>
 #include <iostream>
 #include <kstandarddirs.h>
-#include "global.h"
+#include "mastersettings.h"
 #include "pref_theme.h"
 #include "movelist_widget.h"
 #include "movelist_table.h"
@@ -608,7 +608,7 @@ void Widget::startEditing(const Index& i, int v) {
 
   EntryPtr e = fetch(i);
   if(!e) {
-    std::cout << "--> Error in Widget::startEditing! Invalid index!" << std::endl;
+    ERROR("Invalid index " << i);
     return;
   }
 
@@ -1125,7 +1125,7 @@ void Widget::setComment(EntryPtr e, int v, const QString& comment) {
 void Widget::setComment(const Index& index, const QString& comment) {
   EntryPtr e = fetch(index);
   if(!e) {
-    std::cout << "--> Error in Widget::setComment! Invalid index " << index << std::endl;
+    ERROR("Invalid index " << index);
     return;
   }
   setComment(e, -1, comment);
@@ -1134,7 +1134,7 @@ void Widget::setComment(const Index& index, const QString& comment) {
 void Widget::setVComment(const Index& index, int v, const QString& comment) {
   EntryPtr e = fetch(index);
   if(!e || !e->variations.count(v)) {
-    std::cout << "--> Error in Widget::setVComment! Invalid index " << index << std::endl;
+    ERROR("Invalid index " << index);
     return;
   }
   setComment(e, v, comment);
@@ -1176,7 +1176,7 @@ void Widget::setMove(const Index& index,
   int at;
   History *vec = fetchRef(index.prev(), &at);
   if(!vec) {
-    std::cout << "--> Error in Widget::setMove! Invalid index " << index << std::endl;
+    ERROR("Invalid index " << index);
     return;
   }
 
@@ -1226,7 +1226,7 @@ void Widget::fixIndices(const Index& ix) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    std::cout << "--> Error in Widget::fixIndices, invalid index "<<ix << std::endl;
+    ERROR("Invalid index " << ix);
     return;
   }
   Index index = ix;
@@ -1245,7 +1245,7 @@ void Widget::promoteVariation(const Index& ix, int v) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    std::cout << "--> Error in Widget::promoteVariation, invalid index "<<ix << std::endl;
+    ERROR("Invalid index " << ix);
     return;
   }
 

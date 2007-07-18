@@ -18,7 +18,7 @@
 #include "animation.h"
 #include "pref_theme.h"
 #include "movelist_table.h"
-#include "global.h"
+#include "mastersettings.h"
 
 using namespace boost;
 

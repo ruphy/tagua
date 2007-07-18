@@ -264,7 +264,7 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
     return;
 
   if(m_dragged) {
-    std::cout << "Eh? We are already dragging?" << std::endl;
+    ERROR("Eh? We are already dragging?");
     cancelDragging(); //never remove implicitly a piece from the pool
   }
 

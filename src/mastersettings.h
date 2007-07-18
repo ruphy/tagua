@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef GLOBAL_H
-#define GLOBAL_H
+#ifndef MASTERSETTINGS_H
+#define MASTERSETTINGS_H
 
 #include <memory>
 #include <iostream>
@@ -39,4 +39,4 @@ signals:
 
 extern MasterSettings settings; // yes, I know global objects are evil
 
-#endif // GLOBAL_H
+#endif // MASTERSETTINGS_H

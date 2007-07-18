@@ -14,7 +14,7 @@
 #include <QApplication>
 #include <QMouseEvent>
 
-#include "global.h"
+#include "mastersettings.h"
 #include "board.h"
 #include "sprite.h"
 #include "animation.h"

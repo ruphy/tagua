@@ -18,7 +18,7 @@
 #include "connection.h"
 #include "piecepool.h"
 #include "clock.h"
-#include "global.h"
+#include "mastersettings.h"
 #include "movelist_table.h"
 #include "infodisplay.h"
 
@@ -134,6 +134,7 @@ void ChessTable::layout(bool force_reload) {
 
   ::LuaApi::LuaValueMap lvals = m_board->controlsLoader()->getStaticValue< ::LuaApi::LuaValueMap>("layout", &params);
 
+#if 0
   for(::LuaApi::LuaValueMap::iterator it = lvals.begin(); it != lvals.end(); ++it)
   if(double* val = boost::get<double>(&it.value()))
     std::cout << "lvals[" << it.key() << "] = " << *val << std::endl;
@@ -142,6 +143,7 @@ void ChessTable::layout(bool force_reload) {
   else if(QRectF* val = boost::get<QRectF>(&it.value()))
     std::cout << "lvals[" << it.key() << "] = Rect(" << val->x() << "," << val->y()
                                    << "," << val->width() << "," << val->height() << ")" << std::endl;
+#endif
 
 #define GET_INT(name)                                    \
   int name = 0;                                          \

@@ -12,7 +12,7 @@
 #include <iostream>
 #include <QHash>
 #include "common.h"
-#include "global.h"
+#include "mastersettings.h"
 #include "loader/theme.h"
 
 namespace Loader {

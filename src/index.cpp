@@ -123,8 +123,8 @@ Index Index::prev(int _num) const {
   while(num) {
     if(retv.nested.size() == 0) {
       if(retv.num_moves < num) {
-        std::cout << "--> Error in Index::prev! Cannot rewind index " << *this <<
-                              " by " << _num << "!" << std::endl;
+        ERROR("Cannot rewind index " << *this <<
+                              " by " << _num << "!");
         return Index(-1);
       }
       retv.num_moves -= num;

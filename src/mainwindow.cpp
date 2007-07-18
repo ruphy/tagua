@@ -41,7 +41,7 @@
 #include "movelist_table.h"
 #include "icsconnection.h"
 #include "qconnect.h"
-#include "global.h"
+#include "mastersettings.h"
 #include "flash.h"
 #include "pgnparser.h"
 #include "pref_highlight.h"

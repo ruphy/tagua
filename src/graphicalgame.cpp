@@ -12,8 +12,7 @@
 #include "graphicalgame.h"
 #include "game.h"
 #include "game_p.h"
-#include "global.h"
-#include "settings.h"
+#include "mastersettings.h"
 #include "graphicalsystem.h"
 #include "movelist_table.h"
 #include "decoratedmove.h"
@@ -81,7 +80,7 @@ void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    std::cout << "--> Error in GraphicalGame::onAdded, invalid index "<< ix << std::endl;
+    ERROR("invalid index " << ix);
     return;
   }
 

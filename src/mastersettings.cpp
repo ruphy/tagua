@@ -8,7 +8,7 @@
   (at your option) any later version.
 */
 
-#include "global.h"
+#include "mastersettings.h"
 #include "common.h"
 #include <QTextStream>
 
@@ -16,7 +16,7 @@ QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
     QFile f(m_filename);
     if (!f.open(QFile::ReadOnly | QFile::Text) || !m_doc.setContent(&f)) {
-      std::cout << "Unable to open configuration file for reading." << std::endl;
+      ERROR("Unable to open configuration file for reading.");
 
 //       // create a stub configuration file
 //       {
@@ -36,7 +36,7 @@ QDomElement MasterSettings::node() const {
 //         exit(1);
 
       m_doc.appendChild(m_doc.createElement("configuration"));
-      std::cout << m_doc.toString() << std::endl;
+//      std::cout << m_doc.toString() << std::endl;
     }
 
 
@@ -63,7 +63,7 @@ void MasterSettings::sync() {
   // store to file
   QFile f(m_filename);
   if (!f.open(QFile::WriteOnly | QFile::Text))
-    std::cout << "ERROR: cannot open configuration file for writing" << std::endl;
+    ERROR("Cannot open configuration file for writing");
   else {
     QTextStream stream(&f);
     stream << node().ownerDocument().toString();

@@ -61,7 +61,7 @@ set(kboard_SRC
   chesstable.cpp
   index.cpp
   algebraicnotation.cpp
-  global.cpp
+  mastersettings.cpp
   location.cpp
   hline.cpp
   xboardengine.cpp

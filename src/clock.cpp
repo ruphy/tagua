@@ -175,7 +175,7 @@ void Clock::settingsChanged() {
 #include <iostream>
 #include <QResizeEvent>
 #include "clock.h"
-#include "global.h"
+#include "mastersettings.h"
 
 static void setFontSize(int max, int width, const QString& text, QFont& font) {
   font.setPointSize(max);

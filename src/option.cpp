@@ -455,10 +455,8 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
       retv |= (newval != o->selected());
       o->setSelected( newval );
     }
-    else {
-      std::cout << "options_list_load_from_settings: Error, unknown option of type "
-          << prettyTypeName(typeid(*_o).name()) << std::endl;
-    }
+    else
+      ERROR("option of type " << prettyTypeName(typeid(*_o).name()) );
   }
   return retv;
 }
@@ -505,10 +503,8 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
       options_list_save_to_settings(l, sel_group.group("sel-options"));
       sel_group["value"] = o->value();
     }
-    else {
-      std::cout << "options_list_load_from_settings: Error, unknown option of type "
-          << prettyTypeName(typeid(*_o).name()) << std::endl;
-    }
+    else
+      ERROR("option of type " << prettyTypeName(typeid(*_o).name()) );
   }
 }
 

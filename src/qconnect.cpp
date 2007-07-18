@@ -15,7 +15,7 @@
 
 #include <iostream>
 #include "qconnect.h"
-#include "global.h"
+#include "mastersettings.h"
 
 static const char* timeseal_cmd_tool_tip =
   "Expandable variables ref:\n"
