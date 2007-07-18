@@ -679,15 +679,6 @@ void Position<M, P, B>::dump() const {
       std::cout << "|" << std::endl;
   }
   std::cout << "+---+---+---+---+---+---+---+---+" << std::endl;
-
-#if 0 // BROKEN
-  for(typename Pool::const_iterator pi = m_pool.begin(); pi != m_pool.end(); ++pi) {
-    if(pi->first.color() == BLACK)
-      std::cout << Piece::typeSymbol(pi->first.type()).toLower() <<": "<<pi->second<<std::endl;
-    else
-      std::cout << Piece::typeSymbol(pi->first.type()) <<": "<<pi->second<<std::endl;
-  }
-#endif
 }
 
 template <typename M, typename P, typename B>
