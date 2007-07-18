@@ -21,7 +21,7 @@
 #ifndef NO_PGN
 #include "variants/variants.h"
 #include "pgnparser.h"
-#include "kboard.h"
+#include "tagua.h"
 #endif //NO_PGN
 #include "game.h"
 #include "game_p.h"

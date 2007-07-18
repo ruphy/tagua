@@ -15,7 +15,7 @@
 #include "moveserializer.impl.h"
 #include "xchess/dropanimator.impl.h"
 #include "crazyhouse_p.h"
-#include "kboard_wrapped.h"
+#include "tagua_wrapped.h"
 
 class ShogiPiece {
 public:

@@ -13,7 +13,7 @@
 #include <QHBoxLayout>
 #include "common.h"
 #include "variants/variants.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "newgame.h"
 
 NewGame::NewGame(QWidget* parent, bool allowCurrent)

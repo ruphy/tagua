@@ -14,7 +14,7 @@
 #include "entity.h"
 #include "agent.h"
 #include "enginenotifier.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "agentgroup.h"
 
 class Engine;

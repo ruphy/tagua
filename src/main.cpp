@@ -33,7 +33,7 @@ void trap() {
 }
 
 int main(int argc, char **argv) {
-  KAboutData about( "kboard", 0, ki18n("KBoard"),
+  KAboutData about( "tagua", 0, ki18n("Tagua"),
     version, ki18n(description), KAboutData::License_GPL,
     ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge") );
   about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
@@ -49,13 +49,13 @@ int main(int argc, char **argv) {
   installCrashHander();
   atexit(trap);
 
-  QString data_dir = qgetenv("KBOARD_DATA");
+  QString data_dir = qgetenv("TAGUA_DATA");
   if (data_dir.isEmpty()) data_dir = "data";
-  
+
   KGlobal::dirs()->addResourceDir("appdata", data_dir);
   KGlobal::dirs()->addResourceDir("icon", data_dir + "/pics");
   KIconLoader::global()->reconfigure(about.appName(), KGlobal::dirs());
-  
+
   MainWindow* widget = new MainWindow;
   widget->show();
 

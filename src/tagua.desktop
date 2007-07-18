@@ -1,12 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=kboard
-Name[it]=kboard
-Name[xx]=xxkboardxx
-Exec=kboard %i %m -caption "%c"
-Icon=kboard
+Name=tagua
+Name[it]=tagua
+Name[xx]=xxtaguaxx
+Exec=tagua %i %m -caption "%c"
+Icon=tagua
 Type=Application
-DocPath=kboard/kboard.html
+DocPath=tagua/tagua.html
 Comment=A KDE chessboard
 Comment[ar]=لعبة الشطرنج لِــ KDE
 Comment[bg]=Шах за KDE

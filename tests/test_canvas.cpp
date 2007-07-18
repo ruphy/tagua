@@ -56,9 +56,6 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-//     QPixmap("/home/monge/pezzi_fighi/fantasy/wr.png").save("teto1.png");
-//     QImage("/home/monge/pezzi_fighi/fantasy/wr.png").save("teto2.png");
-
     Canvas *c = new Puppas();
     c->resize(500,500);
 

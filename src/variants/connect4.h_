@@ -11,7 +11,7 @@
 #ifndef VARIANTS__CONNECT4_H
 #define VARIANTS__CONNECT4_H
 
-#include "kboard.h"
+#include "tagua.h"
 
 class Connect4Variant {
 private:

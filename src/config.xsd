@@ -251,7 +251,7 @@
       <xs:restriction base="xs:string">
          <xs:enumeration value="xboard"/>
          <xs:enumeration value="UCI"/>
-         <xs:enumeration value="kboard"/>
+         <xs:enumeration value="tagua"/>
       </xs:restriction>
    </xs:simpleType>
          

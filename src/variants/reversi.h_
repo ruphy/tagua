@@ -11,7 +11,7 @@
 #ifndef REVERSIVARIANT_H
 #define REVERSIVARIANT_H
 
-#include "kboard.h"
+#include "tagua.h"
 
 class ReversiVariant {
 private:

@@ -12,7 +12,7 @@
 #define EXAMINATIONENTITY_H
 
 #include "userentity.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "icslistener.h"
 #include "agent.h"
 #include "agentgroup.h"

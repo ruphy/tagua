@@ -1,7 +1,7 @@
 SplineFontDB: 1.0
-FontName: KBoard_fantasy
-FullName: KBoard_fantasy
-FamilyName: KBoard_fantasy
+FontName: Fantasy
+FullName: Fantasy
+FamilyName: Fantasy
 Weight: Medium
 Copyright: Created by Monge Maurizio with FontForge 1.0 (http://fontforge.sf.net)
 Comments: 2006-10-15: Created.
@@ -14,6 +14,9 @@ Descent: 200
 NeedsXUIDChange: 1
 XUID: [1021 645 1811818106 7095199]
 FSType: 0
+OS2Version: 0
+OS2_WeightWidthSlopeOnly: 0
+OS2_UseTypoMetrics: 0
 CreationTime: 1160940435
 ModificationTime: 1160942325
 OS2TypoAscent: 0
@@ -29,7 +32,6 @@ HheadAscent: 0
 HheadAOffset: 1
 HheadDescent: 0
 HheadDOffset: 1
-OS2Vendor: 'PfEd'
 TtfTable: cvt  4
 !$MDh
 EndTtf
@@ -45,7 +47,7 @@ StartChar: b
 Encoding: 98 98 0
 Width: 1000
 VWidth: 1050
-Flags: HO
+Flags: H
 TeX: 0 0 0 0
 HStem: -8.5625 40<218.008 384.809 471.262 687.496> 46.5817 36.3245<140.961 227.356> 49.1929 39.8071<643.986 719.243> 71.3438 64.5<341.854 507.645> 95.8438 15.5<338.774 509.714> 159.938 40<317.437 525.223> 441.76 40.928<429.74 456.022>
 VStem: 175.844 39.937<302.476 412.297> 264.75 39.969<128.658 157.683> 541.219 39.937<127.562 160.272> 623.718 39.8131<342.105 481.557>
@@ -141,7 +143,7 @@ StartChar: k
 Encoding: 107 107 1
 Width: 1000
 VWidth: 1050
-Flags: HO
+Flags: H
 TeX: 0 0 0 0
 Fore
 483.125 761.844 m 1
@@ -236,7 +238,7 @@ StartChar: n
 Encoding: 110 110 2
 Width: 1000
 VWidth: 1040
-Flags: HO
+Flags: H
 TeX: 0 0 0 0
 Fore
 151.469 333.469 m 0
@@ -347,7 +349,7 @@ StartChar: q
 Encoding: 113 113 3
 Width: 1000
 VWidth: 1040
-Flags: HO
+Flags: H
 TeX: 0 0 0 0
 Fore
 115.125 474.719 m 0
@@ -488,7 +490,7 @@ StartChar: r
 Encoding: 114 114 4
 Width: 1000
 VWidth: 1040
-Flags: HO
+Flags: H
 TeX: 0 0 0 0
 Fore
 544.438 529.344 m 0
@@ -563,7 +565,7 @@ StartChar: p
 Encoding: 112 112 5
 Width: 800
 VWidth: 1035
-Flags: HWO
+Flags: HW
 TeX: 0 0 0 0
 HStem: -2.1562 40<141.649 512.429> -1.1875 39.9062<165.43 262.793> 89.5938 40<222.924 439.496> 309.188 40<182.406 499.938> 391.375 42.789<284.745 392.096> 394.119 36.756<279.775 398.357> 619.727 40.044<260.275 414.492>
 VStem: 192.332 39.962<461.645 592.247> 442.474 39.963<461.645 592.247>

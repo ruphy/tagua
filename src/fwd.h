@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#ifndef KBOARD_FWD_H
-#define KBOARD_FWD_H
+#ifndef FWD_H
+#define FWD_H
 
 #include <boost/shared_ptr.hpp>
 
@@ -46,4 +46,4 @@ typedef boost::shared_ptr<class Sprite> SpritePtr;
 
 typedef boost::shared_ptr<class Game> GamePtr;
 
-#endif //KBOARD_FWD_H
+#endif //FWD_H

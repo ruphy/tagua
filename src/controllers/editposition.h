@@ -13,7 +13,7 @@
 
 #include "abstract.h"
 #include "point.h"
-#include "kboard.h"
+#include "tagua.h"
 #include <vector>
 #include <boost/variant.hpp>
 

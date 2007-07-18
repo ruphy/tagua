@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -12,13 +12,13 @@
 #define XBOARDENGINE_H
 
 #include "engine.h"
-#include "kboard.h"
+#include "tagua.h"
 
 class QRegExp;
 
 /**
   * @brief A chess engine compatible with xboard.
-  * 
+  *
   * XBoard compatible engines are defined by Tim Mann's
   * Chess Engine Communication Protocol (available at
   * http://tim-mann.org/xboard/engine-intf.html), used
@@ -27,7 +27,7 @@ class QRegExp;
   * This class encapsulates such communication protocol,
   * calling appropriate methods of the notifier upon engine
   * generated events.
-  * 
+  *
   * @note This code is partially stolen from Maurizio Monge's
   *       old interface project outoftime.
   */
@@ -53,10 +53,10 @@ Q_OBJECT
     bool pause        : 1;
     bool done         : 1;
   };
-  
+
   Features m_features;
   bool m_analysing;
-  
+
   static QRegExp m_move_pattern;
 protected:
   /**
@@ -74,37 +74,37 @@ public:
     * Create an xboard compatible engine.
     */
   XBoardEngine(const QString& path, const QStringList& arguments);
-  
+
   /**
     * Terminate the engine.
     */
   virtual ~XBoardEngine();
-  
+
   /**
     * Send a move to the engine.
     */
   virtual void sendMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref);
-  
+
   /**
     * Back up a move.
     * @param pos The position before the move. Used if the engine
     *            does not support the undo command.
     */
   virtual void backUp(AbstractPosition::Ptr pos);
-  
+
   virtual void setBoard(AbstractPosition::Ptr pos, int halfmove, int fullmove);
-  
-  
+
+
   /**
     * Begin a new game.
     */
   virtual void reset(int side);
-  
+
   /**
     * Stop the engine.
     */
   virtual void stop();
-  
+
   virtual void startAnalysis();
   virtual void stopAnalysis();
 };

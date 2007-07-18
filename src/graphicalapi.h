@@ -14,7 +14,7 @@
 #include <vector>
 #include <boost/shared_ptr.hpp>
 #include "animationfactory.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "pointconverter.h"
 #include "namedsprite.h"
 #include "fwd.h"
@@ -23,7 +23,7 @@ typedef boost::shared_ptr<class Sprite> SpritePtr;
 
 /**
   * This class defines the interface that will be used by the animator to modify
-  * kboard graphics.
+  * tagua graphics.
   */
 class GraphicalAPI {
 public:

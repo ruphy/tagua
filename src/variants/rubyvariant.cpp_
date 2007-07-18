@@ -11,7 +11,7 @@
 
 #include "rubyutils.h"
 #include "rubyvariant.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "xchess/animator.h"
 #include "xchess/piece.h"
 #include "xchess/move.h"

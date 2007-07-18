@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>Change KBoard Settings</string>
+   <string>Change Tagua Settings</string>
   </property>
   <layout class="QVBoxLayout" >
    <property name="margin" >

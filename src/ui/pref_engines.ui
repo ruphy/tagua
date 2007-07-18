@@ -154,12 +154,12 @@
           </item>
           <item>
            <property name="text" >
-            <string>KBoard (text)</string>
+            <string>Tagua (text)</string>
            </property>
           </item>
           <item>
            <property name="text" >
-            <string>KBoard (D-BUS)</string>
+            <string>Tagua (D-BUS)</string>
            </property>
           </item>
          </widget>

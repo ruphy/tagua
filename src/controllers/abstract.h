@@ -23,8 +23,8 @@ class Engine;
 class PGN;
 
 /**
-  * @b Controller is the base abstract class for all controllers in KBoard.
-  * KBoard can be used in different modes, such as game editing or position editing.
+  * @b Controller is the base abstract class for all controllers in Tagua.
+  * Tagua can be used in different modes, such as game editing or position editing.
   * Each mode corresponds to a concrete subclass of Controller, and defines its behaviour
   * in response to user events (history navigation, move executions...).
   * By default, events are routed to the user entity returned by the virtual function

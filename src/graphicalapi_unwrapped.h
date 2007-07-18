@@ -15,7 +15,7 @@
 
 /**
   * This class moves the interface that will be used by the animator to modify
-  * kboard graphics into the variant's semantics.
+  * tagua graphics into the variant's semantics.
   */
 template <typename Variant>
 class UnwrappedGraphicalAPI {

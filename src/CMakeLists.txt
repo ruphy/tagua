@@ -1,4 +1,4 @@
-set(kboard_SRC
+set(tagua_SRC
   controllers/editgame.cpp
   controllers/abstract.cpp
   controllers/editposition.cpp
@@ -90,7 +90,7 @@ set(kboard_SRC
   option_p.h
 )
 
-kde4_add_ui_files(kboard_SRC
+kde4_add_ui_files(tagua_SRC
   ui/pref_highlight.ui
   ui/newgamedialog.ui
   ui/pref_engines.ui
@@ -146,7 +146,7 @@ link_directories(
 
 #message("lua: " ${LUA_LINK_FLAGS})
 
-target_link_libraries(kboard
+target_link_libraries(tagua
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
 #   ${KDE4_KIO_LIBS}
@@ -155,7 +155,13 @@ target_link_libraries(kboard
 )
 
 
+<<<<<<< HEAD:src/CMakeLists.txt
 install(
   TARGETS kboard
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
 )
+=======
+
+INSTALL(TARGETS tagua
+  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+>>>>>>> f8dec12... Replaced (almost) all occurrences of 'kboard' with 'tagua'.:src/CMakeLists.txt

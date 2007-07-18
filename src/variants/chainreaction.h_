@@ -11,7 +11,7 @@
 #ifndef VARIANTS__CHAINREACTION_H
 #define VARIANTS__CHAINREACTION_H
 
-#include "kboard.h"
+#include "tagua.h"
 
 class ChainReactionVariant {
 private:

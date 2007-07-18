@@ -14,7 +14,7 @@
 #include <set>
 #include "abstract.h"
 #include "agentgroup.h"
-#include "kboard.h"
+#include "tagua.h"
 
 class Entity;
 class Engine;

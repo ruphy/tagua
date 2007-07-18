@@ -16,7 +16,7 @@
 
 #include "entity.h"
 #include "fwd.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "usermove.h"
 #include "agent.h"
 

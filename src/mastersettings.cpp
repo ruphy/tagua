@@ -107,6 +107,6 @@ void MasterSettings::changed() {
   sync();
 }
 
-MasterSettings settings(".kboardrc.xml");
+MasterSettings settings(".taguarc.xml");
 
 

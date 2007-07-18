@@ -9,7 +9,7 @@
 */
 
 #include "variants.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "variants/chess.h"
 #include "variants/crazyhouse.h"
 #include "variants/shogi.h"

@@ -15,7 +15,7 @@
 #include "agent.h"
 #include "agentgroup.h"
 #include "icslistener.h"
-#include "kboard.h"
+#include "tagua.h"
 
 class ICSConnection;
 
@@ -74,7 +74,7 @@ public:
   ObservingEntity(VariantInfo*, const boost::shared_ptr<Game>&,
                   int gameNumber, const boost::shared_ptr<ICSConnection>&, AgentGroup*);
   ~ObservingEntity();
-  
+
   virtual void detach();
 };
 

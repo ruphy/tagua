@@ -350,7 +350,7 @@ void ICSConnection::startup() {
   sendText("iset startpos 1");
   sendText("iset ms 1");
   sendText("iset lock 1");
-  sendText("set interface KBoard-0.9 (http://kboard.sf.net)");
+  sendText("set interface Tagua-0.9.9 (http://www.tagua-project.org)");
   sendText("set style 12");
 }
 

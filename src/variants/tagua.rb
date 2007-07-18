@@ -1,4 +1,4 @@
-module KBoard
+module Tagua
 
 class Point
   attr_reader :x, :y

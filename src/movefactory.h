@@ -11,7 +11,7 @@
 #ifndef MOVEFACTORY_H
 #define MOVEFACTORY_H
 
-#include "kboard.h"
+#include "tagua.h"
 #include "usermove.h"
 
 template <typename Variant>

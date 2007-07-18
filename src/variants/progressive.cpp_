@@ -9,7 +9,7 @@
 */
 
 #include "variants/progressive.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "variants/chess.h"
 #include "variants/xchess/position.h"
 #include "moveserializer.impl.h"

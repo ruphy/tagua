@@ -16,7 +16,7 @@
 #include "mastersettings.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "pref_theme.h"
 
 
@@ -146,7 +146,7 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_categories["controls"] = c;
   tabWidget->addTab(c, "&Controls");
 
-  MasterSettings s(".kboard_config_cache");
+  MasterSettings s(".tagua_config_cache.xml");
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
@@ -289,7 +289,7 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   if (var[tag])
     return var[tag].value<QString>();
 
-  MasterSettings s(".kboard_config_cache.xml");
+  MasterSettings s(".tagua_config_cache.xml");
   KStandardDirs* dirs = KGlobal::dirs();
   ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", "themes/"+category+"/*.lua",
                                                   KStandardDirs::Recursive), s.group(category));

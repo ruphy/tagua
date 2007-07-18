@@ -109,9 +109,9 @@ namespace LuaApi {
     set_property(LUA, #PROP, get_##PROP, NULL);
 
 
-#define LOADING_CONTEXT   "kboard_loading_context"
-#define CURRENT_DIRECTORY "kboard_script_curr_dir"
-#define API_LOADER        "kboard_api_loader"
+#define LOADING_CONTEXT   "tagua_loading_context"
+#define CURRENT_DIRECTORY "tagua_script_curr_dir"
+#define API_LOADER        "tagua_api_loader"
 
 
 

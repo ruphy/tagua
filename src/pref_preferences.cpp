@@ -50,7 +50,7 @@ Preferences::Preferences(QWidget *parent)
 : QDialog(parent) {
 
   setupUi(this);
-  setWindowIcon(KIcon("kboard"));
+  setWindowIcon(KIcon("tagua"));
   connect(buttonBox->button(QDialogButtonBox::Apply), SIGNAL(clicked()), this, SLOT(apply()));
 
   pagePref->hide();

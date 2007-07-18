@@ -14,7 +14,7 @@
 #include <memory>
 #include <iostream>
 #include "common.h"
-#include "kboard.h"
+#include "tagua.h"
 #include "movefactory.h"
 #include "piecefactory.h"
 #include "moveserializer.h"
@@ -31,7 +31,7 @@ template <typename V> class WrappedPosition;
   *
   * Use this class to wrap an high level position definition
   * in an AbstractPosition implementation suitable for communicating
-  * with the kboard infrastructure.
+  * with the tagua infrastructure.
   * Variant should be a structure with inner types Position, Move and Piece.
   *
   * @section Requirements on Position
@@ -240,7 +240,7 @@ public:
   : WrappedPoolBase<Variant, typename Variant::Pool>(pool) { }
 };
 
-/** 
+/**
   * Metafunction that returns a null pointer when
   * its template argument is NoPool.
   */
@@ -554,12 +554,12 @@ public:
     Move res = Position::getVerboseMove(static_cast<typename Piece::Color>(turn), m);
     return AbstractMove::Ptr(new WrappedMove<Variant>(res));
   }
-  
+
   virtual AbstractPiece::Ptr createPiece(const QString& description) {
     return AbstractPiece::Ptr(new WrappedPiece<Variant>(
       PieceFactory<Variant>::createPiece(description)));
   }
-  
+
   virtual int type(const QString& str) {
     return Piece::getType(str);
   }

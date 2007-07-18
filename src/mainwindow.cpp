@@ -57,7 +57,7 @@ MainWindow::~MainWindow() {
 
 MainWindow::MainWindow()
 : KXmlGuiWindow(0) {
-  setObjectName("kboard_main");
+  setObjectName("tagua_main");
   m_main = new KTabWidget(this);
   setCentralWidget(m_main);
 
@@ -200,7 +200,7 @@ void MainWindow::setupActions() {
   installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
   installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
   installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
-  installRegularAction("configure", KIcon("configure"), i18n("&Configure KBoard..."), this, SLOT(preferences()));
+  installRegularAction("configure", KIcon("configure"), i18n("&Configure Tagua..."), this, SLOT(preferences()));
 }
 
 void MainWindow::updatePromotionType() {

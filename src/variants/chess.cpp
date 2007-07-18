@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include "variants/chess.h"
 #include "common.h"
-#include "kboard_wrapped.h"
+#include "tagua_wrapped.h"
 #include "moveserializer.impl.h"
 #include "xchess/animator.impl.h"
 #include "piecefunction.h"
@@ -73,7 +73,7 @@ public:
     if (piece) {
       bool knight = m_cinterface->position()->get(move.from).type() == KNIGHT;
       int mtype = knight
-        ? Animate::move::LShaped | Animate::move::Rotating 
+        ? Animate::move::LShaped | Animate::move::Rotating
         : Animate::move::Straight;
       res.addPreAnimation(Animate::move(piece, move.to, mtype));
     }
@@ -185,7 +185,7 @@ public:
     {
       bool knight = m_cinterface->position()->get(move.to).type() == KNIGHT;
       int mtype = knight
-        ? Animate::move::LShaped | Animate::move::Rotating 
+        ? Animate::move::LShaped | Animate::move::Rotating
         : Animate::move::Straight;
       res.addPreAnimation(Animate::move(piece, move.from, mtype));
     }
@@ -233,14 +233,14 @@ public:
       else {
         return ChessPiece();
       }
-      
+
       ChessPiece::Type type = ChessPiece::getType(c);
-      
+
       if (type != INVALID_TYPE) {
         return ChessPiece(color, type);
       }
     }
-    
+
     return ChessPiece();
   }
 };

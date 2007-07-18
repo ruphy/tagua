@@ -1,7 +1,7 @@
 SplineFontDB: 1.0
-FontName: KBoard_Enquil
-FullName: KBoard_Enquil
-FamilyName: KBoard_Enquil
+FontName: Enquil
+FullName: Enquil
+FamilyName: Enquil
 Weight: Medium
 Copyright: Created by Io with FontForge 1.0 (http://fontforge.sf.net)
 Version: 001.000
@@ -13,6 +13,9 @@ Descent: 205
 Order2: 1
 XUID: [1021 645 1811818106 134493]
 FSType: 0
+OS2Version: 0
+OS2_WeightWidthSlopeOnly: 0
+OS2_UseTypoMetrics: 0
 CreationTime: 1156081627
 ModificationTime: 1160235956
 PfmFamily: 17

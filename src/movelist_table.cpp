@@ -29,7 +29,7 @@ namespace MoveList {
 
 Table::Table(QWidget* w)
 : QWidget(w) {
-  setWindowTitle("Move List - kboard");
+  setWindowTitle("Move List");
 
   QVBoxLayout *vbox = new QVBoxLayout(this);
   QHBoxLayout *hbox = new QHBoxLayout();

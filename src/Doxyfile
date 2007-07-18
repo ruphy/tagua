@@ -3,7 +3,7 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = KBoard
+PROJECT_NAME           = Tagua
 PROJECT_NUMBER         = 0.10
 OUTPUT_DIRECTORY       = doxy/en
 CREATE_SUBDIRS         = NO

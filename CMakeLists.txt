@@ -1,4 +1,4 @@
-PROJECT(kboard)
+PROJECT(tagua)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.0)
 
 # boost

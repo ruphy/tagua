@@ -1,7 +1,7 @@
 SplineFontDB: 1.0
-FontName: KBoard_XiangQi
-FullName: KBoard_XiangQi
-FamilyName: KBoard_XiangQi
+FontName: XiangQi
+FullName: XiangQi
+FamilyName: XiangQi
 Weight: Medium
 Copyright: Created by Monge Maurizio with FontForge 1.0 (http://fontforge.sf.net)
 Version: 001.000
@@ -13,6 +13,9 @@ Descent: 13
 Order2: 1
 XUID: [1021 645 1811818106 11622961]
 FSType: 0
+OS2Version: 0
+OS2_WeightWidthSlopeOnly: 0
+OS2_UseTypoMetrics: 0
 CreationTime: 1160082499
 ModificationTime: 1160236156
 PfmFamily: 17
@@ -58,7 +61,6 @@ NameList: Adobe Glyph List
 DisplaySize: -36
 AntiAlias: 1
 FitToEm: 1
-WinInfo: 0 21 11
 BeginChars: 65539 20
 StartChar: .notdef
 Encoding: 65536 -1 0
@@ -932,7 +934,7 @@ Fore
 38 26 m 2,50,51
  38 27 38 27 36 27 c 128,-1,52
  34 27 34 27 34 25 c 0,53,54
- 34 24 34 24 35 24 c 130,-1,55
+ 34 24 34 24 35 24 c 2,55,-1
  36 24 l 1,56,-1
  38 25 l 1,57,-1
  38 26 l 2,50,51

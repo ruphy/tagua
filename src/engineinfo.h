@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -23,44 +23,44 @@ struct EngineDetails {
   enum EngineType {
     XBoard,
     UCI,
-    KBoardText,
-    KBoardDBUS,
+    TaguaText,
+    TaguaDBUS,
     Unknown
   };
-  
+
   QString name;
   QString path;
   EngineType type;
   QString workPath;
-  
+
   EngineDetails(const QString& name, const QString& path, const EngineType& type)
   : name(name), path(path), type(type) { }
   EngineDetails() { }
-  
+
   static QString typeName(EngineType t) {
     switch (t) {
     case XBoard:
       return "xboard";
     case UCI:
       return "UCI";
-    case KBoardText:
-      return "kboard-text";
-    case KBoardDBUS:
-      return "kboard-dbus";
+    case TaguaText:
+      return "tagua-text";
+    case TaguaDBUS:
+      return "tagua-dbus";
     default:
       return "unknown";
     }
   }
-  
+
   static EngineType typeFromName(const QString& name) {
     if (name == "xboard")
       return XBoard;
     else if (name == "UCI")
       return UCI;
-    else if (name == "kboard-text")
-      return KBoardText;
-    else if (name == "kboard-dbus")
-      return KBoardDBUS;
+    else if (name == "tagua-text")
+      return TaguaText;
+    else if (name == "tagua-dbus")
+      return TaguaDBUS;
     else return Unknown;
   }
 };

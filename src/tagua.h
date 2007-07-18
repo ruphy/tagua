@@ -16,7 +16,7 @@ class GraphicalAPI;
 
 
 /**
-  * @file kboard.h
+  * @file tagua.h
   * @brief Low level abstract classes used by the interface framework.
   *
   * This file includes definitions for abstract classes used from within
@@ -37,7 +37,7 @@ class GraphicalAPI;
   * dynamic cast's and type checks in the calling code, when there's no
   * way to know the exact type of an argument at compile time.
   *
-  * The file @ref kboard_wrapped.h tries to address this problem doing part
+  * The file @ref tagua_wrapped.h tries to address this problem doing part
   * of the compiler's work. One exception is that type checking code
   * is inserted in a method wrapper, instead of the calling place, so
   * even calling a method of a noncasted instance would cause some

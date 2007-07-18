@@ -1,4 +1,4 @@
-require 'kboard'
+require 'tagua'
 
 module TicTacToe
 
@@ -14,7 +14,7 @@ class Piece
   end
 end
 
-Move = KBoard::Point
+Move = Tagua::Point
 
 class Pool
   def clear
@@ -107,4 +107,4 @@ end
 
 end
 
-KBoard.register "Tic Tac Toe", TicTacToe
+Tagua.register "Tic Tac Toe", TicTacToe
