@@ -139,9 +139,9 @@ static inline void blurcol(QImage & im, int col, int alpha)
 namespace ImageEffects {
 
 
-#ifdef HAVE_X86_SSE
+#ifdef HAVE_X86_SSE2
   void expblur_sse( QImage &img, int radius );
-#endif //HAVE_X86_SSE
+#endif //HAVE_X86_SSE2
 
 
 #ifdef HAVE_X86_MMX
@@ -153,12 +153,12 @@ namespace ImageEffects {
 void expBlur(QImage& img, int radius) {
 
 //KCPUInfo:: returns false on x86_64, and x86_64 always have sse/mmx
-#ifdef HAVE_X86_SSE
+#ifdef HAVE_X86_SSE2
   #ifndef __x86_64__
     if(KCPUInfo::haveExtension( KCPUInfo::IntelSSE ) )
   #endif //__x86_64__
       return expblur_sse(img, radius);
-#endif //HAVE_X86_SSE
+#endif //HAVE_X86_SSE2
 
 #ifdef HAVE_X86_MMX
   #ifndef __x86_64__

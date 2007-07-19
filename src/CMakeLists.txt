@@ -118,9 +118,9 @@ if(NOT DEFINED COMPILER_HAVE_X86_MMX)
   check_cxx_source_compiles(" int main() { __asm__(\"pxor %mm0, %mm0\") ; }" COMPILER_HAVE_X86_MMX)
 endif(NOT DEFINED COMPILER_HAVE_X86_MMX)
 
-if(NOT DEFINED COMPILER_HAVE_X86_SSE)
-  check_cxx_source_compiles(" int main() { __asm__(\"xorps %xmm0, %xmm0\") ; }" COMPILER_HAVE_X86_SSE)
-endif(NOT DEFINED COMPILER_HAVE_X86_SSE)
+if(NOT DEFINED COMPILER_HAVE_X86_SSE2)
+  check_cxx_source_compiles(" int main() { __asm__(\"xorpd %xmm0, %xmm0\"); }" COMPILER_HAVE_X86_SSE2)
+endif(NOT DEFINED COMPILER_HAVE_X86_SSE2)
 
 if(COMPILER_HAVE_X86_MMX)
   list(APPEND kboard_SRC imageeffects_mmx.cpp)
@@ -128,11 +128,11 @@ if(COMPILER_HAVE_X86_MMX)
   set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_MMX)
 endif(COMPILER_HAVE_X86_MMX)
 
-if(COMPILER_HAVE_X86_SSE)
+if(COMPILER_HAVE_X86_SSE2)
   list(APPEND kboard_SRC imageeffects_sse.cpp)
-  set_source_files_properties(imageeffects_sse.cpp PROPERTIES COMPILE_FLAGS -msse)
-  set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_SSE)
-endif(COMPILER_HAVE_X86_SSE)
+  set_source_files_properties(imageeffects_sse.cpp PROPERTIES COMPILE_FLAGS -msse2)
+  set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_SSE2)
+endif(COMPILER_HAVE_X86_SSE2)
 
 
 kde4_add_executable(
