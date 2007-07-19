@@ -51,7 +51,7 @@ GraphicalGame::GraphicalGame(GraphicalSystem* graphical,
     m_movelist->setNotifier( static_cast<MoveList::Notifier*>(this) );
     m_movelist->show();
   }
-  settings.onChange(this, SLOT(settingsChanged()));
+  settings.onChange(this, "settingsChanged", "Loader::Theme");
   settingsChanged();
 }
 

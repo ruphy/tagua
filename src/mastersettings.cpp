@@ -55,10 +55,56 @@ MasterSettings::~MasterSettings() {
   sync();
 }
 
-void MasterSettings::onChange(QObject* obj, const char* slot, int prority) {
-  std::cout << "register " << obj << " " << slot << std::endl;
-  m_slots[prority].insert( std::pair<QObject*, const char*>(obj, slot) );
-  connect(obj, SIGNAL(destroyed(QObject*)), this, SLOT(obj_destroyed(QObject*)));
+void MasterSettings::setupObserver(Observer& observer) {
+  std::cout << "adding observer: " << observer.object->metaObject()->className() 
+    << "::" << wrap_cptr(observer.method)
+    << " (dep. " << wrap_cptr(observer.dependency) << ")" << std::endl;
+    
+  connect(observer.object, SIGNAL(destroyed(QObject*)), this, SLOT(objectDestroyed(QObject*)));
+}
+
+void MasterSettings::onChange(QObject* obj, const char* method) {
+  m_observers.push_front(Observer(obj, method, 0));
+  setupObserver(m_observers.front());
+}
+
+void MasterSettings::onChange(QObject* obj, const char* method, const char* dependency) {
+  if (dependency) {
+    // go backwards through all existing observers, searching for something
+    // on which we depend.
+    for (ObserverList::reverse_iterator it = m_observers.rbegin();
+        it != m_observers.rend(); ++it) {
+      const char* observer_class = it->object->metaObject()->className();
+      if (observer_class && strcmp(observer_class, dependency) == 0) {
+        // we hit a dependency wall: we can't be notified
+        // before *it, so add the new Observer just here
+        ObserverList::iterator us = m_observers.insert(it.base(), Observer(obj, method, dependency));
+        setupObserver(*us);
+        
+        // now check for a cyclic dependency
+        const char* this_class = obj->metaObject()->className();
+        for (ObserverList::iterator it2 = m_observers.begin(); it2 != us; ++it2) {
+          if (it2->dependency && strcmp(it2->dependency, this_class) == 0) {
+            // something which is notified before has us a dependency
+            // this means that there is a cyclic dependency it2 -> us -> it.
+            WARNING("Removing a cyclic dependency: " <<
+              it2->object->metaObject()->className() << " -> " <<
+              this_class << " -> " <<
+              observer_class);
+              
+            // remove the cycle
+            it2->dependency = 0;
+          }
+        }
+        
+        // done
+        return;
+      }
+    }
+  }
+  
+  // no dependency
+  onChange(obj, method);
 }
 
 void MasterSettings::sync() {
@@ -73,36 +119,21 @@ void MasterSettings::sync() {
 
 }
 
-void MasterSettings::obj_destroyed(QObject* obj) {
-  for (SlotMap::iterator it = m_slots.begin(); it != m_slots.end(); /*++it*/ ) {
-    SlotSet::iterator j = it->second.lower_bound( std::pair<QObject*, const char*>(obj, NULL) );
-    while(j->first == obj)
-      it->second.erase(j++);
-
-    if(it->second.empty())
-      m_slots.erase(it++);
-    else
+void MasterSettings::objectDestroyed(QObject* obj) {
+  for (ObserverList::iterator it = m_observers.begin();
+       it != m_observers.end();) {
+    if (it->object == obj) {
+      it = m_observers.erase(it);
+    }
+    else {
       ++it;
+    }
   }
 }
 
 void MasterSettings::changed() {
-  for (SlotMap::iterator it = m_slots.begin(); it != m_slots.end(); ++it )
-  for (SlotSet::iterator j = it->second.begin(); j != it->second.end(); ++j ) {
-
-    //yes, moc is shit.
-    char* mystr = (char*)alloca(strlen(j->second)+1);
-    if(isdigit(j->second[0]))
-      strcpy(mystr, j->second+1);
-    else
-      strcpy(mystr, j->second);
-
-    if(char* par = index(mystr, '('))
-      *par = '\0';
-    if(char* par = index(mystr, ' '))
-      *par = '\0';
-
-    bool r = j->first->metaObject()->invokeMethod( j->first, mystr, Qt::DirectConnection);
+  foreach (Observer& observer, m_observers) {
+    observer.object->metaObject()->invokeMethod(observer.object, observer.method, Qt::DirectConnection);
   }
   sync();
 }

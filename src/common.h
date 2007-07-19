@@ -28,9 +28,6 @@ template <typename T> class Grid;
 template <typename T> class PointerGrid;
 //typedef PointerGrid<ChessPiece> PieceGrid;
 
-#define FORALL(i, collection, type) \
-  for (type::iterator i = (collection).begin(); i != (collection).end(); ++i)
-
 
 std::ostream &operator <<(std::ostream &os, const QString& s);
 
@@ -52,8 +49,10 @@ inline void TRAP() {
   #define M_PI 3.1415926
 #endif
 
-#define ERROR(x) (std::cout << "Error: " << x << std::endl \
-      << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ <<std::endl)
+#define DEBUG_MSG(header, msg) (std::cout << header << msg << "\n" \
+      << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ << std::endl)
+#define ERROR(x) DEBUG_MSG("Error: ", x)
+#define WARNING(x) DEBUG_MSG("Warning: ", x)
 
 #endif // COMMON_H
 

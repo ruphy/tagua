@@ -13,8 +13,7 @@
 
 #include <memory>
 #include <iostream>
-#include <set>
-#include <map>
+#include <list>
 #include <QDir>
 #include "settings.h"
 #include "foreach.hpp"
@@ -24,17 +23,25 @@
 class MasterSettings : public QObject
                      , public Settings {
 Q_OBJECT
+  struct Observer {
+    QObject* object;
+    const char* dependency;
+    const char* method;
+    
+    Observer(QObject* obj, const char* meth, const char* dep)
+    : object(obj)
+    , dependency(dep)
+    , method(meth) { }
+  };
+  typedef std::list<Observer> ObserverList;
 
-private:
-  typedef std::set<std::pair<QObject*, const char*> > SlotSet;
-  typedef std::map<int, SlotSet> SlotMap;
-
-  SlotMap m_slots;
+  ObserverList m_observers;
   QString m_filename;
   mutable QDomDocument m_doc;
-
+  
+  void setupObserver(Observer&);
 private slots:
-  void obj_destroyed(QObject* o);
+  void objectDestroyed(QObject* o);
 
 protected:
   virtual QDomElement node() const;
@@ -43,7 +50,24 @@ public:
   MasterSettings(const QString& file);
   ~MasterSettings();
 
-  void onChange(QObject* receiver, const char* slot, int priority = 0);
+  /**
+    * Set up an observer to be notified whenever settings change.
+    * \param observer The object to be notified.
+    * \param method The callback method for the notification, specified as a C string.
+    * \note @a method should be just the method name (no parentheses, no SLOT macro).
+    */
+  void onChange(QObject* observer, const char* method);
+  
+  /**
+    * Set up an observer to be notified whenever settings change.
+    * \param observer The object to be notified.
+    * \param method The callback method for the notification, specified as a C string.
+    * \param dependency A C string representing a type (inheriting from QObject). Objects
+    *                   of this type will be notified before @a observer.
+    * \note @a method should be just the method name (no parentheses, no SLOT macro).
+    */
+  void onChange(QObject* observer, const char* method, const char* dependency);
+
   void changed();
   void sync();
 };

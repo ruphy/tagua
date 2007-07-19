@@ -41,7 +41,7 @@ Theme::Theme(const QString& lua_file)
   if(m_lua_loader.error())
     ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
 
-  settings.onChange(this, SLOT(onSettingsChanged()), -10);
+  settings.onChange(this, "onSettingsChanged");
   onSettingsChanged();
 }
 
