@@ -86,8 +86,7 @@ set(tagua_SRC
   connection.cpp
   movelist_table.cpp
   newgame.cpp
-
-  option_p.h
+  option_p.cpp
 )
 
 kde4_add_ui_files(tagua_SRC
@@ -123,20 +122,20 @@ if(NOT DEFINED COMPILER_HAVE_X86_SSE2)
 endif(NOT DEFINED COMPILER_HAVE_X86_SSE2)
 
 if(COMPILER_HAVE_X86_MMX)
-  list(APPEND kboard_SRC imageeffects_mmx.cpp)
+  list(APPEND tagua_SRC imageeffects_mmx.cpp)
   set_source_files_properties(imageeffects_mmx.cpp PROPERTIES COMPILE_FLAGS -mmmx)
   set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_MMX)
 endif(COMPILER_HAVE_X86_MMX)
 
 if(COMPILER_HAVE_X86_SSE2)
-  list(APPEND kboard_SRC imageeffects_sse.cpp)
+  list(APPEND tagua_SRC imageeffects_sse.cpp)
   set_source_files_properties(imageeffects_sse.cpp PROPERTIES COMPILE_FLAGS -msse2)
   set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_SSE2)
 endif(COMPILER_HAVE_X86_SSE2)
 
 
 kde4_add_executable(
-  kboard ${kboard_SRC}
+  tagua ${tagua_SRC}
 )
 
 link_directories(
@@ -155,13 +154,5 @@ target_link_libraries(tagua
 )
 
 
-<<<<<<< HEAD:src/CMakeLists.txt
-install(
-  TARGETS kboard
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin
-)
-=======
-
 INSTALL(TARGETS tagua
   DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
->>>>>>> f8dec12... Replaced (almost) all occurrences of 'kboard' with 'tagua'.:src/CMakeLists.txt
