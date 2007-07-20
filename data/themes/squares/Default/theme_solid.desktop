@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Custom Color
+Type=Application
+Comment=Squares with a solid custom color
+X-Tagua-ThemeType=Squares
+X-Tagua-Variants=Chess, Shogi, XiangQi

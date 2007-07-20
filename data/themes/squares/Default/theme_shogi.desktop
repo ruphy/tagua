@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Shogi
+Type=Application
+Comment=Shogi-like squares
+X-Tagua-ThemeType=Squares
+X-Tagua-Variants=Shogi[default],Chess
