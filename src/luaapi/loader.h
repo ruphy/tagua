@@ -55,8 +55,8 @@ class Loader {
   template<typename T> static void retrieve(create_value_data<T>*, lua_State *l, int pos);
   template<typename T> static int create_value_func(lua_State *l);
 
-  static int import_func(lua_State *l);
-
+  static int import_func(lua_State* l);
+  static int read_desktop_file(lua_State* l);
 public:
   Loader(::Loader::Context *ctx);
   ~Loader();

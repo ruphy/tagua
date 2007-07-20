@@ -1,4 +1,6 @@
 import("piece_theme.lua")
+desktop_file()
+print(theme.name)
 
 shadow=7.0
 shadow_color="#404050"
@@ -40,6 +42,3 @@ theme.white_pawn   = fromSVG("wp.svg")
 theme.white_queen  = fromSVG("wq.svg")
 theme.white_rook   = fromSVG("wr.svg")
 
-theme.name = "Fantasy"
-theme.description = "Fantasy SVG theme,\n  by Maurizio Monge"
-theme.variants = { "Chess[default]", "Shogi" }

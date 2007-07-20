@@ -1,25 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=tagua
-Name[it]=tagua
-Name[xx]=xxtaguaxx
+Name=Tagua
+Name[it]=Tagua
+Name[xx]=xxTaguaxx
 Exec=tagua %i %m -caption "%c"
 Icon=tagua
 Type=Application
 DocPath=tagua/tagua.html
-Comment=A KDE chessboard
-Comment[ar]=لعبة الشطرنج لِــ KDE
-Comment[bg]=Шах за KDE
-Comment[da]=Et skakbræt for KDE
-Comment[de]=Ein KDE Schachbrett
-Comment[el]=Ένα σκάκι για το KDE
-Comment[es]=Un tablero de ajedrez para KDE
-Comment[et]=KDE mängulaud
-Comment[ga]=Clár fichille KDE
-Comment[it]= Una scacchiera KDE
-Comment[nl]=Een KDE-schaakbord
-Comment[pt]=Um tabuleiro de xadrez para o KDE
-Comment[pt_BR]=A tabuleiro de xadrez para o KDE 
-Comment[sv]=Ett schackbräde för KDE
-Comment[xx]=xxA KDE chessboardxx
+Comment=A generic board game application.
 Terminal=false
+
