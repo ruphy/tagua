@@ -58,7 +58,7 @@ Q_OBJECT
   static ThemeInfoList to_theme_info_list(const QStringList& files, const Settings& s);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);
-
+  static void read_theme_info(PrefTheme::ThemeInfo& info, const QString& desktopFile);
 private slots:
   void variantChanged();
 

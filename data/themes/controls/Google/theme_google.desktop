@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Google
+Type=Application
+Comment=Google-like controls
+X-Tagua-ThemeType=Controls
+X-Tagua-Variants=any
+X-Tagua-Script=theme_google.lua

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Alpha
+Type=Application
+Comment=Alpha TTF figurines.|  by Eric Bentzen
+X-Tagua-ThemeType=Figurines
+X-Tagua-Variants=Chess
+X-Tagua-Script=theme.lua

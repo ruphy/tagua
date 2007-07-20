@@ -37,7 +37,8 @@ Theme::Theme(const QString& lua_file)
 , m_context()
 , m_lua_loader(&m_context) {
 
-  m_lua_loader.runFile(m_file.toAscii().constData());
+  std::cout << "******** LOADING " << m_file << " ***********" << std::endl;
+  m_lua_loader.runFile(qPrintable(m_file));
   if(m_lua_loader.error())
     ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
 

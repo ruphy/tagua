@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Fantasy
+Type=Application
+Comment=Google-like controls
+X-Tagua-ThemeType=Figurines
+X-Tagua-Variants=Chess[default]
+X-Tagua-Script=theme.lua

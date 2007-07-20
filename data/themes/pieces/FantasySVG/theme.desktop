@@ -3,4 +3,6 @@ Encoding=UTF-8
 Name=FantasySVG
 Type=Application
 Comment=Fantasy SVG theme,|  by Maurizio Monge
+X-Tagua-ThemeType=Pieces
 X-Tagua-Variants=Chess[default], Shogi
+X-Tagua-Script=theme.lua

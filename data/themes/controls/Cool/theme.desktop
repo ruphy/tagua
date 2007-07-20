@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Cool
+Type=Application
+Comment=Cool controls
+X-Tagua-ThemeType=Figurines
+X-Tagua-Variants=any[default]
+X-Tagua-Script=theme.lua

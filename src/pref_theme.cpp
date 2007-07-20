@@ -12,17 +12,53 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
-#include <kstandarddirs.h>
+
+#include <KDesktopFile>
+#include <KStandardDirs>
+
 #include "mastersettings.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"
 #include "tagua.h"
 #include "pref_theme.h"
 
+class InvalidTheme { };
+
+void PrefTheme::read_theme_info(PrefTheme::ThemeInfo& info, const QString& desktopFile) {
+  std::cout << "reading desktop file " << desktopFile << std::endl;
+  if (!KDesktopFile::isDesktopFile(desktopFile)) {
+    return;
+  }
+    
+  KDesktopFile theme(desktopFile);
+  KConfigGroup themeData = theme.desktopGroup();
+  
+  info.name = theme.readName();
+  info.description = theme.readComment();
+  info.description.replace("|", "\n");
+  info.variants = themeData.readEntry("X-Tagua-Variants").split(QRegExp("\\s*,\\s*"));
+  info.file_name = themeData.readEntry("X-Tagua-Script");
+  if (info.file_name.isEmpty()) {
+    // use a file with the same name as the .desktop, but with as .lua extension
+    info.file_name = desktopFile;
+    info.file_name.replace(QRegExp("\\.desktop$"), ".lua");
+  }
+  else {
+    QFileInfo filePath(info.file_name);
+    QFileInfo desktopPath(desktopFile);
+    if (!filePath.isAbsolute()) {
+    // the file is relative to the .desktop directory
+      info.file_name = QDir(desktopPath.path()).filePath(info.file_name);
+    }
+  }
+  
+  std::cout << "THEME FOUND: variants = " << info.variants.join("\n") << std::endl;
+}
 
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
+  std::cout << "about to examine " << files.size() << " desktop files" << std::endl;
   std::map<QString, ThemeInfo> cache;
-
+  
   SettingArray themes = s.group("themes").array("theme");
   foreach (Settings s_theme, themes) {
     QStringList variants;
@@ -41,44 +77,28 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   ThemeInfoList allluafiles;
   ThemeInfoList retv;
   bool updated = false;
-  for(int i=0;i<files.size();i++) {
+  
+  for(int i = 0; i < files.size(); i++) {
     QDateTime lm = QFileInfo(files[i]).lastModified();
     std::map<QString, ThemeInfo>::iterator it = cache.find(files[i]);
 
-    if(it != cache.end() && it->second.last_modified == lm) {
-      if(!it->second.name.isEmpty())
+    if (it != cache.end() && it->second.last_modified == lm) {
+      std::cout << "found " << it->second.name << " in the cache" << std::endl;
+      if (!it->second.name.isEmpty())
         retv << it->second;
     }
     else {
       updated = true;
-      LuaApi::Loader l(NULL);
-      l.runFile(files[i]);
-
-      {
-        if(l.error())
-          goto fail;
-
-        QString name = l.getValue<QString>("name");
-        if(name.isEmpty() || l.error())
-          goto fail;
-
-        QString description = l.getValue<QString>("description");
-        if(l.error())
-          goto fail;
-
-        QStringList variants = l.getValue<QStringList>("variants");
-        if(l.error())
-          goto fail;
-
-        ThemeInfo t(files[i], name, description, variants, lm);
-        retv << t;
-        allluafiles << t;
-        continue;
+      
+      ThemeInfo info;
+      info.last_modified = lm;
+      read_theme_info(info, files[i]);
+      retv << info;
+      allluafiles << info;
+      
+      if (info.name.isEmpty()) {
+        ERROR("No name property in " << files[i]);
       }
-    fail:
-      allluafiles << ThemeInfo(files[i], QString(), QString(), QStringList(), lm );
-      ERROR("Loading " << files[i] << std::endl
-              << l.errorString());
     }
   }
 
@@ -100,7 +120,7 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
       s_theme["last-modified"] = allluafiles[i].last_modified.toString();
     }
   }
-
+  
   return retv;
 }
 
@@ -159,7 +179,7 @@ PrefTheme::PrefTheme(QWidget *parent)
     c->m_opt_layout->setMargin(0);
 
     c->m_themes = to_theme_info_list(
-      KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.lua", KStandardDirs::Recursive),
+      KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.desktop", KStandardDirs::Recursive),
       s.group(cit->first)
     );
   }
@@ -291,8 +311,9 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
 
   MasterSettings s(".tagua_config_cache.xml");
   KStandardDirs* dirs = KGlobal::dirs();
-  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", "themes/"+category+"/*.lua",
+  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", "themes/"+category+"/*.desktop",
                                                   KStandardDirs::Recursive), s.group(category));
+  std::cout << "found " << themes.size() << " themes" << std::endl;
 
   int best = 0;
   QString retv;
@@ -302,15 +323,16 @@ QString PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
     ok = themes[i].variants.contains("any[default]", Qt::CaseInsensitive) ? 2 : ok;
     ok = themes[i].variants.contains(v, Qt::CaseInsensitive) ? 3 : ok;
     ok = themes[i].variants.contains(v+"[default]", Qt::CaseInsensitive) ? 4 : ok;
-    if(!ok)
+    if (!ok)
       continue;
 
-    if(ok > best) {
+    if (ok > best) {
       retv = themes[i].file_name;
       best = ok;
     }
   }
-
+  
+  std::cout << "best theme " << retv << std::endl;
   if (!retv.isEmpty())
     var[tag] = retv;
   return retv;

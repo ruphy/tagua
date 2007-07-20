@@ -67,9 +67,9 @@ public:
   template<typename T> T getValue(const QString& key, int size = 0,
                             const LuaValueMap* args = NULL, bool allow_nil = false);
 
-  bool error(){ return m_error; }
-  void clearError(){ m_error = false; }
-  QString errorString(){ return m_error_string; }
+  bool error() { return m_error; }
+  void clearError() { m_error = false; }
+  QString errorString() { return m_error_string; }
 
   QDir currDir() { return m_curr_dir; }
 };
