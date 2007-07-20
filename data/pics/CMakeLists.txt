@@ -10,5 +10,5 @@ install(FILES
   promoteQueen.png
   promoteRook.png
   tagua.svg
-DESTINATION ${DATA_INSTALL_DIR}/tagua/pictures)
+DESTINATION ${DATA_INSTALL_DIR}/tagua/pics)
 
