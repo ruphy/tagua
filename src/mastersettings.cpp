@@ -56,10 +56,6 @@ MasterSettings::~MasterSettings() {
 }
 
 void MasterSettings::setupObserver(Observer& observer) {
-  std::cout << "adding observer: " << observer.object->metaObject()->className() 
-    << "::" << wrap_cptr(observer.method)
-    << " (dep. " << wrap_cptr(observer.dependency) << ")" << std::endl;
-    
   connect(observer.object, SIGNAL(destroyed(QObject*)), this, SLOT(objectDestroyed(QObject*)));
 }
 

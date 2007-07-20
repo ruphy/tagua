@@ -17,6 +17,7 @@
 #include <QDateTime>
 #include <QDir>
 #include "option.h"
+#include "themeinfo.h"
 #include "ui_pref_theme.h"
 #include "ui_pref_theme_page.h"
 
@@ -30,24 +31,6 @@ Q_OBJECT
   friend class PrefThemeCategory;
   typedef class PrefThemeCategory Category;
 
-  class ThemeInfo {
-  public:
-    QString file_name;
-    QString name;
-    QString description;
-    QStringList variants;
-    QDateTime last_modified;
-
-    ThemeInfo() {}
-    ThemeInfo(const QString& f, const QString& n,
-                  const QString& d, const QStringList& v, const QDateTime& t)
-    : file_name(f)
-    , name(n)
-    , description(d)
-    , variants(v)
-    , last_modified(t) {}
-  };
-
   typedef QList<ThemeInfo> ThemeInfoList;
   typedef std::map<QString, Category*> CategoryMap;
 
@@ -58,7 +41,7 @@ Q_OBJECT
   static ThemeInfoList to_theme_info_list(const QStringList& files, const Settings& s);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);
-  static void read_theme_info(PrefTheme::ThemeInfo& info, const QString& desktopFile);
+  static void read_theme_info(ThemeInfo& info, const QString& desktopFile);
 private slots:
   void variantChanged();
 
@@ -68,7 +51,7 @@ public:
 
   void apply();
 
-  static QString getBestTheme(VariantInfo* vi, const QString&);
+  static ThemeInfo getBestTheme(VariantInfo* vi, const QString&);
 };
 
 

@@ -65,26 +65,25 @@ AbstractPosition::Ptr GraphicalSystem::position() const {
 }
 
 void GraphicalSystem::settingsChanged() {
-
   /* recreate the animator to reload its settings */
   m_animator = m_variant->createAnimator(this);
 
-  QString theme = PrefTheme::getBestTheme(m_variant, "pieces");
-  QString sqtheme = PrefTheme::getBestTheme(m_variant, "squares");
-  QString figtheme = PrefTheme::getBestTheme(m_variant, "figurines");
-  QString ctrltheme = PrefTheme::getBestTheme(m_variant, "controls");
+  ThemeInfo theme = PrefTheme::getBestTheme(m_variant, "pieces");
+  ThemeInfo sqtheme = PrefTheme::getBestTheme(m_variant, "squares");
+  ThemeInfo figtheme = PrefTheme::getBestTheme(m_variant, "figurines");
+  ThemeInfo ctrltheme = PrefTheme::getBestTheme(m_variant, "controls");
 
-  m_board->loader()->setBasePath( theme );
-  m_board->tagsLoader()->setBasePath( sqtheme );
-  m_board->controlsLoader()->setBasePath( ctrltheme );
-
-  for(int i=0;i<2;i++)
-    m_view->pool(i)->loader()->setBasePath( theme );
+  m_board->loader()->setTheme(theme);
+  m_board->tagsLoader()->setTheme(sqtheme);
+  m_board->controlsLoader()->setTheme(ctrltheme);
 
   for(int i=0;i<2;i++)
-    m_view->clock(i)->controlsLoader()->setBasePath( ctrltheme );
+    m_view->pool(i)->loader()->setTheme(theme);
 
-  m_view->moveListTable()->setLoaderBasePath( figtheme );
+  for(int i=0;i<2;i++)
+    m_view->clock(i)->controlsLoader()->setTheme(ctrltheme);
+
+  m_view->moveListTable()->setLoaderTheme(figtheme);
   m_view->moveListTable()->settingsChanged();
 
   //clear board and pool, forcing reload

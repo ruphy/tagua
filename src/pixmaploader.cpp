@@ -13,13 +13,14 @@
 #include "common.h"
 #include "loader/theme.h"
 #include "pixmaploader.h"
+#include "themeinfo.h"
 
 class PixmapLoader::ThemeLoader : public Loader::Theme {
 public:
   int m_ref_count;
 
-  ThemeLoader(const QString& s)
-    : Loader::Theme(s)
+  ThemeLoader(const ThemeInfo& t)
+    : Loader::Theme(t)
     , m_ref_count(0) {
   }
 };
@@ -39,7 +40,7 @@ PixmapLoader::~PixmapLoader() {
 }
 
 void PixmapLoader::flush() {
-  if(m_loader) {
+  if (m_loader) {
     /* unref the size */
     if(m_size)
       m_loader->unrefSize(m_size);
@@ -48,18 +49,18 @@ void PixmapLoader::flush() {
     /* unref the loader, and possibly destroy it */
     if(!--m_loader->m_ref_count) {
       delete m_loader;
-      s_loaders.erase(m_base);
+      s_loaders.remove(m_theme);
     }
     m_loader = NULL;
   }
 }
 
-void PixmapLoader::setBasePath(const QString& base) {
-  if(base == m_base)
+void PixmapLoader::setTheme(const ThemeInfo& theme) {
+  if (theme == m_theme)
     return;
 
   flush();
-  m_base = base;
+  m_theme = theme;
 }
 
 void PixmapLoader::setSize(int s) {
@@ -76,30 +77,37 @@ void PixmapLoader::setSize(int s) {
 }
 
 void PixmapLoader::initialize() {
-  if(m_loader)
+  if (m_loader)
     return;
 
   /* try to get a loader */
-  ThemeLoadersCache::iterator it = s_loaders.find(m_base);
-  if(it != s_loaders.end())
-    m_loader = it->second;
-  else {
-    m_loader = new ThemeLoader(m_base);
-    s_loaders[m_base] = m_loader;
+  m_loader = s_loaders.value(m_theme, 0);
+  if (!m_loader) {
+    // no loader, yet
+    // create it
+    m_loader = new ThemeLoader(m_theme);
+    s_loaders.insert(m_theme, m_loader);
   }
-
+  
+  Q_ASSERT(m_loader);
+  
   m_loader->m_ref_count++;
-  if(m_size)
+  if (m_size)
     m_loader->refSize(m_size);
+
   m_loader->refSize(0);
+}
+
+QPixmap PixmapLoader::operator()(const QString& id) {
+  return getValue<QPixmap>(id);
 }
 
 template<typename T>
 T PixmapLoader::getValue(const QString& id, const ::LuaApi::LuaValueMap* args) {
-  if(!m_size || m_base.isEmpty())
+  if (!m_size || !m_theme)
     return T();
 
-  if(!m_loader)
+  if (!m_loader)
     initialize();
 
   return m_loader->getValue<T>(id, m_size, args);
@@ -119,10 +127,10 @@ template ::LuaApi::LuaValueMap  PixmapLoader::getValue< ::LuaApi::LuaValueMap>(c
 
 template<typename T>
 T PixmapLoader::getStaticValue(const QString& id, const ::LuaApi::LuaValueMap* args) {
-  if(m_base.isEmpty())
+  if (!m_theme)
     return T();
 
-  if(!m_loader)
+  if (!m_loader)
     initialize();
 
   return m_loader->getValue<T>(id, 0, args);

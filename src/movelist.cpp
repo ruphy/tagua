@@ -1288,6 +1288,10 @@ void Widget::select(const Index& index) {
   layout();
 }
 
+void Widget::setLoaderTheme(const ThemeInfo& theme) {
+  m_loader.setTheme(theme);
+}
+
 //END Widget-------------------------------------------------------------------
 
 } //end namespace MoveList

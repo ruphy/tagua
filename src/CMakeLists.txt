@@ -87,6 +87,7 @@ set(tagua_SRC
   movelist_table.cpp
   newgame.cpp
   option_p.cpp
+  themeinfo.cpp
 )
 
 kde4_add_ui_files(tagua_SRC

@@ -16,6 +16,7 @@
 
 class QAction;
 class QScrollArea;
+class ThemeInfo;
 
 namespace MoveList {
   class Widget;
@@ -50,7 +51,7 @@ namespace MoveList {
 
     void settingsChanged();
 
-    void setLoaderBasePath(const QString& p);
+    void setLoaderTheme(const ThemeInfo& theme);
 
     /** Sets the move comment at the given index */
     void setComment(const Index& index, const QString& comment);

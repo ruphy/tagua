@@ -16,6 +16,7 @@
 #include <QObject>
 #include "loader/context.h"
 #include "luaapi/loader.h"
+#include "themeinfo.h"
 
 namespace Loader {
 
@@ -33,8 +34,8 @@ class Theme : public QObject {
 Q_OBJECT
 
 private:
-  QString m_file;
-
+  ThemeInfo m_theme;
+  
   /** there will be one such class for each size, and i will store pixmaps and glyphs */
   class SizeCache {
   public:
@@ -61,7 +62,7 @@ private slots:
 
 public:
   /** Constructor, created the class from a lua theme file */
-  Theme(const QString& lua_file);
+  Theme(const ThemeInfo& theme);
   ~Theme();
 
   /** References the size \a size, enabling you to get pixmaps of size \a size */

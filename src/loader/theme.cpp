@@ -32,13 +32,12 @@ PixmapOrMap Theme::to_pixmap_map(const ::LuaApi::ImageOrMap& m) {
     return PixmapOrMap();
 }
 
-Theme::Theme(const QString& lua_file)
-: m_file(lua_file)
+Theme::Theme(const ThemeInfo& theme)
+: m_theme(theme)
 , m_context()
 , m_lua_loader(&m_context) {
-
-  std::cout << "******** LOADING " << m_file << " ***********" << std::endl;
-  m_lua_loader.runFile(qPrintable(m_file));
+  std::cout << "loading theme " << theme.file_name << std::endl;
+  m_lua_loader.runFile(qPrintable(m_theme.file_name));
   if(m_lua_loader.error())
     ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
 
@@ -53,7 +52,7 @@ Theme::~Theme() {
 
 void Theme::onSettingsChanged() {
   SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
-  Settings entry = s_lua.insert(m_file);
+  Settings entry = s_lua.insert(m_theme.file_name);
   OptList ol = m_lua_loader.getValue<OptList>("options", 0, NULL, true);
   if(m_lua_loader.error()) {
     m_lua_loader.clearError();

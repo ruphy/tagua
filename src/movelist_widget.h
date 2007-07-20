@@ -24,6 +24,8 @@
 #include "pixmaploader.h"
 #include "kgamecanvas.h"
 
+class ThemeInfo;
+
 namespace MoveList {
 
 typedef boost::shared_ptr<class Entry> EntryPtr;
@@ -116,7 +118,7 @@ public:
 
   void settingsChanged();
 
-  void setLoaderBasePath(const QString& p){ m_loader.setBasePath(p); }
+  void setLoaderTheme(const ThemeInfo& theme);
 
   /** Clears all the moves */
   void reset();

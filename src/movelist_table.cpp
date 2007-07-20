@@ -80,9 +80,9 @@ void Table::settingsChanged() {
   if(m_movelist_textual) m_movelist_textual->settingsChanged();
 }
 
-void Table::setLoaderBasePath(const QString& p) {
-  if(m_movelist) m_movelist->setLoaderBasePath(p);
-  if(m_movelist_textual) m_movelist_textual->setLoaderBasePath(p);
+void Table::setLoaderTheme(const ThemeInfo& theme) {
+  if(m_movelist) m_movelist->setLoaderTheme(theme);
+  if(m_movelist_textual) m_movelist_textual->setLoaderTheme(theme);
 }
 
 void Table::onUndo() {

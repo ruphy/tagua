@@ -22,6 +22,7 @@
 
 class KHTMLPart;
 class KUrl;
+class ThemeInfo;
 
 namespace MoveList {
 
@@ -37,7 +38,7 @@ public:
 
   void settingsChanged() {}
 
-  void setLoaderBasePath(const QString& p){ m_loader.setBasePath(p); }
+  void setLoaderTheme(const ThemeInfo& theme) { m_loader.setTheme(theme); }
 
   /** Sets the move comment at the given index */
   void setComment(const Index& index, const QString& comment);
@@ -81,6 +82,8 @@ private slots:
 #include "decoratedmove.h"
 #include "index.h"
 
+class ThemeInfo;
+
 namespace MoveList {
 
 class Notifier;
@@ -92,7 +95,7 @@ public:
   Textual(QWidget *parent = NULL) : QWidget(parent){}
 
   void settingsChanged() {}
-  void setLoaderBasePath(const QString& /*p*/){}
+  void setLoaderTheme(const ThemeInfo& /*theme*/){}
   void setComment(const Index& /*index*/, const QString& /*comment*/){}
   void setVComment(const Index& /*index*/, int /*v*/, const QString& /*comment*/){}
   void setMove(const Index& /*index*/, int /*turn*/, const DecoratedMove& /*move*/,
