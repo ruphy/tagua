@@ -143,16 +143,12 @@ link_directories(
   ${Boost_LIBRARY_DIRS}
 )
 
-#message("lua: " ${LUA_LINK_FLAGS})
-
 target_link_libraries(tagua
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
-#   ${KDE4_KIO_LIBS}
-#   ${KDE4_KHTML_LIBS}
   kdegames
 )
 
-
-INSTALL(TARGETS tagua
-  DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+INSTALL(TARGETS tagua DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+install(FILES tagua.desktop DESTINATION ${XDG_APPS_DIR})
+install(FILES taguaui.rc DESTINATION  ${DATA_INSTALL_DIR}/tagua)
