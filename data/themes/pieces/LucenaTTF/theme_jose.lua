@@ -1,4 +1,4 @@
-import("../common.lua")
+import("piece_theme.lua")
 
 shadow           = 7
 shadow_color     = "#404040"

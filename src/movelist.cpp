@@ -693,12 +693,12 @@ void Widget::mousePressEvent ( QMouseEvent * event ) {
     else if(event->button() == Qt::RightButton) {
       QAction *a;
       QMenu m(this);
-      a = m.addAction(QIcon(m_settings->icons+"comment.png"), "&Set comment");
+      a = m.addAction(KIcon("pen"), "&Set comment");
       a->setData("comment");
       m.addSeparator();
-      a = m.addAction(QIcon(m_settings->icons+"promote.png"), "&Promote variation");
+      a = m.addAction(KIcon(), "&Promote variation");
       a->setData("promote");
-      a = m.addAction(QIcon(m_settings->icons+"remove.png"), "&Remove variation");
+      a = m.addAction(KIcon("edit-delete"), "&Remove variation");
       a->setData("remove");
       boost::weak_ptr<Entry> ewptr = boost::weak_ptr<Entry>(fetch(b->entry->index));
       int v = b->variation;
@@ -734,19 +734,19 @@ void Widget::mousePressEvent ( QMouseEvent * event ) {
     else if(event->button() == Qt::RightButton) {
       QAction *a;
       QMenu m(this);
-      a = m.addAction(QIcon(m_settings->icons+"comment.png"), "&Set comment");
+      a = m.addAction(KIcon("pen"), "&Set comment");
       a->setData("comment");
-      a = m.addAction(QIcon(m_settings->icons+"clear.png"), "&Clear variations");
+      a = m.addAction(KIcon("eraser"), "&Clear variations");
       a->setEnabled(!e->variations.empty());
       a->setData("clear");
-      a = m.addAction(QIcon(m_settings->icons+"truncate.png"), "&Truncate");
+      a = m.addAction(KIcon("cut"), "&Truncate");
       a->setEnabled(fetch(e->index.next()));
       a->setData("truncate");
       m.addSeparator();
-      a = m.addAction(QIcon(m_settings->icons+"promote.png"), "&Promote variation");
+      a = m.addAction(KIcon(), "&Promote variation");
       a->setEnabled(e->index.nested.size());
       a->setData("promote");
-      a = m.addAction(QIcon(m_settings->icons+"remove.png"), "&Remove variation");
+      a = m.addAction(KIcon("edit-delete"), "&Remove variation");
       a->setEnabled(e->index.nested.size());
       a->setData("remove");
       boost::weak_ptr<Entry> ewptr = boost::weak_ptr<Entry>(fetch(e->index));

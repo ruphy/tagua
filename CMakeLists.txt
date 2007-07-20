@@ -1,6 +1,8 @@
 PROJECT(tagua)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.4.0)
 
+include(tagua.cmake)
+
 # boost
 FIND_PACKAGE(Boost)
 
@@ -34,4 +36,5 @@ include(KDE4Defaults)
 add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 add_subdirectory(src)
-# ADD_SUBDIRECTORY(tests EXCLUDE_FROM_ALL)
+add_subdirectory(data)
+# add_subdirectory(tests EXCLUDE_FROM_ALL)

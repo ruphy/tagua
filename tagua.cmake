@@ -1,0 +1,13 @@
+macro(install_local_dir local_dir install_dir)
+  file(GLOB_RECURSE inst_files ${local_dir}/*)
+  foreach(inst_file ${inst_files})
+#     message("file1 = ${CMAKE_CURRENT_SOURCE_DIR}")
+#     message("file2 = ${inst_file}")
+    file(RELATIVE_PATH rel_file ${CMAKE_CURRENT_SOURCE_DIR} ${inst_file})
+#     message("rel file = ${rel_file}")
+    get_filename_component(rel_dir ${rel_file} PATH)
+#     message("rel dir = ${rel_dir}")
+    install(FILES ${inst_file}
+      DESTINATION ${DATA_INSTALL_DIR}/${install_dir}/${rel_dir})
+  endforeach(inst_file)
+endmacro(install_local_dir local_dir install_dir)

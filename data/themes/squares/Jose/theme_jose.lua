@@ -1,4 +1,4 @@
-import("../../pieces/common.lua")
+import("piece_theme.lua")
 
 theme.background = function(size)
   local light = Brush(Image("marble04.jpg"))

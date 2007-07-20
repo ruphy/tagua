@@ -183,7 +183,7 @@ void MainWindow::setupActions() {
   installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
   installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
   installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
-  installRegularAction("connect", KIcon("connection-estabilished"), i18n("&Connect"), this, SLOT(icsConnect()));
+  installRegularAction("connect", KIcon("connection-established"), i18n("&Connect"), this, SLOT(icsConnect()));
   installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());

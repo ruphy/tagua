@@ -1,3 +1,4 @@
+import("piece_theme.lua")
 
 function alone(color)
   return function(size)

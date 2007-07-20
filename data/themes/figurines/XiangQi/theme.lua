@@ -1,4 +1,4 @@
-import("../../Pieces/common.lua")
+import("piece_theme.lua")
 
 function Fig(char)
   return Glyph("ukai.ttf", char, 4)

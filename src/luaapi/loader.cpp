@@ -13,6 +13,8 @@
 #include <iostream>
 #include <QRect>
 #include <QDir>
+#include <KStandardDirs>
+
 #include "common.h"
 #include "loader/image.h"
 #include "luaapi/imaging.h"
@@ -92,6 +94,15 @@ bool Loader::runFile(const QString& file, bool setdir) {
 
   QString path = QDir::cleanPath(
                     QDir::isAbsolutePath(file) ? file : m_curr_dir.filePath(file) );
+  if (!QFile::exists(path)) {
+    // find it in the scripts dir
+    path = KStandardDirs::locate("appdata", "scripts/" + file);
+  }
+  if (!QFile::exists(path)) {
+    // give up
+    return false;
+  }
+  
   if(setdir) {
     QFileInfo f_info( path );
     m_curr_dir = f_info.dir();
@@ -292,14 +303,16 @@ int Loader::import_func(lua_State *l) {
   lua_pop(l, 1);
 
   int n = lua_gettop(l);
-  if(n != 1)
+  if (n != 1)
     luaL_error(l, "Wrong argument count for \"import\"");
   QString file(lua_tostring(l, 1));
   lua_pop(l, n);
 
-  if(!api->runFile(file, false))
+  if (!api->runFile(file, false)) {
     luaL_error(l, "Error importing \"%s\":\n%s", file.toAscii().constData(),
                                           api->errorString().toAscii().constData() );
+  }
+  
   return 0;
 }
 

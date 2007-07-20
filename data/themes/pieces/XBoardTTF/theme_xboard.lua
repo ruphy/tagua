@@ -1,5 +1,4 @@
-import("../common.lua")
-
+import("piece_theme.lua")
 function fromGlyph(glyph)
   return fromFontGlyph("XBoard.ttf", glyph, "black", "#ffffce")
 end

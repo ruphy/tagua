@@ -1,4 +1,4 @@
-import("../../pieces/common.lua")
+import("piece_theme.lua")
 
 
 theme.options = OptList {

@@ -1,0 +1,5 @@
+add_subdirectory(highlighting)
+add_subdirectory(pics)
+add_subdirectory(piece_icons)
+add_subdirectory(scripts)
+add_subdirectory(themes)

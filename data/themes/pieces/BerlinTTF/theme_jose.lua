@@ -1,8 +1,7 @@
 -- this theme copies perfectly the default theme of jose,
 -- except for the shadow that is better :)
 
-import("../common.lua")
-
+import("piece_theme.lua")
 shadow           = 7
 shadow_color     = "#404040"
 shadow_offset_x  = 3

@@ -1,4 +1,4 @@
-import("../../pieces/common.lua")
+import("piece_theme.lua")
 
 function Fig(char)
   return Glyph("../../Pieces/AlphaTTF/Alpha.ttf", char, 2)

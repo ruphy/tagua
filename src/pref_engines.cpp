@@ -28,7 +28,7 @@ PrefEngines::PrefEngines(QWidget* parent)
   connect(m_workdir, SIGNAL(textChanged(const QString&)), this, SLOT(setWorkDir()));
 
   m_add_engine->setIcon(KIcon("add"));
-  m_remove_engine->setIcon(KIcon("remove.png"));
+  m_remove_engine->setIcon(KIcon("edit-delete"));
 
   SettingArray s_engines = settings.group("engines").array("engine");
   foreach (Settings s, s_engines) {
