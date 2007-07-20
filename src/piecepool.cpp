@@ -33,31 +33,36 @@ PiecePool::~PiecePool() {
 
 
 QPoint PiecePool::toReal(int i) {
-  int x = i%m_width;
-  int y = i/m_width;
-  if(y&1)
-    x = m_width-1-x;
-  if(m_flipped)
-    y = -1-y;
+  int x = i % m_width;
+  int y = i / m_width;
+  
+  if (y & 1)
+    x = m_width - 1 - x;
+    
+  if (m_flipped)
+    y = -1 - y;
 
-  return QPoint(m_square_size*x, m_square_size*y);
+  return QPoint(x, y) * m_square_size;
 }
 
 
 int PiecePool::toLogical(const QPoint& p) {
-  int x = p.x()/m_square_size;
-  int y = p.y()/m_square_size;
+  int x = p.x() / m_square_size;
+  int y = p.y() / m_square_size;
 
-  if(x<0 || x>= m_width)
+  if (x<0 || x >= m_width)
     return -1;
-  if(m_flipped)
+    
+  if (m_flipped)
     y = -y;
-  if(y&1)
-    x = m_width-1-x;
 
-  int retv = y*m_width + x;
-  if(retv < 0 || retv >= (int)m_sprites.size())
+  if (y & 1)
+    x = m_width - 1 - x;
+
+  int retv = y * m_width + x;
+  if (retv < 0 || static_cast<unsigned int>(retv) >= m_sprites.size())
     return -1;
+    
   return retv;
 }
 
@@ -68,7 +73,14 @@ void PiecePool::settingsChanged() {
 
 
 void PiecePool::setGridWidth(int w) {
-  m_width = w;
+  m_width = w > 0 ? w : 1;
+}
+
+QRect PiecePool::boardRect() {
+  Q_ASSERT(m_width > 0);
+  int height = (m_sprites.size() + m_width - 1) / m_width;
+  QSize sz(m_width, m_flipped ? -height : height);
+  return QRect(pos(), sz * m_square_size);
 }
 
 
@@ -94,7 +106,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   m_sprites.resize(m_sprites.size()+1);
 
   for(int i = m_sprites.size()-1; i > index; i--) {
-    double speed = (1.0+1.0/(i - index + 1))*0.4;
+//     double speed = (1.0 + 1.0 / (i - index + 1)) * 0.4;
     m_sprites[i] = m_sprites[i-1];
     m_sprites[i].sprite()->moveTo(toReal(i)); //BROKEN animate to that point?
   }
@@ -177,7 +189,7 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
     return NamedSprite();
 
   for(int i = index; i < (int)m_sprites.size()-1; i++) {
-    double speed = (1.0+1.0/(i - index + 1))*0.4;
+//     double speed = (1.0 + 1.0 / (i - index + 1)) * 0.4;
     m_sprites[i] = m_sprites[i+1];
     m_sprites[i].sprite()->moveTo(toReal(i)); //BROKEN animate to that point?
   }

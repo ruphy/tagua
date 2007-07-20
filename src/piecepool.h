@@ -119,8 +119,7 @@ public:
   void setGridWidth(int w);
 
   /** the rect that will be covered by the pool */
-  virtual QRect boardRect() { return QRect(pos(), QSize(m_square_size*m_width,
-                                  (m_flipped?-1:1)*m_square_size*((m_sprites.size()+m_width-1)/m_width)) ); }
+  virtual QRect boardRect();
 
   /** flips and moves the pieces in the pool at the same time */
   void flipAndMoveBy(QPoint p);
