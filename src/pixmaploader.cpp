@@ -25,10 +25,6 @@ public:
   }
 };
 
-
-PixmapLoader::ThemeLoadersCache PixmapLoader::s_loaders;
-
-
 PixmapLoader::PixmapLoader()
 : m_loader(NULL)
 , m_size(0)
@@ -37,6 +33,11 @@ PixmapLoader::PixmapLoader()
 
 PixmapLoader::~PixmapLoader() {
   flush();
+}
+
+PixmapLoader::ThemeLoadersCache& PixmapLoader::loaders() {
+  static ThemeLoadersCache cache;
+  return cache;
 }
 
 void PixmapLoader::flush() {
@@ -49,7 +50,7 @@ void PixmapLoader::flush() {
     /* unref the loader, and possibly destroy it */
     if(!--m_loader->m_ref_count) {
       delete m_loader;
-      s_loaders.remove(m_theme);
+      loaders().remove(m_theme);
     }
     m_loader = NULL;
   }
@@ -81,12 +82,12 @@ void PixmapLoader::initialize() {
     return;
 
   /* try to get a loader */
-  m_loader = s_loaders.value(m_theme, 0);
+  m_loader = loaders().value(m_theme, 0);
   if (!m_loader) {
     // no loader, yet
     // create it
     m_loader = new ThemeLoader(m_theme);
-    s_loaders.insert(m_theme, m_loader);
+    loaders().insert(m_theme, m_loader);
   }
   
   Q_ASSERT(m_loader);

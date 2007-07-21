@@ -33,7 +33,7 @@ private:
   typedef QHash<ThemeInfo, ThemeLoader*> ThemeLoadersCache;
 
   /** static cache of the loaders, there should be only one for each (theme,variant) pair  */
-  static ThemeLoadersCache s_loaders;
+  static ThemeLoadersCache& loaders();
 
   /** the current loader, or NULL */
   ThemeLoader *m_loader;
