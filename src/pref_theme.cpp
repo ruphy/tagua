@@ -298,7 +298,7 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   std::cout << "found " << themes.size() << " themes" << std::endl;
 
   int best = 0;
-  ThemeInfo* retv;
+  ThemeInfo* retv = 0;
   for(int i=0;i<themes.size();i++) {
     int ok = 0;
     ok = themes[i].variants.contains("any", Qt::CaseInsensitive) ? 1 : ok;
@@ -314,10 +314,10 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
     }
   }
 
-  if (*retv)
+  if (retv && *retv)
     var[tag] = retv->desktopFile;
     
-  return *retv;
+  return retv ? *retv : ThemeInfo();
 }
 
 PrefThemeCategory::PrefThemeCategory(QWidget* parent, PrefTheme* owner)
