@@ -10,7 +10,6 @@
 
 
 #include "board.h"
-#include "animationfactory.h"
 #include "piecepool.h"
 
 
@@ -93,8 +92,8 @@ void PiecePool::clear() {
   m_sprites.clear();
 }
 
-void PiecePool::animate(const Animate::Pool::Scheme& scheme) {
-  m_main_animation->addAnimation(scheme.run(this, Animate::Normal));
+void PiecePool::animate(const Animate::Pool::Scheme& scheme, Animate::AnimationType type) {
+  m_main_animation->addAnimation(scheme.run(this, type));
 }
 
 void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
@@ -115,8 +114,8 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   }
 
   m_sprites[index] = nsprite;
+  animate(Animate::Pool::move(m_sprites[index], index), Animate::Instant);
   animate(Animate::Pool::appear(m_sprites[index]));
-  animate(Animate::Pool::move(m_sprites[index], index));
 }
 
 

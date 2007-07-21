@@ -17,8 +17,7 @@
 #include "mainanimation.h"
 #include "namedsprite.h"
 #include "pixmaploader.h"
-
-namespace Animate { namespace Pool { class Scheme; } }
+#include "animationfactory.h"
 
 /**
   * @class PiecePool <piecepool.h>
@@ -81,7 +80,7 @@ private:
   /** finds to which index corresponds the point p, or -1 if corresponds to none */
   virtual int toLogical(const QPoint& p) const;
 
-  void animate(const Animate::Pool::Scheme& scheme);
+  void animate(const Animate::Pool::Scheme& scheme, Animate::AnimationType type = Animate::Normal);
 public:
   friend class GraphicalSystem;
   friend class ChessTable;
