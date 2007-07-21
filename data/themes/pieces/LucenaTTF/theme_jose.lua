@@ -24,6 +24,3 @@ theme.white_pawn   = fromGlyph("0x0070")
 theme.white_queen  = fromGlyph("0x0071")
 theme.white_rook   = fromGlyph("0x0072")
 
-theme.name = "Lucena (Jose style)"
-theme.description = "Lucena TTF theme.\n  by Armando H. Marroquin"
-theme.variants = { "Chess" }

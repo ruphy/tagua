@@ -21,6 +21,3 @@ theme.background = function(size)
   return i
 end
 
-theme.name = "Custom Color"
-theme.description = "Squares with a solid custom color."
-theme.variants = { "Chess", "Shogi", "XiangQi" }

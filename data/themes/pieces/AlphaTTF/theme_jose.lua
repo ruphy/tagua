@@ -23,6 +23,3 @@ theme.black_pawn   = fromGlyph("0xF06F")
 theme.black_queen  = fromGlyph("0xF077")
 theme.black_rook   = fromGlyph("0xF074")
 
-theme.name = "Alpha (Jose style)"
-theme.description = "Alpha TTF theme.\n  by Eric Bentzen"
-theme.variants = { "Chess" }

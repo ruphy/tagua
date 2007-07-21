@@ -46,6 +46,3 @@ theme.traverses = Fig("0x5E73")
 theme.front     = Fig("0x524d")
 theme.rear      = Fig("0x540e")
 
-theme.name = "XiangQi"
-theme.description = "XiangQi figurines."
-theme.variants = { "XiangQi[default]" }

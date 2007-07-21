@@ -30,6 +30,3 @@ end
 
 theme.validmove = fromColor("#bdaede")
 
-theme.name = "Shogi"
-theme.description = "Shogi-like squares"
-theme.variants = { "Shogi[default]", "Chess" }

@@ -153,6 +153,3 @@ theme.clock_player_font = function()
   return theme.options.clock_font1.value;
 end
 
-theme.name = "Google"
-theme.description = "Google-like controls"
-theme.variants = { "any" }

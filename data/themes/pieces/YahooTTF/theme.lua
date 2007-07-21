@@ -38,6 +38,3 @@ theme.black_pawn   = fromGlyphB("0x0070")
 theme.black_queen  = fromGlyphB("0x0071")
 theme.black_rook   = fromGlyphB("0x0072")
 
-theme.name = "Yahoo"
-theme.description = "Yahoo pieces, converted\nto TTF with potrace.\n  (unknown author)"
-theme.variants = { "Chess" }

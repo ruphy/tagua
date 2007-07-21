@@ -14,6 +14,3 @@ end
 
 theme.validmove = fromColor("#bdaede")
 
-theme.name = "Yahoo"
-theme.description = "Yahoo games squares"
-theme.variants = { "Chess" }

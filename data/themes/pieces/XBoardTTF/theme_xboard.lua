@@ -17,6 +17,3 @@ theme.white_pawn   = fromGlyph("0x0070")
 theme.white_queen  = fromGlyph("0x0071")
 theme.white_rook   = fromGlyph("0x0072")
 
-theme.name = "XBoard"
-theme.description = "XBoard pieces, converted\nto TTF with potrace.\n  by Elmar Bartel"
-theme.variants = { "Chess" }

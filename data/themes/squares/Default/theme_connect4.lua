@@ -14,6 +14,3 @@ end
 theme.highlighting = fromSVG("arrow_yellow.svg")
 theme.validmove = fromColor("#bdaede")
 
-theme.name = "Default"
-theme.description = "Default squares"
-theme.variants = { "Connect4[default]" }

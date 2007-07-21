@@ -33,6 +33,3 @@ theme.white_pawn   = fromGlyphW("0x0070")
 theme.white_queen  = fromGlyphW("0x0071")
 theme.white_rook   = fromGlyphW("0x0072")
 
-theme.name = "Maya (Eboard style)"
-theme.description = "Maya TTF theme.\n  by Armando H. Marroquin"
-theme.variants = { "Chess" }

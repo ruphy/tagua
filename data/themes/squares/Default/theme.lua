@@ -16,6 +16,3 @@ theme.background = function (size)
 end
 
 
-theme.name = "Default"
-theme.description = "Default squares"
-theme.variants = { "Chess[default]", "Shogi", "XiangQi" }

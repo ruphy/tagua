@@ -172,6 +172,3 @@ theme.highlighting = alone(Color(255,255,128,192))
 theme.premove =      alone(Color(0,0,255,192))
 theme.selection =    alone(Color(255,0,0,192))
 
-theme.name = "XiangQi"
-theme.description = "XiangQi squares"
-theme.variants = { "Shogi", "XiangQi[default]", "Chess", "ChainReaction" }

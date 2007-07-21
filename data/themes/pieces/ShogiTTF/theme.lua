@@ -81,6 +81,3 @@ theme.white_p_pawn    = addShadow(fromChar("0x50", true, true, 0.8))
 theme.black_queen  = theme.black_gold
 theme.white_queen  = theme.white_gold
 
-theme.name = "Shogi"
-theme.description = "Shogi TTF theme,\n  created with potrace"
-theme.variants = { "Chess", "Shogi[Default]" }

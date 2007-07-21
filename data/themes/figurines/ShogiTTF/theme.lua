@@ -31,6 +31,3 @@ theme.pawn   = Fig("0x6b69")
 theme.p_pawn   = Fig("0x3068")
 
 
-theme.name = "Shogi"
-theme.description = "Shogi figurines."
-theme.variants = { "Shogi[default]" }

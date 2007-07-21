@@ -21,6 +21,3 @@ theme.highlighting = fromPixmap("square_last.png")
 theme.premove = fromPixmap("square_premove.png")
 theme.selection = fromPixmap("square_select.png")
 
-theme.name = "Jose"
-theme.description = "Jose default squares"
-theme.variants = { "Chess" }

@@ -18,6 +18,3 @@ theme.white_pawn   = fromSVG("wp.svg")
 theme.white_queen  = fromSVG("wq.svg")
 theme.white_rook   = fromSVG("wr.svg")
 
-theme.name = "Spatial"
-theme.description = "Spatial SVG theme,\n  by Maurizio Monge"
-theme.variants = { "Chess" }

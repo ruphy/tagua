@@ -34,6 +34,3 @@ theme.black_pawn   = fromGlyphB("0xF070")
 theme.black_queen  = fromGlyphB("0xF071")
 theme.black_rook   = fromGlyphB("0x00A0")
 
-theme.name = "Alpha (Eboard style)"
-theme.description = "Alpha TTF theme.\n  by Eric Bentzen"
-theme.variants = { "Chess" }

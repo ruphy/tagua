@@ -8,6 +8,3 @@ shadow_grow=5
 theme.white_stone  = fromSVG("white.svg")
 theme.black_stone  = fromSVG("black.svg")
 
-theme.name = "White/Black"
-theme.description = "White/Black SVG stones\n  by Maurizio Monge\n"
-theme.variants = { "Reversi[default]" }

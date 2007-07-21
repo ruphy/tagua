@@ -14,6 +14,3 @@ end
 
 theme.validmove = fromColor("#ffff8c")
 
-theme.name = "BabasChess"
-theme.description = "BabasChess default squares"
-theme.variants = { "Chess" }

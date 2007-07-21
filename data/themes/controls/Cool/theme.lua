@@ -162,6 +162,3 @@ theme.clock_player_font = function()
   return theme.options.clock_font1.value;
 end
 
-theme.name = "Cool"
-theme.description = "Cool controls"
-theme.variants = { "any[default]" }

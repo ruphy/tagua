@@ -34,6 +34,3 @@ theme.white_pawn   = fromGlyphW("0x0070")
 theme.white_queen  = fromGlyphW("0x0071")
 theme.white_rook   = fromGlyphW("0x0072")
 
-theme.name = "Enquil"
-theme.description = "Eboard's Enquil theme,\nconverted to TTF\nwith potrace.\n  (unknown author)"
-theme.variants = { "Chess" }

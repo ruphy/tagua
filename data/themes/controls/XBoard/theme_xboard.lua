@@ -93,6 +93,3 @@ theme.clock_player_rect = function(w)
   return Rect(0, h*0.68, w, h*0.28)
 end
 
-theme.name = "XBoard"
-theme.description = "XBoard style"
-theme.variants = { "any" }

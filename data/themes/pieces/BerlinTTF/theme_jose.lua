@@ -26,6 +26,3 @@ theme.white_pawn   = fromGlyph("0x0070")
 theme.white_queen  = fromGlyph("0x0071")
 theme.white_rook   = fromGlyph("0x0072")
 
-theme.name = "Berlin (Jose style)"
-theme.description = "Berlin TTF theme,\nas Jose's default.\n  by Eric Bentzen"
-theme.variants = { "Chess" }

@@ -13,6 +13,3 @@ end
 
 theme.validmove = fromColor("#bdaede")
 
-theme.name = "Default"
-theme.description = "Default squares"
-theme.variants = { "Reversi[default]" }

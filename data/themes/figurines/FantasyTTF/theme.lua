@@ -11,6 +11,3 @@ theme.pawn   = Fig("0x0070")
 theme.queen  = Fig("0x0071")
 theme.rook   = Fig("0x0072")
 
-theme.name = "Fantasy"
-theme.description = "Fantasy TTF figurines.\n  by Maurizio Monge"
-theme.variants = { "Chess[default]" }
