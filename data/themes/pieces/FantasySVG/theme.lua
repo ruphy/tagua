@@ -1,6 +1,4 @@
 import("piece_theme.lua")
-desktop_file()
-print(theme.name)
 
 shadow=7.0
 shadow_color="#404050"
