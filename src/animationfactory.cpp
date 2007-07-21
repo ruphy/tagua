@@ -43,11 +43,14 @@ AnimationPtr move::run(const PointConverter* converter, AnimationType type) cons
   switch (type) {
   case Normal: {
     MovementAnimation* mov;
-    if (m_type & LShaped) {
-      mov = new KnightMovementAnimation(m_sprite.sprite(), converter->toReal(m_to), m_type & Rotating);
+    QPoint destination = converter->toReal(m_to);
+    Point origin = converter->toLogical(m_sprite.sprite()->pos() + 
+      Point(converter->squareSize(), converter->squareSize()) / 2);
+    if ((m_type & LShaped) && origin != m_to) {
+      mov = new KnightMovementAnimation(m_sprite.sprite(), destination, m_type & Rotating);
     }
     else {
-      mov = new MovementAnimation(m_sprite.sprite(), converter->toReal(m_to), m_type & Rotating);
+      mov = new MovementAnimation(m_sprite.sprite(), destination, m_type & Rotating);
     }
     return AnimationPtr(mov);
   }

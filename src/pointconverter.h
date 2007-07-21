@@ -41,12 +41,12 @@ public:
 class PointConverter {
 protected:
   virtual ~PointConverter(){};
-private:
+
+public:
   virtual bool  flipped() const = 0;
   virtual int   squareSize() const = 0;
   virtual Point gridSize() const = 0;
 
-public:
   virtual Point flipPoint(const Point& p) const {
     if (flipped())
       return gridSize()-Point(1,1)-p;
