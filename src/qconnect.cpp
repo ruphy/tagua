@@ -34,7 +34,7 @@ QConnect::QConnect(QWidget *parent, const char *name)
   editTimesealCmd->setToolTip(timeseal_cmd_tool_tip);
   //std::cout << "initializing dialog" << std::endl;
 
-  Settings s_ics = settings.group("ics");
+  Settings s_ics = settings().group("ics");
   if (s_ics["username"])
     editUsername->setText(s_ics["username"].value<QString>());
   if (s_ics["password"]) {
@@ -59,7 +59,7 @@ void QConnect::setTimesealPath() {
 void QConnect::accept() {
   QDialog::accept();
 
-  Settings s_ics = settings.group("ics");
+  Settings s_ics = settings().group("ics");
   s_ics["username"] = editUsername->text();
   if (chkStore->isChecked())
     s_ics["password"] = editPassword->text();

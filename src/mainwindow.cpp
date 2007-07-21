@@ -123,7 +123,7 @@ KAction* MainWindow::installRegularAction(const QString& name, const KIcon& icon
 
 void MainWindow::setupEngineMenu() {
   QMenu* engine_menu = 0;
-  SettingArray engine_settings = settings.group("engines").array("engine");
+  SettingArray engine_settings = settings().group("engines").array("engine");
   foreach (Settings s, engine_settings) {
     if (!engine_menu) {
       // this way the menu is created only if there is at least one engine
@@ -532,7 +532,7 @@ void MainWindow::icsDisconnect() {
 }
 
 void MainWindow::testConnect() {
-  Settings s_ics = settings.group("ics");
+  Settings s_ics = settings().group("ics");
   if (s_ics["username"]) {
     QString username = s_ics["username"].value<QString>();
     QString password = (s_ics["password"] | "");

@@ -115,7 +115,7 @@ OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
   }
 
   if(!reload_defaults) {
-    SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+    SettingMap<QString> s_lua = settings().group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(f);
     options_list_load_from_settings(*o, entry.group("options"));
 
@@ -174,7 +174,7 @@ PrefTheme::~PrefTheme() {
 }
 
 void PrefTheme::apply() {
-  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
+  SettingMap<QString> variants = settings().group("variants").map<QString>("variant", "name");
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
     Category* c = cit->second;
@@ -193,7 +193,7 @@ void PrefTheme::apply() {
 
   for(std::map<QString, boost::shared_ptr<OptList> >::iterator it = m_new_theme_options.begin();
           it != m_new_theme_options.end(); ++it) {
-    SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+    SettingMap<QString> s_lua = settings().group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(it->first);
     options_list_save_to_settings(*it->second, entry.group("options"));
   }
@@ -247,7 +247,7 @@ void PrefTheme::variantChanged() {
 
   QString vname = vi->name();
   QString vproxy = vi->themeProxy();
-  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
+  SettingMap<QString> variants = settings().group("variants").map<QString>("variant", "name");
   Settings var = variants.insert(vname);
   bool ck = vname != vproxy;
 
@@ -278,7 +278,7 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   QString tag = category + "-theme";
   QString deftag = category + "-use-def";
   QString v = vi->name();
-  SettingMap<QString> variants = settings.group("variants").map<QString>("variant", "name");
+  SettingMap<QString> variants = settings().group("variants").map<QString>("variant", "name");
   if (v != vi->themeProxy() &&
       (variants.insert(v)[deftag] | true) )
     v = vi->themeProxy();

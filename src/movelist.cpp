@@ -401,7 +401,7 @@ void Entry::doUpdate () {
 //BEGIN Settings---------------------------------------------------------------
 
 void Settings::load() {
-  ::Settings s = settings.group("move-list");
+  ::Settings s = settings().group("move-list");
   ::Settings s_anim = s.group("animations");
 
   anim_enabled = s.group("animations").flag("enabled", true);
@@ -425,12 +425,10 @@ void Settings::load() {
   mv_fmetrics = QFontMetrics(mv_font);
   sel_mv_fmetrics = QFontMetrics(sel_mv_font);
   comm_fmetrics = QFontMetrics(comm_font);
-
-//  settings.qSettings()->endGroup();
 }
 
 void Settings::save() {
-  ::Settings s = settings.group("move-list");
+  ::Settings s = settings().group("move-list");
   ::Settings s_anim = s.group("animations");
 
   s.group("animations").setFlag("enabled", anim_enabled);

@@ -51,7 +51,7 @@ GraphicalGame::GraphicalGame(GraphicalSystem* graphical,
     m_movelist->setNotifier( static_cast<MoveList::Notifier*>(this) );
     m_movelist->show();
   }
-  settings.onChange(this, "settingsChanged", "Loader::Theme");
+  settings().onChange(this, "settingsChanged", "Loader::Theme");
   settingsChanged();
 }
 
@@ -64,9 +64,9 @@ GraphicalGame::~GraphicalGame() {
 }
 
 void GraphicalGame::settingsChanged() {
-  m_anim_sequence = settings.flag("animations", true)
-                      && settings("animations").flag("sequence", true);
-  m_anim_sequence_max = settings("animations")("sequence")[QString("max")] | 10;
+  m_anim_sequence = settings().flag("animations", true)
+                      && settings()("animations").flag("sequence", true);
+  m_anim_sequence_max = settings()("animations")("sequence")[QString("max")] | 10;
 }
 
 void GraphicalGame::onAdded(const Index& ix) {

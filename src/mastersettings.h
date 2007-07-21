@@ -72,6 +72,6 @@ public:
   void sync();
 };
 
-extern MasterSettings settings; // yes, I know global objects are evil
+MasterSettings& settings();
 
 #endif // MASTERSETTINGS_H

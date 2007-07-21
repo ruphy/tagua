@@ -41,7 +41,7 @@ Theme::Theme(const ThemeInfo& theme)
   if(m_lua_loader.error())
     ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
 
-  settings.onChange(this, "onSettingsChanged");
+  settings().onChange(this, "onSettingsChanged");
   onSettingsChanged();
 }
 
@@ -51,7 +51,7 @@ Theme::~Theme() {
 }
 
 void Theme::onSettingsChanged() {
-  SettingMap<QString> s_lua = settings.group("lua-settings").map<QString>("entry", "file-name");
+  SettingMap<QString> s_lua = settings().group("lua-settings").map<QString>("entry", "file-name");
   Settings entry = s_lua.insert(m_theme.file_name);
   OptList ol = m_lua_loader.getValue<OptList>("options", 0, NULL, true);
   if(m_lua_loader.error()) {

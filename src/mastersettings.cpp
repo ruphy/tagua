@@ -134,6 +134,9 @@ void MasterSettings::changed() {
   sync();
 }
 
-MasterSettings settings(".taguarc.xml");
+MasterSettings& settings() {
+  static MasterSettings static_settings(".taguarc.xml");
+  return static_settings;
+}
 
 

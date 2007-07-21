@@ -20,7 +20,7 @@ PrefBoard::PrefBoard(QWidget *parent)
   setupUi(this);
 
   {
-    Settings s_anim = settings.group("animations");
+    Settings s_anim = settings().group("animations");
     groupAnimations->setChecked(s_anim.flag("enabled", true));
     checkMovements->setChecked(s_anim["movement"].flag("enabled", true));
     checkExplosions->setChecked(s_anim["explode"].flag("enabled", true));
@@ -37,7 +37,7 @@ PrefBoard::PrefBoard(QWidget *parent)
   }
 
   {
-    Settings s_border = settings.group("board-border");
+    Settings s_border = settings().group("board-border");
     groupBorder->setChecked(s_border.flag("visible", "true"));
     colorBorder->setColor(s_border["color"] |= QColor(Qt::white));
     colorBorderText->setColor(s_border["text-color"] |= QColor(Qt::black));
@@ -50,7 +50,7 @@ PrefBoard::~PrefBoard() {
 
 void PrefBoard::apply() {
   {
-    Settings s_anim = settings.group("animations");
+    Settings s_anim = settings().group("animations");
     s_anim.setFlag("enabled", groupAnimations->isChecked());
     s_anim.group("movement").setFlag("enabled", checkMovements->isChecked());
     s_anim.group("explode").setFlag("enabled", checkExplosions->isChecked());
@@ -67,7 +67,7 @@ void PrefBoard::apply() {
   }
 
   {
-    Settings s_border = settings.group("board-border");
+    Settings s_border = settings().group("board-border");
     s_border.setFlag("visible", groupBorder->isChecked());
     s_border["color"] = colorBorder->color();
     s_border["text-color"] = colorBorderText->color();

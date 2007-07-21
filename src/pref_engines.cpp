@@ -30,7 +30,7 @@ PrefEngines::PrefEngines(QWidget* parent)
   m_add_engine->setIcon(KIcon("add"));
   m_remove_engine->setIcon(KIcon("edit-delete"));
 
-  SettingArray s_engines = settings.group("engines").array("engine");
+  SettingArray s_engines = settings().group("engines").array("engine");
   foreach (Settings s, s_engines) {
     EngineDetails details;
     s["name"] >> details.name;
@@ -109,7 +109,7 @@ void PrefEngines::changeEngine(QListWidgetItem*) {
 
 
 void PrefEngines::apply() {
-  SettingArray s_engines = settings.group("engines").newArray("engine");
+  SettingArray s_engines = settings().group("engines").newArray("engine");
   std::pair<QListWidgetItem*, EngineDetails> p;
 
   for (int i = 0; i < m_engine_list->count(); i++) {

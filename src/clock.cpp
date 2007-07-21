@@ -202,7 +202,7 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
   m_total_time = 0;
   m_rect = rect;
 
-  Settings s_clock = settings.group("clock");
+  Settings s_clock = settings().group("clock");
 
   QColor framecol(0x60,0x60,0x90);
   QColor backgroundColor;
@@ -263,7 +263,7 @@ void Clock::Info::setup(const Player& player, const QRect& rect, const QString& 
 }
 
 void Clock::Info::reload() {
-  Settings s_clock = settings.group("clock");
+  Settings s_clock = settings().group("clock");
 
   QFont tempFont;
   QColor backgroundColor;

@@ -219,7 +219,7 @@ Console::Console(QWidget* parent, const QString& caption)
   display->setAcceptRichText(false);
   display->setWordWrapMode (QTextOption::NoWrap);
   display->setUndoRedoEnabled (false);
-  Settings s_console = settings.group("console");
+  Settings s_console = settings().group("console");
   if (!s_console["font"]) {
     QFont f = QApplication::font();
     f.setFamily("Monospace");

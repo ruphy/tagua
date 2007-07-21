@@ -76,7 +76,7 @@ Board::~Board() {
 }
 
 void Board::settingsChanged() {
-  Settings s_anim = settings.group("animations");
+  Settings s_anim = settings().group("animations");
   int speed = (s_anim["speed"] | 16);
   int smoothness = (s_anim["smoothness"] | 16);
   m_main_animation->setSpeed( 0.4*pow(10.0, speed/32.0) );

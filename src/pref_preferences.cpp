@@ -89,6 +89,6 @@ Preferences::~Preferences() {
 
 void Preferences::apply() {
   emit applied();
-  settings.changed();
+  settings().changed();
 }
 
