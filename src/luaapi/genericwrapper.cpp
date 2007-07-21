@@ -1,7 +1,7 @@
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
-            
+
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation; either version 2 of the License, or
@@ -17,10 +17,6 @@ QString GenericWrapperBase::file_path(lua_State* l, const QString& f) {
   StackCheck check(l);
 
   lua_getfield(l, LUA_REGISTRYINDEX, CURRENT_DIRECTORY);
-  if(lua_isnil(l, -1)) {
-    lua_pop(l, 1);
-    return f;
-  }
   QDir* dir = reinterpret_cast<QDir*>(lua_touserdata(l, -1));
   lua_pop(l, 1);
   return QDir::cleanPath(QDir::isAbsolutePath(f) ? f : dir->filePath(f));

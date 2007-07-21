@@ -342,12 +342,7 @@ int Wrapper<UrlOptPtr>::constructor(lua_State* l) {
   const char* value = lua_tostring(l, 3);
   lua_pop(l, n);
 
-  // retrieve the api and current base directory for the url
-  lua_getfield(l, LUA_REGISTRYINDEX, API_LOADER);
-  LuaApi::Loader* api = reinterpret_cast<Loader*>(lua_touserdata(l, -1));
-  lua_pop(l, 1);
-
-  create(l, UrlOptPtr(new UrlOpt(name, label, api->currDir().absoluteFilePath(value) )));
+  create(l, UrlOptPtr(new UrlOpt(name, label, file_path(l, value) )));
   return 1;
 }
 

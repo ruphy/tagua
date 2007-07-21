@@ -27,17 +27,17 @@ void PrefTheme::read_theme_info(ThemeInfo& info, const QString& desktopFile) {
   if (!KDesktopFile::isDesktopFile(desktopFile)) {
     return;
   }
-    
+
   KDesktopFile theme(desktopFile);
   KConfigGroup themeData = theme.desktopGroup();
-  
+
   info.name = theme.readName();
   info.description = theme.readComment();
   info.description.replace("|", "\n");
   info.variants = themeData.readEntry("X-Tagua-Variants").split(QRegExp("\\s*,\\s*"));
   info.file_name = themeData.readEntry("X-Tagua-Script");
   if (info.file_name.isEmpty()) {
-    // use a file with the same name as the .desktop, but with as .lua extension
+    // use a file with the same name as the .desktop, but with .lua extension
     info.file_name = desktopFile;
     info.file_name.replace(QRegExp("\\.desktop$"), ".lua");
   }
@@ -54,74 +54,89 @@ void PrefTheme::read_theme_info(ThemeInfo& info, const QString& desktopFile) {
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
   std::cout << "about to examine " << files.size() << " desktop files" << std::endl;
   std::map<QString, ThemeInfo> cache;
-  
+
   SettingArray themes = s.group("themes").array("theme");
   foreach (Settings s_theme, themes) {
     ThemeInfo info = ThemeInfo::fromSettings(s_theme);
     cache[info.desktopFile] = info;
   }
 
-  ThemeInfoList allluafiles;
-  ThemeInfoList retv;
+  ThemeInfoList all_themes;
   bool updated = false;
-  
+
   for(int i = 0; i < files.size(); i++) {
     QDateTime lm = QFileInfo(files[i]).lastModified();
     std::map<QString, ThemeInfo>::iterator it = cache.find(files[i]);
 
     if (it != cache.end() && it->second.last_modified == lm) {
-      if (!it->second.name.isEmpty())
-        retv << it->second;
+      all_themes << it->second;
+      cache.erase(it);
     }
     else {
       updated = true;
-      
+
       ThemeInfo info;
       info.last_modified = lm;
       read_theme_info(info, files[i]);
-      retv << info;
-      allluafiles << info;
-      
+
+      all_themes << info;
+
       if (info.name.isEmpty()) {
         ERROR("No name property in " << files[i]);
       }
     }
   }
 
+  if(!cache.empty())
+    updated = true;
+
   if(updated) {
     SettingArray themes = s.group("themes").newArray("theme");
 
-    for (int i = 0; i < allluafiles.size(); i++) {
+    for (int i = 0; i < all_themes.size(); i++) {
       Settings s_theme = themes.append();
-      allluafiles[i].save(s_theme);
+      all_themes[i].save(s_theme);
     }
   }
-  
-  return retv;
+
+  return all_themes;
 }
 
 OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
-  if(!reload_defaults)
-  if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
-    return *o;
+  std::cout << "get file options for " << f << std::endl;
 
-  LuaApi::Loader l;
-  l.runFile(f);
+  if(!reload_defaults) {
+    std::map<QString, OptList>::iterator it = m_new_theme_options.find(f);
 
-  boost::shared_ptr<OptList> o(new OptList(l.getValue<OptList>("options", 0, NULL, true)));
-  if(l.error()) {
-    ERROR(l.errorString());
-    l.clearError();
+    if(it != m_new_theme_options.end())
+      return it->second;
+  }
+
+  LuaApi::Loader lua_context;
+  lua_context.runFile(f);
+
+  if(lua_context.error()) {
+    ERROR(lua_context.errorString());
+    lua_context.clearError();
+
+    m_new_theme_options[f] = OptList();
+    return OptList();
+  }
+
+  OptList o = lua_context.getValue<OptList>("options", 0, NULL, true);
+  if(lua_context.error()) {
+    ERROR(lua_context.errorString());
+    lua_context.clearError();
   }
 
   if(!reload_defaults) {
     SettingMap<QString> s_lua = settings().group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(f);
-    options_list_load_from_settings(*o, entry.group("options"));
+    options_list_load_from_settings(o, entry.group("options"));
 
     m_new_theme_options[f] = o;
   }
-  return *o;
+  return o;
 }
 
 PrefTheme::PrefTheme(QWidget *parent)
@@ -158,7 +173,7 @@ PrefTheme::PrefTheme(QWidget *parent)
       KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.desktop", KStandardDirs::Recursive),
       s.group(cit->first)
     );
-    
+
     std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
   }
 
@@ -191,11 +206,11 @@ void PrefTheme::apply() {
     }
   }
 
-  for(std::map<QString, boost::shared_ptr<OptList> >::iterator it = m_new_theme_options.begin();
+  for(std::map<QString, OptList>::iterator it = m_new_theme_options.begin();
           it != m_new_theme_options.end(); ++it) {
     SettingMap<QString> s_lua = settings().group("lua-settings").map<QString>("entry", "file-name");
     Settings entry = s_lua.insert(it->first);
-    options_list_save_to_settings(*it->second, entry.group("options"));
+    options_list_save_to_settings(it->second, entry.group("options"));
   }
 }
 
@@ -316,7 +331,7 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
 
   if (retv && *retv)
     var[tag] = retv->desktopFile;
-    
+
   return retv ? *retv : ThemeInfo();
 }
 

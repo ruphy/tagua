@@ -44,6 +44,9 @@ const luaL_Reg Loader::lualibs[] = {
 Loader::Loader()
 : m_error(false) {
   initialize(0);
+
+  lua_newtable(m_state);
+  lua_setglobal(m_state, "theme");
 }
 
 Loader::Loader(::Loader::Context *ctx, const ThemeInfo& theme)
@@ -54,15 +57,15 @@ Loader::Loader(::Loader::Context *ctx, const ThemeInfo& theme)
 
 void Loader::addMetaData(const ThemeInfo& theme) {
   lua_State* const l = m_state;
-  
+
   lua_newtable(l);
-  
+
 #define ADD_FIELD_AUX(FIELD_NAME, FIELD) \
   lua_pushstring(l, FIELD_NAME); \
   lua_pushstring(l, qPrintable(theme.FIELD)); \
   lua_settable(l, -3);
 #define ADD_FIELD(FIELD) ADD_FIELD_AUX(#FIELD, FIELD)
-  
+
   ADD_FIELD(name);
   ADD_FIELD(description);
   ADD_FIELD_AUX("desktop_file", desktopFile);
@@ -75,19 +78,11 @@ void Loader::addMetaData(const ThemeInfo& theme) {
     lua_settable(l, -3);
   }
   lua_settable(l, -3);
-  
+
 #undef ADD_FIELD_AUX
 #undef ADD_FIELD
-  
-  lua_pushstring(l, "description");
-  lua_pushstring(l, qPrintable(theme.description));
-  lua_settable(l, -3);
-  
-  lua_setglobal(l, "theme");
 
-  // add import
-  lua_pushcfunction(l, import_func);
-  lua_setglobal(l, "import");
+  lua_setglobal(l, "theme");
 }
 
 void Loader::initialize(::Loader::Context *ctx) {
@@ -130,6 +125,9 @@ void Loader::initialize(::Loader::Context *ctx) {
 
   lua_pushlightuserdata(m_state, &m_curr_dir);
   lua_setfield(m_state, LUA_REGISTRYINDEX, CURRENT_DIRECTORY);
+
+  lua_pushcfunction(l, import_func);
+  lua_setglobal(l, "import");
 }
 
 Loader::~Loader() {
@@ -148,7 +146,7 @@ bool Loader::runFile(const QString& file, bool setdir) {
     // give up
     return false;
   }
-  
+
   if(setdir) {
     QFileInfo f_info( path );
     m_curr_dir = f_info.dir();
@@ -358,7 +356,7 @@ int Loader::import_func(lua_State *l) {
     luaL_error(l, "Error importing \"%s\":\n%s", file.toAscii().constData(),
                                           api->errorString().toAscii().constData() );
   }
-  
+
   return 0;
 }
 
@@ -371,25 +369,25 @@ int Loader::read_desktop_file(lua_State* l) {
   if (n != 0)
     luaL_error(l, "Wrong argument count for \"desktop_file\"");
   lua_pop(l, n);
-  
+
   QString filePath = api->currDir().filePath("theme.desktop");
   if (!KDesktopFile::isDesktopFile(filePath)) {
     // no desktop file
     return 0;
   }
-  
+
   KDesktopFile theme(filePath);
-  
+
   // set theme fields according to the desktop file
   lua_getglobal(l, "theme");
-  
+
   QString name = theme.readName();
   if (!name.isEmpty()) {
     lua_pushstring(l, "name");
     lua_pushstring(l, qPrintable(name));
     lua_settable(l, -3);
   }
-  
+
   QString description = theme.readComment();
   if (!name.isEmpty()) {
     description.replace("|", "\n");
@@ -397,7 +395,7 @@ int Loader::read_desktop_file(lua_State* l) {
     lua_pushstring(l, qPrintable(description));
     lua_settable(l, -3);
   }
-  
+
   KConfigGroup themeGroup = theme.desktopGroup();
   QString variants = themeGroup.readEntry("X-Tagua-Variants");
   if (!variants.isEmpty()) {
@@ -411,7 +409,7 @@ int Loader::read_desktop_file(lua_State* l) {
     }
     lua_settable(l, -3);
   }
-  
+
   return 0;
 }
 

@@ -34,7 +34,7 @@ Q_OBJECT
   typedef QList<ThemeInfo> ThemeInfoList;
   typedef std::map<QString, Category*> CategoryMap;
 
-  std::map<QString, boost::shared_ptr<OptList> > m_new_theme_options;
+  std::map<QString, OptList> m_new_theme_options;
   CategoryMap m_categories;
 
   OptList       get_file_options(const QString&, bool reload_defaults = false);
