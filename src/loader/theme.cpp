@@ -35,7 +35,7 @@ PixmapOrMap Theme::to_pixmap_map(const ::LuaApi::ImageOrMap& m) {
 Theme::Theme(const ThemeInfo& theme)
 : m_theme(theme)
 , m_context()
-, m_lua_loader(&m_context) {
+, m_lua_loader(&m_context, theme) {
   std::cout << "loading theme " << theme.file_name << std::endl;
   m_lua_loader.runFile(qPrintable(m_theme.file_name));
   if(m_lua_loader.error())

@@ -22,6 +22,7 @@
 
 class lua_State;
 class luaL_Reg;
+class ThemeInfo;
 
 namespace Loader {
   class Context;
@@ -57,8 +58,17 @@ class Loader {
 
   static int import_func(lua_State* l);
   static int read_desktop_file(lua_State* l);
+  
+  void initialize(::Loader::Context *ctx);
+  
+  /**
+    * Add the theme table to the environment, with all theme metadata.
+    */
+  void addMetaData(const ThemeInfo& theme);
 public:
-  Loader(::Loader::Context *ctx);
+  Loader(::Loader::Context *ctx, const ThemeInfo& theme);
+  Loader();
+  
   ~Loader();
 
   lua_State* state() const { return m_state; }

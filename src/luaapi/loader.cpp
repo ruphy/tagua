@@ -23,6 +23,7 @@
 #include "luaapi/imaging.h"
 #include "luaapi/loader.h"
 #include "luaapi/options.h"
+#include "themeinfo.h"
 
 namespace LuaApi {
 
@@ -40,8 +41,56 @@ const luaL_Reg Loader::lualibs[] = {
   {NULL, NULL}
 };
 
-Loader::Loader(::Loader::Context *ctx)
+Loader::Loader()
 : m_error(false) {
+  initialize(0);
+}
+
+Loader::Loader(::Loader::Context *ctx, const ThemeInfo& theme)
+: m_error(false) {
+  initialize(ctx);
+  addMetaData(theme);
+}
+
+void Loader::addMetaData(const ThemeInfo& theme) {
+  lua_State* const l = m_state;
+  
+  lua_newtable(l);
+  
+#define ADD_FIELD_AUX(FIELD_NAME, FIELD) \
+  lua_pushstring(l, FIELD_NAME); \
+  lua_pushstring(l, qPrintable(theme.FIELD)); \
+  lua_settable(l, -3);
+#define ADD_FIELD(FIELD) ADD_FIELD_AUX(#FIELD, FIELD)
+  
+  ADD_FIELD(name);
+  ADD_FIELD(description);
+  ADD_FIELD_AUX("desktop_file", desktopFile);
+  ADD_FIELD(file_name);
+  lua_pushstring(l, "variants");
+  lua_newtable(l);
+  for (int i = 0; i < theme.variants.size(); i++) {
+    lua_pushnumber(l, i);
+    lua_pushstring(l, qPrintable(theme.variants[i]));
+    lua_settable(l, -3);
+  }
+  lua_settable(l, -3);
+  
+#undef ADD_FIELD_AUX
+#undef ADD_FIELD
+  
+  lua_pushstring(l, "description");
+  lua_pushstring(l, qPrintable(theme.description));
+  lua_settable(l, -3);
+  
+  lua_setglobal(l, "theme");
+
+  // add import
+  lua_pushcfunction(l, import_func);
+  lua_setglobal(l, "import");
+}
+
+void Loader::initialize(::Loader::Context *ctx) {
   lua_State* l = lua_open();
   m_state = l;
 
@@ -81,15 +130,6 @@ Loader::Loader(::Loader::Context *ctx)
 
   lua_pushlightuserdata(m_state, &m_curr_dir);
   lua_setfield(m_state, LUA_REGISTRYINDEX, CURRENT_DIRECTORY);
-
-  lua_newtable(l);
-  lua_setglobal(l, "theme");
-
-  lua_pushcfunction(l, import_func);
-  lua_setglobal(l, "import");
-  
-  lua_pushcfunction(l, read_desktop_file);
-  lua_setglobal(l, "desktop_file");
 }
 
 Loader::~Loader() {

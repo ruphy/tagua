@@ -55,5 +55,5 @@ uint qHash(const ThemeInfo& info) {
 }
 
 bool ThemeInfo::operator==(const ThemeInfo& info) const {
-  return file_name == info.file_name; // should be enough
+  return desktopFile == info.desktopFile;
 }

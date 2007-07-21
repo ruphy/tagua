@@ -105,7 +105,7 @@ OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
   if(boost::shared_ptr<OptList> o = m_new_theme_options[f])
     return *o;
 
-  LuaApi::Loader l(NULL);
+  LuaApi::Loader l;
   l.runFile(f);
 
   boost::shared_ptr<OptList> o(new OptList(l.getValue<OptList>("options", 0, NULL, true)));
