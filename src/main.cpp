@@ -50,18 +50,7 @@ int main(int argc, char **argv) {
   // So you can attach the debugger in case of segfault.
   installCrashHander();
   atexit(trap);
-
-  // If we are debugging, it is handy to have a local data
-  // directory which is accessed by Tagua, so we don't need
-  // to reconfigure / reinstall whenever a change is made in
-  // a theme.
-  QString data_dir = qgetenv("TAGUA_DATA");
-  if (data_dir.isEmpty()) data_dir = "data";
-
-  KGlobal::dirs()->addResourceDir("appdata", data_dir, true);
-  KGlobal::dirs()->addResourceDir("icon", data_dir + "/pics", true);
-  KIconLoader::global()->reconfigure(about.appName(), KGlobal::dirs());
-#endif // KBOARD_DEBUG
+#endif // TAGUA_DEBUG
 
   MainWindow* widget = new MainWindow;
   widget->show();
