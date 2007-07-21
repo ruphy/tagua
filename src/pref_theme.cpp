@@ -218,8 +218,8 @@ void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings_theme) {
   list->clear();
 
-  int selected = 0;
-  QListWidgetItem *prev_sel = 0;
+  int selected_ok = 0;
+  QListWidgetItem *item_to_select = NULL;
 
   for (int i = 0; i < themes.size(); i++) {
     int ok = 0;
@@ -233,14 +233,14 @@ void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
     QListWidgetItem *w = new QListWidgetItem(themes[i].name, list);
 
     w->setData(Qt::UserRole, i);
-    if(ok > selected) {
-      if(prev_sel)
-        list->setItemSelected(prev_sel, false);
-      list->setItemSelected(w, true);
-      prev_sel = w;
-      selected = ok;
+    if(ok > selected_ok) {
+      item_to_select = w;
+      selected_ok = ok;
     }
   }
+
+  if(item_to_select)
+    list->setItemSelected(item_to_select, true);
 }
 
 void PrefTheme::variantChanged() {
