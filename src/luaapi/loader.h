@@ -55,12 +55,10 @@ class Loader {
   template<typename T> struct create_value_data;
   template<typename T> static void retrieve(create_value_data<T>*, lua_State *l, int pos);
   template<typename T> static int create_value_func(lua_State *l);
-
   static int import_func(lua_State* l);
-  static int read_desktop_file(lua_State* l);
-  
+
   void initialize(::Loader::Context *ctx);
-  
+
   /**
     * Add the theme table to the environment, with all theme metadata.
     */
@@ -68,7 +66,7 @@ class Loader {
 public:
   Loader(::Loader::Context *ctx, const ThemeInfo& theme);
   Loader();
-  
+
   ~Loader();
 
   lua_State* state() const { return m_state; }
@@ -80,8 +78,6 @@ public:
   bool error() { return m_error; }
   void clearError() { m_error = false; }
   QString errorString() { return m_error_string; }
-
-  QDir currDir() { return m_curr_dir; }
 };
 
 } //end namespace LuaApi
