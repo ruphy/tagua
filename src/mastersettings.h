@@ -48,6 +48,11 @@ protected:
 
 public:
   MasterSettings(const QString& file);
+  
+  /**
+    * Bind to the local configuration file.
+    */
+  MasterSettings();
   ~MasterSettings();
 
   /**
@@ -70,6 +75,7 @@ public:
 
   void changed();
   void sync();
+  QString filename() const;
 };
 
 MasterSettings& settings();

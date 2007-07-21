@@ -142,7 +142,7 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_categories["controls"] = c;
   tabWidget->addTab(c, "&Controls");
 
-  MasterSettings s(".tagua_config_cache.xml");
+  MasterSettings s("tagua_config_cache.xml");
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {

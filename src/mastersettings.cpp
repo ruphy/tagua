@@ -11,6 +11,7 @@
 #include "mastersettings.h"
 #include "common.h"
 #include <QTextStream>
+#include <KStandardDirs>
 
 QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
@@ -48,8 +49,13 @@ QDomElement MasterSettings::node() const {
   return m_node;
 }
 
-MasterSettings::MasterSettings(const QString& filename)
-: m_filename(QDir(QDir::homePath()).filePath(filename)) { }
+MasterSettings::MasterSettings() {
+  m_filename = KStandardDirs::locateLocal("config", "taguarc.xml");
+}
+
+MasterSettings::MasterSettings(const QString& filename) {
+  m_filename = KStandardDirs::locateLocal("config", filename);
+}
 
 MasterSettings::~MasterSettings() {
   sync();
@@ -134,8 +140,12 @@ void MasterSettings::changed() {
   sync();
 }
 
+QString MasterSettings::filename() const {
+  return m_filename;
+}
+
 MasterSettings& settings() {
-  static MasterSettings static_settings(".taguarc.xml");
+  static MasterSettings static_settings;
   return static_settings;
 }
 
