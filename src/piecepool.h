@@ -12,10 +12,13 @@
 #define PIECEPOOL_H
 
 #include <boost/shared_ptr.hpp>
-#include "mainanimation.h"
-#include "pixmaploader.h"
 #include "clickablecanvas.h"
+#include "indexconverter.h"
+#include "mainanimation.h"
 #include "namedsprite.h"
+#include "pixmaploader.h"
+
+namespace Animate { namespace Pool { class Scheme; } }
 
 /**
   * @class PiecePool <piecepool.h>
@@ -25,7 +28,8 @@
   * stack of pieces and lets you drop them on the board, notifying
   * the board.
   */
-class PiecePool : public ClickableCanvas {
+class PiecePool : public ClickableCanvas
+                , private IndexConverter {
 
 private:
   int m_pool_num;
@@ -72,11 +76,12 @@ private:
   NamedSprite takeSpriteAt(int i);
 
   /** converts an index to the upper left point of the corresponding square */
-  QPoint toReal(int i);
+  virtual QPoint toReal(int i) const;
 
   /** finds to which index corresponds the point p, or -1 if corresponds to none */
-  int toLogical(const QPoint& p);
+  virtual int toLogical(const QPoint& p) const;
 
+  void animate(const Animate::Pool::Scheme& scheme);
 public:
   friend class GraphicalSystem;
   friend class ChessTable;

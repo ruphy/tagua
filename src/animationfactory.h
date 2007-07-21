@@ -17,37 +17,38 @@
 
 class NamedSprite;
 class PointConverter;
+class IndexConverter;
 class GraphicalAPI;
 
 namespace Animate {
-
-/**
-  * AnimationType distinguishes between those animations which honor settings 
-  * and those that are instantaneous regardless of user preferences.
-  */
-enum AnimationType {
-  Normal,             /// Honor user settings.
-  Instant             /// Instantaneous animation.
-};
-
-/**
-  * @brief A scheme of animations. 
-  * 
-  * Animation schemes are descriptions of an animation, i.e. what the animation
-  * should suggest to the user. The actual Animation class implementing the scheme
-  * depends of various factors, such as the AnimationType that the animator imposes
-  * and user settings.
-  */
-class Scheme {
-public:
-  virtual ~Scheme();
   
   /**
-    * Convert the scheme into an actual animation which can be enqueued in the
-    * animation system, or grouped into an AnimationGroup.
+    * AnimationType distinguishes between those animations which honor settings 
+    * and those that are instantaneous regardless of user preferences.
     */
-  virtual AnimationPtr run(const PointConverter*, AnimationType) const = 0;
-};
+  enum AnimationType {
+    Normal,             /// Honor user settings.
+    Instant             /// Instantaneous animation.
+  };
+  
+  /**
+    * @brief A scheme of animations. 
+    * 
+    * Animation schemes are descriptions of an animation, i.e. what the animation
+    * should suggest to the user. The actual Animation class implementing the scheme
+    * depends of various factors, such as the AnimationType that the animator imposes
+    * and user settings.
+    */
+  class Scheme {
+  public:
+    virtual ~Scheme();
+    
+    /**
+      * Convert the scheme into an actual animation which can be enqueued in the
+      * animation system, or grouped into an AnimationGroup.
+      */
+    virtual AnimationPtr run(const PointConverter*, AnimationType) const = 0;
+  };
 
 }
 
@@ -91,82 +92,115 @@ public:
   operator AnimationGroupPtr() const;
 };
 
-
 namespace Animate {
-
-/**
-  * @brief A movement animation scheme.
-  * 
-  * Used to animate the movement of a piece to a destination square.
-  */
-class move : public Scheme {
-public:
-  enum MovementType {
-    Straight = 0x00,
-    Rotating = 0x01,
-    LShaped = 0x02
+  
+  /**
+    * @brief A movement animation scheme.
+    * 
+    * Used to animate the movement of a piece on the board to a destination square.
+    */
+  class move : public Scheme {
+  public:
+    enum MovementType {
+      Straight = 0x00,
+      Rotating = 0x01,
+      LShaped = 0x02
+    };
+  private:
+    const NamedSprite& m_sprite;
+    Point m_to;
+    int m_type;
+  public:
+    move(const NamedSprite& sprite, const Point& to, int type = Straight);
+    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
   };
-private:
-  const NamedSprite& m_sprite;
-  Point m_to;
-  int m_type;
-public:
-  move(const NamedSprite& sprite, const Point& to, int type = Straight);
-  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
-};
-
-/**
-  * @brief Appear animation scheme.
-  * 
-  * The appear scheme visualizes a new piece coming into existence. It is 
-  * used, for example, when retracting a capture in chess, to restore the captured
-  * piece on the chessboard.
-  */
-class appear : public Scheme {
-  const NamedSprite& m_sprite;
-public:
-  appear(const NamedSprite& sprite);
-  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
-};
-
-/**
-  * @brief Disappear animation scheme.
-  * 
-  * The disappear scheme visualizes a piece being removed from the board.
-  */
-class disappear : public Scheme {
-  const NamedSprite& m_sprite;
-public:
-  disappear(const NamedSprite& sprite);
-  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
-};
-
-/**
-  * @brief Animation scheme destroying a piece.
-  * 
-  * This animation scheme is used to destroy a piece, removing it from the
-  * board. It is similar to the disappear scheme, but can provide an additional
-  * effect like an explosion.
-  */
-class destroy : public Scheme {
-  const NamedSprite& m_sprite;
-public:
-  destroy(const NamedSprite& sprite);
-  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
-};
-
-/**
-  * @brief Animation scheme for changing a piece into another.
-  * 
-  * The morph animation scheme is used when a piece changes, like in chess promotions.
-  */
-class morph : public Scheme {
-  const NamedSprite& m_sprite;
-  const NamedSprite& m_new_sprite;
-public:
-  morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
-  virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
-};
+  
+  /**
+    * @brief Appear animation scheme.
+    * 
+    * The appear scheme visualizes a new piece coming into existence. It is 
+    * used, for example, when retracting a capture in chess, to restore the captured
+    * piece on the chessboard.
+    */
+  class appear : public Scheme {
+    const NamedSprite& m_sprite;
+  public:
+    appear(const NamedSprite& sprite);
+    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  };
+  
+  /**
+    * @brief Disappear animation scheme.
+    * 
+    * The disappear scheme visualizes a piece being removed from the board.
+    */
+  class disappear : public Scheme {
+    const NamedSprite& m_sprite;
+  public:
+    disappear(const NamedSprite& sprite);
+    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  };
+  
+  /**
+    * @brief Animation scheme destroying a piece.
+    * 
+    * This animation scheme is used to destroy a piece, removing it from the
+    * board. It is similar to the disappear scheme, but can provide an additional
+    * effect like an explosion.
+    */
+  class destroy : public Scheme {
+    const NamedSprite& m_sprite;
+  public:
+    destroy(const NamedSprite& sprite);
+    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  };
+  
+  /**
+    * @brief Animation scheme for changing a piece into another.
+    * 
+    * The morph animation scheme is used when a piece changes, like in chess promotions.
+    */
+  class morph : public Scheme {
+    const NamedSprite& m_sprite;
+    const NamedSprite& m_new_sprite;
+  public:
+    morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
+    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+  };
+  
+  /**
+    * Animations of the pool.
+    */
+  namespace Pool {
+  
+    class Scheme {
+    public:
+      virtual ~Scheme() { }
+      virtual AnimationPtr run(const IndexConverter* converter, AnimationType) const = 0;
+    };
+    
+    class move : public Scheme {
+      const NamedSprite& m_sprite;
+      int m_to;
+    public:
+      move(const NamedSprite& sprite, int to);
+      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+    };
+    
+    class appear : public Scheme {
+      const NamedSprite& m_sprite;
+    public:
+      appear(const NamedSprite& sprite);
+      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+    };
+    
+    class disappear : public Scheme {
+      const NamedSprite& m_sprite;
+    public:
+      disappear(const NamedSprite& sprite);
+      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+    };
+  }
 
 
 }

@@ -10,7 +10,7 @@
 
 
 #include "board.h"
-#include "animation.h"
+#include "animationfactory.h"
 #include "piecepool.h"
 
 
@@ -32,7 +32,7 @@ PiecePool::~PiecePool() {
 }
 
 
-QPoint PiecePool::toReal(int i) {
+QPoint PiecePool::toReal(int i) const {
   int x = i % m_width;
   int y = i / m_width;
   
@@ -46,7 +46,7 @@ QPoint PiecePool::toReal(int i) {
 }
 
 
-int PiecePool::toLogical(const QPoint& p) {
+int PiecePool::toLogical(const QPoint& p) const {
   int x = p.x() / m_square_size;
   int y = p.y() / m_square_size;
 
@@ -93,6 +93,9 @@ void PiecePool::clear() {
   m_sprites.clear();
 }
 
+void PiecePool::animate(const Animate::Pool::Scheme& scheme) {
+  m_main_animation->addAnimation(scheme.run(this, Animate::Normal));
+}
 
 void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   if(m_dragged && index > m_dragged_index)
@@ -108,13 +111,12 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
   for(int i = m_sprites.size()-1; i > index; i--) {
 //     double speed = (1.0 + 1.0 / (i - index + 1)) * 0.4;
     m_sprites[i] = m_sprites[i-1];
-    m_sprites[i].sprite()->moveTo(toReal(i)); //BROKEN animate to that point?
+    animate(Animate::Pool::move(m_sprites[i], i));
   }
 
   m_sprites[index] = nsprite;
-  m_sprites[index].sprite()->show();
-  m_sprites[index].sprite()->moveTo(toReal(index));
-  //BROKEN fadeIn(index);
+  animate(Animate::Pool::appear(m_sprites[index]));
+  animate(Animate::Pool::move(m_sprites[index], index));
 }
 
 
@@ -191,7 +193,7 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
   for(int i = index; i < (int)m_sprites.size()-1; i++) {
 //     double speed = (1.0 + 1.0 / (i - index + 1)) * 0.4;
     m_sprites[i] = m_sprites[i+1];
-    m_sprites[i].sprite()->moveTo(toReal(i)); //BROKEN animate to that point?
+    animate(Animate::Pool::move(m_sprites[i], i));
   }
   m_sprites.resize(m_sprites.size()-1);
 
@@ -207,11 +209,8 @@ void PiecePool::cancelDragging(bool fadeOff) {
   m_dragged.sprite()->putInCanvas(this);
 
   if (fadeOff) {
-    SpritePtr phantom = SpritePtr(m_dragged.sprite()->duplicate());
-    if(1/*BROKEN m_anim_fade*/)
-      m_main_animation->addAnimation( AnimationPtr(new FadeAnimation(phantom, phantom->pos(), 255, 0)) );
-    else
-      m_main_animation->addAnimation( AnimationPtr(new CaptureAnimation(phantom)) );
+    NamedSprite phantom = m_dragged.duplicate();
+    animate(Animate::Pool::disappear(phantom));
   }
 
   insertSprite(m_dragged_index, m_dragged);
@@ -227,15 +226,7 @@ void PiecePool::flipAndMoveBy(QPoint p) {
   m_flipped = !m_flipped;
 
   for(int i=0;i<(int)m_sprites.size(); i++)
-  if(1/*BROKEN m_anim_movement*/) {
-    m_main_animation->addAnimation(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
-                                              m_sprites[i].sprite()->pos() - deltapos)));
-    m_main_animation->addAnimation(AnimationPtr(new MovementAnimation(m_sprites[i].sprite(),
-                                              toReal(i), 1.0)));
-  }
-  else
-    m_main_animation->addAnimation(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(),
-                                              toReal(i))));
+  animate(Animate::Pool::move(m_sprites[i], i));
 }
 
 

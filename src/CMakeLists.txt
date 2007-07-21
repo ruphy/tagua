@@ -88,6 +88,7 @@ set(tagua_SRC
   newgame.cpp
   option_p.cpp
   themeinfo.cpp
+  namedsprite.cpp
 )
 
 kde4_add_ui_files(tagua_SRC
