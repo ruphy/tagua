@@ -32,18 +32,18 @@ class FontOpt;
 class ComboOpt;
 class SelectOpt;
 class UrlOpt;
-typedef boost::shared_ptr<BaseOpt> OptPtr;
-typedef boost::shared_ptr<BoolOpt> BoolOptPtr;
-typedef boost::shared_ptr<IntOpt> IntOptPtr;
+typedef boost::shared_ptr<BaseOpt>   OptPtr;
+typedef boost::shared_ptr<BoolOpt>   BoolOptPtr;
+typedef boost::shared_ptr<IntOpt>    IntOptPtr;
 typedef boost::shared_ptr<StringOpt> StringOptPtr;
-typedef boost::shared_ptr<ColorOpt> ColorOptPtr;
-typedef boost::shared_ptr<FontOpt> FontOptPtr;
-typedef boost::shared_ptr<ComboOpt> ComboOptPtr;
+typedef boost::shared_ptr<ColorOpt>  ColorOptPtr;
+typedef boost::shared_ptr<FontOpt>   FontOptPtr;
+typedef boost::shared_ptr<ComboOpt>  ComboOptPtr;
 typedef boost::shared_ptr<SelectOpt> SelectOptPtr;
-typedef boost::shared_ptr<UrlOpt> UrlOptPtr;
-typedef QList<OptPtr> OptList;
+typedef boost::shared_ptr<UrlOpt>    UrlOptPtr;
+typedef QList<OptPtr>     OptList;
 typedef QList<BoolOptPtr> BoolOptList;
-typedef boost::shared_ptr<OptList> OptListPtr;
+typedef boost::shared_ptr<OptList>     OptListPtr;
 typedef boost::shared_ptr<BoolOptList> BoolOptListPtr;
 
 template<typename O>

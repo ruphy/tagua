@@ -56,7 +56,7 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
   int lpos = 0;
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
-    if(boost::shared_ptr<BoolOpt> o =
+    if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       OptCheckBox *cb = new OptCheckBox(o, this, widget);
       cb->setObjectName(qPrintf("%02d_check",i));
@@ -70,7 +70,7 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
         layout->addWidget(w, lpos++, left, 1, 2);
       }
     }
-    else if(boost::shared_ptr<SelectOpt> o =
+    else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       QGroupBox *gb = new QGroupBox(o->label(), widget);
       gb->setObjectName(qPrintf("%02d_group",i));
@@ -92,42 +92,42 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
       }
       layout->addWidget(gb, lpos++, left, 1, 2);
     }
-    else if(boost::shared_ptr<IntOpt> o =
+    else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptSpinBox *sb = new OptSpinBox(o, this, widget);
       sb->setObjectName(qPrintf("%02d_spin",i));
       layout->addWidget(sb, lpos++, right);
     }
-    else if(boost::shared_ptr<StringOpt> o =
+    else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptLineEdit *ow = new OptLineEdit(o, this, widget);
       ow->setObjectName(qPrintf("%02d_line",i));
       layout->addWidget(ow, lpos++, right);
     }
-    else if(boost::shared_ptr<UrlOpt> o =
+    else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptUrlRequester *ow = new OptUrlRequester(o, this, widget);
       ow->setObjectName(qPrintf("%02d_url",i));
       layout->addWidget(ow, lpos++, right);
     }
-    else if(boost::shared_ptr<ComboOpt> o =
+    else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptComboBox *ow = new OptComboBox(o, this, widget);
       ow->setObjectName(qPrintf("%02d_combo",i));
       layout->addWidget(ow, lpos++, right);
     }
-    else if(boost::shared_ptr<ColorOpt> o =
+    else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptColorButton *ow = new OptColorButton(o, this, widget);
       ow->setObjectName(qPrintf("%02d_color",i));
       layout->addWidget(ow, lpos++, right);
     }
-    else if(boost::shared_ptr<FontOpt> o =
+    else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptFontRequester *ow = new OptFontRequester(o,this, widget);
@@ -146,7 +146,7 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
 void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
   for(int i=0;i<newopts.size();i++) {
     OptPtr _o = newopts[i];
-    if(boost::shared_ptr<BoolOpt> o =
+    if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       OptCheckBox *cb = widget->findChild<OptCheckBox*>(qPrintf("%02d_check",i));
       if(!cb) goto fail;
@@ -158,7 +158,7 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
         setOptionWidgetValues(w, o->m_sub_options);
       }
     }
-    else if(boost::shared_ptr<SelectOpt> o =
+    else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       QGroupBox *gb = widget->findChild<QGroupBox*>(qPrintf("%02d_group",i));
       if(!gb) goto fail;
@@ -176,37 +176,37 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
         }
       }
     }
-    else if(boost::shared_ptr<IntOpt> o =
+    else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
       if(!sb) goto fail;
       sb->setValue(o->value());
     }
-    else if(boost::shared_ptr<StringOpt> o =
+    else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       OptLineEdit *ow = widget->findChild<OptLineEdit*>(qPrintf("%02d_line",i));
       if(!ow) goto fail;
       ow->setText(o->value());
     }
-    else if(boost::shared_ptr<UrlOpt> o =
+    else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       OptUrlRequester *ow = widget->findChild<OptUrlRequester*>(qPrintf("%02d_url",i));
       if(!ow) goto fail;
       ow->setUrl(o->value());
     }
-    else if(boost::shared_ptr<ComboOpt> o =
+    else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       OptComboBox *ow = widget->findChild<OptComboBox*>(qPrintf("%02d_combo",i));
       if(!ow) goto fail;
       ow->setCurrentIndex(o->m_selected);
     }
-    else if(boost::shared_ptr<ColorOpt> o =
+    else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       OptColorButton *ow = widget->findChild<OptColorButton*>(qPrintf("%02d_color",i));
       if(!ow) goto fail;
       ow->setColor(o->value());
     }
-    else if(boost::shared_ptr<FontOpt> o =
+    else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       OptFontRequester *ow = widget->findChild<OptFontRequester*>(qPrintf("%02d_font",i));
       if(!ow) goto fail;
@@ -224,38 +224,38 @@ void dump_options_list(OptList& options, int indent) {
   if(!indent)std::cout << "---- begin dump ----" << std::endl;
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
-    if(boost::shared_ptr<BoolOpt> o =
+    if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << (o->value()?"[X]":"[ ]") << " " << o->label() << std::endl;
       dump_options_list(o->m_sub_options, indent+1);
     }
-    else if(boost::shared_ptr<IntOpt> o =
+    else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " |" << o->value() << "|" << std::endl;
     }
-    else if(boost::shared_ptr<StringOpt> o =
+    else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " [" << o->value() << "]" << std::endl;
     }
-    else if(boost::shared_ptr<UrlOpt> o =
+    else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " {" << o->value() << "}" << std::endl;
     }
-    else if(boost::shared_ptr<ColorOpt> o =
+    else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " {" << o->value().name() << "}" << std::endl;
     }
-    else if(boost::shared_ptr<FontOpt> o =
+    else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << o->label() << " {" << o->value().toString() << "}" << std::endl;
     }
-    else if(boost::shared_ptr<ComboOpt> o =
+    else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << "[combo] " << o->label() << std::endl;
@@ -267,7 +267,7 @@ void dump_options_list(OptList& options, int indent) {
           std::cout << "  <" << o->m_values[k] << ">" << std::endl;
       }
     }
-    else if(boost::shared_ptr<SelectOpt> o =
+    else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << "[group] " << o->label() << std::endl;
@@ -291,7 +291,7 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
   bool retv = false;
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
-    if(boost::shared_ptr<BoolOpt> o =
+    if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       Settings bool_group = s.group(o->name());
       retv |= options_list_load_from_settings(o->m_sub_options, bool_group);
@@ -299,43 +299,43 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<IntOpt> o =
+    else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       int newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<StringOpt> o =
+    else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       QString newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<UrlOpt> o =
+    else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       QString newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<ColorOpt> o =
+    else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       QColor newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<FontOpt> o =
+    else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       QFont newval = s[o->name()] | o->value();
       retv |= (newval != o->value());
       o->setValue( newval );
     }
-    else if(boost::shared_ptr<ComboOpt> o =
+    else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       int newval = s[o->name()] | o->selected();
       retv |= (newval != o->selected());
       o->setSelected( newval );
     }
-    else if(boost::shared_ptr<SelectOpt> o =
+    else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)
@@ -355,37 +355,37 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
 void options_list_save_to_settings(const OptList& options, Settings s) {
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
-    if(boost::shared_ptr<BoolOpt> o =
+    if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       Settings bool_group = s.group(o->name());
       options_list_save_to_settings(o->m_sub_options, bool_group);
       bool_group.setFlag("value", o->value());
     }
-    else if(boost::shared_ptr<IntOpt> o =
+    else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<StringOpt> o =
+    else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<UrlOpt> o =
+    else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<ColorOpt> o =
+    else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<FontOpt> o =
+    else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<ComboOpt> o =
+    else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       s[o->name()] = o->value();
     }
-    else if(boost::shared_ptr<SelectOpt> o =
+    else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       OptList l;
       for(int i=0;i<o->m_options.size();i++)

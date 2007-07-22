@@ -11,7 +11,7 @@
 #include "option_p.h"
 
 
-OptCheckBox::OptCheckBox(boost::shared_ptr<BoolOpt> opt, OptionWidget *owner, QWidget *parent)
+OptCheckBox::OptCheckBox(BoolOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QCheckBox(opt->label(), parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -24,7 +24,7 @@ void OptCheckBox::setOpt(bool b) {
   m_owner->notifyChange();
 }
 
-OptRadioButton::OptRadioButton(boost::shared_ptr<SelectOpt> opt, int i, OptionWidget *owner, QWidget *parent)
+OptRadioButton::OptRadioButton(SelectOptPtr opt, int i, OptionWidget *owner, QWidget *parent)
 : QRadioButton(opt->m_options[i]->label(), parent)
 , m_owner(owner)
 , m_opt(opt)
@@ -40,7 +40,7 @@ void OptRadioButton::setOpt(bool b) {
   }
 }
 
-OptSpinBox::OptSpinBox(boost::shared_ptr<IntOpt> opt, OptionWidget *owner, QWidget *parent)
+OptSpinBox::OptSpinBox(IntOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QSpinBox(parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -55,7 +55,7 @@ void OptSpinBox::setOpt(int i) {
   m_owner->notifyChange();
 }
 
-OptLineEdit::OptLineEdit(boost::shared_ptr<StringOpt> opt, OptionWidget *owner, QWidget *parent)
+OptLineEdit::OptLineEdit(StringOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QLineEdit(parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -68,7 +68,7 @@ void OptLineEdit::setOpt(const QString& s) {
   m_owner->notifyChange();
 }
 
-OptUrlRequester::OptUrlRequester(boost::shared_ptr<UrlOpt> opt, OptionWidget *owner, QWidget *parent)
+OptUrlRequester::OptUrlRequester(UrlOptPtr opt, OptionWidget *owner, QWidget *parent)
 : KUrlRequester(parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -81,7 +81,7 @@ void OptUrlRequester::setOpt(const QString& s) {
   m_owner->notifyChange();
 }
 
-OptComboBox::OptComboBox(boost::shared_ptr<ComboOpt> opt, OptionWidget *owner, QWidget *parent)
+OptComboBox::OptComboBox(ComboOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QComboBox(parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -95,7 +95,7 @@ void OptComboBox::setOpt(int c) {
   m_owner->notifyChange();
 }
 
-OptColorButton::OptColorButton(boost::shared_ptr<ColorOpt> opt, OptionWidget *owner, QWidget *parent)
+OptColorButton::OptColorButton(ColorOptPtr opt, OptionWidget *owner, QWidget *parent)
 : KColorButton(parent)
 , m_owner(owner)
 , m_opt(opt) {
@@ -108,7 +108,7 @@ void OptColorButton::setOpt(const QColor& c) {
   m_owner->notifyChange();
 }
 
-OptFontRequester::OptFontRequester(boost::shared_ptr<FontOpt> opt, OptionWidget *owner, QWidget *parent)
+OptFontRequester::OptFontRequester(FontOptPtr opt, OptionWidget *owner, QWidget *parent)
 : KFontRequester(parent)
 , m_owner(owner)
 , m_opt(opt) {

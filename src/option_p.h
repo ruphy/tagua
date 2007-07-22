@@ -24,10 +24,10 @@
 class OptCheckBox : public QCheckBox {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<BoolOpt> m_opt;
+  BoolOptPtr m_opt;
 
 public:
-  OptCheckBox(boost::shared_ptr<BoolOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptCheckBox(BoolOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(bool);
@@ -36,11 +36,11 @@ private slots:
 class OptRadioButton : public QRadioButton {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<SelectOpt> m_opt;
+  SelectOptPtr m_opt;
   int m_index;
 
 public:
-  OptRadioButton(boost::shared_ptr<SelectOpt> opt, int i, OptionWidget *owner, QWidget *parent = NULL);
+  OptRadioButton(SelectOptPtr opt, int i, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(bool);
@@ -49,10 +49,10 @@ private slots:
 class OptSpinBox : public QSpinBox {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<IntOpt> m_opt;
+  IntOptPtr m_opt;
 
 public:
-  OptSpinBox(boost::shared_ptr<IntOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptSpinBox(IntOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(int);
@@ -61,10 +61,10 @@ private slots:
 class OptLineEdit : public QLineEdit {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<StringOpt> m_opt;
+  StringOptPtr m_opt;
 
 public:
-  OptLineEdit(boost::shared_ptr<StringOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptLineEdit(StringOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(const QString&);
@@ -73,10 +73,10 @@ private slots:
 class OptUrlRequester : public KUrlRequester {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<UrlOpt> m_opt;
+  UrlOptPtr m_opt;
 
 public:
-  OptUrlRequester(boost::shared_ptr<UrlOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptUrlRequester(UrlOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(const QString&);
@@ -85,10 +85,10 @@ private slots:
 class OptComboBox : public QComboBox {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<ComboOpt> m_opt;
+  ComboOptPtr m_opt;
 
 public:
-  OptComboBox(boost::shared_ptr<ComboOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptComboBox(ComboOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(int);
@@ -97,10 +97,10 @@ private slots:
 class OptColorButton : public KColorButton {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<ColorOpt> m_opt;
+  ColorOptPtr m_opt;
 
 public:
-  OptColorButton(boost::shared_ptr<ColorOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptColorButton(ColorOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(const QColor&);
@@ -109,10 +109,10 @@ private slots:
 class OptFontRequester : public KFontRequester {
   Q_OBJECT
   OptionWidget *m_owner;
-  boost::shared_ptr<FontOpt> m_opt;
+  FontOptPtr m_opt;
 
 public:
-  OptFontRequester(boost::shared_ptr<FontOpt> opt, OptionWidget *owner, QWidget *parent = NULL);
+  OptFontRequester(FontOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
 private slots:
   void setOpt(const QFont&);
