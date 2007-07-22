@@ -55,6 +55,22 @@ void OptSpinBox::setOpt(int i) {
   m_owner->notifyChange();
 }
 
+OptSlider::OptSlider(IntOptPtr opt, OptionWidget *owner, QWidget *parent)
+: QSlider(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setOrientation(Qt::Horizontal);
+  setMinimum(m_opt->min());
+  setMaximum(m_opt->max());
+  setValue(m_opt->value());
+  connect(this, SIGNAL(valueChanged(int)), this, SLOT(setOpt(int)));
+}
+
+void OptSlider::setOpt(int i) {
+  m_opt->setValue(i);
+  m_owner->notifyChange();
+}
+
 OptLineEdit::OptLineEdit(StringOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QLineEdit(parent)
 , m_owner(owner)

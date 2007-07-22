@@ -58,6 +58,18 @@ private slots:
   void setOpt(int);
 };
 
+class OptSlider : public QSlider {
+  Q_OBJECT
+  OptionWidget *m_owner;
+  IntOptPtr m_opt;
+
+public:
+  OptSlider(IntOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
+
+private slots:
+  void setOpt(int);
+};
+
 class OptLineEdit : public QLineEdit {
   Q_OBJECT
   OptionWidget *m_owner;

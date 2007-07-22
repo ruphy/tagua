@@ -4,7 +4,7 @@ import("selection.lua")
 theme.options = OptList {
     ColorOpt("light", "Light square", "white"),
     ColorOpt("dark", "Dark square", "black"),
-    IntOpt("alpha", "Alpha", 192, 0, 255),
+    IntOpt("alpha", "Alpha", 192, 0, 255, true),
 }
 
 theme.background = function(size)

@@ -114,19 +114,22 @@ private:
   int m_min;
   int m_max;
   int m_value;
+  bool m_use_slider;
 public:
   typedef int ValueType;
-  IntOpt(const QString& name, const QString& label, int def, int min, int max)
+  IntOpt(const QString& name, const QString& label, int def, int min, int max, bool use_slider = false)
     : BaseOpt(name, label)
     , m_min(min)
     , m_max(max)
-    , m_value(def) {}
+    , m_value(def)
+    , m_use_slider(use_slider) {}
   int min() const { return m_min; }
   int max() const { return m_max; }
   int value() const { return m_value; }
+  bool useSlider() const { return m_use_slider; }
   void setValue(int v) { m_value = v; }
   virtual OptPtr clone() const {
-    IntOpt *o = new IntOpt(name(), label(), m_value, m_min, m_max);
+    IntOpt *o = new IntOpt(name(), label(), m_value, m_min, m_max, m_use_slider);
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
@@ -134,7 +137,8 @@ public:
     return o
         && m_min != o->m_min
         && m_max != o->m_max
-        && m_value != o->m_value;
+        && m_value != o->m_value
+        && m_use_slider != o->m_use_slider;
   }
 };
 
@@ -318,6 +322,7 @@ class OptionWidget : public QWidget {
   friend class OptCheckBox;
   friend class OptRadioButton;
   friend class OptSpinBox;
+  friend class OptSlider;
   friend class OptLineEdit;
   friend class OptColorButton;
   friend class OptFontRequester;

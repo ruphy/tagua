@@ -75,6 +75,7 @@ public:
   PROPERTY_RO_TYPE(min, get()->min, number, int)
   PROPERTY_RO_TYPE(max, get()->max, number, int)
   PROPERTY_RW_TYPE(value, get()->value, get()->setValue, number, int)
+  PROPERTY_RO_TYPE(use_slider, get()->useSlider, boolean, bool)
 
   static const char* class_name();
   static int to_string(lua_State* l);

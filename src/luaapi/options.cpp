@@ -244,6 +244,7 @@ void Wrapper<IntOptPtr>::create_index_table(lua_State* l) {
   SET_PROPERTY_RO(l, min);
   SET_PROPERTY_RO(l, max);
   SET_PROPERTY_RW(l, value);
+  SET_PROPERTY_RO(l, use_slider);
   set_meta_method(l, &to_string, "__tostring");
 
   Comparable<IntOptPtr>::register_in_index_table(l);
@@ -252,7 +253,7 @@ void Wrapper<IntOptPtr>::create_index_table(lua_State* l) {
 int Wrapper<IntOptPtr>::constructor(lua_State* l) {
   const int n = lua_gettop(l);
 
-  if(n!=5)
+  if(n<5 || n>6)
     luaL_error(l, "Wrong parameter list for IntOpt constructor");
 
   const char* name = lua_tostring(l, 1);
@@ -260,9 +261,10 @@ int Wrapper<IntOptPtr>::constructor(lua_State* l) {
   int value = int(lua_tonumber(l, 3));
   int min = int(lua_tonumber(l, 4));
   int max = int(lua_tonumber(l, 5));
+  bool use_slider = n==6 ? bool(lua_toboolean(l, 6)) : false;
 
   lua_pop(l, n);
-  create(l, IntOptPtr(new IntOpt(name, label, value, min, max)));
+  create(l, IntOptPtr(new IntOpt(name, label, value, min, max, use_slider)) );
   return 1;
 }
 

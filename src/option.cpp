@@ -95,9 +95,16 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
     else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
-      OptSpinBox *sb = new OptSpinBox(o, this, widget);
-      sb->setObjectName(qPrintf("%02d_spin",i));
-      layout->addWidget(sb, lpos++, right);
+      if(o->useSlider()) {
+        OptSlider *sl = new OptSlider(o, this, widget);
+        sl->setObjectName(qPrintf("%02d_slid",i));
+        layout->addWidget(sl, lpos++, right);
+      }
+      else {
+        OptSpinBox *sb = new OptSpinBox(o, this, widget);
+        sb->setObjectName(qPrintf("%02d_spin",i));
+        layout->addWidget(sb, lpos++, right);
+      }
     }
     else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
@@ -178,9 +185,16 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
     }
     else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
-      OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
-      if(!sb) goto fail;
-      sb->setValue(o->value());
+      if(o->useSlider()) {
+        OptSlider *sl = widget->findChild<OptSlider*>(qPrintf("%02d_slid",i));
+        if(!sl) goto fail;
+        sl->setValue(o->value());
+      }
+      else {
+        OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
+        if(!sb) goto fail;
+        sb->setValue(o->value());
+      }
     }
     else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
