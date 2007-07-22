@@ -138,7 +138,7 @@ public:
 
 
 /**
-  * An enumarated value to test how stong casts will be checked
+  * An enumarated value to test how strongly casts will be checked
   */
 enum CheckStrenght {
   DontCheck,

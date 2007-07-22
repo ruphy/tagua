@@ -92,18 +92,24 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
       }
       layout->addWidget(gb, lpos++, left, 1, 2);
     }
-    else if(IntOptPtr o =
+    else if (IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
-      if(o->useSlider()) {
-        OptSlider *sl = new OptSlider(o, this, widget);
-        sl->setObjectName(qPrintf("%02d_slid",i));
-        layout->addWidget(sl, lpos++, right);
-      }
-      else {
-        OptSpinBox *sb = new OptSpinBox(o, this, widget);
-        sb->setObjectName(qPrintf("%02d_spin",i));
-        layout->addWidget(sb, lpos++, right);
+      switch (o->visualization()) {
+      case IntOpt::SpinBox:
+        {
+          OptSpinBox *sb = new OptSpinBox(o, this, widget);
+          sb->setObjectName(qPrintf("%02d_spin",i));
+          layout->addWidget(sb, lpos++, right);
+          break;
+        }
+      case IntOpt::Slider:
+        {
+          OptSlider *sl = new OptSlider(o, this, widget);
+          sl->setObjectName(qPrintf("%02d_slid",i));
+          layout->addWidget(sl, lpos++, right);
+          break;
+        }
       }
     }
     else if(StringOptPtr o =
@@ -185,15 +191,21 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
     }
     else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
-      if(o->useSlider()) {
-        OptSlider *sl = widget->findChild<OptSlider*>(qPrintf("%02d_slid",i));
-        if(!sl) goto fail;
-        sl->setValue(o->value());
-      }
-      else {
-        OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
-        if(!sb) goto fail;
-        sb->setValue(o->value());
+      switch (o->visualization()) {
+      case IntOpt::SpinBox:
+        {
+          OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
+          if(!sb) goto fail;
+          sb->setValue(o->value());
+          break;
+        }
+      case IntOpt::Slider:
+        {
+          OptSlider *sl = widget->findChild<OptSlider*>(qPrintf("%02d_slid",i));
+          if(!sl) goto fail;
+          sl->setValue(o->value());
+          break;
+        }
       }
     }
     else if(StringOptPtr o =

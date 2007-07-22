@@ -112,26 +112,31 @@ public:
 };
 
 class IntOpt : public BaseOpt {
+public:
+  enum Visualization {
+    SpinBox,
+    Slider
+  };
 private:
   int m_min;
   int m_max;
   int m_value;
-  bool m_use_slider;
+  Visualization m_visualization;
 public:
   typedef int ValueType;
-  IntOpt(const QString& name, const QString& label, int def, int min, int max, bool use_slider = false)
+  IntOpt(const QString& name, const QString& label, int def, int min, int max, Visualization visualization)
     : BaseOpt(name, label)
     , m_min(min)
     , m_max(max)
     , m_value(def)
-    , m_use_slider(use_slider) {}
+    , m_visualization(visualization) {}
   int min() const { return m_min; }
   int max() const { return m_max; }
   int value() const { return m_value; }
-  bool useSlider() const { return m_use_slider; }
+  Visualization visualization() const { return m_visualization; }
   void setValue(int v) { m_value = v; }
   virtual OptPtr clone() const {
-    IntOpt *o = new IntOpt(name(), label(), m_value, m_min, m_max, m_use_slider);
+    IntOpt *o = new IntOpt(name(), label(), m_value, m_min, m_max, m_visualization);
     return OptPtr(o);
   }
   virtual bool equals(const BaseOpt& _o) const {
@@ -140,7 +145,7 @@ public:
         && m_min != o->m_min
         && m_max != o->m_max
         && m_value != o->m_value
-        && m_use_slider != o->m_use_slider;
+        && m_visualization != o->m_visualization;
   }
 };
 

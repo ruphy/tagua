@@ -75,7 +75,18 @@ public:
   PROPERTY_RO_TYPE(min, get()->min, number, int)
   PROPERTY_RO_TYPE(max, get()->max, number, int)
   PROPERTY_RW_TYPE(value, get()->value, get()->setValue, number, int)
-  PROPERTY_RO_TYPE(use_slider, get()->useSlider, boolean, bool)
+  static int get_visualization(lua_State* l) {
+    IntOpt::Visualization vis = retrieve(l, 1, DontCheck)->get()->visualization();
+    switch (vis) {
+    case IntOpt::SpinBox:
+      lua_pushstring(l, "spinbox");
+      break;
+    case IntOpt::Slider:
+      lua_pushstring(l, "slider");
+      break;
+    }
+    return 1;
+  }  
 
   static const char* class_name();
   static int to_string(lua_State* l);

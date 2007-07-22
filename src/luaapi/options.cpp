@@ -244,7 +244,7 @@ void Wrapper<IntOptPtr>::create_index_table(lua_State* l) {
   SET_PROPERTY_RO(l, min);
   SET_PROPERTY_RO(l, max);
   SET_PROPERTY_RW(l, value);
-  SET_PROPERTY_RO(l, use_slider);
+  SET_PROPERTY_RO(l, visualization);
   set_meta_method(l, &to_string, "__tostring");
 
   Comparable<IntOptPtr>::register_in_index_table(l);
@@ -261,10 +261,20 @@ int Wrapper<IntOptPtr>::constructor(lua_State* l) {
   int value = int(lua_tonumber(l, 3));
   int min = int(lua_tonumber(l, 4));
   int max = int(lua_tonumber(l, 5));
-  bool use_slider = n==6 ? bool(lua_toboolean(l, 6)) : false;
+  
+  IntOpt::Visualization visualization = IntOpt::SpinBox;
+  if (n > 5) {
+    QString vstring = lua_tostring(l, 6);
+    if (vstring.compare("slider", Qt::CaseInsensitive) == 0) {
+      visualization = IntOpt::Slider;
+    }
+    else if (vstring.compare("spinbox", Qt::CaseInsensitive) != 0) {
+      ERROR("No such visualization `" << vstring << "'. Using `spinbox' instead");
+    }
+  }
 
   lua_pop(l, n);
-  create(l, IntOptPtr(new IntOpt(name, label, value, min, max, use_slider)) );
+  create(l, IntOptPtr(new IntOpt(name, label, value, min, max, visualization)) );
   return 1;
 }
 

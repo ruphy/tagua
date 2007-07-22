@@ -3,7 +3,7 @@ import("selection.lua")
 
 theme.options = OptList {
     ColorOpt("square", "Square color", "#EBD6A0"),
-    IntOpt("alpha", "Alpha", 192, 0, 255),
+    IntOpt("alpha", "Alpha", 192, 0, 255, "slider"),
     BoolOpt("useborder", "Use border", true, OptList {
         ColorOpt("border", "Border color", "#9C8755"),
         IntOpt("bwidth", "Border width", 3, 1, 10)
