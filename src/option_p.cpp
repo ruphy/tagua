@@ -10,3 +10,113 @@
 
 #include "option_p.h"
 
+
+OptCheckBox::OptCheckBox(boost::shared_ptr<BoolOpt> opt, OptionWidget *owner, QWidget *parent)
+: QCheckBox(opt->label(), parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setChecked(m_opt->value());
+  connect(this, SIGNAL(toggled(bool)), this, SLOT(setOpt(bool)));
+}
+
+void OptCheckBox::setOpt(bool b) {
+  m_opt->setValue(b);
+  m_owner->notifyChange();
+}
+
+OptRadioButton::OptRadioButton(boost::shared_ptr<SelectOpt> opt, int i, OptionWidget *owner, QWidget *parent)
+: QRadioButton(opt->m_options[i]->label(), parent)
+, m_owner(owner)
+, m_opt(opt)
+, m_index(i) {
+  setChecked(m_opt->m_options[i]->value());
+  connect(this, SIGNAL(toggled(bool)), this, SLOT(setOpt(bool)));
+}
+
+void OptRadioButton::setOpt(bool b) {
+  if(b) {
+    m_opt->setSelected(m_index);
+    m_owner->notifyChange();
+  }
+}
+
+OptSpinBox::OptSpinBox(boost::shared_ptr<IntOpt> opt, OptionWidget *owner, QWidget *parent)
+: QSpinBox(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setValue(m_opt->value());
+  setMinimum(m_opt->min());
+  setMaximum(m_opt->max());
+  connect(this, SIGNAL(valueChanged(int)), this, SLOT(setOpt(int)));
+}
+
+void OptSpinBox::setOpt(int i) {
+  m_opt->setValue(i);
+  m_owner->notifyChange();
+}
+
+OptLineEdit::OptLineEdit(boost::shared_ptr<StringOpt> opt, OptionWidget *owner, QWidget *parent)
+: QLineEdit(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setText(m_opt->value());
+  connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(setOpt(const QString&)));
+}
+
+void OptLineEdit::setOpt(const QString& s) {
+  m_opt->setValue(s);
+  m_owner->notifyChange();
+}
+
+OptUrlRequester::OptUrlRequester(boost::shared_ptr<UrlOpt> opt, OptionWidget *owner, QWidget *parent)
+: KUrlRequester(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setUrl(m_opt->value());
+  connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(setOpt(const QString&)));
+}
+
+void OptUrlRequester::setOpt(const QString& s) {
+  m_opt->setValue(s);
+  m_owner->notifyChange();
+}
+
+OptComboBox::OptComboBox(boost::shared_ptr<ComboOpt> opt, OptionWidget *owner, QWidget *parent)
+: QComboBox(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  addItems(m_opt->m_values);
+  setCurrentIndex(m_opt->selected());
+  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(setOpt(int)));
+}
+
+void OptComboBox::setOpt(int c) {
+  m_opt->setSelected(c);
+  m_owner->notifyChange();
+}
+
+OptColorButton::OptColorButton(boost::shared_ptr<ColorOpt> opt, OptionWidget *owner, QWidget *parent)
+: KColorButton(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setColor(m_opt->value());
+  connect(this, SIGNAL(changed(const QColor&)), this, SLOT(setOpt(const QColor&)));
+}
+
+void OptColorButton::setOpt(const QColor& c) {
+  m_opt->setValue(c);
+  m_owner->notifyChange();
+}
+
+OptFontRequester::OptFontRequester(boost::shared_ptr<FontOpt> opt, OptionWidget *owner, QWidget *parent)
+: KFontRequester(parent)
+, m_owner(owner)
+, m_opt(opt) {
+  setFont(m_opt->value());
+  connect(this, SIGNAL(fontSelected(const QFont&)), this, SLOT(setOpt(const QFont&)));
+}
+
+void OptFontRequester::setOpt(const QFont& f) {
+  m_opt->setValue(f);
+  m_owner->notifyChange();
+}
