@@ -25,11 +25,11 @@ void OptCheckBox::setOpt(bool b) {
 }
 
 OptRadioButton::OptRadioButton(SelectOptPtr opt, int i, OptionWidget *owner, QWidget *parent)
-: QRadioButton(opt->m_options[i]->label(), parent)
+: QRadioButton(opt->options()[i]->label(), parent)
 , m_owner(owner)
 , m_opt(opt)
 , m_index(i) {
-  setChecked(m_opt->m_options[i]->value());
+  setChecked(m_opt->options()[i]->value());
   connect(this, SIGNAL(toggled(bool)), this, SLOT(setOpt(bool)));
 }
 
@@ -101,7 +101,7 @@ OptComboBox::OptComboBox(ComboOptPtr opt, OptionWidget *owner, QWidget *parent)
 : QComboBox(parent)
 , m_owner(owner)
 , m_opt(opt) {
-  addItems(m_opt->m_values);
+  addItems(m_opt->values());
   setCurrentIndex(m_opt->selected());
   connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(setOpt(int)));
 }

@@ -212,7 +212,7 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       OptComboBox *ow = widget->findChild<OptComboBox*>(qPrintf("%02d_combo",i));
       if(!ow) goto fail;
-      ow->setCurrentIndex(o->m_selected);
+      ow->setCurrentIndex(o->selected());
     }
     else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
@@ -234,7 +234,7 @@ fail:
   ERROR("Options/Widget mismatch!");
 }
 
-void dump_options_list(OptList& options, int indent) {
+void dump_options_list(const OptList& options, int indent) {
   if(!indent)std::cout << "---- begin dump ----" << std::endl;
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
@@ -242,7 +242,7 @@ void dump_options_list(OptList& options, int indent) {
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << (o->value()?"[X]":"[ ]") << " " << o->label() << std::endl;
-      dump_options_list(o->m_sub_options, indent+1);
+      dump_options_list(o->subOptions(), indent+1);
     }
     else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
@@ -273,24 +273,24 @@ void dump_options_list(OptList& options, int indent) {
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << "[combo] " << o->label() << std::endl;
-      for(int k=0;k<o->m_values.size();k++) {
+      for(int k=0;k<o->values().size();k++) {
         for(int j=0;j<indent+1;j++)std::cout << "  ";
         if(k==o->selected())
-          std::cout << " *<" << o->m_values[k] << ">*" << std::endl;
+          std::cout << " *<" << o->values()[k] << ">*" << std::endl;
         else
-          std::cout << "  <" << o->m_values[k] << ">" << std::endl;
+          std::cout << "  <" << o->values()[k] << ">" << std::endl;
       }
     }
     else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       for(int j=0;j<indent;j++)std::cout << "  ";
       std::cout << "[group] " << o->label() << std::endl;
-      for(int j=0;j<o->m_options.size();j++) {
-        BoolOptPtr so = o->m_options[j];
+      for(int j=0;j<o->options().size();j++) {
+        BoolOptPtr so = o->options()[j];
         for(int j=0;j<indent+1;j++)std::cout << "  ";
         std::cout << (so->value()?"(*)":"( )") << " " << so->label() << std::endl;
-        if(so->m_sub_options.size())
-          dump_options_list(so->m_sub_options, indent+2);
+        if(so->subOptions().size())
+          dump_options_list(so->subOptions(), indent+2);
       }
     }
     else {
@@ -372,7 +372,7 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
     if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       Settings bool_group = s.group(o->name());
-      options_list_save_to_settings(o->m_sub_options, bool_group);
+      options_list_save_to_settings(o->subOptions(), bool_group);
       bool_group.setFlag("value", o->value());
     }
     else if(IntOptPtr o =
@@ -402,8 +402,8 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
     else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       OptList l;
-      for(int i=0;i<o->m_options.size();i++)
-        l <<  o->m_options[i];
+      for(int i=0;i<o->options().size();i++)
+        l <<  o->options()[i];
       Settings sel_group = s.group(o->name());
       options_list_save_to_settings(l, sel_group.group("sel-options"));
       sel_group["value"] = o->value();

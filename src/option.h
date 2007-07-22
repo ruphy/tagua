@@ -65,7 +65,7 @@ bool options_list_equals(const QList<boost::shared_ptr<O1> >& o1,
   return true;
 }
 
-void dump_options_list(OptList& options, int indent = 0);
+void dump_options_list(const OptList& options, int indent = 0);
 
 class BaseOpt {
 private:
@@ -83,8 +83,10 @@ public:
 };
 
 class BoolOpt : public BaseOpt {
-//private:
-public:
+private:
+  friend class OptionWidget;
+  friend bool options_list_load_from_settings(OptList& options, const Settings& s);
+
   bool m_value;
   QList<OptPtr> m_sub_options;
 public:
@@ -227,8 +229,7 @@ public:
 };
 
 class ComboOpt : public BaseOpt {
-//private:
-public:
+private:
   QStringList m_values;
   int         m_selected;
 public:
@@ -240,6 +241,7 @@ public:
   int value() const { return m_selected; }
   int selected() const { return m_selected; }
   void setSelected(int v) { m_selected = v; }
+  QStringList values() const { return m_values; }
   virtual OptPtr clone() const {
     ComboOpt *o = new ComboOpt(name(), label(), m_values, m_selected);
     return OptPtr(o);
@@ -253,8 +255,10 @@ public:
 };
 
 class SelectOpt : public BaseOpt {
-//private:
-public:
+private:
+  friend class OptionWidget;
+  friend bool options_list_load_from_settings(OptList& options, const Settings& s);
+
   QList<BoolOptPtr> m_options;
   int m_selected;
 

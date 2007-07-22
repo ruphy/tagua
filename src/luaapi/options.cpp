@@ -440,7 +440,9 @@ const char* Wrapper<ComboOptPtr>::class_name() {
 int Wrapper<ComboOptPtr>::to_string(lua_State* l) {
   ComboOptPtr r = *retrieve(l, 1, AssertOk);
   lua_pop(l, 1);
-  lua_pushfstring(l, "combo[%s] = %s", r->name().toAscii().constData(), r->m_values.join(",").toAscii().constData() );
+  lua_pushfstring(l, "combo[%s] = %s",
+                        r->name().toAscii().constData(),
+                        r->values().join(",").toAscii().constData() );
   return 1;
 }
 
