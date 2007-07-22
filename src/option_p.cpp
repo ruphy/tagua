@@ -44,9 +44,9 @@ OptSpinBox::OptSpinBox(boost::shared_ptr<IntOpt> opt, OptionWidget *owner, QWidg
 : QSpinBox(parent)
 , m_owner(owner)
 , m_opt(opt) {
-  setValue(m_opt->value());
   setMinimum(m_opt->min());
   setMaximum(m_opt->max());
+  setValue(m_opt->value());
   connect(this, SIGNAL(valueChanged(int)), this, SLOT(setOpt(int)));
 }
 
