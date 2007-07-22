@@ -37,11 +37,11 @@ Q_OBJECT
   std::map<QString, OptList> m_new_theme_options;
   CategoryMap m_categories;
 
-  OptList       get_file_options(const QString&, bool reload_defaults = false);
+  OptList              get_file_options(const QString&, bool reload_defaults = false);
   static ThemeInfoList to_theme_info_list(const QStringList& files, const Settings& s);
+  static int           theme_ok_for_variant(const ThemeInfo&, const QString&);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);
-  static void read_theme_info(ThemeInfo& info, const QString& desktopFile);
 private slots:
   void variantChanged();
 

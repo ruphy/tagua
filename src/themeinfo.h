@@ -23,16 +23,17 @@ struct ThemeInfo {
   QString desktopFile;
   QStringList variants;
   QDateTime last_modified;
-            
+
   operator bool() const;
-  
+
   bool operator==(const ThemeInfo& info) const;
-  
+
   void save(Settings& s);
   static ThemeInfo fromSettings(const Settings& s);
+  static ThemeInfo fromDesktopFile(const QString& f);
 };
 
 uint qHash(const ThemeInfo& info);
-  
+
 #endif // THEMEINFO_H
 

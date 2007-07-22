@@ -36,7 +36,7 @@ Theme::Theme(const ThemeInfo& theme)
 : m_theme(theme)
 , m_context()
 , m_lua_loader(&m_context, theme) {
-  std::cout << "loading theme " << theme.file_name << std::endl;
+  //std::cout << "loading theme " << theme.file_name << std::endl;
   m_lua_loader.runFile(m_theme.file_name);
   if(m_lua_loader.error())
     ERROR("Script load error: " << std::endl << m_lua_loader.errorString());

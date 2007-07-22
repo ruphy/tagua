@@ -12,8 +12,6 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
-
-#include <KDesktopFile>
 #include <KStandardDirs>
 
 #include "mastersettings.h"
@@ -22,74 +20,46 @@
 #include "tagua.h"
 #include "pref_theme.h"
 
-void PrefTheme::read_theme_info(ThemeInfo& info, const QString& desktopFile) {
-  info.desktopFile = desktopFile;
-  if (!KDesktopFile::isDesktopFile(desktopFile)) {
-    return;
-  }
-
-  KDesktopFile theme(desktopFile);
-  KConfigGroup themeData = theme.desktopGroup();
-
-  info.name = theme.readName();
-  info.description = theme.readComment();
-  info.description.replace("|", "\n");
-  info.variants = themeData.readEntry("X-Tagua-Variants").split(QRegExp("\\s*,\\s*"));
-  info.file_name = themeData.readEntry("X-Tagua-Script");
-  if (info.file_name.isEmpty()) {
-    // use a file with the same name as the .desktop, but with .lua extension
-    info.file_name = desktopFile;
-    info.file_name.replace(QRegExp("\\.desktop$"), ".lua");
-  }
-  else {
-    QFileInfo filePath(info.file_name);
-    QFileInfo desktopPath(desktopFile);
-    if (!filePath.isAbsolute()) {
-    // the file is relative to the .desktop directory
-      info.file_name = QDir(desktopPath.path()).filePath(info.file_name);
-    }
-  }
-}
 
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
-  std::cout << "about to examine " << files.size() << " desktop files" << std::endl;
-  std::map<QString, ThemeInfo> cache;
+  //std::cout << "about to examine " << files.size() << " desktop files" << std::endl;
+  std::map<QString, ThemeInfo> cached_info;
 
   SettingArray themes = s.group("themes").array("theme");
   foreach (Settings s_theme, themes) {
     ThemeInfo info = ThemeInfo::fromSettings(s_theme);
-    cache[info.desktopFile] = info;
+    cached_info[info.desktopFile] = info;
   }
 
   ThemeInfoList all_themes;
   bool updated = false;
 
   for(int i = 0; i < files.size(); i++) {
-    QDateTime lm = QFileInfo(files[i]).lastModified();
-    std::map<QString, ThemeInfo>::iterator it = cache.find(files[i]);
+    QFileInfo file_info(files[i]);
+    std::map<QString, ThemeInfo>::iterator it = cached_info.find(files[i]);
 
-    if (it != cache.end() && it->second.last_modified == lm) {
+    if (it != cached_info.end()
+        && file_info.exists()
+        && it->second.last_modified == file_info.lastModified() ) {
       all_themes << it->second;
-      cache.erase(it);
+      cached_info.erase(it);
     }
     else {
       updated = true;
 
-      ThemeInfo info;
-      info.last_modified = lm;
-      read_theme_info(info, files[i]);
+      ThemeInfo theme_info = ThemeInfo::fromDesktopFile(files[i]);
+      all_themes << theme_info;
 
-      all_themes << info;
-
-      if (info.name.isEmpty()) {
+      if (theme_info.name.isEmpty()) {
         ERROR("No name property in " << files[i]);
       }
     }
   }
 
-  if(!cache.empty())
+  if(!cached_info.empty())
     updated = true;
 
+  /* rewrite the cached configuration */
   if(updated) {
     SettingArray themes = s.group("themes").newArray("theme");
 
@@ -102,8 +72,9 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
   return all_themes;
 }
 
+
 OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
-  std::cout << "get file options for " << f << std::endl;
+  //std::cout << "get file options for " << f << std::endl;
 
   if(!reload_defaults) {
     std::map<QString, OptList>::iterator it = m_new_theme_options.find(f);
@@ -138,6 +109,20 @@ OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
   }
   return o;
 }
+
+
+int PrefTheme::theme_ok_for_variant(const ThemeInfo& theme_info, const QString& variant_name) {
+  if(theme_info.variants.contains(variant_name+"[default]", Qt::CaseInsensitive))
+    return 4;
+  if(theme_info.variants.contains(variant_name, Qt::CaseInsensitive))
+    return 3;
+  if(theme_info.variants.contains("any[default]", Qt::CaseInsensitive))
+    return 2;
+  if(theme_info.variants.contains("any", Qt::CaseInsensitive))
+    return 1;
+  return 0;
+}
+
 
 PrefTheme::PrefTheme(QWidget *parent)
 : QWidget(parent) {
@@ -174,7 +159,7 @@ PrefTheme::PrefTheme(QWidget *parent)
       s.group(cit->first)
     );
 
-    std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
+    //std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
   }
 
   const Variant::Variants& all = Variant::allVariants();
@@ -215,26 +200,23 @@ void PrefTheme::apply() {
 }
 
 void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
-                                    QString variant, QString settings_theme) {
+                                    QString variant_name, QString settings_theme) {
   list->clear();
 
   int selected_ok = 0;
   QListWidgetItem *item_to_select = NULL;
 
   for (int i = 0; i < themes.size(); i++) {
-    int ok = 0;
-    ok = themes[i].variants.contains("any", Qt::CaseInsensitive) ? 1 : ok;
-    ok = themes[i].variants.contains("any[default]", Qt::CaseInsensitive) ? 2 : ok;
-    ok = themes[i].variants.contains(variant, Qt::CaseInsensitive) ? 3 : ok;
-    ok = themes[i].variants.contains(variant+"[default]", Qt::CaseInsensitive) ? 4 : ok;
+    int ok = theme_ok_for_variant(themes[i], variant_name);
     if (!ok)
       continue;
-    ok = (themes[i].desktopFile == settings_theme) ? 5 : ok;
-    QListWidgetItem *w = new QListWidgetItem(themes[i].name, list);
 
-    w->setData(Qt::UserRole, i);
+    ok = (themes[i].desktopFile == settings_theme) ? 5 : ok;
+    QListWidgetItem *list_item = new QListWidgetItem(themes[i].name, list);
+
+    list_item->setData(Qt::UserRole, i);
     if(ok > selected_ok) {
-      item_to_select = w;
+      item_to_select = list_item;
       selected_ok = ok;
     }
   }
@@ -244,8 +226,9 @@ void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
 }
 
 void PrefTheme::variantChanged() {
-  QString c = comboVariant->itemData(comboVariant->currentIndex()).toString();
-  VariantInfo *vi = Variant::variant(c);
+  QString category = comboVariant->itemData(comboVariant->currentIndex()).toString();
+  VariantInfo *vi = Variant::variant(category);
+
   if(!vi) {
     for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
       Category* c = cit->second;
@@ -260,66 +243,68 @@ void PrefTheme::variantChanged() {
     return;
   }
 
-  QString vname = vi->name();
-  QString vproxy = vi->themeProxy();
+  QString variant_name = vi->name();
+  QString variant_proxy = vi->themeProxy();
   SettingMap<QString> variants = settings().group("variants").map<QString>("variant", "name");
-  Settings var = variants.insert(vname);
-  bool ck = vname != vproxy;
+  Settings var = variants.insert(variant_name);
+  bool check_proxy = variant_name != variant_proxy;
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
     Category* c = cit->second;
 
-    c->m_check->setVisible(ck);
-    if(ck) {
-      bool d = c->m_new_use_def.count(vname) ? c->m_new_use_def[vname]
-                                : (var[cit->first+"-use-def"] | true).value();
-      c->m_check->setText("Same as "+vproxy);
-      c->m_check->setChecked(d);
-      c->m_list->setEnabled(!d);
-      c->m_label->setEnabled(!d);
+    c->m_check->setVisible(check_proxy);
+    if(check_proxy) {
+      bool use_def = c->m_new_use_def.count(variant_name)
+                     ? c->m_new_use_def[variant_name]
+                     : (var[cit->first+"-use-def"] | true).value();
+      c->m_check->setText("Same as "+variant_proxy);
+      c->m_check->setChecked(use_def);
+      c->m_list->setEnabled(!use_def);
+      c->m_label->setEnabled(!use_def);
     }
     else {
       c->m_list->setEnabled(true);
       c->m_label->setEnabled(true);
     }
 
-    QString th = c->m_new_themes.count(vname) ? c->m_new_themes[vname]
-                                : (var[cit->first+"-theme"] | QString()).value();
-    update_list_view(c->m_list, c->m_themes, vproxy, th);
+    QString settings_theme = c->m_new_themes.count(variant_name)
+                              ? c->m_new_themes[variant_name]
+                              : (var[cit->first+"-theme"] | QString()).value();
+    update_list_view(c->m_list, c->m_themes, variant_proxy, settings_theme);
   }
 }
 
 ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   QString tag = category + "-theme";
   QString deftag = category + "-use-def";
-  QString v = vi->name();
+  QString variant_name = vi->name();
+  QString variant_proxy_name = vi->themeProxy();
   SettingMap<QString> variants = settings().group("variants").map<QString>("variant", "name");
-  if (v != vi->themeProxy() &&
-      (variants.insert(v)[deftag] | true) )
-    v = vi->themeProxy();
+  if (variant_name != vi->themeProxy() &&
+      (variants.insert(variant_name)[deftag] | true) )
+    variant_name = vi->themeProxy();
 
-  Settings var = variants.insert(v);
-  if (var[tag]) {
+  Settings var_settings = variants.insert(variant_name);
+  if (var_settings[tag] && QFile::exists(var_settings[tag].value<QString>()) ) {
+
     // there is a theme in the settings, so pick this
-    ThemeInfo res;
-    read_theme_info(res, var[tag].value<QString>());
-    return res;
+    ThemeInfo res = ThemeInfo::fromDesktopFile(var_settings[tag].value<QString>());
+    if(theme_ok_for_variant(res, variant_proxy_name))
+      return res;
   }
 
-  MasterSettings s(".tagua_config_cache.xml");
-  KStandardDirs* dirs = KGlobal::dirs();
-  ThemeInfoList themes = to_theme_info_list(dirs->findAllResources("appdata", "themes/"+category+"/*.desktop",
-                                                  KStandardDirs::Recursive), s.group(category));
-  std::cout << "found " << themes.size() << " themes" << std::endl;
+  MasterSettings s("tagua_config_cache.xml");
+  KStandardDirs* std_dirs = KGlobal::dirs();
+  ThemeInfoList themes = to_theme_info_list(std_dirs->findAllResources("appdata",
+                                                                  "themes/" + category + "/*.desktop",
+                                                                  KStandardDirs::Recursive ),
+                                            s.group(category));
+  //std::cout << "found " << themes.size() << " themes" << std::endl;
 
   int best = 0;
   ThemeInfo* retv = 0;
-  for(int i=0;i<themes.size();i++) {
-    int ok = 0;
-    ok = themes[i].variants.contains("any", Qt::CaseInsensitive) ? 1 : ok;
-    ok = themes[i].variants.contains("any[default]", Qt::CaseInsensitive) ? 2 : ok;
-    ok = themes[i].variants.contains(v, Qt::CaseInsensitive) ? 3 : ok;
-    ok = themes[i].variants.contains(v+"[default]", Qt::CaseInsensitive) ? 4 : ok;
+  for(int i = 0; i < themes.size(); i++) {
+    int ok = theme_ok_for_variant(themes[i], variant_proxy_name);
     if (!ok)
       continue;
 
@@ -330,7 +315,7 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
   }
 
   if (retv && *retv)
-    var[tag] = retv->desktopFile;
+    var_settings[tag] = retv->desktopFile;
 
   return retv ? *retv : ThemeInfo();
 }
