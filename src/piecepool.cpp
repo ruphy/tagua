@@ -186,8 +186,9 @@ NamedSprite PiecePool::takeSpriteAt(int index) {
   }
 
   NamedSprite retv = m_sprites[index];
-  if(!retv)
+  if (!retv)
     return NamedSprite();
+  animate(Animate::Pool::disappear(retv));
 
   for(int i = index; i < (int)m_sprites.size()-1; i++) {
 //     double speed = (1.0 + 1.0 / (i - index + 1)) * 0.4;
@@ -204,14 +205,13 @@ void PiecePool::cancelDragging(bool fadeOff) {
   if(!m_dragged)
     return;
 
-  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
-  m_dragged.sprite()->putInCanvas(this);
-
   if (fadeOff) {
-    NamedSprite phantom = m_dragged.duplicate();
+    NamedSprite phantom = m_dragged.duplicate();    
     animate(Animate::Pool::disappear(phantom));
   }
 
+  m_dragged.sprite()->putInCanvas(this);
+  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
   insertSprite(m_dragged_index, m_dragged);
 
   m_dragged = NamedSprite();
