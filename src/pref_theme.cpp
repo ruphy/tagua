@@ -142,7 +142,7 @@ PrefTheme::PrefTheme(QWidget *parent)
   m_categories["controls"] = c;
   tabWidget->addTab(c, "&Controls");
 
-  MasterSettings s("tagua_config_cache.xml");
+  MasterSettings cached_theme_info("tagua_config_cache.xml");
   connect(comboVariant, SIGNAL(currentIndexChanged(int)), this, SLOT(variantChanged()));
 
   for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
@@ -155,8 +155,10 @@ PrefTheme::PrefTheme(QWidget *parent)
     c->m_opt_layout->setMargin(0);
 
     c->m_themes = to_theme_info_list(
-      KGlobal::dirs()->findAllResources("appdata", "themes/"+cit->first+"/*.desktop", KStandardDirs::Recursive),
-      s.group(cit->first)
+      KGlobal::dirs()->findAllResources("appdata",
+                                        "themes/"+cit->first+"/*.desktop",
+                                        KStandardDirs::Recursive),
+      cached_theme_info.group(cit->first)
     );
 
     //std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
@@ -293,12 +295,12 @@ ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
       return res;
   }
 
-  MasterSettings s("tagua_config_cache.xml");
+  MasterSettings cached_theme_info("tagua_config_cache.xml");
   KStandardDirs* std_dirs = KGlobal::dirs();
   ThemeInfoList themes = to_theme_info_list(std_dirs->findAllResources("appdata",
                                                                   "themes/" + category + "/*.desktop",
                                                                   KStandardDirs::Recursive ),
-                                            s.group(category));
+                                            cached_theme_info.group(category));
   //std::cout << "found " << themes.size() << " themes" << std::endl;
 
   int best = 0;
