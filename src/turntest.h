@@ -8,18 +8,13 @@
   (at your option) any later version.
 */
 
-#ifndef INTERACTIONTYPE_H
-#define INTERACTIONTYPE_H
+#ifndef TURNTEST_H
+#define TURNTEST_H
 
-
-/**
-  * @brief An enumerated type to specify the type of an interaction with a position
-  */
-enum InteractionType {
-  NoAction,
-  Moving,
-  Premoving
+class TurnTest {
+public:
+  virtual ~TurnTest() { }
+  virtual bool operator()(int turn) const = 0;
 };
 
-
-#endif //INTERACTIONTYPE_H
+#endif // TURNTEST_H

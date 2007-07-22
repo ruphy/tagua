@@ -19,14 +19,9 @@
 #include "tagua.h"
 #include "usermove.h"
 #include "agent.h"
+#include "turntest.h"
 
 class PGN;
-
-class TurnTest {
-public:
-  virtual ~TurnTest() { }
-  virtual bool operator()(int turn) const = 0;
-};
 
 class FreeTurnTest : public TurnTest {
 public:

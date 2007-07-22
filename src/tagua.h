@@ -56,6 +56,7 @@ class GraphicalAPI;
 #include "option.h"
 #include "decoratedmove.h"
 #include "interactiontype.h"
+#include "turntest.h"
 #include "fwd.h"
 
 
@@ -209,12 +210,12 @@ public:
   /**
     * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
     */
-  virtual InteractionType movable(const Point& p) const = 0;
+  virtual InteractionType movable(const TurnTest& test, const Point& p) const = 0;
 
   /**
     * \return 1 if this pool can be dropped, -1 if could be dropped in the future (premove), or else 0.
     */
-  virtual InteractionType droppable(int) const = 0;
+  virtual InteractionType droppable(const TurnTest& test, int) const = 0;
 
   /**
     * \return an id corresponding to the player

@@ -24,6 +24,7 @@
 #include "pathinfo.h"
 #include "option.h"
 #include "interactiontype.h"
+#include "turntest.h"
 #include "variants/xchess/generator.h"
 #include "variants/xchess/piecetype.h"
 
@@ -103,12 +104,16 @@ public:
   inline void removePiece(const Point& p) { set(p, 0); }
   inline void basicMovePiece(const M&);
 
-  inline InteractionType movable(const Point& p) const {
-    if(!valid(p) || !m_board[p])
+  inline InteractionType movable(const TurnTest& test, const Point& p) const {
+    if (!valid(p) || !m_board[p] || !test(m_turn))
       return NoAction;
+      
     return m_board[p].color() == m_turn ? Moving : Premoving;
   }
-  inline InteractionType droppable(int p) const {
+  inline InteractionType droppable(const TurnTest& test, int p) const {
+    if (!test(m_turn))
+      return NoAction;
+      
     Color c = static_cast<Color>(p);
     return c == m_turn ? Moving : Premoving;
   }

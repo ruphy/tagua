@@ -11,6 +11,9 @@
 #include <iostream>
 #include <QRegExp>
 #include <QStringList>
+
+#include <boost/xpressive/xpressive.hpp>
+
 #include "icsconnection.h"
 #include "poolinfo.h"
 #include "positioninfo.h"
@@ -22,6 +25,7 @@
 #include "variants/variants.h"
 
 using namespace boost;
+using namespace boost::xpressive;
 
 QRegExp ICSConnection::pressReturn("^Press return to enter the server as \"\\S+\":");
 
@@ -352,5 +356,19 @@ void ICSConnection::startup() {
   sendText("iset lock 1");
   sendText("set interface Tagua-0.9.9 (http://www.tagua-project.org)");
   sendText("set style 12");
+}
+
+static void test() {
+    std::string hello("hello world!");
+
+    sregex rex = sregex::compile("(\\w+) (\\w+)!");
+    smatch what;
+
+    if (regex_match(hello, what, rex))
+    {
+        std::cout << what[0] << '\n'; // whole match
+        std::cout << what[1] << '\n'; // first capture
+        std::cout << what[2] << '\n'; // second capture
+    }
 }
 

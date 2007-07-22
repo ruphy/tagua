@@ -312,12 +312,12 @@ public:
     return ReturnPool<Variant, Pool>::apply(m_pos, player);
   }
 
-  virtual InteractionType movable(const Point& p) const {
-    return m_pos.movable(p);
+  virtual InteractionType movable(const TurnTest& test, const Point& p) const {
+    return m_pos.movable(test, p);
   }
 
-  virtual InteractionType droppable(int p) const {
-    return m_pos.droppable(p);
+  virtual InteractionType droppable(const TurnTest& test, int p) const {
+    return m_pos.droppable(test, p);
   }
 
   virtual int turn() const {

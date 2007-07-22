@@ -15,6 +15,8 @@
 #include "moveserializer.impl.h"
 #include "xchess/dropanimator.impl.h"
 #include "crazyhouse_p.h"
+#include "interactiontype.h"
+#include "turntest.h"
 #include "tagua_wrapped.h"
 
 class ShogiPiece {
@@ -284,12 +286,14 @@ public:
   Piece::Color previousTurn() const { return Piece::oppositeColor(m_turn); }
   void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
 
-  InteractionType movable(const Point& p) const {
-    if(!valid(p) || !m_board[p])
+  InteractionType movable(const TurnTest& test, const Point& p) const {
+    if(!valid(p) || !m_board[p] || !test(m_turn))
       return NoAction;
     return m_board[p].color() == m_turn ? Moving : Premoving;
   }
-  InteractionType droppable(int p) const {
+  InteractionType droppable(const TurnTest& test, int p) const {
+    if (!test(m_turn))
+      return NoAction;
     ShogiPiece::Color c = static_cast<ShogiPiece::Color>(p);
     return c == m_turn ? Moving : Premoving;
   }

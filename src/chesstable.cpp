@@ -282,7 +282,6 @@ void ChessTable::flip(bool flipped) {
 }
 
 void ChessTable::changeClock(int color) {
-  std::cout << "change " << color << std::endl;
   if(m_clocks[0]->running() || m_clocks[1]->running())
   for(int i=0;i<2;i++) {
     if ( (i == color) != m_clocks[i]->running() )
@@ -316,13 +315,11 @@ void ChessTable::resetClock() {
 }
 
 void ChessTable::setPlayers(const Player& white, const Player& black) {
-  std::cout << "set players " << std::endl;
   m_clocks[0]->setPlayer(white);
   m_clocks[1]->setPlayer(black);
 }
 
 void ChessTable::run() {
-  std::cout << "run" << std::endl;
   for(int i=0;i<2;i++)
   if(m_clocks[i]->active() && !m_clocks[i]->running())
     m_clocks[i]->start();

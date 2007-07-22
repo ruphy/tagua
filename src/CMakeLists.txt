@@ -91,6 +91,10 @@ set(tagua_SRC
   namedsprite.cpp
 )
 
+# remove spurious xpressive warnings
+set_source_files_properties(icsconnection.cpp
+  PROPERTIES COMPILE_FLAGS -Wno-extra)
+
 kde4_add_ui_files(tagua_SRC
   ui/pref_highlight.ui
   ui/newgamedialog.ui
