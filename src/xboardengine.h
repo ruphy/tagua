@@ -63,9 +63,9 @@ protected:
     * Initialize the engine.
     */
   virtual void initializeEngine();
-protected slots:
+protected Q_SLOTS:
   /**
-    * Parse engine command line and emit the appropriate
+    * Parse engine command line and the appropriate
     * signals.
     */
   void processCommand(const QString& command);

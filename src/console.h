@@ -34,12 +34,12 @@ public:
   inline QLineEdit* commandLine() const { return edit; }
   void clear();
   void setNotifier(const boost::shared_ptr<TextNotifier>& notifier) { m_notifier = notifier; }
-public slots:
+public Q_SLOTS:
   void displayText(QString, int offset);
   void echo(const QString&);
-protected slots:
+protected Q_SLOTS:
   void input(const QString&);
-signals:
+Q_SIGNALS:
   void receivedInput(const QString&);
   void notify();
 };

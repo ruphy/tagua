@@ -106,7 +106,7 @@ private:
   virtual void mouseReleaseEvent ( QMouseEvent * event );
 
 
-private slots:
+private Q_SLOTS:
   void doLayout();
 
 public:

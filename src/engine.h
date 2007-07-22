@@ -93,10 +93,10 @@ public:
 
   void setNotifier(const boost::shared_ptr<EngineNotifier>& notifier);
   void setConsole(const boost::shared_ptr<Console>& console);
-private slots:
+private Q_SLOTS:
   void processInput();
 
-signals:
+Q_SIGNALS:
 
   /**
     * Emitted when the engine sends a command to the interface.

@@ -92,7 +92,7 @@ namespace MoveList {
     /** Enables/disables the redo action */
     void enableRedo(bool e);
 
-  private slots:
+  private Q_SLOTS:
     void onUndo();
     void onRedo();
   };

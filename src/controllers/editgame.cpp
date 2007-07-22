@@ -20,6 +20,7 @@
 #include "console.h"
 #include "icsconnection.h"
 #include "chesstable.h"
+#include "foreach.h"
 #include <iostream>
 
 using namespace boost;

@@ -34,7 +34,7 @@ private:
   boost::shared_ptr<CtrlAction> m_ctrl;
   boost::weak_ptr<UserEntity> m_listener_entity;
 
-private slots:
+private Q_SLOTS:
   void settingsChanged();
 
 public:

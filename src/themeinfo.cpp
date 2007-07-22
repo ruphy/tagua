@@ -10,12 +10,13 @@
 
 #include "themeinfo.h"
 
-#include "settings.h"
-
 #include <QHash>
 #include <QDir>
 #include <QFileInfo>
 #include <KDesktopFile>
+
+#include "foreach.h"
+#include "settings.h"
 
 ThemeInfo::operator bool() const {
   return !file_name.isEmpty();

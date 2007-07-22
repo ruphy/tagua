@@ -79,10 +79,10 @@ public:
   int height() { return m_height; }
   void settingsChanged();
 
-private slots:
+private Q_SLOTS:
   void tick();
 
-signals:
+Q_SIGNALS:
   void labelClicked(int);
 };
 
@@ -159,9 +159,9 @@ public:
 
   /** changed settings handler */
   virtual void settingsChanged();
-private slots:
+private Q_SLOTS:
   void tick();
-signals:
+Q_SIGNALS:
   void labelClicked(int);
 };
 

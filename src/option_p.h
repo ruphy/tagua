@@ -29,7 +29,7 @@ class OptCheckBox : public QCheckBox {
 public:
   OptCheckBox(BoolOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(bool);
 };
 
@@ -42,7 +42,7 @@ class OptRadioButton : public QRadioButton {
 public:
   OptRadioButton(SelectOptPtr opt, int i, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(bool);
 };
 
@@ -54,7 +54,7 @@ class OptSpinBox : public QSpinBox {
 public:
   OptSpinBox(IntOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(int);
 };
 
@@ -66,7 +66,7 @@ class OptSlider : public QSlider {
 public:
   OptSlider(IntOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(int);
 };
 
@@ -78,7 +78,7 @@ class OptLineEdit : public QLineEdit {
 public:
   OptLineEdit(StringOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(const QString&);
 };
 
@@ -90,7 +90,7 @@ class OptUrlRequester : public KUrlRequester {
 public:
   OptUrlRequester(UrlOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(const QString&);
 };
 
@@ -102,7 +102,7 @@ class OptComboBox : public QComboBox {
 public:
   OptComboBox(ComboOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(int);
 };
 
@@ -114,7 +114,7 @@ class OptColorButton : public KColorButton {
 public:
   OptColorButton(ColorOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(const QColor&);
 };
 
@@ -126,7 +126,7 @@ class OptFontRequester : public KFontRequester {
 public:
   OptFontRequester(FontOptPtr opt, OptionWidget *owner, QWidget *parent = NULL);
 
-private slots:
+private Q_SLOTS:
   void setOpt(const QFont&);
 };
 

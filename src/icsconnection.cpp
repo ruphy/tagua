@@ -91,19 +91,19 @@ void ICSConnection::processPartialLine(QString str) {
 //  std::cout << "processing (partial) " << str << std::endl;
   if (test(fics, str)) {
 //    std::cout << "matched prompt" << std::endl;
-    emit prompt();
+    prompt();
   }
   else if (test(beep, str)) {
-    emit notification();
+    notification();
   }
   else if (test(pressReturn, str)) {
-    emit registeredNickname();
+    registeredNickname();
   }
   else if (test(login, str)) {
-    emit loginPrompt();
+    loginPrompt();
   }
   else if (test(password, str)) {
-    emit passwordPrompt();
+    passwordPrompt();
   }
   else {
     // no match, but it could be a partial command
@@ -154,7 +154,7 @@ void ICSConnection::process(QString str) {
           m_games.erase(number);
           QString what = game.cap(4);
           QString result = game.cap(5);
-          emit endingGame(what, result);
+          endingGame(what, result);
         }
       }
     }
@@ -162,12 +162,12 @@ void ICSConnection::process(QString str) {
       //std::cout << "matching examined game end" << std::endl;
       int gameNumber = unexamine.cap(1).toInt();
       m_games.erase(gameNumber);
-      emit endingExaminedGame(gameNumber);
+      endingExaminedGame(gameNumber);
     }
     else if (test(unobserve, str)) {
       int gameNumber = unobserve.cap(1).toInt();
       m_games.erase(gameNumber);
-      emit endingObservedGame(gameNumber);
+      endingObservedGame(gameNumber);
     }
     else if (test(move_list_start, str)) {
       //std::cout << "entering move list state" << std::endl;
@@ -209,16 +209,16 @@ void ICSConnection::process(QString str) {
             case PositionInfo::NotMyMove:
             case PositionInfo::MyMove:
               //std::cout << "creating game" << std::endl;
-              emit creatingGame(incomingGameInfo, positionInfo);
+              creatingGame(incomingGameInfo, positionInfo);
               break;
             case PositionInfo::Examining:
               //std::cout << "creating examination" << std::endl;
-              emit creatingExaminedGame(incomingGameInfo, positionInfo);
+              creatingExaminedGame(incomingGameInfo, positionInfo);
               break;
             case PositionInfo::ObservingPlayed:
             case PositionInfo::ObservingExamined:
               //std::cout << "creating obs " << gameNumber << " " << incomingGameInfo->type() << std::endl;
-              emit creatingObservedGame(incomingGameInfo, positionInfo);
+              creatingObservedGame(incomingGameInfo, positionInfo);
               break;
             default:
               // unknown relation: ignoring
@@ -228,13 +228,13 @@ void ICSConnection::process(QString str) {
           incomingGameInfo = NULL;
         }
 
-        //std::cout << "known game. emitting style12 signal" << std::endl;
+        //std::cout << "known game. Q_EMITting style12 signal" << std::endl;
         m_games[positionInfo.gameNumber].index = positionInfo.index();
         if (shared_ptr<ICSListener> listener = m_games[positionInfo.gameNumber].listener.lock())
           listener->notifyStyle12(positionInfo, game_start);
-//        emit time(positionInfo.whiteTime, positionInfo.blackTime);
+//        time(positionInfo.whiteTime, positionInfo.blackTime);
         if(positionInfo.relation == PositionInfo::MyMove) {
-          emit notification();
+          notification();
         }
       }
       else {

@@ -496,9 +496,9 @@ void Clock::setPlayers(const Player& white, const Player& black) {
 void Clock::onMousePress(const QPoint& pos, int button) {
   if (button == Qt::LeftButton) {
     if (m_info[0].eventRect().contains(pos))
-      emit labelClicked(0);
+      labelClicked(0);
     else if (m_info[1].eventRect().contains(pos))
-      emit labelClicked(1);
+      labelClicked(1);
   }
 }
 

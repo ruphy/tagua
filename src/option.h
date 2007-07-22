@@ -342,7 +342,7 @@ public:
   OptionWidget(const OptList& options, QWidget* parent = NULL);
   void setValues(OptList& newopts);
 
-signals:
+Q_SIGNALS:
   void changed(const OptList& options);
 };
 

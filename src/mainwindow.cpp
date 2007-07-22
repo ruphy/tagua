@@ -43,6 +43,7 @@
 #include "qconnect.h"
 #include "mastersettings.h"
 #include "flash.h"
+#include "foreach.h"
 #include "pgnparser.h"
 #include "pref_highlight.h"
 #include "pref_preferences.h"

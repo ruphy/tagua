@@ -25,9 +25,9 @@ public:
   HistLineEdit(QWidget* parent);
 protected:
   void keyPressEvent(QKeyEvent*);
-public slots:
+public Q_SLOTS:
   void updateHistory();
-signals:
+Q_SIGNALS:
   void pageUp();
   void pageDown();
   void receivedInput(const QString&);

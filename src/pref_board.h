@@ -21,7 +21,7 @@ public:
   PrefBoard(QWidget *parent = 0);
   ~PrefBoard();
 
-public slots:
+public Q_SLOTS:
   void apply();
 };
 

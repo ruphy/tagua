@@ -57,7 +57,7 @@ void Engine::processInput() {
 #endif
     if (m_console)
       m_console->displayText(line + "\n", 0);
-    emit receivedCommand(line);
+    receivedCommand(line);
   }
 }
 

@@ -50,7 +50,7 @@ public:
 //                                       Point p3 = Point::invalid(), Point p4 = Point::invalid(),
 //                                       Point p5 = Point::invalid(), Point p6 = Point::invalid() );
 
-private slots:
+private Q_SLOTS:
   /** internal function to listen at setting changes */
   void settingsChanged();
 

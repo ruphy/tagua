@@ -29,7 +29,7 @@ public:
   
   void showTabBar();
   void hideTabBar();
-signals:
+Q_SIGNALS:
   void closeTab();
 };
 

@@ -75,14 +75,14 @@ public:
 
   void settingsChanged(); //called by GraphicalInfo, for better theme change
 
-public slots:
+public Q_SLOTS:
   void updateTurn(int color);
   void changeClock(int color);
   void updateTime(int white, int black);
   void setPlayers(const Player&, const Player&);
   void resetClock();
 
-signals:
+Q_SIGNALS:
   void message(const QString&);
   void error(ErrorCode);
 };

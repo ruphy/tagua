@@ -44,7 +44,7 @@ public:
   void apply();
   Highlighter::Pattern& currentPattern();
   void updateHighlighting();
-public slots:
+public Q_SLOTS:
   void updateRegExp();
   void updateBold();
   void updateItalic();

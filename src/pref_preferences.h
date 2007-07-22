@@ -21,7 +21,7 @@ Q_OBJECT
 public:
   PrefBase(QWidget *parent = 0) : QWidget(parent) {}
 
-public slots:
+public Q_SLOTS:
   virtual void apply() = 0;
 };
 
@@ -36,10 +36,10 @@ public:
   Preferences(QWidget *parent = 0);
   ~Preferences();
 
-signals:
+Q_SIGNALS:
   void applied();
 
-public slots:
+public Q_SLOTS:
   void apply();
 };
 

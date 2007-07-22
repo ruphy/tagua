@@ -34,9 +34,9 @@ void HistLineEdit::keyPressEvent(QKeyEvent* e) {
       setHistoryText(current+1);
   }
   else if (e->key() == Qt::Key_PageUp)
-    emit pageUp();
+    pageUp();
   else if (e->key() == Qt::Key_PageDown)
-    emit pageDown();
+    pageDown();
   else e->ignore();
 
   QLineEdit::keyPressEvent(e);
@@ -62,6 +62,6 @@ void HistLineEdit::updateHistory() {
     current = history.size();
   }
 
-  emit receivedInput(text());
+  receivedInput(text());
   setText("");
 }

@@ -9,11 +9,13 @@
 */
 
 #include "xboardengine.h"
-#include "enginenotifier.h"
 
 #include <QFileInfo>
 #include <QRegExp>
 #include <iostream>
+
+#include "enginenotifier.h"
+#include "foreach.h"
 
 using namespace boost;
 

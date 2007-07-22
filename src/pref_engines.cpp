@@ -9,8 +9,12 @@
 */
 
 #include "pref_engines.h"
+
+#include <KIcon>
+
+#include "foreach.h"
 #include "mastersettings.h"
-#include <kicon.h>
+
 
 class no_engine { };
 

@@ -295,7 +295,7 @@ public:
   /** resets all tags and stops all animations */
   void reset();
 
-signals:
+Q_SIGNALS:
   void error(ErrorCode code);
 };
 

@@ -28,7 +28,7 @@ public:
   bool playFromCurrent() const;
   bool isCustom() const;
   OptList customOptions() { return m_custom_options; }
-private slots:
+private Q_SLOTS:
   void variantChanged(const QString&);
 };
 

@@ -32,7 +32,7 @@ void OptionWidget::notifyChange() {
     m_changed = true;
   else {
     dump_options_list(m_options);
-    emit changed(m_options);
+    changed(m_options);
   }
 }
 

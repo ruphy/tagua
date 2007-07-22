@@ -15,10 +15,8 @@
 #include <iostream>
 #include <list>
 #include <QDir>
+
 #include "settings.h"
-#include "foreach.hpp"
-#undef foreach
-#define foreach BOOST_FOREACH
 
 class MasterSettings : public QObject
                      , public Settings {
@@ -40,7 +38,7 @@ Q_OBJECT
   mutable QDomDocument m_doc;
   
   void setupObserver(Observer&);
-private slots:
+private Q_SLOTS:
   void objectDestroyed(QObject* o);
 
 protected:

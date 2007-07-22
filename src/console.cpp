@@ -24,11 +24,12 @@
 #include <boost/scoped_ptr.hpp>
 #include <kstandarddirs.h>
 #include <kglobal.h>
-#include "common.h"
-#include "mastersettings.h"
 
+#include "common.h"
+#include "foreach.h"
 #include "histlineedit.h"
 #include "highlighter.h"
+#include "mastersettings.h"
 
 
 class BackInserterPatternIteratorAdaptor : public PatternListAdaptorOutputIterator {
@@ -253,7 +254,7 @@ void Console::input(const QString& text) {
 
   if (m_notifier)
     m_notifier->textNotify(text);
-  emit receivedInput(text);
+  receivedInput(text);
 }
 
 void Console::displayText(QString text, int offset) {

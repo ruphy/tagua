@@ -52,7 +52,7 @@ public:
     */
   void setDelay(int delay);
 
-protected slots:
+protected Q_SLOTS:
   void tick();
 };
 

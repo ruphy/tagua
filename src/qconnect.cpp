@@ -76,7 +76,7 @@ void QConnect::accept() {
     s_timeseal["command"] = editTimesealCmd->text();
   }
 
-  emit acceptConnection(editUsername->text(),
+  acceptConnection(editUsername->text(),
                         editPassword->text(),
                         editHost->text(),
                         spinPort->value(),

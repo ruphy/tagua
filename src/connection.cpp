@@ -71,7 +71,7 @@ void Connection::establish(const char* host, quint16 port,
     connect(s, SIGNAL(hostFound()), this, SIGNAL(hostFound()));
     connect(s, SIGNAL(connected()), this, SIGNAL(established()));
 
-    emit hostLookup();
+    hostLookup();
     s->connectToHost(m_host, m_port);
 
     m_device = s;
@@ -126,7 +126,7 @@ void Connection::processLine() {
   while (m_device->canReadLine()) {
     QString line = m_device->readLine();
     line = buffer + line.replace("\r", "");
-    emit receivedLine(line, buffer.length());
+    receivedLine(line, buffer.length());
     if (logStream)
       (*logStream) << "< " << line << "\n";
     buffer = "";
@@ -141,7 +141,7 @@ void Connection::processLine() {
     buffer += QString(data).replace("\r", "");
     delete[] data;
 
-    emit receivedText(buffer, offset);
+    receivedText(buffer, offset);
   }
 }
 

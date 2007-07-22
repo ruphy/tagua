@@ -64,10 +64,10 @@ public:
 
   void setListener(int gameNumber, const boost::weak_ptr<ICSListener>& listener);
   void startup();
-public slots:
+public Q_SLOTS:
   void process(QString str);
   void processPartialLine(QString str);
-signals:
+Q_SIGNALS:
   void notification();
   void moves(const PGN&);
   void time(int, int);

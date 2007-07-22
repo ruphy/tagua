@@ -14,6 +14,7 @@
 #include <QListWidgetItem>
 #include <KStandardDirs>
 
+#include "foreach.h"
 #include "mastersettings.h"
 #include "luaapi/loader.h"
 #include "variants/variants.h"

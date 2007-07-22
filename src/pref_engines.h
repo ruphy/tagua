@@ -28,7 +28,7 @@ public:
   ~PrefEngines();
   
   QListWidgetItem* addEngine(const EngineDetails& details);
-public slots:
+public Q_SLOTS:
   void apply();
   void setName(QListWidgetItem*);
   void add();

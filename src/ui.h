@@ -33,7 +33,7 @@ public:
   void addController(QWidget* w, const boost::shared_ptr<Controller>&);
   void setController(const boost::shared_ptr<Controller>&);
   void removeController(QWidget* w);
-public slots:
+public Q_SLOTS:
   void setCurrentTab(QWidget* w);
 
   bool undo();

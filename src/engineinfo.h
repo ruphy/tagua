@@ -75,7 +75,7 @@ protected:
 public:
   EngineInfo(const EngineDetails& details, UI& ui);
   void setWorkPath(const QString& wp) { m_details.workPath = wp; }
-public slots:
+public Q_SLOTS:
   void playAsWhite();
   void playAsBlack();
   void analyze();

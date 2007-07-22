@@ -70,7 +70,7 @@ public:
   /** Sets the currently selected index */
   void select(const Index& index);
 
-private slots:
+private Q_SLOTS:
   void onURL(const KUrl &url);
 };
 

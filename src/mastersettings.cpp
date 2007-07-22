@@ -9,9 +9,14 @@
 */
 
 #include "mastersettings.h"
-#include "common.h"
+
 #include <QTextStream>
+
 #include <KStandardDirs>
+
+#include "common.h"
+#include "foreach.h"
+
 
 QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {

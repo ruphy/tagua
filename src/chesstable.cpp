@@ -330,7 +330,7 @@ void ChessTable::run() {
 
 void ChessTable::displayMessage(const QString& msg) {
   std::cout << msg << std::endl;
-  emit message(msg);
+  message(msg);
 }
 
 

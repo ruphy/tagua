@@ -42,7 +42,7 @@ Q_OBJECT
   static int           theme_ok_for_variant(const ThemeInfo&, const QString&);
   static void          update_list_view(QListWidget* list, const ThemeInfoList& themes,
                                     QString variant, QString settings);
-private slots:
+private Q_SLOTS:
   void variantChanged();
 
 public:
@@ -73,7 +73,7 @@ public:
 
   PrefThemeCategory(QWidget* parent, PrefTheme* owner);
 
-public slots:
+public Q_SLOTS:
   void reset();
   void themeChanged();
   void themeChecked(bool ck);

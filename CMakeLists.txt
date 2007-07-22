@@ -34,7 +34,7 @@ find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
 set(CMAKE_CXX_FLAGS_DEBUGFULL "${CMAKE_C_FLAGS_DEBUGFULL} -DTAGUA_DEBUG")
-add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+add_definitions(-DQT_NO_KEYWORDS ${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 add_subdirectory(src)
 add_subdirectory(data)

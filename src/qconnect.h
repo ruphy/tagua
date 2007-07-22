@@ -18,11 +18,11 @@ Q_OBJECT
 public:
   QConnect(QWidget *parent = 0, const char *name = 0);
 
-public slots:
+public Q_SLOTS:
   virtual void accept();
   void setTimesealPath();
 
-signals:
+Q_SIGNALS:
   void acceptConnection(const QString&, const QString&,
                         const QString&, quint16,
                         const QString&, const QString&);

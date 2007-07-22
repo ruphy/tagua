@@ -22,7 +22,7 @@ class QHostInfo;
   * @brief Manage a connection with a remote server.
   *
   * This class can be used to manage a connection with a chess server. Once connected,
-  * it emits the signal @ref receivedLine whenever a new whole line is received.
+  * it Q_EMITs the signal @ref receivedLine whenever a new whole line is received.
   * Partial lines are kept in an internal buffer.
   * The Connection class supports the use of a helper such as timeseal.
   */
@@ -76,20 +76,20 @@ public:
     */
   inline void setInitialized() { m_initialized = true; }
 
-public slots:
+public Q_SLOTS:
   /**
     * Send some text to the server using the connection. A newline will be sent afterwards.
     */
   void sendText(const QString&);
   void lookedUp(const QHostInfo &host);
 
-protected slots:
+protected Q_SLOTS:
   /**
-    * Read data from the socket and emit appropriate signals.
+    * Read data from the socket and appropriate signals.
     */
   void processLine();
 
-signals:
+Q_SIGNALS:
   void hostLookup();
   void hostFound();
   void established();

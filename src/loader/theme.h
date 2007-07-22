@@ -57,7 +57,7 @@ private:
 
   static PixmapOrMap to_pixmap_map(const ::LuaApi::ImageOrMap& m);
 
-private slots:
+private Q_SLOTS:
   void onSettingsChanged();
 
 public:

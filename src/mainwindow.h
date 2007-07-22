@@ -92,10 +92,10 @@ public:
    void closeEvent(QCloseEvent*);
    void keyPressEvent(QKeyEvent*);
    void keyReleaseEvent(QKeyEvent*);
-private slots:
+private Q_SLOTS:
   void changeTab(int);
   void closeTab();
-public slots:
+public Q_SLOTS:
   void createConnection(const QString&, const QString&, const QString&,
                                 quint16, const QString&, const QString&);
   void destroyConnection();

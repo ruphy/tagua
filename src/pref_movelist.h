@@ -25,7 +25,7 @@ public:
   PrefMoveList(QWidget *parent = 0);
   ~PrefMoveList();
 
-public slots:
+public Q_SLOTS:
   void apply();
 };
 
