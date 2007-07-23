@@ -5,9 +5,13 @@
 #include "pointconverter.h"
 #include "indexconverter.h"
 #include "graphicalapi.h"
+#include "mastersettings.h"
 
 namespace Common {
-  AnimationPtr appear(const NamedSprite& sprite, Animate::AnimationType type) {
+  AnimationPtr appear(const AnimationSettings& s, const NamedSprite& sprite, Animate::AnimationType type) {
+    if (!s.fading)
+      type = Animate::Instant;
+      
     switch (type) {
     case Animate::Normal:
       return AnimationPtr(new FadeAnimation(sprite.sprite(), 0, 255));
@@ -17,7 +21,10 @@ namespace Common {
     }
   }
   
-  AnimationPtr disappear(const NamedSprite& sprite, Animate::AnimationType type) {
+  AnimationPtr disappear(const AnimationSettings& s, const NamedSprite& sprite, Animate::AnimationType type) {
+    if (!s.fading)
+      type = Animate::Instant;
+      
     switch (type) {
     case Animate::Normal:
       return AnimationPtr(new FadeAnimation(sprite.sprite(), 255, 0));
@@ -27,6 +34,24 @@ namespace Common {
     }
   }
 };
+
+AnimationSettings::AnimationSettings() {
+  reload();
+}
+
+void AnimationSettings::reload() {
+  Settings s = settings().group("animations");
+  
+  enabled = s.flag("enabled", true);
+  maxSequence = 
+      s.group("sequence").flag("enabled", true) 
+    ? s.group("sequence")["max"].value<int>()
+    : 0;
+  movement = s["movement"].flag("enabled", true);
+  explode = s["explode"].flag("enabled", true);
+  fading = s["fading"].flag("enabled", true);
+  transform = s["transform"].flag("enabled", true);
+}
 
 AnimationFactory::AnimationFactory(GraphicalAPI* api)
 : m_api(api) {
@@ -62,18 +87,25 @@ namespace Animate {
   , m_to(to)
   , m_type(type) { }
   
-  AnimationPtr move::run(const PointConverter* converter, AnimationType type) const {
+  AnimationPtr move::run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const {
+    int mov_type = m_type;
+    if (!s.movement)
+      type = Instant;
+    else if (!s.transform) {
+      mov_type &= ~Rotating;
+    }
+      
     switch (type) {
     case Normal: {
       MovementAnimation* mov;
       QPoint destination = converter->toReal(m_to);
       Point origin = converter->toLogical(m_sprite.sprite()->pos() + 
         Point(converter->squareSize(), converter->squareSize()) / 2);
-      if ((m_type & LShaped) && origin != m_to) {
-        mov = new KnightMovementAnimation(m_sprite.sprite(), destination, m_type & Rotating);
+      if ((mov_type & LShaped) && origin != m_to) {
+        mov = new KnightMovementAnimation(m_sprite.sprite(), destination, mov_type & Rotating);
       }
       else {
-        mov = new MovementAnimation(m_sprite.sprite(), destination, m_type & Rotating);
+        mov = new MovementAnimation(m_sprite.sprite(), destination, mov_type & Rotating);
       }
       return AnimationPtr(mov);
     }
@@ -86,21 +118,25 @@ namespace Animate {
   appear::appear(const NamedSprite& sprite)
   : m_sprite(sprite) { }
   
-  AnimationPtr appear::run(const PointConverter*, AnimationType type) const {
-    return Common::appear(m_sprite, type);
+  AnimationPtr appear::run(const AnimationSettings& s, const PointConverter*, AnimationType type) const {
+    return Common::appear(s, m_sprite, type);
   }
   
   disappear::disappear(const NamedSprite& sprite)
   : m_sprite(sprite) { }
   
-  AnimationPtr disappear::run(const PointConverter*, AnimationType type) const {
-    return Common::disappear(m_sprite, type);
+  AnimationPtr disappear::run(const AnimationSettings& s, const PointConverter*, AnimationType type) const {
+    return Common::disappear(s, m_sprite, type);
   }
   
   destroy::destroy(const NamedSprite& sprite)
   : m_sprite(sprite) { }
   
-  AnimationPtr destroy::run(const PointConverter*, AnimationType type) const {
+  AnimationPtr destroy::run(const AnimationSettings& s, const PointConverter*, AnimationType type) const {
+    if (!s.explode) {
+      return Common::disappear(s, m_sprite, type);
+    }
+    
     switch (type) {
     case Normal:
       return AnimationPtr(new ExplodeAnimation(m_sprite.sprite(), Random::instance()));
@@ -114,7 +150,10 @@ namespace Animate {
   : m_sprite(sprite)
   , m_new_sprite(new_sprite) { }
   
-  AnimationPtr morph::run(const PointConverter*, AnimationType type) const {
+  AnimationPtr morph::run(const AnimationSettings& s, const PointConverter*, AnimationType type) const {
+    if (!s.fading)
+      type = Instant;
+      
     switch (type) {
     case Normal:
       return AnimationPtr(new CrossFadingAnimation(m_sprite.sprite(), m_new_sprite.sprite()));
@@ -130,7 +169,10 @@ namespace Animate {
     : m_sprite(sprite)
     , m_to(to) { }
     
-    AnimationPtr move::run(const IndexConverter* converter, AnimationType type) const {
+    AnimationPtr move::run(const AnimationSettings& s, const IndexConverter* converter, AnimationType type) const {
+      if (!s.movement)
+        type = Instant;
+        
       switch (type) {
       case Normal:
         return AnimationPtr(new MovementAnimation(m_sprite.sprite(), converter->toReal(m_to)));
@@ -143,15 +185,15 @@ namespace Animate {
     appear::appear(const NamedSprite& sprite)
     : m_sprite(sprite) { }
     
-    AnimationPtr appear::run(const IndexConverter*, AnimationType type) const {
-      return Common::appear(m_sprite, type);
+    AnimationPtr appear::run(const AnimationSettings& s, const IndexConverter*, AnimationType type) const {
+      return Common::appear(s, m_sprite, type);
     }
     
     disappear::disappear(const NamedSprite& sprite)
     : m_sprite(sprite) { }
     
-    AnimationPtr disappear::run(const IndexConverter*, AnimationType type) const {
-      return Common::disappear(m_sprite, type);
+    AnimationPtr disappear::run(const AnimationSettings& s, const IndexConverter*, AnimationType type) const {
+      return Common::disappear(s, m_sprite, type);
     }
     
   }

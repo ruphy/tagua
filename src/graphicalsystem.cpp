@@ -163,7 +163,7 @@ std::pair<int, int> GraphicalSystem::droppedPoolPiece() {
 }
 
 AnimationPtr GraphicalSystem::animate(const Animate::Scheme& scheme, Animate::AnimationType type) {
-  return scheme.run(converter(), type);
+  return scheme.run(m_view->animationSettings(), converter(), type);
 }
 
 

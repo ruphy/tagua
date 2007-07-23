@@ -13,14 +13,15 @@
 #include "piecepool.h"
 
 
-PiecePool::PiecePool(int num, Board* b, KGameCanvasAbstract* parent)
+PiecePool::PiecePool(int num, Board* b, const AnimationSettings& animSettings, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_pool_num(num)
 , m_board(b)
 , m_flipped(false)
 , m_square_size(0)
 , m_width(1)
-, m_dragged_index(-1) {
+, m_dragged_index(-1)
+, m_anim_settings(animSettings) {
   m_main_animation = new MainAnimation( 1.0 );
   setGridWidth(1);
 }
@@ -93,7 +94,7 @@ void PiecePool::clear() {
 }
 
 void PiecePool::animate(const Animate::Pool::Scheme& scheme, Animate::AnimationType type) {
-  m_main_animation->addAnimation(scheme.run(this, type));
+  m_main_animation->addAnimation(scheme.run(m_anim_settings, this, type));
 }
 
 void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {

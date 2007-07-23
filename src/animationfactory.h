@@ -19,6 +19,7 @@ class NamedSprite;
 class PointConverter;
 class IndexConverter;
 class GraphicalAPI;
+class AnimationSettings;
 
 namespace Animate {
   
@@ -47,10 +48,23 @@ namespace Animate {
       * Convert the scheme into an actual animation which can be enqueued in the
       * animation system, or grouped into an AnimationGroup.
       */
-    virtual AnimationPtr run(const PointConverter*, AnimationType) const = 0;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter*, AnimationType) const = 0;
   };
 
 }
+
+struct AnimationSettings {
+  bool enabled;
+  
+  int maxSequence;
+  bool movement;
+  bool explode;
+  bool fading;
+  bool transform;
+  
+  AnimationSettings();
+  void reload();
+};
 
 /**
   * @brief A convenience wrapper around an AnimationGroup, useful for Animators.
@@ -112,7 +126,7 @@ namespace Animate {
     int m_type;
   public:
     move(const NamedSprite& sprite, const Point& to, int type = Straight);
-    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const;
   };
   
   /**
@@ -126,7 +140,7 @@ namespace Animate {
     const NamedSprite& m_sprite;
   public:
     appear(const NamedSprite& sprite);
-    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const;
   };
   
   /**
@@ -138,7 +152,7 @@ namespace Animate {
     const NamedSprite& m_sprite;
   public:
     disappear(const NamedSprite& sprite);
-    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const;
   };
   
   /**
@@ -152,7 +166,7 @@ namespace Animate {
     const NamedSprite& m_sprite;
   public:
     destroy(const NamedSprite& sprite);
-    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const;
   };
   
   /**
@@ -165,7 +179,7 @@ namespace Animate {
     const NamedSprite& m_new_sprite;
   public:
     morph(const NamedSprite& sprite, const NamedSprite& new_sprite);
-    virtual AnimationPtr run(const PointConverter* converter, AnimationType type) const;
+    virtual AnimationPtr run(const AnimationSettings& s, const PointConverter* converter, AnimationType type) const;
   };
   
   /**
@@ -176,7 +190,7 @@ namespace Animate {
     class Scheme {
     public:
       virtual ~Scheme() { }
-      virtual AnimationPtr run(const IndexConverter* converter, AnimationType) const = 0;
+      virtual AnimationPtr run(const AnimationSettings& s, const IndexConverter* converter, AnimationType) const = 0;
     };
     
     class move : public Scheme {
@@ -184,21 +198,21 @@ namespace Animate {
       int m_to;
     public:
       move(const NamedSprite& sprite, int to);
-      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+      virtual AnimationPtr run(const AnimationSettings& s, const IndexConverter*, AnimationType type) const;
     };
     
     class appear : public Scheme {
       const NamedSprite& m_sprite;
     public:
       appear(const NamedSprite& sprite);
-      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+      virtual AnimationPtr run(const AnimationSettings& s, const IndexConverter*, AnimationType type) const;
     };
     
     class disappear : public Scheme {
       const NamedSprite& m_sprite;
     public:
       disappear(const NamedSprite& sprite);
-      virtual AnimationPtr run(const IndexConverter*, AnimationType type) const;
+      virtual AnimationPtr run(const AnimationSettings& s, const IndexConverter*, AnimationType type) const;
     };
   }
 

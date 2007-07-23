@@ -12,12 +12,12 @@
 #define PIECEPOOL_H
 
 #include <boost/shared_ptr.hpp>
+#include "animationfactory.h"
 #include "clickablecanvas.h"
 #include "indexconverter.h"
 #include "mainanimation.h"
 #include "namedsprite.h"
 #include "pixmaploader.h"
-#include "animationfactory.h"
 
 /**
   * @class PiecePool <piecepool.h>
@@ -60,6 +60,7 @@ private:
   /** main animation structure */
   MainAnimation* m_main_animation;
 
+  const AnimationSettings& m_anim_settings;
 
   /** internal function, resizes the grid vector to hold x pieces */
   void setFill(int x);
@@ -86,7 +87,7 @@ public:
   friend class ChessTable;
 
   /** Constructor, requires the board the pool will be attached to */
-  PiecePool(int num, Board* b, KGameCanvasAbstract* parent);
+  PiecePool(int num, Board* b, const AnimationSettings&, KGameCanvasAbstract* parent);
   ~PiecePool();
 
   /** returns the sprite loader */

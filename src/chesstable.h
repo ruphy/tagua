@@ -17,6 +17,7 @@
 #include "positioninfo.h"
 #include "board.h"
 #include "common.h"
+#include "animationfactory.h"
 
 class PiecePool;
 class Player;
@@ -47,6 +48,7 @@ class ChessTable : public KGameCanvasWidget {
 
   void layout(bool force_reload = false);
 
+  AnimationSettings m_anim_settings;
 public:
   ChessTable(QWidget* parent = 0);
   ~ChessTable();
@@ -74,7 +76,7 @@ public:
   virtual void leaveEvent (QEvent * event);
 
   void settingsChanged(); //called by GraphicalInfo, for better theme change
-
+  const AnimationSettings& animationSettings() const;
 public Q_SLOTS:
   void updateTurn(int color);
   void changeClock(int color);

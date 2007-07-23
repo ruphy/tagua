@@ -30,7 +30,7 @@ using namespace boost;
 class BoardTags : public std::map<QString, std::map<Point, boost::shared_ptr<KGameCanvasPixmap> > > {
 };
 
-Board::Board(KGameCanvasAbstract* parent)
+Board::Board(const AnimationSettings& animSettings, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
 , m_flipped(false)
 , m_square_size(0)
@@ -40,7 +40,8 @@ Board::Board(KGameCanvasAbstract* parent)
 , selection(Point::invalid())
 , lastSelection(Point::invalid())
 , m_dropped_pool(-1)
-, m_dropped_index(-1) {
+, m_dropped_index(-1)
+, m_anim_settings(animSettings) {
 
   m_main_animation = new MainAnimation( 1.0 );
 

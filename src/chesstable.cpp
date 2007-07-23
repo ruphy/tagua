@@ -34,7 +34,7 @@ ChessTable::ChessTable(QWidget* parent)
   setMouseTracking(true);
 
   // create m_board
-  m_board = new Board(this);
+  m_board = new Board(m_anim_settings, this);
   m_board->show();
 
   // create move list
@@ -53,7 +53,7 @@ ChessTable::ChessTable(QWidget* parent)
 
   // create pools
   for(int i=0;i<2;i++) {
-    m_pools[i] = new PiecePool(i, m_board, this);
+    m_pools[i] = new PiecePool(i, m_board, m_anim_settings, this);
     m_pools[i]->show();
   }
 
@@ -72,6 +72,8 @@ ChessTable::~ChessTable() {
 }
 
 void ChessTable::settingsChanged() {
+  m_anim_settings.reload();
+
   m_board->settingsChanged();
   for(int i=0;i<2;i++)
     m_clocks[i]->settingsChanged();
@@ -330,4 +332,7 @@ void ChessTable::displayMessage(const QString& msg) {
   message(msg);
 }
 
+const AnimationSettings& ChessTable::animationSettings() const {
+  return m_anim_settings;
+}
 

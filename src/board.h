@@ -32,6 +32,7 @@ class DragInfo;
 class Animation;
 class UserEntity;
 class ConstrainedText;
+class AnimationSettings;
 
 class BoardTags;
 typedef boost::shared_ptr<BoardTags> BoardTagsPtr;
@@ -151,6 +152,8 @@ private:
 
   int m_dropped_pool;
   int m_dropped_index;
+  
+  const AnimationSettings& m_anim_settings;
 
   /** the text items for the border */
   std::vector<ConstrainedText*> m_border_text;
@@ -187,7 +190,7 @@ private:
 
 public:
   /** constructor, requires the canvas parent */
-  Board(KGameCanvasAbstract* parent);
+  Board(const AnimationSettings& animSettings, KGameCanvasAbstract* parent);
   ~Board();
 
   /** set the board flipping */
