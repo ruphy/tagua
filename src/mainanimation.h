@@ -27,7 +27,7 @@ Q_OBJECT
   QTimer m_timer;
   int    m_translate;
   double m_speed;
-
+  int m_delay;
 public:
   MainAnimation(double speed = 1.0);
 
@@ -52,6 +52,10 @@ public:
     */
   void setDelay(int delay);
 
+  /**
+    * Return a global MasterAnimation, i.e. not tied to a particular board.
+    */
+  static MainAnimation& global();
 protected Q_SLOTS:
   void tick();
 };

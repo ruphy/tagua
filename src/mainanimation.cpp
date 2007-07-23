@@ -15,15 +15,18 @@ using namespace boost;
 MainAnimation::MainAnimation(double speed)
 : AnimationGroup(true)
 , m_translate(0)
-, m_speed(speed) {
+, m_speed(speed)
+, m_delay(20) {
   m_active = true;
-  m_time.start();
-  m_timer.start(20);
-
   connect(&m_timer, SIGNAL(timeout()), this, SLOT(tick()));
 }
 
 void MainAnimation::addAnimation(const shared_ptr<Animation>& a) {
+  if (!m_timer.isActive()) {
+    m_timer.start(m_delay);
+    m_time.restart();
+  }
+  
   AnimationGroup::addPostAnimation(a);
   tick();
 }
@@ -33,7 +36,11 @@ void MainAnimation::stop() {
 }
 
 void MainAnimation::tick() {
-  animationAdvance( int(m_time.elapsed()*m_speed) + m_translate);
+  animationAdvance(static_cast<int>(m_time.elapsed() * m_speed) + m_translate);
+  if (empty()) {
+    // no more animations, stop the clock!
+    m_timer.stop();
+  }
 }
 
 void MainAnimation::setSpeed(double speed) {
@@ -43,6 +50,11 @@ void MainAnimation::setSpeed(double speed) {
 }
 
 void MainAnimation::setDelay(int delay) {
-  m_timer.setInterval(delay);
+  m_timer.setInterval(m_delay = delay);
+}
+
+MainAnimation& MainAnimation::global() { 
+  static MainAnimation instance; 
+  return instance; 
 }
 

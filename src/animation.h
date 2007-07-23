@@ -209,6 +209,7 @@ protected:
   bool m_chain_abortions;
 
   virtual void start();
+  bool empty() const;
 public:
   AnimationGroup(bool persistent = false);
 

@@ -500,6 +500,10 @@ void AnimationGroup::start() {
   m_active = true;
 }
 
+bool AnimationGroup::empty() const {
+  return pre.empty() && post.empty();
+}
+
 Animation::State AnimationGroup::animationAdvance(int msec) {
   if (!m_active) {
     start();
