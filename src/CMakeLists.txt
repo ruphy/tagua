@@ -156,5 +156,5 @@ target_link_libraries(tagua
 )
 
 INSTALL(TARGETS tagua DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-install(FILES tagua.desktop DESTINATION ${XDG_APPS_DIR})
+install(FILES tagua.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
 install(FILES taguaui.rc DESTINATION  ${DATA_INSTALL_DIR}/tagua)
