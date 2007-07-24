@@ -523,12 +523,6 @@ public:
         static_cast<typename Piece::Color>(turn),
         wk, wq, bk, bq, ep)));
   }
-  virtual AbstractPiece::Ptr createPiece(int color, int type) {
-    return AbstractPiece::Ptr(
-      new WrappedPiece<Variant>(Piece(
-        static_cast<typename Piece::Color>(color),
-        static_cast<typename Piece::Type>(type))));
-  }
   virtual void forallPieces(class PieceFunction& f) {
     Variant::forallPieces(f);
   }

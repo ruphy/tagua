@@ -236,6 +236,19 @@ bool CrazyhousePosition::operator==(const CrazyhousePosition& pos) const {
 
 //END CrazyhousePosition
 
+//BEGIN PieceFactory<CrazyhouseVariantInfo>
+
+
+// piece factory
+template <>
+class PieceFactory<CrazyhouseVariantInfo> {
+public:
+  static CrazyhousePiece createPiece(const QString& description) {
+    return ChessPiece::fromDescription(description);
+  }
+};
+
+//END PieceFactory<CrazyhouseVariantInfo>
 
 
 //BEGIN CrazyhouseVariant

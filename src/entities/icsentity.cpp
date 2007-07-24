@@ -36,23 +36,25 @@ void ICSEntity::executeMove(AbstractMove::Ptr) { }
 
 void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
                                          AbstractPosition::Ptr icsPos) {
-  if(index>0 && m_game->containsIndex(index.prev()) && icsMove) {
-    if(AbstractPosition::Ptr position = m_game->position(index.prev())) {
+  if (index > 0 && m_game->containsIndex(index.prev()) && icsMove) {
+    if (AbstractPosition::Ptr position = m_game->position(index.prev())) {
       position = position->clone();
 
-      if(position->testMove(icsMove)) {
+      if (position->testMove(icsMove)) {
         position->move(icsMove);
         //BROKEN
         //icsPos->copyPoolFrom(position);
-        if(!position->equals(icsPos))
+        if (!position->equals(icsPos))
           std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
       }
       else
         std::cout << "[inconsistency] invalid move from server!" << std::endl;
     }
   }
-  if(m_game->lastMainlineIndex() > index)
+  
+  if (m_game->lastMainlineIndex() > index)
     m_game->truncate(index);
+
   m_game->insert(icsMove, icsPos, index);
   m_game->goTo(index);
   m_dispatcher.move(icsMove, icsPos);
@@ -84,6 +86,8 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
                   style12.position->previousTurn(),
                   last_move_verbose_notation);
 
+  std::cout << "index = " << style12.index() << std::endl;
+
   if (style12.index() > 0 && m_game->containsIndex(style12.index() - 1)
                   && last_move && m_variant->name() != "Dummy") {
     AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
@@ -97,6 +101,7 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
       }
     }
   }
+  
   if (style12.index() > 0 && m_variant->name() != "Dummy"
         && (!m_game->containsIndex(style12.index() - 1) || !m_game->position(style12.index() - 1)) )
     requestMoves();
