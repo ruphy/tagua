@@ -22,7 +22,7 @@ class QHostInfo;
   * @brief Manage a connection with a remote server.
   *
   * This class can be used to manage a connection with a chess server. Once connected,
-  * it Q_EMITs the signal @ref receivedLine whenever a new whole line is received.
+  * it emits the signal @ref receivedLine whenever a new whole line is received.
   * Partial lines are kept in an internal buffer.
   * The Connection class supports the use of a helper such as timeseal.
   */

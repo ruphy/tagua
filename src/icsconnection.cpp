@@ -137,7 +137,7 @@ void ICSConnection::process(QString str) {
     else if (test(game, str)) {
       //std::cout << "matched game. incomingGameInfo = " << incomingGameInfo << std::endl;
       if(game.cap(4).startsWith("Creating") || game.cap(4).startsWith("Continuing") ) {
-        if(!incomingGameInfo) {
+        if (!incomingGameInfo) {
           //this should really never happen, but anyway...
           QStringList info = game.cap(4).split(' ');
           if(info.size() >= 3)
@@ -145,7 +145,7 @@ void ICSConnection::process(QString str) {
                                           Player(game.cap(3), 0),
                                           info[1], info[2], 0, 0 );
         }
-        if(incomingGameInfo) {
+        if (incomingGameInfo) {
           int number = game.cap(1).toInt();
           incomingGameInfo->setGameNumber(number);
           m_games[number] = ICSGameData(-1, incomingGameInfo->type());
@@ -181,7 +181,7 @@ void ICSConnection::process(QString str) {
     else {
       PositionInfo positionInfo(m_games, str);
       if (positionInfo.valid) {
-        //std::cout << "matched style12" << std::endl;
+        std::cout << "matched style12: " << str << std::endl;
 
         // if this is the first style12 for this game, notify game creation
         int gameNumber = positionInfo.gameNumber;
@@ -202,7 +202,7 @@ void ICSConnection::process(QString str) {
             incomingGameInfo = NULL; // discard game info
           }
 
-          if(!incomingGameInfo) {
+          if (!incomingGameInfo) {
             std::cout << "warning, got unexpected style12!!! " << gameNumber << std::endl;
             incomingGameInfo = new GameInfo(Player(positionInfo.whitePlayer, 0),
                                           Player(positionInfo.blackPlayer, 0),
@@ -232,22 +232,23 @@ void ICSConnection::process(QString str) {
           incomingGameInfo = NULL;
         }
 
-        //std::cout << "known game. Q_EMITting style12 signal" << std::endl;
+        std::cout << "known game. emitting style12 signal" << std::endl;
         m_games[positionInfo.gameNumber].index = positionInfo.index();
         if (shared_ptr<ICSListener> listener = m_games[positionInfo.gameNumber].listener.lock())
           listener->notifyStyle12(positionInfo, game_start);
 //        time(positionInfo.whiteTime, positionInfo.blackTime);
-        if(positionInfo.relation == PositionInfo::MyMove) {
+        if (positionInfo.relation == PositionInfo::MyMove) {
           notification();
         }
       }
       else {
         PoolInfo pool_info(m_games, str);
         if (pool_info.m_valid) {
-          if( !(m_games[pool_info.m_game_num].variant == "crazyhouse"
-                  && pool_info.m_added_piece) )
+          if (!(m_games[pool_info.m_game_num].variant == "crazyhouse"
+                  && pool_info.m_added_piece)) {
             if (shared_ptr<ICSListener> listener = m_games[pool_info.m_game_num].listener.lock())
               listener->notifyPool(pool_info);
+          }
         }
       }
     }
@@ -258,12 +259,12 @@ void ICSConnection::process(QString str) {
       //std::cout << "move list players: " << str << std::endl;
       m_move_list_players = move_list_players.capturedTexts();
     }
-    else if(test(move_list_game, str)){
+    else if (test(move_list_game, str)){
       //std::cout << "move list game: " << str << std::endl;
-      if(m_move_list_game_info)
+      if (m_move_list_game_info)
         delete m_move_list_game_info;
 
-      if(m_move_list_players.size()>=5)
+      if (m_move_list_players.size()>=5)
         m_move_list_game_info = new GameInfo(
                     Player(m_move_list_players[1], m_move_list_players[2].toInt()),
                     Player(m_move_list_players[3], m_move_list_players[4].toInt()),
@@ -280,19 +281,19 @@ void ICSConnection::process(QString str) {
       //NOTE: here is where an unknown variant will be "upgraded" to the correct variant
       m_games[m_move_list_game_num].variant = move_list_game.cap(2);
     }
-    else if(test(move_list_terminator, str)) {
+    else if (test(move_list_terminator, str)) {
       //std::cout << "move list ign3: " << str << std::endl;
     }
-    else if(test(move_list_ignore1, str)){
+    else if (test(move_list_ignore1, str)){
       //std::cout << "move list ign1: " << str << std::endl;
     }
-    else if(test(move_list_ignore2, str)) {
+    else if (test(move_list_ignore2, str)) {
       //std::cout << "move list ign2: " << str << std::endl;
       state = MoveListMoves;
     }
     else {
       PositionInfo pi(m_games, str);
-      if(pi.valid)
+      if (pi.valid)
         m_move_list_position_info = new PositionInfo(pi);
       else {
         PoolInfo pooli(m_games, str);
@@ -313,7 +314,7 @@ void ICSConnection::process(QString str) {
           p = Variant::variant(GameInfo::variantCode(v))->createPosition();
           p->setup();
         }
-        if(m_move_list_pool_info) {
+        if (m_move_list_pool_info) {
           //BROKEN
           //p->setPool(m_move_list_pool_info->m_pool);
         }
@@ -325,11 +326,11 @@ void ICSConnection::process(QString str) {
           listener->notifyMoveList(m_move_list_game_num, p, pgn);
       }
 
-      if(m_move_list_game_info)
+      if (m_move_list_game_info)
         delete m_move_list_game_info;
-      if(m_move_list_position_info)
+      if (m_move_list_position_info)
         delete m_move_list_position_info;
-      if(m_move_list_pool_info)
+      if (m_move_list_pool_info)
         delete m_move_list_pool_info;
       m_move_list_game_info = NULL;
       m_move_list_position_info = NULL;
@@ -354,7 +355,7 @@ void ICSConnection::startup() {
   sendText("iset startpos 1");
   sendText("iset ms 1");
   sendText("iset lock 1");
-  sendText("set interface Tagua-0.9.9 (http://www.tagua-project.org)");
+  sendText("set interface Tagua-0.10 (http://www.tagua-project.org)");
   sendText("set style 12");
 }
 

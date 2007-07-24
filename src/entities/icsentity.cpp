@@ -79,15 +79,15 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
   // get last move verbose notation
   AbstractMove::Ptr last_move;
   VerboseNotation last_move_verbose_notation(style12.lastMove, style12.position->size().y);
-  if(!is_starting && last_move_verbose_notation.valid())
+  if (!is_starting && last_move_verbose_notation.valid())
     last_move = m_variant->getVerboseMove(
                   style12.position->previousTurn(),
                   last_move_verbose_notation);
 
-  if(style12.index()>0 && m_game->containsIndex(style12.index()-1)
+  if (style12.index() > 0 && m_game->containsIndex(style12.index() - 1)
                   && last_move && m_variant->name() != "Dummy") {
-    AbstractPosition::Ptr position = m_game->position(style12.index()-1);
-    if(position) {
+    AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
+    if (position) {
       AlgebraicNotation last_move_alg_notation(style12.lastMoveSAN, style12.position->size().y);
       AbstractMove::Ptr mv = position->getMove(last_move_alg_notation);
       if (!mv || !mv->equals(last_move)) {
@@ -97,8 +97,8 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
       }
     }
   }
-  if(style12.index()>0 && m_variant->name() != "Dummy"
-        && (!m_game->containsIndex(style12.index()-1) || !m_game->position(style12.index()-1)) )
+  if (style12.index() > 0 && m_variant->name() != "Dummy"
+        && (!m_game->containsIndex(style12.index() - 1) || !m_game->position(style12.index() - 1)) )
     requestMoves();
 
   updateGame(style12.index(), last_move, style12.position);
