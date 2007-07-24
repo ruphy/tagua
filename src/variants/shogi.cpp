@@ -446,7 +446,7 @@ ShogiPosition::PoolReference ShogiPosition::pool(int index) {
 
 ShogiPosition::PoolConstReference ShogiPosition::pool(int index) const {
   ShogiPiece::Color color = static_cast<ShogiPiece::Color>(index);
-  return PoolConstReference(&m_pool.find(color)->second, color);
+  return PoolConstReference(&m_pool[color], color);
 }
 
 bool ShogiPosition::operator==(const ShogiPosition& p) const {
