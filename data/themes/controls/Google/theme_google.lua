@@ -54,7 +54,7 @@ end
 
 
 theme.border = function(b, args)
-  b = b*0.7
+  b = math.floor(b*0.7)
   local w = args.width;
   local h = args.height;
   local tr = Image(b, b);  tr:clear(); tr:draw_svg(Rect(0,0,b,b), "border_corner.svg");
