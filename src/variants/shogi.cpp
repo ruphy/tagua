@@ -287,7 +287,7 @@ public:
   void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
 
   InteractionType movable(const TurnTest& test, const Point& p) const {
-    if(!valid(p) || !m_board[p] || !test(m_turn))
+    if (!valid(p) || !m_board[p] || !test(m_board[p].color()))
       return NoAction;
     return m_board[p].color() == m_turn ? Moving : Premoving;
   }
