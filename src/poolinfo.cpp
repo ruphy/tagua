@@ -23,6 +23,19 @@ PoolInfo::PoolInfo(const std::map<int, ICSGameData>& games, const QString& str)
 : m_valid(false)
 , m_pos_index(-1) {
 
+//   if (s_pattern.indexIn(str) != 0)
+//     return;
+//     
+//   m_game_num = s_pattern.cap(1).toInt();
+//   std::map<int, ICSGameData>::const_iterator gi = games.find(m_game_num);
+//   if (gi == games.end())
+//     return;
+// 
+//   QString var = !gi->second.variant.isEmpty() ? gi->second.variant : QString("chess");
+//   VariantInfo* variant = Variant::variant(GameInfo::variantCode(var));
+//   m_pos_index = gi->second.index;
+//   
+//   m_pool = 
 //BROKEN
 #if 0
   if (s_pattern.indexIn(str) != 0)

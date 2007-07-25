@@ -18,6 +18,7 @@
 #include "interactiontype.h"
 #include "turntest.h"
 #include "tagua_wrapped.h"
+#include "icsapi.impl.h"
 
 class ShogiPiece {
 public:
@@ -607,6 +608,8 @@ public:
   typedef Position::Piece Piece;
   typedef DropAnimatorMixin<ShogiAnimatorBase> Animator;
   typedef NoPool Pool;
+  
+  static const bool hasICS = false;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }

@@ -14,6 +14,7 @@
 #include <memory>
 #include <iostream>
 #include "common.h"
+#include "icsapi.h"
 #include "tagua.h"
 #include "movefactory.h"
 #include "piecefactory.h"
@@ -76,6 +77,24 @@ template <typename V> class WrappedPosition;
 
 #define TYPECHECK(x,y) if (typeid(x) != typeid(y)) MISMATCH(x,y); else { }
 
+/**
+  * Helper metafunction to create a null ICSAPI object
+  * if the variant does not support ICS.
+  */
+template <typename Variant, bool hasICS>
+struct ReturnICSAPI { };
+
+template <typename Variant>
+struct ReturnICSAPI<Variant, true> {
+  static ICSAPI* apply() {
+    return new WrappedICSAPI<Variant>();
+  }
+};
+
+template <typename Variant>
+struct ReturnICSAPI<Variant, false> {
+  static ICSAPI* apply() { return 0; }
+};
 
 
 template <typename Variant>
@@ -514,15 +533,6 @@ public:
     }
     else return AbstractPosition::Ptr();
   }
-
-  virtual AbstractPosition::Ptr createChessboard(int turn,
-                              bool wk, bool wq, bool bk, bool bq,
-                              const Point& ep) {
-    return AbstractPosition::Ptr(
-      new WrappedPosition<Variant>(Position(
-        static_cast<typename Piece::Color>(turn),
-        wk, wq, bk, bq, ep)));
-  }
   virtual void forallPieces(class PieceFunction& f) {
     Variant::forallPieces(f);
   }
@@ -549,11 +559,6 @@ public:
     return AbstractMove::Ptr(new WrappedMove<Variant>(res));
   }
 
-  virtual AbstractPiece::Ptr createPiece(const QString& description) {
-    return AbstractPiece::Ptr(new WrappedPiece<Variant>(
-      PieceFactory<Variant>::createPiece(description)));
-  }
-
   virtual int type(const QString& str) {
     return Piece::getType(str);
   }
@@ -571,6 +576,9 @@ public:
   }
   virtual OptList positionOptions() const {
     return Variant::positionOptions();
+  }
+  virtual ICSAPIPtr icsAPI() const {
+    return ICSAPIPtr(ReturnICSAPI<Variant, Variant::hasICS>::apply());
   }
 };
 

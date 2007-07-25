@@ -1,6 +1,6 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
-            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
+  Copyright (c) 2006-2007 Paolo Capriotti <p.capriotti@sns.it>
+            (c) 2006-2007 Maurizio Monge <maurizio.monge@kdemail.net>
             
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -12,6 +12,7 @@
 #include "variants/chess.h"
 #include "variants/variants.h"
 #include "gameinfo.h"
+#include "icsapi.h"
 
 using namespace boost;
 
@@ -51,14 +52,14 @@ QRegExp PositionInfo::pattern(
 
 );
 
-PositionInfo::PositionRow::PositionRow(VariantInfo* variant, const QString& str) {
+PositionInfo::PositionRow::PositionRow(const ICSAPIPtr& icsapi, const QString& str) {
   Q_ASSERT(str.length() == 8);
 
   row.resize(str.length());
   for (int i = 0; i < str.length(); ++i) {
     QChar c = str[i];
     
-    row[i] = variant->createPiece(c);
+    row[i] = icsapi->createPiece(c);
   }
 }
 
@@ -77,17 +78,22 @@ PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QStrin
     return;
   }
 
-  VariantInfo* variant;
   valid = true;
   int gn = pattern.cap(CaptureIndexes::GameNumber).toInt();
   std::map<int, ICSGameData>::const_iterator gi = games.find(gn);
-  QString var = (gi != games.end() && !gi->second.variant.isEmpty())
-                                      ? gi->second.variant : QString("chess");
-  variant = Variant::variant(GameInfo::variantCode(var));
+  ICSAPIPtr icsapi;
+  
+  if (gi == games.end()) {
+    ERROR("Received style12 for unknown game  " << gn);
+    icsapi = Variant::variant("Dummy")->icsAPI();
+  }
+  else {
+    icsapi = gi->second.icsapi;
+  }
 
   std::vector<PositionRow> rows;
   for (uint i = 0; i < 8; ++i)
-    rows.push_back(PositionRow(variant, pattern.cap(CaptureIndexes::ChessboardStart + i)));
+    rows.push_back(PositionRow(icsapi, pattern.cap(CaptureIndexes::ChessboardStart + i)));
 
   gameNumber = pattern.cap(CaptureIndexes::GameNumber).toInt();
   moveIndex = pattern.cap(CaptureIndexes::MoveOrdinal).toInt();
@@ -106,7 +112,7 @@ PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QStrin
   bool bkCastle = pattern.cap(CaptureIndexes::BlackKingCastle).toInt() == 1;
   bool bqCastle = pattern.cap(CaptureIndexes::BlackQueenCastle).toInt() == 1;
 
-  position = variant->createChessboard(turn, wkCastle, wqCastle, bkCastle, bqCastle, enPassantSquare);
+  position = icsapi->createChessboard(turn, wkCastle, wqCastle, bkCastle, bqCastle, enPassantSquare);
   for (uint i = 0; i < 8; ++i) {
     for (uint j = 0; j < rows[i].row.size(); ++j) {
       position->set(Point(j,i), rows[i].row[j]);

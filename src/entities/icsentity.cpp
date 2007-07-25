@@ -110,10 +110,11 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
 }
 
 void ICSEntity::notifyPool(const PoolInfo& pi) {
-  if(pi.m_game_num != m_game_number)
+  if (pi.m_game_num != m_game_number)
     return;
 
-  if(m_game->containsIndex(pi.m_pos_index)) {
+  return; // BROKEN
+  if (m_game->containsIndex(pi.m_pos_index)) {
     AbstractPosition::Ptr p = m_game->position(pi.m_pos_index);
     //BROKEN
     //p->setPool(pi.m_pool);

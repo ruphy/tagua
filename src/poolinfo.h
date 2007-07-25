@@ -22,8 +22,8 @@ public:
   bool  m_valid;
   int   m_game_num;
   Index m_pos_index;
-  AbstractPool::Ptr m_pool[2];
-  AbstractPiece::Ptr m_added_piece;
+  PoolPtr m_pool[2];
+  PiecePtr m_added_piece;
   static QRegExp s_pattern;
 
   PoolInfo(const std::map<int, ICSGameData>& games, const QString& s);

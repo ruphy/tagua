@@ -13,6 +13,7 @@
 #include "variants/chess.h"
 #include "common.h"
 #include "tagua_wrapped.h"
+#include "icsapi.impl.h"
 #include "moveserializer.impl.h"
 #include "xchess/animator.impl.h"
 #include "piecefunction.h"

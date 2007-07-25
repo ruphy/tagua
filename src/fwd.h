@@ -15,8 +15,10 @@
 
 typedef boost::shared_ptr<class AbstractMove> MovePtr;
 typedef boost::shared_ptr<class AbstractPosition> PositionPtr;
+typedef boost::shared_ptr<class AbstractPool> PoolPtr;
 typedef boost::shared_ptr<class AbstractPiece> PiecePtr;
 typedef boost::shared_ptr<class AbstractAnimator> AnimatorPtr;
+typedef boost::shared_ptr<class ICSAPI> ICSAPIPtr;
 typedef boost::shared_ptr<class VariantInfo> VariantPtr;
 
 template <typename Variant> class UnwrappedGraphicalAPI;

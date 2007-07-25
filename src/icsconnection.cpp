@@ -12,8 +12,6 @@
 #include <QRegExp>
 #include <QStringList>
 
-#include <boost/xpressive/xpressive.hpp>
-
 #include "icsconnection.h"
 #include "poolinfo.h"
 #include "positioninfo.h"
@@ -25,7 +23,6 @@
 #include "variants/variants.h"
 
 using namespace boost;
-using namespace boost::xpressive;
 
 QRegExp ICSConnection::pressReturn("^Press return to enter the server as \"\\S+\":");
 
@@ -244,8 +241,8 @@ void ICSConnection::process(QString str) {
       else {
         PoolInfo pool_info(m_games, str);
         if (pool_info.m_valid) {
-          if (!(m_games[pool_info.m_game_num].variant == "crazyhouse"
-                  && pool_info.m_added_piece)) {
+          // BROKEN
+          if (!pool_info.m_added_piece) {
             if (shared_ptr<ICSListener> listener = m_games[pool_info.m_game_num].listener.lock())
               listener->notifyPool(pool_info);
           }
@@ -279,7 +276,7 @@ void ICSConnection::process(QString str) {
       m_move_list_game_info->setGameNumber(m_move_list_game_num);
 
       //NOTE: here is where an unknown variant will be "upgraded" to the correct variant
-      m_games[m_move_list_game_num].variant = move_list_game.cap(2);
+      m_games[m_move_list_game_num].setType(move_list_game.cap(2));
     }
     else if (test(move_list_terminator, str)) {
       //std::cout << "move list ign3: " << str << std::endl;
@@ -306,24 +303,32 @@ void ICSConnection::process(QString str) {
     if (test(move_list_terminator, str)){
       if (shared_ptr<ICSListener> listener = m_games[m_move_list_game_num].listener.lock()) {
         AbstractPosition::Ptr p;
-        if(m_move_list_position_info)
+        if (m_move_list_position_info)
           p = m_move_list_position_info->position;
         else {
-          QString v = m_games.count(m_move_list_game_num)
-                    ? m_games[m_move_list_game_num].variant : "unknown";
-          p = Variant::variant(GameInfo::variantCode(v))->createPosition();
-          p->setup();
+          std::map<int, ICSGameData>::const_iterator gi = m_games.find(m_move_list_game_num);
+          if (gi == m_games.end()) {
+            ERROR("BUG: Received move list for unknown game  " << m_move_list_game_num);
+          }
+          else {
+            VariantInfo* variant = gi->second.variant;
+            p = variant->createPosition();
+            p->setup();
+          }
         }
-        if (m_move_list_pool_info) {
-          //BROKEN
-          //p->setPool(m_move_list_pool_info->m_pool);
+        
+        if (p) {
+          if (m_move_list_pool_info) {
+            //BROKEN
+            //p->setPool(m_move_list_pool_info->m_pool);
+          }
+    
+          PGN pgn(m_move_list);
+          if (!pgn.valid())
+            std::cout << "parse error on move list" << std::endl;
+          else
+            listener->notifyMoveList(m_move_list_game_num, p, pgn);
         }
-
-        PGN pgn(m_move_list);
-        if (!pgn.valid())
-          std::cout << "parse error on move list" << std::endl;
-        else
-          listener->notifyMoveList(m_move_list_game_num, p, pgn);
       }
 
       if (m_move_list_game_info)
@@ -357,19 +362,5 @@ void ICSConnection::startup() {
   sendText("iset lock 1");
   sendText("set interface Tagua-0.10 (http://www.tagua-project.org)");
   sendText("set style 12");
-}
-
-static void test() {
-    std::string hello("hello world!");
-
-    sregex rex = sregex::compile("(\\w+) (\\w+)!");
-    smatch what;
-
-    if (regex_match(hello, what, rex))
-    {
-        std::cout << what[0] << '\n'; // whole match
-        std::cout << what[1] << '\n'; // first capture
-        std::cout << what[2] << '\n'; // second capture
-    }
 }
 

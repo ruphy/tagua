@@ -11,6 +11,7 @@
 #include "crazyhouse_p.h"
 #include "crazyhouse.h"
 #include "tagua_wrapped.h"
+#include "icsapi.impl.h"
 #include "xchess/dropanimator.impl.h"
 #include "animation.h"
 #include "animationfactory.h"
@@ -25,6 +26,7 @@ public:
 
   typedef DropAnimatorMixin<SimpleAnimator<CrazyhouseVariantInfo> > Animator;
 
+  static const bool hasICS = true;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }
