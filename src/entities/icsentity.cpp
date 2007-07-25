@@ -43,12 +43,8 @@ void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
       if (position->testMove(icsMove)) {
         position->move(icsMove);
         
-        std::cout << "before copying pools" << std::endl;
-        icsPos->dump();
         icsPos->copyPoolFrom(position);
-        std::cout << "after copying pools" << std::endl;
-        icsPos->dump();
-                
+        
         if (!position->equals(icsPos))
           std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
       }
@@ -90,8 +86,6 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
     last_move = m_variant->getVerboseMove(
                   style12.position->previousTurn(),
                   last_move_verbose_notation);
-
-  std::cout << "index = " << style12.index() << std::endl;
 
   if (style12.index() > 0 && m_game->containsIndex(style12.index() - 1)
                   && last_move && m_variant->name() != "Dummy") {

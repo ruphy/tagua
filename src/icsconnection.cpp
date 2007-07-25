@@ -178,8 +178,6 @@ void ICSConnection::process(QString str) {
     else {
       PositionInfo positionInfo(m_games, str);
       if (positionInfo.valid) {
-        std::cout << "matched style12: " << str << std::endl;
-
         // if this is the first style12 for this game, notify game creation
         int gameNumber = positionInfo.gameNumber;
         bool game_start =  ( !m_games.count(gameNumber)
@@ -229,7 +227,6 @@ void ICSConnection::process(QString str) {
           incomingGameInfo = NULL;
         }
 
-        std::cout << "known game. emitting style12 signal" << std::endl;
         m_games[positionInfo.gameNumber].index = positionInfo.index();
         if (shared_ptr<ICSListener> listener = m_games[positionInfo.gameNumber].listener.lock())
           listener->notifyStyle12(positionInfo, game_start);
