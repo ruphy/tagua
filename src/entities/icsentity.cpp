@@ -36,23 +36,26 @@ void ICSEntity::executeMove(AbstractMove::Ptr) { }
 
 void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
                                          AbstractPosition::Ptr icsPos) {
-  if(index>0 && m_game->containsIndex(index.prev()) && icsMove) {
-    if(AbstractPosition::Ptr position = m_game->position(index.prev())) {
+  if (index > 0 && m_game->containsIndex(index.prev()) && icsMove) {
+    if (AbstractPosition::Ptr position = m_game->position(index.prev())) {
       position = position->clone();
 
-      if(position->testMove(icsMove)) {
+      if (position->testMove(icsMove)) {
         position->move(icsMove);
-        //BROKEN
-        //icsPos->copyPoolFrom(position);
-        if(!position->equals(icsPos))
+        
+        icsPos->copyPoolFrom(position);
+        
+        if (!position->equals(icsPos))
           std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
       }
       else
         std::cout << "[inconsistency] invalid move from server!" << std::endl;
     }
   }
-  if(m_game->lastMainlineIndex() > index)
+  
+  if (m_game->lastMainlineIndex() > index)
     m_game->truncate(index);
+
   m_game->insert(icsMove, icsPos, index);
   m_game->goTo(index);
   m_dispatcher.move(icsMove, icsPos);
@@ -79,15 +82,15 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
   // get last move verbose notation
   AbstractMove::Ptr last_move;
   VerboseNotation last_move_verbose_notation(style12.lastMove, style12.position->size().y);
-  if(!is_starting && last_move_verbose_notation.valid())
+  if (!is_starting && last_move_verbose_notation.valid())
     last_move = m_variant->getVerboseMove(
                   style12.position->previousTurn(),
                   last_move_verbose_notation);
 
-  if(style12.index()>0 && m_game->containsIndex(style12.index()-1)
+  if (style12.index() > 0 && m_game->containsIndex(style12.index() - 1)
                   && last_move && m_variant->name() != "Dummy") {
-    AbstractPosition::Ptr position = m_game->position(style12.index()-1);
-    if(position) {
+    AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
+    if (position) {
       AlgebraicNotation last_move_alg_notation(style12.lastMoveSAN, style12.position->size().y);
       AbstractMove::Ptr mv = position->getMove(last_move_alg_notation);
       if (!mv || !mv->equals(last_move)) {
@@ -97,18 +100,20 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
       }
     }
   }
-  if(style12.index()>0 && m_variant->name() != "Dummy"
-        && (!m_game->containsIndex(style12.index()-1) || !m_game->position(style12.index()-1)) )
+  
+  if (style12.index() > 0 && m_variant->name() != "Dummy"
+        && (!m_game->containsIndex(style12.index() - 1) || !m_game->position(style12.index() - 1)) )
     requestMoves();
 
   updateGame(style12.index(), last_move, style12.position);
 }
 
 void ICSEntity::notifyPool(const PoolInfo& pi) {
-  if(pi.m_game_num != m_game_number)
+  if (pi.m_game_num != m_game_number)
     return;
 
-  if(m_game->containsIndex(pi.m_pos_index)) {
+  return; // BROKEN
+  if (m_game->containsIndex(pi.m_pos_index)) {
     AbstractPosition::Ptr p = m_game->position(pi.m_pos_index);
     //BROKEN
     //p->setPool(pi.m_pool);

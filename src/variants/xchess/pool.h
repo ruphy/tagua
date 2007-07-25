@@ -8,6 +8,69 @@ struct PlayerPoolType {
   typedef std::map<typename Position::Piece::Type, int> type;
 };
 
+namespace MapUtilities {
+
+template <typename T>
+struct MapEqual {
+  static bool apply(const T& a, const T& b) {
+    return a == b;
+  }
+};
+
+template <typename T, typename U>
+struct MapEqual<std::map<T, U> > {
+  typedef std::map<T, U> Map;
+  static bool apply(const Map& a, const Map& b) {
+    typename Map::const_iterator i = a.begin();
+    typename Map::const_iterator j = b.begin();
+    
+    while (i != a.end() && j != b.end()) {
+      if (i->first < j->first) {
+        if (!MapEqual<U>::apply(i->second, U()))
+          return false;
+        else
+          ++i;
+      }
+      else if (i->first > j->first) {
+        if (!MapEqual<U>::apply(j->second, U()))
+          return false;
+        else
+          ++j;
+      }
+      else {
+        // same key, compare values
+        if (!MapEqual<U>::apply(i->second, j->second))
+          return false;
+        else {
+          ++i;
+          ++j;
+        }
+      }
+    }
+    
+    // check tail
+    while (i != a.end()) {
+      if (!MapEqual<U>::apply(i->second, U()))
+        return false;
+      ++i;
+    }
+    while (j != b.end()) {
+      if (!MapEqual<U>::apply(j->second, U()))
+        return false;
+      ++j;
+    }
+    
+    return true;
+  }
+};
+
+template <typename T>
+bool equal(const T& a, const T& b) {
+  return MapEqual<T>::apply(a, b);
+}
+
+}
+
 template <typename Position, typename PP>
 class PoolReferenceBase {
 protected:
@@ -15,7 +78,26 @@ protected:
   typedef typename Piece::Color Color;
   typedef typename Piece::Type Type;
 public:
-  typedef std::map<Color, PP> Pool;
+  class Pool {
+    typedef std::map<Color, PP> Map;
+    Map m_map;
+  public:
+    Pool() { }
+    
+    PP& operator[](Color color) { return m_map[color]; }
+    const PP& operator[](Color color) const { return const_cast<Map&>(m_map)[color]; }
+    bool operator==(const Pool& other) const {
+      return MapUtilities::equal(m_map, other.m_map);
+    }
+    
+    typedef typename Map::iterator iterator;
+    iterator begin() { return m_map.begin(); }
+    iterator end() { return m_map.end(); }
+    
+    typedef typename Map::const_iterator const_iterator;
+    const_iterator begin() const { return m_map.begin(); }
+    const_iterator end() const { return m_map.end(); }
+  };
 protected:
   PP* m_p_pool;
   const Color m_color;

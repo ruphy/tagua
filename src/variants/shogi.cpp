@@ -18,6 +18,7 @@
 #include "interactiontype.h"
 #include "turntest.h"
 #include "tagua_wrapped.h"
+#include "icsapi.impl.h"
 
 class ShogiPiece {
 public:
@@ -287,7 +288,7 @@ public:
   void switchTurn() { m_turn = Piece::oppositeColor(m_turn); }
 
   InteractionType movable(const TurnTest& test, const Point& p) const {
-    if(!valid(p) || !m_board[p] || !test(m_turn))
+    if (!valid(p) || !m_board[p] || !test(m_board[p].color()))
       return NoAction;
     return m_board[p].color() == m_turn ? Moving : Premoving;
   }
@@ -446,7 +447,7 @@ ShogiPosition::PoolReference ShogiPosition::pool(int index) {
 
 ShogiPosition::PoolConstReference ShogiPosition::pool(int index) const {
   ShogiPiece::Color color = static_cast<ShogiPiece::Color>(index);
-  return PoolConstReference(&m_pool.find(color)->second, color);
+  return PoolConstReference(&m_pool[color], color);
 }
 
 bool ShogiPosition::operator==(const ShogiPosition& p) const {
@@ -607,6 +608,8 @@ public:
   typedef Position::Piece Piece;
   typedef DropAnimatorMixin<ShogiAnimatorBase> Animator;
   typedef NoPool Pool;
+  
+  static const bool hasICS = false;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout() { return 0; }

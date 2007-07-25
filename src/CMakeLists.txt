@@ -89,6 +89,7 @@ set(tagua_SRC
   option_p.cpp
   themeinfo.cpp
   namedsprite.cpp
+  icsgamedata.cpp
 )
 
 # remove spurious xpressive warnings

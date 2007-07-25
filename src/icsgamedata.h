@@ -14,17 +14,21 @@
 #include <boost/weak_ptr.hpp>
 #include <QString>
 
+#include "fwd.h"
+
 class ICSListener;
+class VariantInfo;
 
 struct ICSGameData {
   int index;
-  QString variant;
+  VariantInfo* variant;
+  ICSAPIPtr icsapi;
   boost::weak_ptr<ICSListener> listener;
   
-  ICSGameData()
-  : index(0) { }
-  ICSGameData(int index, const QString& variant)
-  : index(index), variant(variant) { }
+  ICSGameData();
+  ICSGameData(int index, const QString& type);
+  
+  void setType(const QString& var);
 };
 
 #endif // ICSGAMEDATA_H

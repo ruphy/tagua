@@ -58,6 +58,7 @@ public:
 
   static Type getType(const QString& str);
   static QString typeSymbol(Type type);
+  static ChessPiece fromDescription(const QString& description);
 
   inline Point kingStartingPosition() const { return Point(4, color() == WHITE? 7 : 0); }
   inline int startingRank() const { return color() == WHITE? 6 : 1; }

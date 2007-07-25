@@ -11,6 +11,7 @@
 #include "crazyhouse_p.h"
 #include "crazyhouse.h"
 #include "tagua_wrapped.h"
+#include "icsapi.impl.h"
 #include "xchess/dropanimator.impl.h"
 #include "animation.h"
 #include "animationfactory.h"
@@ -25,6 +26,7 @@ public:
 
   typedef DropAnimatorMixin<SimpleAnimator<CrazyhouseVariantInfo> > Animator;
 
+  static const bool hasICS = true;
   static const bool m_simple_moves = false;
   static void forallPieces(PieceFunction& f);
   static int moveListLayout(){ return 0; }
@@ -130,7 +132,7 @@ CrazyhousePosition::PoolReference CrazyhousePosition::pool(int index) {
 
 CrazyhousePosition::PoolConstReference CrazyhousePosition::pool(int index) const {
   Color c = static_cast<Color>(index);
-  return PoolConstReference(&m_pool.find(c)->second, c);
+  return PoolConstReference(&m_pool[c], c);
 }
 
 CrazyhousePosition::PlayerPool& CrazyhousePosition::rawPool(Piece::Color color) {
@@ -138,7 +140,7 @@ CrazyhousePosition::PlayerPool& CrazyhousePosition::rawPool(Piece::Color color) 
 }
 
 const CrazyhousePosition::PlayerPool& CrazyhousePosition::rawPool(Piece::Color color) const {
-  return const_cast<Pool&>(m_pool)[color];
+  return m_pool[color];
 }
 
 bool CrazyhousePosition::pseudolegal(Move& move) const {
@@ -209,7 +211,7 @@ CrazyhouseMove CrazyhousePosition::getMove(const AlgebraicNotation& san, bool& o
   if (san.drop) {
     Piece piece(m_turn, (PieceType)san.type);
 
-    if ( !m_pool.count(piece.color()) || !m_pool.find(piece.color())->second.count(piece.type()) ) {
+    if (!m_pool[piece.color()].count(piece.type())) {
       ok = false;
       return CrazyhouseMove::invalid();
     }
@@ -231,11 +233,26 @@ void CrazyhousePosition::dump() const {
 }
 
 bool CrazyhousePosition::operator==(const CrazyhousePosition& pos) const {
-  return m_pool == pos.m_pool && Base::operator==(pos);
+  bool base = Base::operator==(pos);
+  bool pools = m_pool == pos.m_pool;
+  return pools && base;
 }
 
 //END CrazyhousePosition
 
+//BEGIN PieceFactory<CrazyhouseVariantInfo>
+
+
+// piece factory
+template <>
+class PieceFactory<CrazyhouseVariantInfo> {
+public:
+  static CrazyhousePiece createPiece(const QString& description) {
+    return ChessPiece::fromDescription(description);
+  }
+};
+
+//END PieceFactory<CrazyhouseVariantInfo>
 
 
 //BEGIN CrazyhouseVariant

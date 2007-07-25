@@ -175,3 +175,27 @@ std::ostream& operator<<(std::ostream& os, const ChessPiece& p) {
                                                         << " " << p.typeName();
 }
 
+ChessPiece ChessPiece::fromDescription(const QString& description) {
+  if (description.size() == 1) {
+    QChar c = description[0];
+    ChessPiece::Color color;
+
+    if (c.category() == QChar::Letter_Uppercase) {
+      color = WHITE;
+    }
+    else if (c.category() == QChar::Letter_Lowercase) {
+      color = BLACK;
+    }
+    else {
+      return ChessPiece();
+    }
+
+    ChessPiece::Type type = ChessPiece::getType(c);
+
+    if (type != INVALID_TYPE) {
+      return ChessPiece(color, type);
+    }
+  }
+
+  return ChessPiece();
+}

@@ -18,6 +18,7 @@
 
 #include "tagua.h"
 #include "icsgamedata.h"
+#include "fwd.h"
 
 class PositionInfo {
 public:
@@ -62,7 +63,7 @@ public:
   class PositionRow {
   public:
     std::vector<AbstractPiece::Ptr> row;
-    explicit PositionRow(VariantInfo* variant, const QString& str);
+    explicit PositionRow(const ICSAPIPtr& icsapi, const QString& str);
   };
 
   static QRegExp pattern;

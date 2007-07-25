@@ -14,6 +14,7 @@
 #include <memory>
 #include <iostream>
 #include "common.h"
+#include "icsapi.h"
 #include "tagua.h"
 #include "movefactory.h"
 #include "piecefactory.h"
@@ -76,6 +77,24 @@ template <typename V> class WrappedPosition;
 
 #define TYPECHECK(x,y) if (typeid(x) != typeid(y)) MISMATCH(x,y); else { }
 
+/**
+  * Helper metafunction to create a null ICSAPI object
+  * if the variant does not support ICS.
+  */
+template <typename Variant, bool hasICS>
+struct ReturnICSAPI { };
+
+template <typename Variant>
+struct ReturnICSAPI<Variant, true> {
+  static ICSAPI* apply() {
+    return new WrappedICSAPI<Variant>();
+  }
+};
+
+template <typename Variant>
+struct ReturnICSAPI<Variant, false> {
+  static ICSAPI* apply() { return 0; }
+};
 
 
 template <typename Variant>
@@ -259,6 +278,21 @@ struct ReturnPool<Variant, NoPool> {
   }
 };
 
+/**
+  * Metafunction to assign pools of a position to another.
+  */
+template <typename Variant, typename Pool>
+struct AssignPool {
+  static void apply(typename Variant::Position& pos1, const typename Variant::Position& pos2) {
+    pos1.setRawPool(pos2.rawPool());
+  }
+};
+
+template <typename Variant>
+struct AssignPool<Variant, NoPool> {
+  static void apply(typename Variant::Position&, const typename Variant::Position&) { }
+};
+
 template <typename Variant>
 class WrappedPosition : public AbstractPosition {
   typedef typename Variant::Position Position;
@@ -310,6 +344,16 @@ public:
 
   virtual AbstractPool::Ptr pool(int player) {
     return ReturnPool<Variant, Pool>::apply(m_pos, player);
+  }
+  
+  virtual void copyPoolFrom(AbstractPosition::Ptr _pos) {
+    WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+    if (pos) {
+      AssignPool<Variant, Pool>::apply(m_pos, pos->inner());
+    }
+    else {
+      MISMATCH(*_pos.get(), WrappedPosition<Variant>);
+    }
   }
 
   virtual InteractionType movable(const TurnTest& test, const Point& p) const {
@@ -514,21 +558,6 @@ public:
     }
     else return AbstractPosition::Ptr();
   }
-
-  virtual AbstractPosition::Ptr createChessboard(int turn,
-                              bool wk, bool wq, bool bk, bool bq,
-                              const Point& ep) {
-    return AbstractPosition::Ptr(
-      new WrappedPosition<Variant>(Position(
-        static_cast<typename Piece::Color>(turn),
-        wk, wq, bk, bq, ep)));
-  }
-  virtual AbstractPiece::Ptr createPiece(int color, int type) {
-    return AbstractPiece::Ptr(
-      new WrappedPiece<Variant>(Piece(
-        static_cast<typename Piece::Color>(color),
-        static_cast<typename Piece::Type>(type))));
-  }
   virtual void forallPieces(class PieceFunction& f) {
     Variant::forallPieces(f);
   }
@@ -555,11 +584,6 @@ public:
     return AbstractMove::Ptr(new WrappedMove<Variant>(res));
   }
 
-  virtual AbstractPiece::Ptr createPiece(const QString& description) {
-    return AbstractPiece::Ptr(new WrappedPiece<Variant>(
-      PieceFactory<Variant>::createPiece(description)));
-  }
-
   virtual int type(const QString& str) {
     return Piece::getType(str);
   }
@@ -577,6 +601,9 @@ public:
   }
   virtual OptList positionOptions() const {
     return Variant::positionOptions();
+  }
+  virtual ICSAPIPtr icsAPI() const {
+    return ICSAPIPtr(ReturnICSAPI<Variant, Variant::hasICS>::apply());
   }
 };
 

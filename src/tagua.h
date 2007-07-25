@@ -11,9 +11,21 @@
 #ifndef LOWLEVEL_H
 #define LOWLEVEL_H
 
+#include <map>
+#include <boost/shared_ptr.hpp>
+#include <QString>
+#include <QStringList>
+#include "point.h"
+#include "usermove.h"
+#include "index.h"
+#include "option.h"
+#include "decoratedmove.h"
+#include "interactiontype.h"
+#include "turntest.h"
+#include "fwd.h"
 
 class GraphicalAPI;
-
+class ICSAPI;
 
 /**
   * @file tagua.h
@@ -45,19 +57,6 @@ class GraphicalAPI;
   * that scenario is rather unlikely, since wrapped classes are always
   * kept in variables of abstract types.
   */
-
-#include <map>
-#include <boost/shared_ptr.hpp>
-#include <QString>
-#include <QStringList>
-#include "point.h"
-#include "usermove.h"
-#include "index.h"
-#include "option.h"
-#include "decoratedmove.h"
-#include "interactiontype.h"
-#include "turntest.h"
-#include "fwd.h"
 
 
 /**
@@ -206,6 +205,11 @@ public:
     * \return an interface to modify the pool of the board relative to \a player
     */
   virtual AbstractPool::Ptr pool(int player) = 0;
+  
+  /**
+    * Set a position pool, copying it from a given position.
+    */
+  virtual void copyPoolFrom(AbstractPosition::Ptr pos) = 0;
 
   /**
     * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
@@ -353,21 +357,12 @@ public:
   virtual AbstractPosition::Ptr createPosition() = 0;
   virtual AbstractPosition::Ptr createCustomPosition(const OptList& l) = 0;
   virtual AbstractPosition::Ptr createPositionFromFEN(const QString& fen) = 0;
-  virtual AbstractPosition::Ptr createChessboard(int turn, bool, bool, bool, bool, const Point&) = 0;
   virtual void forallPieces(class PieceFunction&) = 0;
   virtual int moveListLayout() const = 0;
   virtual AbstractAnimator::Ptr createAnimator(GraphicalAPI* graphical_api) = 0;
   virtual AbstractMove::Ptr createNormalMove(const NormalUserMove&) = 0;
   virtual AbstractMove::Ptr createDropMove(const DropUserMove&) = 0;
   virtual AbstractMove::Ptr getVerboseMove(int turn, const class VerboseNotation&) const = 0;
-
-  /**
-    * Create a new piece using the given description string.
-    * \param description A string representing the piece to be created. Its
-    *                     meaning is defined by the variant.
-    * \return A newly created piece.
-    */
-  virtual AbstractPiece::Ptr createPiece(const QString& description) = 0;
 
   /**
     * \return if moves are done by just clicking
@@ -389,6 +384,12 @@ public:
     * \return the (subvariant) options that can be specified for position creation, such as board size, etc
     */
   virtual OptList positionOptions() const = 0;
+  
+  /**
+    * \return The ICS API for this variant, or a null pointer, if the variant does not support
+    *         ICS (in that case a Dummy variant will be used).
+    */
+  virtual ICSAPIPtr icsAPI() const = 0;
 };
 
 #endif // LOWLEVEL_H
