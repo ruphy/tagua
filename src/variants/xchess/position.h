@@ -370,17 +370,18 @@ void Position<M, P, B>::executeCaptureOn(const Point& point) {
 template <typename M, typename P, typename B>
 void Position<M, P, B>::basicMovePiece(const M& move) {
   P p = m_board[move.from];
-  Q_ASSERT(p);
-
-  m_board[move.to] = p;
-  m_board[move.from] = Piece();
+  if (p) {
+    m_board[move.to] = p;
+    m_board[move.from] = Piece();
+  }
 }
 
 template <typename M, typename P, typename B>
 void Position<M, P, B>::basicDropPiece(P* piece, const Point& to) {
-  Q_ASSERT(piece);
-  m_board[to] = *piece;
-  switchTurn();
+  if (piece) {
+    m_board[to] = *piece;
+    switchTurn();
+  }
 }
 
 template <typename M, typename P, typename B>
@@ -407,7 +408,7 @@ bool Position<M, P, B>::pseudolegal(M& move) const {
   if (!valid(move.from)) return false;
   if (!valid(move.to)) return false;
   P piece = m_board[move.from];
-  Q_ASSERT(piece);
+  if (!piece) return false;
   Color thisTurn = piece.color();
   Color otherTurn = P::oppositeColor(thisTurn);
   if (piece && (turn() == thisTurn)) {
@@ -435,8 +436,9 @@ bool Position<M, P, B>::pseudolegal(M& move) const {
 template <typename M, typename P, typename B>
 typename P::Color Position<M, P, B>::moveTurn(const M& move) const {
   P piece = m_board[move.from];
-  Q_ASSERT(piece);
-  return piece.color();
+  if (piece) {
+    return piece.color();
+  }
 }
 
 template <typename M, typename P, typename B>
@@ -689,7 +691,7 @@ void Position<M, P, B>::dump() const {
 template <typename M, typename P, typename B>
 void Position<M, P, B>::move(const M& move) {
   P piece = m_board[move.from];
-  Q_ASSERT(piece);
+  if (!piece) return;
 
   Color color = piece.color();
   typename P::Type type = piece.type();
@@ -715,26 +717,12 @@ void Position<M, P, B>::move(const M& move) {
     else if (move.type() == M::KingSideCastling) {
       Point rookSquare = move.to + Point(1,0);
       Point rookDestination = move.from + Point(1,0);
-
-      P rook = m_board[rookSquare];
-
-      Q_ASSERT(rook);
-      Q_ASSERT(rook.type() ==  ROOK);
-      Q_UNUSED(rook);
-
       basicMovePiece(M(rookSquare, rookDestination));
     }
 
     else if (move.type() == M::QueenSideCastling) {
       Point rookSquare = move.to - Point(2,0);
       Point rookDestination = move.from - Point(1,0);
-
-      P rook = m_board[rookSquare];
-
-      Q_ASSERT(rook);
-      Q_ASSERT(rook.type() == ROOK);
-      Q_UNUSED(rook);
-
       basicMovePiece(M(rookSquare, rookDestination));
     }
   }
