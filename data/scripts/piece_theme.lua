@@ -73,3 +73,13 @@ function fromColor(color)
     return i
   end
 end
+
+function overlay(func1,func2,...)
+   if func2 then
+      return overlay(function(size)
+			return func2(func1(size), size)
+		     end, ...)
+   else
+      return func1
+   end
+end
