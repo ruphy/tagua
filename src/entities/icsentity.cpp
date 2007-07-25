@@ -42,8 +42,13 @@ void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
 
       if (position->testMove(icsMove)) {
         position->move(icsMove);
-        //BROKEN
-        //icsPos->copyPoolFrom(position);
+        
+        std::cout << "before copying pools" << std::endl;
+        icsPos->dump();
+        icsPos->copyPoolFrom(position);
+        std::cout << "after copying pools" << std::endl;
+        icsPos->dump();
+                
         if (!position->equals(icsPos))
           std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
       }

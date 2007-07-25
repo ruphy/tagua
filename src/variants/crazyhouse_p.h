@@ -108,6 +108,7 @@ public:
   PlayerPool& rawPool(Piece::Color color);
   const PlayerPool& rawPool(Piece::Color color) const;
   
+  void setRawPool(const Pool& p) { m_pool = p; }
   Pool& rawPool() { return m_pool; }
   const Pool& rawPool() const { return m_pool; }
 };

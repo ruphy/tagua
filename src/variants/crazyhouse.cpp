@@ -234,46 +234,7 @@ void CrazyhousePosition::dump() const {
 
 bool CrazyhousePosition::operator==(const CrazyhousePosition& pos) const {
   bool base = Base::operator==(pos);
-  std::cout << "crazyhouse chessboards equals: " << base << std::endl;
   bool pools = m_pool == pos.m_pool;
-  std::cout << "crazyhouse pools equals: " << pools << std::endl;
-  if (!pools) {
-    // dump pools
-    {
-      const PlayerPool& pp = rawPool(WHITE);
-      for (PlayerPool::const_iterator it = pp.begin();
-          it != pp.end(); ++it) {
-        std::cout << ChessPiece::typeSymbol(it->first) << ":" << it->second << " ";
-      }
-    }
-    std::cout << " | ";
-    {
-      const PlayerPool& pp = rawPool(BLACK);
-      for (PlayerPool::const_iterator it = pp.begin();
-          it != pp.end(); ++it) {
-        std::cout << ChessPiece::typeSymbol(it->first) << ":" << it->second << " ";
-      }
-    }
-    std::cout << std::endl;
-    
-    // dump pools
-    {
-      const PlayerPool& pp = pos.rawPool(WHITE);
-      for (PlayerPool::const_iterator it = pp.begin();
-          it != pp.end(); ++it) {
-        std::cout << ChessPiece::typeSymbol(it->first) << ":" << it->second << " ";
-      }
-    }
-    std::cout << " | ";
-    {
-      const PlayerPool& pp = pos.rawPool(BLACK);
-      for (PlayerPool::const_iterator it = pp.begin();
-          it != pp.end(); ++it) {
-        std::cout << ChessPiece::typeSymbol(it->first) << ":" << it->second << " ";
-      }
-    }
-    std::cout << std::endl;
-  }
   return pools && base;
 }
 
