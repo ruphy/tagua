@@ -44,7 +44,7 @@ void GameEntity::executeMove(AbstractMove::Ptr move) {
   AbstractPosition::Ptr ref = position();
   AbstractPosition::Ptr pos = doMove(move);
   m_game->add(move, pos);
-  m_dispatcher.move(move, ref);
+  m_dispatcher.move(m_game->index());
 }
 
 void GameEntity::addPremove(const NormalUserMove& m) {
@@ -60,7 +60,7 @@ void GameEntity::cancelPremove() {
   m_chessboard->cancelPremove();
 }
 
-void GameEntity::notifyMove(AbstractMove::Ptr, AbstractPosition::Ptr) {
+void GameEntity::notifyMove(const Index&) {
   // the other player moved: execute premove
   if (m_premoveQueue) {
     AbstractMove::Ptr move = m_premoveQueue->execute(m_game->position());

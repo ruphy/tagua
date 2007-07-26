@@ -439,6 +439,9 @@ typename P::Color Position<M, P, B>::moveTurn(const M& move) const {
   if (piece) {
     return piece.color();
   }
+  else {
+    return typename P::Color();
+  }
 }
 
 template <typename M, typename P, typename B>

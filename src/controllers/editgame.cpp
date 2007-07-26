@@ -34,11 +34,9 @@ public:
   , m_game(game) { }
 
   virtual void notifyClockUpdate(int, int) { }
-  virtual void notifyMove(AbstractMove::Ptr, AbstractPosition::Ptr) {
-    Index index = m_game->lastMainlineIndex();
-
+  virtual void notifyMove(const Index& index) {
     // start clock after the first 2 moves
-    if (index >= 2)
+    if (index.totalNumMoves() >= 2)
       m_view->run();
 
     m_view->changeClock(m_game->position(index)->turn());
@@ -62,7 +60,7 @@ public:
   virtual void notifyClockUpdate(int white, int black) {
     m_view->updateTime(white, black);
   }
-  virtual void notifyMove(AbstractMove::Ptr, AbstractPosition::Ptr) { }
+  virtual void notifyMove(const Index&) { }
   virtual void notifyBack() { }
   virtual void notifyForward() { }
   virtual void notifyGotoFirst() { }
@@ -133,9 +131,14 @@ void EditGameController::onNavigation() { }
 
 bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
   Q_ASSERT(side == 0 || side == 1);
+  if (!engine)
+    return false;
+    
   if (m_players[side]->canDetach()) {
-    shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game,
+    shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, side,
                                                   engine, &m_agents));
+
+    std::cout << "added engine agent " << entity.get() << std::endl;
     m_agents.addAgent(entity);
 
     m_players[side] = entity;
@@ -155,7 +158,7 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
 
 EntityToken EditGameController::addAnalysingEngine(const shared_ptr<Engine>& engine) {
   Q_ASSERT(engine.use_count() == 1);
-  shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, engine, &m_agents));
+  shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, -1, engine, &m_agents));
   m_agents.addAgent(entity);
   EntityToken res(m_entities.insert(entity).first);
 
@@ -163,8 +166,6 @@ EntityToken EditGameController::addAnalysingEngine(const shared_ptr<Engine>& eng
   engine->start();
   engine->setBoard(m_game->position(), 0, 0);
   engine->startAnalysis();
-
-  std::cout << "there are now " << m_entities.size() << " entities" << std::endl;
 
   return res;
 }
@@ -181,6 +182,7 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
                                 side, game_number, connection, &m_agents));
 
     if (entity->attach()) {
+      std::cout << "added ICS agent " << entity.get() << std::endl;
       m_agents.addAgent(entity);
 
       m_players[side] = entity;

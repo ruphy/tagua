@@ -106,7 +106,7 @@ void ExaminationEntity::notifyStyle12(const PositionInfo& style12, bool /*is_sta
 }
 void ExaminationEntity::notifyPool(const class PoolInfo&) { /*TODO */ }
 void ExaminationEntity::notifyMoveList(int, AbstractPosition::Ptr, const PGN&){ /* TODO */ }
-void ExaminationEntity::notifyMove(AbstractMove::Ptr, AbstractPosition::Ptr) { }
+void ExaminationEntity::notifyMove(const Index&) { }
 void ExaminationEntity::notifyBack() { }
 void ExaminationEntity::notifyForward() { }
 void ExaminationEntity::notifyGotoFirst() { }

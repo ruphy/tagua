@@ -42,7 +42,7 @@ shared_ptr<Engine> EngineInfo::engine() {
   if (m_details.type == EngineDetails::XBoard)
     res = shared_ptr<Engine>(new XBoardEngine(m_details.path, QStringList()));
   else {
-    ERROR("Unimplemented engine type " << m_details.type);
+    ERROR("Unimplemented engine type " << EngineDetails::typeName(m_details.type));
     return shared_ptr<Engine>();
   }
 

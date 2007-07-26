@@ -23,6 +23,7 @@ class EngineEntity : public Entity
                    , public Agent
                    , public EngineNotifier {
   VariantInfo* m_variant;
+  int m_side;
   boost::shared_ptr<Engine> m_engine;
   AgentGroupDispatcher m_dispatcher;
 
@@ -30,7 +31,7 @@ class EngineEntity : public Entity
 public:
   boost::shared_ptr<Engine> engine() { return m_engine; }
 
-  EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&,
+  EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&, int side,
               const boost::shared_ptr<Engine>& engine, AgentGroup* group);
 
   virtual void notifyEngineMove(const QString&);
@@ -38,7 +39,7 @@ public:
   virtual bool canDetach() const { return true; }
 
   virtual void notifyClockUpdate(int, int) { }
-  virtual void notifyMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref);
+  virtual void notifyMove(const Index& index);
   virtual void notifyBack() { }
   virtual void notifyForward() { }
   virtual void notifyGotoFirst() { }

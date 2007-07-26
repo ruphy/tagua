@@ -12,6 +12,7 @@
 #define AGENT_H
 
 #include "fwd.h"
+class Index;
 
 class Agent {
 protected:
@@ -20,7 +21,7 @@ public:
   virtual ~Agent() { }
   Agent() : m_active(true) { }
   virtual void notifyClockUpdate(int, int) = 0;
-  virtual void notifyMove(MovePtr move, PositionPtr ref) = 0;
+  virtual void notifyMove(const Index& index) = 0;
   virtual void notifyBack() = 0;
   virtual void notifyForward() = 0;
   virtual void notifyGotoFirst() = 0;

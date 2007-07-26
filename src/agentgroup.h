@@ -26,7 +26,7 @@ public:
   void addAgent(const AgentPtr& agent);
 
   void clockUpdate(Agent* source, int, int);
-  void move(Agent* source, AbstractMove::Ptr, AbstractPosition::Ptr);
+  void move(Agent* source, const Index&);
   void back(Agent* source);
   void forward(Agent* source);
   void gotoFirst(Agent* source);
@@ -41,7 +41,7 @@ public:
   virtual ~AgentGroupDispatcher(){}
 
   virtual void clockUpdate(int, int);
-  virtual bool move(AbstractMove::Ptr, AbstractPosition::Ptr);
+  virtual bool move(const Index&);
   virtual bool back();
   virtual bool forward();
   virtual bool gotoFirst();

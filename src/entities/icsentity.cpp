@@ -58,7 +58,7 @@ void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
 
   m_game->insert(icsMove, icsPos, index);
   m_game->goTo(index);
-  m_dispatcher.move(icsMove, icsPos);
+  m_dispatcher.move(index);
 }
 
 ICSEntity::UpdateType ICSEntity::getUpdate(const Index& index) {
@@ -152,15 +152,15 @@ bool ICSEntity::attach() {
   if (m_game->lastMainlineIndex() == 0) return true;
   if (m_game->lastMainlineIndex() == 1 && m_side == 1) {
     // white already played, inform black
-    m_dispatcher.move(m_game->move(0), m_game->position(0));
+    m_dispatcher.move(0);
     return true;
   }
   return false;
 }
 
-void ICSEntity::notifyMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref) {
+void ICSEntity::notifyMove(const Index& index) {
   //Use coordinates bacause FICS is stupid and would consider bxc6 ambiguous (Bxc6)
-  m_connection->sendText(move->toString(ref));
+  m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
   //m_connection->sendText(move->SAN(ref));
 }
 

@@ -16,10 +16,11 @@
 
 using namespace boost;
 
-EngineEntity::EngineEntity(VariantInfo* variant, const shared_ptr<Game>& game,
+EngineEntity::EngineEntity(VariantInfo* variant, const shared_ptr<Game>& game, int side,
                          const shared_ptr<Engine>& engine, AgentGroup* group)
 : Entity(game)
 , m_variant(variant)
+, m_side(side)
 , m_engine(engine)
 , m_dispatcher(group, this) { }
 
@@ -29,7 +30,7 @@ void EngineEntity::executeMove(AbstractMove::Ptr move) {
   AbstractPosition::Ptr pos = ref->clone();
   pos->move(move);
   m_game->add(move, pos);
-  m_dispatcher.move(move, ref);
+  m_dispatcher.move(m_game->index());
 }
 
 void EngineEntity::notifyEngineMove(const QString& move_str) {
@@ -37,11 +38,12 @@ void EngineEntity::notifyEngineMove(const QString& move_str) {
   if (position()->testMove(move))
     executeMove(move);
   else
-    std::cout << "** engine attempted to execute an invalid move **" << std::endl;
+    ERROR("Engine attempted to execute an invalid move: " << move_str);
 }
 
-void EngineEntity::notifyMove(AbstractMove::Ptr mv, AbstractPosition::Ptr ref) {
-  m_engine->sendMove(mv, ref);
+void EngineEntity::notifyMove(const Index& index) {
+  if (m_side == -1 || m_game->position(index)->turn() == m_side)
+    m_engine->sendMove(m_game->move(index), m_game->position(index.prev()));
 }
 
 

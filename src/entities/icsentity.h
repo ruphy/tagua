@@ -55,7 +55,7 @@ public:
   virtual AbstractPosition::Ptr position() const;
 
   virtual void notifyClockUpdate(int, int) { }
-  virtual void notifyMove(AbstractMove::Ptr, AbstractPosition::Ptr);
+  virtual void notifyMove(const Index&);
   virtual void notifyBack() { }
   virtual void notifyForward() { }
   virtual void notifyGotoFirst() { }

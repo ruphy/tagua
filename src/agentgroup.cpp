@@ -9,8 +9,6 @@
 */
 
 #include "agentgroup.h"
-#include <functional>
-#include <boost/bind.hpp>
 
 using namespace boost;
 
@@ -22,14 +20,19 @@ void AgentGroup::addAgent(const AgentPtr& agent) {
   for (weak_set<Agent>::iterator i = m_agents.begin();              \
        i != m_agents.end();                                         \
        ++i) {                                                       \
-    if (i.get() != source) i->method args;                          \
-  }
+    if (i.get() != source) {                                        \
+      std::cout << "dispatching to " << i.get() << std::endl;       \
+      i->method args;                                               \
+    }                                                               \
+  }                                                                 \
+  std::cout << std::endl;
+  
 void AgentGroup::clockUpdate(Agent* source, int white, int black) {
   FORWARD(notifyClockUpdate, (white, black))
 }
 
-void AgentGroup::move(Agent* source, AbstractMove::Ptr move, AbstractPosition::Ptr ref) {
-  FORWARD(notifyMove, (move, ref))
+void AgentGroup::move(Agent* source, const Index& index) {
+  FORWARD(notifyMove, (index))
 }
 
 void AgentGroup::back(Agent* source) {
@@ -60,8 +63,8 @@ void AgentGroupDispatcher::clockUpdate(int white, int black) {
   m_group->clockUpdate(m_agent, white, black);
 }
 
-bool AgentGroupDispatcher::move(AbstractMove::Ptr move, AbstractPosition::Ptr ref) {
-  m_group->move(m_agent, move, ref);
+bool AgentGroupDispatcher::move(const Index& index) {
+  m_group->move(m_agent, index);
   return true;
 }
 

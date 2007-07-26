@@ -44,7 +44,7 @@ public:
   virtual void cancelPremove();
 
   virtual void notifyClockUpdate(int, int) { }
-  virtual void notifyMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref);
+  virtual void notifyMove(const Index&);
   virtual void notifyBack();
   virtual void notifyForward();
   virtual void notifyGotoFirst();
