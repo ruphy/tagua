@@ -68,7 +68,7 @@ int PiecePool::toLogical(const QPoint& p) const {
 
 
 void PiecePool::settingsChanged() {
-  //PieceGroup::settingsChanged();
+  
 }
 
 
@@ -231,7 +231,7 @@ void PiecePool::flipAndMoveBy(QPoint p) {
 
 
 void PiecePool::onResize(int new_size, bool force_reload) {
-  if(m_square_size == new_size && !force_reload)
+  if (m_square_size == new_size && !force_reload)
     return;
 
   m_square_size = new_size;

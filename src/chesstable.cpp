@@ -188,12 +188,12 @@ void ChessTable::layout(bool force_reload) {
   m_clocks[!x]->moveTo(clock1_position.x(), clock1_position.y());
 
   m_pools[x]->m_flipped = false;
-  m_pools[x]->onResize(pool_piece_size);
+  m_pools[x]->onResize(pool_piece_size, force_reload);
   m_pools[x]->moveTo(pool0_position.x(), pool0_position.y());
   m_pools[x]->setGridWidth(pool_width);
 
   m_pools[!x]->m_flipped = true;
-  m_pools[!x]->onResize(pool_piece_size);
+  m_pools[!x]->onResize(pool_piece_size, force_reload);
   m_pools[!x]->moveTo(pool1_position.x(), pool1_position.y());
   m_pools[!x]->setGridWidth(pool_width);
 }
