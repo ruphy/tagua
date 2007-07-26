@@ -38,8 +38,10 @@ int main(int argc, char **argv) {
     ki18n("(C) 2006 Paolo Capriotti, Maurizio Monge") );
   about.addAuthor(ki18n("Paolo Capriotti"), KLocalizedString(), "p.capriotti@gmail.com");
   about.addAuthor(ki18n("Maurizio Monge"), KLocalizedString(), "p.capriotti@gmail.com");
-  about.addCredit(ki18n("Jani Huhtanen"), KLocalizedString(), I18N_NOOP("Gaussian blur code") );
-  about.addCredit(ki18n("Rici Lake"), KLocalizedString(), I18N_NOOP("funclib lua library") );
+  about.addCredit(ki18n("Jani Huhtanen"), ki18n("Gaussian blur code"));
+  about.addCredit(ki18n("Rici Lake"), ki18n("funclib lua library"));
+  about.addCredit(ki18n("Riccardo Iaconelli"), ki18n("Various fixes and cleanups"));
+  about.addCredit(ki18n("Yann Dirson"), ki18n("Shogi theme overlays"));
 
   KCmdLineOptions options;
   KCmdLineArgs::init(argc, argv, &about);
