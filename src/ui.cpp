@@ -184,3 +184,7 @@ void UI::detach() {
   controller()->detach();
 }
 
+QString UI::currentVariant() const {
+  return controller()->variant();
+}
+

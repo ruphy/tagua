@@ -46,7 +46,7 @@ private Q_SLOTS:
   void variantChanged();
 
 public:
-  PrefTheme(QWidget *parent = 0);
+  PrefTheme(const QString&, QWidget *parent = 0);
   ~PrefTheme();
 
   void apply();

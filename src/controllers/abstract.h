@@ -40,6 +40,11 @@ public:
   virtual ~Controller() { }
 
   /**
+    * Variant associated to the controller.
+    */
+  virtual QString variant() const = 0;
+
+  /**
     * Terminate activity, create another controller and delegate everything to it.
     * @return The delegate controller, or simply @b this if controller does not need
     * to be terminated.

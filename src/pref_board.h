@@ -18,7 +18,7 @@ class PrefBoard : public QWidget
 Q_OBJECT
 
 public:
-  PrefBoard(QWidget *parent = 0);
+  PrefBoard(const QString& currentVariant, QWidget *parent = 0);
   ~PrefBoard();
 
 public Q_SLOTS:

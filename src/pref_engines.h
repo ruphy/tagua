@@ -24,7 +24,7 @@ Q_OBJECT
   
   EngineDetails& currentEngine();
 public:
-  PrefEngines(QWidget* parent = 0);
+  PrefEngines(const QString&, QWidget* parent = 0);
   ~PrefEngines();
   
   QListWidgetItem* addEngine(const EngineDetails& details);

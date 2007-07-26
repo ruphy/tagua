@@ -22,7 +22,7 @@ Q_OBJECT
   MoveList::Settings *m_settings;
 
 public:
-  PrefMoveList(QWidget *parent = 0);
+  PrefMoveList(const QString&, QWidget *parent = 0);
   ~PrefMoveList();
 
 public Q_SLOTS:

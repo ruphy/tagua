@@ -117,6 +117,14 @@ void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_agents.addAgent(m_update_agent);
 }
 
+QString EditGameController::variant() const {
+  PositionPtr pos = m_game->position();
+  if (pos)
+    return pos->variant();
+  else
+    return QString();
+}
+
 void EditGameController::setPromotionType(int type) {
   m_entity->changePromotionType(type);
 }

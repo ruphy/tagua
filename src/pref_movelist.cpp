@@ -14,7 +14,7 @@
 #include "pref_movelist.h"
 
 
-PrefMoveList::PrefMoveList(QWidget *parent)
+PrefMoveList::PrefMoveList(const QString&, QWidget *parent)
 : QWidget(parent) {
 
   setupUi(this);

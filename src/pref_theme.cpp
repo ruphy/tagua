@@ -125,7 +125,7 @@ int PrefTheme::theme_ok_for_variant(const ThemeInfo& theme_info, const QString& 
 }
 
 
-PrefTheme::PrefTheme(QWidget *parent)
+PrefTheme::PrefTheme(const QString& currentVariant, QWidget *parent)
 : QWidget(parent) {
   setupUi(this);
 
@@ -166,8 +166,18 @@ PrefTheme::PrefTheme(QWidget *parent)
   }
 
   const Variant::Variants& all = Variant::allVariants();
-  for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)
+  int index = 0;
+  int current = -1;
+  for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it) {
+    if (it->first == currentVariant) {
+      current = index;
+    }
     comboVariant->addItem(it->first, QVariant(it->first));
+    index++;
+  }
+
+  if (current != -1)
+    comboVariant->setCurrentIndex(current);
 
   variantChanged();
 }

@@ -18,7 +18,7 @@
 
 class no_engine { };
 
-PrefEngines::PrefEngines(QWidget* parent)
+PrefEngines::PrefEngines(const QString&, QWidget* parent)
 : QWidget(parent) {
   setupUi(this);
 

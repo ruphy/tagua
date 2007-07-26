@@ -61,6 +61,7 @@ public:
     AbstractPosition::Ptr startingPos = AbstractPosition::Ptr());
   virtual void setPromotionType(int);
 
+  virtual QString variant() const;
   bool addPlayingEngine(int side, const boost::shared_ptr<Engine>& engine);
   EntityToken addAnalysingEngine(const boost::shared_ptr<Engine>& engine);
   void removeAnalysingEngine(const EntityToken& token);

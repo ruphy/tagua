@@ -653,7 +653,7 @@ void MainWindow::prefHighlight() {
 #endif
 
 void MainWindow::preferences() {
-  Preferences dialog;
+  Preferences dialog(ui().currentVariant());
   int result = dialog.exec();
   if (result == QDialog::Accepted)
     dialog.apply();

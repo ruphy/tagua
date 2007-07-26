@@ -33,7 +33,7 @@ Q_OBJECT
   std::list<PrefBase*> m_pages;
 
 public:
-  Preferences(QWidget *parent = 0);
+  Preferences(const QString& currentVariant, QWidget *parent = 0);
   ~Preferences();
 
 Q_SIGNALS:

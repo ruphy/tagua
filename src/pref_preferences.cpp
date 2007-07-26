@@ -21,24 +21,24 @@
 template<typename T>
 class PrefWrapper : public PrefBase {
 private:
-  T *m_inner;
-
+  T* m_inner;
+  QString m_variant;
 public:
-  PrefWrapper(QWidget *parent = 0)
-    : PrefBase(parent)
-    , m_inner(NULL) {
-  }
+  PrefWrapper(const QString currentVariant, QWidget *parent = 0)
+  : PrefBase(parent)
+  , m_inner(0)
+  , m_variant(currentVariant) { }
 
   virtual void apply() {
-    if(m_inner)
+    if (m_inner)
       m_inner->apply();
   }
 
-  virtual void showEvent( QShowEvent * /*event*/ ) {
-    if(m_inner)
+  virtual void showEvent(QShowEvent*) {
+    if (m_inner)
       return;
 
-    m_inner = new T(this);
+    m_inner = new T(m_variant, this);
     QHBoxLayout *l = new QHBoxLayout(this);
     l->addWidget(m_inner);
     m_inner->show();
@@ -46,7 +46,7 @@ public:
 };
 
 
-Preferences::Preferences(QWidget *parent)
+Preferences::Preferences(const QString& currentVariant, QWidget *parent)
 : QDialog(parent) {
 
   setupUi(this);
@@ -57,26 +57,26 @@ Preferences::Preferences(QWidget *parent)
   PrefBase *b;
   KPageWidgetItem *i;
 
-  b = new PrefWrapper<PrefBoard>(this);
+  b = new PrefWrapper<PrefBoard>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Board");
   i->setHeader("Board preferences:");
   i->setIcon(KIcon("prefBoard"));
 
-  b = new PrefWrapper<PrefMoveList>(this);
+  b = new PrefWrapper<PrefMoveList>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Move list");
   i->setHeader("Move list preferences:");
   i->setIcon(KIcon("prefMoveList"));
 
-  b = new PrefWrapper<PrefTheme>(this);
+  b = new PrefWrapper<PrefTheme>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Theme");
   i->setHeader("Pieces & squares theme:");
   i->setIcon(KIcon("prefTheme"));
   pagePref->show();
 
-  b = new PrefWrapper<PrefEngines>(this);
+  b = new PrefWrapper<PrefEngines>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Engines");
   i->setHeader("Engines:");

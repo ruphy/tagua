@@ -14,7 +14,7 @@
 #include "pref_board.h"
 
 
-PrefBoard::PrefBoard(QWidget *parent)
+PrefBoard::PrefBoard(const QString&, QWidget *parent)
 : QWidget(parent) {
 
   setupUi(this);
