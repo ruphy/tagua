@@ -1,5 +1,17 @@
-ADD_EXECUTABLE(test_weakset
-  test_weakset.cpp)
+set(main_dir "../../src")
 
-TARGET_LINK_LIBRARIES(test_weakset
-  -lboost_unit_test_framework)
+SET(weakset_SRC
+  weakset_test.cpp
+  ../cppunit_main.cpp
+)
+
+include_directories(
+  ${Boost_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/${main_dir}
+)
+
+add_executable(weakset_test ${weakset_SRC})
+target_link_libraries(weakset_test ${CPPUNIT_LIBRARIES})
+
+add_test(weakset weakset_test)

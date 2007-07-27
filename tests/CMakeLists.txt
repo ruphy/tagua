@@ -6,6 +6,4 @@ else(CPPUNIT_FOUND)
   message("CppUnit not found. Tests requiring it will not be compiled.")
 endif(CPPUNIT_FOUND)
 
-# ADD_SUBDIRECTORY(luaimage)
-# ADD_SUBDIRECTORY(options)
-# ADD_SUBDIRECTORY(movelist)
+ADD_SUBDIRECTORY(weak_set)

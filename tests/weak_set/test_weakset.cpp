@@ -1,4 +1,3 @@
-//#define WEAK_SET_DEBUG
 #include "weakset.h"
 #include <boost/test/unit_test.hpp>
 using boost::unit_test::test_suite;

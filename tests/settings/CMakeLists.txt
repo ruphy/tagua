@@ -4,7 +4,7 @@ SET(settings_SRC
   ${main_dir}/mastersettings.cpp
   ${main_dir}/settings.cpp
   settingstest.cpp
-  main.cpp
+  ../cppunit_main.cpp
 )
 
 include_directories(
