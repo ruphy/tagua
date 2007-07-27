@@ -11,11 +11,12 @@
 #ifndef ENGINEENTITY_H
 #define ENGINEENTITY_H
 
-#include "entity.h"
 #include "agent.h"
-#include "enginenotifier.h"
-#include "tagua.h"
 #include "agentgroup.h"
+#include "enginenotifier.h"
+#include "entity.h"
+#include "index.h"
+#include "tagua.h"
 
 class Engine;
 
@@ -24,6 +25,7 @@ class EngineEntity : public Entity
                    , public EngineNotifier {
   VariantInfo* m_variant;
   int m_side;
+  Index m_last_index;
   boost::shared_ptr<Engine> m_engine;
   AgentGroupDispatcher m_dispatcher;
 

@@ -21,6 +21,7 @@ EngineEntity::EngineEntity(VariantInfo* variant, const shared_ptr<Game>& game, i
 : Entity(game)
 , m_variant(variant)
 , m_side(side)
+, m_last_index(0)
 , m_engine(engine)
 , m_dispatcher(group, this) { }
 
@@ -30,6 +31,7 @@ void EngineEntity::executeMove(AbstractMove::Ptr move) {
   AbstractPosition::Ptr pos = ref->clone();
   pos->move(move);
   m_game->add(move, pos);
+  m_last_index = m_game->index();
   m_dispatcher.move(m_game->index());
 }
 
@@ -42,8 +44,17 @@ void EngineEntity::notifyEngineMove(const QString& move_str) {
 }
 
 void EngineEntity::notifyMove(const Index& index) {
-  if (m_side == -1 || m_game->position(index)->turn() == m_side)
+  if (index == m_last_index) {
+    // TODO: check for consistency and update if necessary
+  }
+  else if (index.prev() == m_last_index) {
     m_engine->sendMove(m_game->move(index), m_game->position(index.prev()));
+    m_last_index = index;
+  }
+  else {
+    // TODO: handle move notification in arbitrary indexes
+    WARNING("engine entity can't handle index " << index << " (m_last_index = " << m_last_index << ")");
+  }
 }
 
 
