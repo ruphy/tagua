@@ -141,20 +141,24 @@ if(COMPILER_HAVE_X86_SSE2)
 endif(COMPILER_HAVE_X86_SSE2)
 
 
-kde4_add_executable(
-  tagua ${tagua_SRC}
+kde4_add_library(
+  libtagua STATIC ${tagua_SRC}
 )
+
+kde4_add_executable(tagua)
 
 link_directories(
   ${LUA_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
 )
 
-target_link_libraries(tagua
+target_link_libraries(libtagua 
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
   kdegames
 )
+
+target_link_libraries(tagua libtagua)
 
 INSTALL(TARGETS tagua DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES tagua.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
