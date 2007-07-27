@@ -494,7 +494,7 @@ M Position<M, P, B>::getMove(const AlgebraicNotation& san, bool& ok) const {
   }
 
   if (san.from.valid()) {
-    candidate = M(san.from, san.to);
+    candidate = M(san.from, san.to, static_cast<typename P::Type>(san.promotion));
   }
   else {
     for (Point i = first(); i <= last(); i = next(i)) {

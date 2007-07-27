@@ -16,10 +16,10 @@
 
 //BEGIN AlgebraicNotation
 
-//                                        1           2          3
+//                                        1           2                   3
 QRegExp AlgebraicNotation::pattern("^([PRNBKQ])?([a-wyzA-Z]?\\d*|x\\d+)([-x@])?"
-//                                       4       5    6
-                                   "([a-zA-Z]\\d+)(=([RNBKQ]))?[+#]?[\?!]*");
+//                                       4         5        6
+                                   "([a-zA-Z]\\d+)(=?([RNBKQrnbkq]))?[+#]?[\?!]*");
 QRegExp AlgebraicNotation::kingCastlingPattern("^[oO0]-?[oO0][+#]?");
 QRegExp AlgebraicNotation::queenCastlingPattern("^[oO0]-?[oO0]-?[oO0][+#]?");
 QRegExp AlgebraicNotation::nonePattern("^none");
@@ -63,18 +63,15 @@ void AlgebraicNotation::init(const QString& str, int& offset, int ysize) {
     offset += nonePattern.matchedLength();
   }
   else if (pattern.indexIn(str, offset, QRegExp::CaretAtOffset) != -1) {
-    //std::cout << "matched " << pattern.cap(0) << std::endl;
     type = ChessPiece::getType(pattern.cap(1));
     drop = pattern.cap(3) == "@";
     if (drop)
       from = Point::invalid();
     else
       from = Point(pattern.cap(2), ysize);
-
     to = Point(pattern.cap(4), ysize);
     promotion = pattern.cap(6).isEmpty() ? -1 : ChessPiece::getType(pattern.cap(6));
     castling = NoCastling;
-
     offset += pattern.matchedLength();
   }
   else if (queenCastlingPattern.indexIn(str, offset, QRegExp::CaretAtOffset) != -1) {
