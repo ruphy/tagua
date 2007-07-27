@@ -22,7 +22,7 @@ QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
     QFile f(m_filename);
     if (!f.open(QFile::ReadOnly | QFile::Text) || !m_doc.setContent(&f)) {
-      ERROR("Unable to open configuration file for reading.");
+      WARNING("Unable to open configuration file for reading.");
 
 //       // create a stub configuration file
 //       {
@@ -58,8 +58,11 @@ MasterSettings::MasterSettings() {
   m_filename = KStandardDirs::locateLocal("config", "taguarc.xml");
 }
 
-MasterSettings::MasterSettings(const QString& filename) {
-  m_filename = KStandardDirs::locateLocal("config", filename);
+MasterSettings::MasterSettings(const QString& filename, LookupType lookup) {
+  if (lookup == PathLookup)
+    m_filename = filename;
+  else
+    m_filename = KStandardDirs::locateLocal("config", filename);
 }
 
 MasterSettings::~MasterSettings() {

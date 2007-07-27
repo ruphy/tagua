@@ -21,6 +21,12 @@
 class MasterSettings : public QObject
                      , public Settings {
 Q_OBJECT
+public:
+  enum LookupType {
+    PathLookup,
+    StandardDirsLookup
+  };
+private:
   struct Observer {
     QObject* object;
     const char* dependency;
@@ -45,7 +51,7 @@ protected:
   virtual QDomElement node() const;
 
 public:
-  MasterSettings(const QString& file);
+  MasterSettings(const QString& file, LookupType lookup = StandardDirsLookup);
   
   /**
     * Bind to the local configuration file.
