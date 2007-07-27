@@ -140,25 +140,31 @@ if(COMPILER_HAVE_X86_SSE2)
   set_source_files_properties(imageeffects.cpp PROPERTIES COMPILE_FLAGS -DHAVE_X86_SSE2)
 endif(COMPILER_HAVE_X86_SSE2)
 
+if(DEBUG_BUILD)
+  set(TAGUA_TARGET libtagua)
+  
+  kde4_add_library(libtagua STATIC ${tagua_SRC})
+  kde4_add_executable(tagua)
+else(DEBUG_BUILD)
+  set(TAGUA_TARGET tagua)
+  kde4_add_executable(tagua ${tagua_SRC})
+endif(DEBUG_BUILD)
 
-kde4_add_library(
-  libtagua STATIC ${tagua_SRC}
-)
-
-kde4_add_executable(tagua)
 
 link_directories(
   ${LUA_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
 )
-
-target_link_libraries(libtagua 
+target_link_libraries(${TAGUA_TARGET}
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
   kdegames
-)
+)  
+  
+if(DEBUG_BUILD)
+  target_link_libraries(tagua libtagua)
+endif(DEBUG_BUILD)
 
-target_link_libraries(tagua libtagua)
 
 INSTALL(TARGETS tagua DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
 install(FILES tagua.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

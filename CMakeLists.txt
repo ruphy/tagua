@@ -4,6 +4,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 include(Tagua)
 
+string(REGEX MATCH "debug" DEBUG_BUILD ${CMAKE_BUILD_TYPE})
+
 # boost
 FIND_PACKAGE(Boost)
 
