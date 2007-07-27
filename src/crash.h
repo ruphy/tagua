@@ -11,6 +11,11 @@
 #ifndef CRASH_H
 #define CRASH_H
 
-void installCrashHander();
+#include "export.h"
+
+class TAGUA_EXPORT CrashHandler {
+public:
+  static void install();
+};
 
 #endif //CRASH_H

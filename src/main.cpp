@@ -19,7 +19,6 @@
 
 #include "mainwindow.h"
 #include "crash.h"
-#include "common.h"
 
 static const char description[] = "A generic board game interface";
 
@@ -50,7 +49,7 @@ int main(int argc, char **argv) {
 
 #ifdef TAGUA_DEBUG
   // So you can attach the debugger in case of segfault.
-  installCrashHander();
+  CrashHandler::install();
   atexit(trap);
 #endif // TAGUA_DEBUG
 

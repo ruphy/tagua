@@ -16,9 +16,11 @@
 #include <QSpinBox>
 #include <QLineEdit>
 #include <QRadioButton>
-#include "kurlrequester.h"
-#include "kcolorbutton.h"
-#include "kfontrequester.h"
+
+#include <KUrlRequester>
+#include <KColorButton>
+#include <KFontRequester>
+
 #include "option.h"
 
 class OptCheckBox : public QCheckBox {

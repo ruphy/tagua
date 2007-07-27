@@ -44,7 +44,6 @@ set(tagua_SRC
   option.cpp
   graphicalsystem.cpp
   agentgroup.cpp
-  main.cpp
   graphicalgame.cpp
   imageeffects.cpp
   crash.cpp
@@ -141,28 +140,32 @@ if(COMPILER_HAVE_X86_SSE2)
 endif(COMPILER_HAVE_X86_SSE2)
 
 if(DEBUG_BUILD)
-  set(TAGUA_TARGET libtagua)
+  set(TAGUA_TARGET taguaprivate)
   
-  kde4_add_library(libtagua STATIC ${tagua_SRC})
-  kde4_add_executable(tagua)
+  kde4_add_library(taguaprivate SHARED ${tagua_SRC})
+  kde4_add_executable(tagua main.cpp)
 else(DEBUG_BUILD)
   set(TAGUA_TARGET tagua)
-  kde4_add_executable(tagua ${tagua_SRC})
+  kde4_add_executable(tagua main.cpp ${tagua_SRC})
 endif(DEBUG_BUILD)
 
 
 link_directories(
   ${LUA_LIBRARY_DIRS}
   ${Boost_LIBRARY_DIRS}
+  ${CMAKE_BINARY_DIR}/lib
 )
 target_link_libraries(${TAGUA_TARGET}
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
+  ${KDE4_KIO_LIBS}
+  dl
   kdegames
 )  
   
 if(DEBUG_BUILD)
-  target_link_libraries(tagua libtagua)
+  target_link_libraries(tagua taguaprivate)
+  install(TARGETS taguaprivate DESTINATION ${LIB_INSTALL_DIR})
 endif(DEBUG_BUILD)
 
 

@@ -23,6 +23,7 @@
 
 #include "ui.h"
 #include "common.h"
+#include "export.h"
 
 class ChessTable;
 class ICSConnection;
@@ -40,7 +41,7 @@ class QActionGroup;
 class KAction;
 class KIcon;
 
-class MainWindow : public KXmlGuiWindow {
+class TAGUA_EXPORT MainWindow : public KXmlGuiWindow {
 Q_OBJECT
   QDockWidget* movelist_dock;
   QDockWidget* console_dock;
