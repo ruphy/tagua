@@ -159,9 +159,10 @@ bool ICSEntity::attach() {
 }
 
 void ICSEntity::notifyMove(const Index& index) {
-  //Use coordinates bacause FICS is stupid and would consider bxc6 ambiguous (Bxc6)
-  m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
-  //m_connection->sendText(move->SAN(ref));
+  // only send mainline moves
+  if (index.mainLine()) {
+    m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
+  }
 }
 
 void ICSEntity::requestMoves() {

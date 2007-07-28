@@ -1,3 +1,4 @@
+
 /*
   Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
@@ -196,3 +197,8 @@ std::pair<int, int> Index::stepsTo(const Index& ix) const {
 int Index::lastIndex() {
   return nested.size() ? nested[nested.size()-1].num_moves : num_moves;
 }
+
+bool Index::mainLine() const {
+  return nested.empty();
+}
+

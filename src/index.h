@@ -111,6 +111,9 @@ public:
 
   /** \return an index from a string like "1_2.3_4.5" */
   static Index fromString(const QString& s);
+  
+  /** \return whether this index points to the mainline */
+  bool mainLine() const;
 };
 
 #endif //INDEX_H

@@ -23,8 +23,7 @@ void AgentGroup::addAgent(const AgentPtr& agent) {
     if (i.get() != source) {                                        \
       i->method args;                                               \
     }                                                               \
-  }                                                                 \
-  std::cout << std::endl;
+  }
   
 void AgentGroup::clockUpdate(Agent* source, int white, int black) {
   FORWARD(notifyClockUpdate, (white, black))
