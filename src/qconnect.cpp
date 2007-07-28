@@ -11,7 +11,9 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QCheckBox>
-#include <QFileDialog>
+
+#include <KFileDialog>
+#include <KMessageBox>
 
 #include <iostream>
 #include "qconnect.h"
@@ -51,9 +53,15 @@ QConnect::QConnect(QWidget *parent, const char *name)
 }
 
 void QConnect::setTimesealPath() {
-  QString t = QFileDialog::getOpenFileName();
-  if(!t.isEmpty())
-    editTimeseal->setText(t);
+  KUrl url = KFileDialog::getOpenUrl(KUrl(), "*", this, i18n("Select timeseal binary"));
+  
+  if (!url.isLocalFile()) {
+    KMessageBox::sorry(0, i18n("Only local executables supported"));
+    return;
+  }
+  
+  if (!url.isEmpty())
+    editTimeseal->setText(url.path());
 }
 
 void QConnect::accept() {
