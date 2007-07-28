@@ -46,7 +46,7 @@ function addChar(char, promoted)
   end
 end
 
-function draw_arrowhead(i, x,y, vx,vy, length, rwidth, linecolor,linewidth)
+function draw_arrowhead(i, p, vx,vy, length, rwidth, linecolor,linewidth)
   -- normalize to 1 the direction vector
   local vl = (vx*vx + vy*vy)^0.5
   vx,vy = vx/vl, vy/vl
@@ -55,8 +55,8 @@ function draw_arrowhead(i, x,y, vx,vy, length, rwidth, linecolor,linewidth)
   -- an orthogonal vector of requested relative width
   local vxortho,vyortho = vydirect*rwidth, -vxdirect*rwidth
 
-  i:draw_line(Point(x,y),Point(x+vxdirect+vxortho,y-vydirect-vyortho), linecolor,linewidth)
-  i:draw_line(Point(x,y),Point(x+vxdirect-vxortho,y-vydirect+vyortho), linecolor,linewidth)
+  i:draw_line(p,Point(p.x+vxdirect+vxortho,p.y-vydirect-vyortho), linecolor,linewidth)
+  i:draw_line(p,Point(p.x+vxdirect-vxortho,p.y-vydirect+vyortho), linecolor,linewidth)
 end
 
 function shogi_moves(...)
@@ -76,9 +76,9 @@ function shogi_moves(...)
     for index,move in ipairs(moves) do
       local x,y,long = move[1],move[2],move[3]
       if long then
-	x2, y2 = xcenter+1.5*x*width, ycenter-1.5*y*width
-	i:draw_line(centerpoint, Point(x2,y2),"purple",1)
-	draw_arrowhead(i, x2,y2, x,y, arrowlen,arrowrwidth, "purple",1)
+	local p2 = Point(xcenter+1.5*x*width, ycenter-1.5*y*width)
+	i:draw_line(centerpoint,p2, "purple",1)
+	draw_arrowhead(i, p2, x,y, arrowlen,arrowrwidth, "purple",1)
       else
 	i:draw_line(centerpoint, Point(xcenter+x*width,ycenter-y*width),"red",1)
 	i:fill_rect(Rect(xcenter+x*width-shortsize/2, ycenter-y*width-shortsize/2,
@@ -179,6 +179,7 @@ theme.white_p_pawn    = shogi_piece("0x50", true, true, 0.8,
 				    {-1,0},{1,0},{0,-1})
 
 -- To be able to adapt this theme to chess too
+-- should use a Free King (\u5954\u738b) instead 
 theme.black_queen  = theme.black_gold
 theme.white_queen  = theme.white_gold
 
