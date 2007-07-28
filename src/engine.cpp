@@ -23,7 +23,7 @@ using namespace boost;
 Engine::Engine(const QString& path, const QStringList& arguments)
 : m_path(path)
 , m_arguments(arguments) {
-  connect(&m_engine, SIGNAL(readyRead()), this, SLOT(processInput()));
+  connect(&m_engine, SIGNAL(readyReadStandardOutput()), this, SLOT(processInput()));
   connect(&m_engine, SIGNAL(finished(int, QProcess::ExitStatus)), 
           this, SIGNAL(lostConnection()));
 }
@@ -33,7 +33,10 @@ Engine::~Engine() { }
 void Engine::start() {
   if (!m_workPath.isNull())
     m_engine.setWorkingDirectory(m_workPath);
-  m_engine.start(m_path, m_arguments);
+
+  m_engine.setOutputChannelMode(KProcess::OnlyStdoutChannel);
+  m_engine.setProgram(m_path, m_arguments);
+  m_engine.start();
   initializeEngine();
 }
 

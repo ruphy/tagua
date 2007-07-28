@@ -11,7 +11,7 @@
 #ifndef ENGINE_H
 #define ENGINE_H
 
-#include <QProcess>
+#include <KProcess>
 #include <boost/weak_ptr.hpp>
 #include "console.h"
 #include "tagua.h"
@@ -31,7 +31,7 @@ Q_OBJECT
 protected:
   QString m_path;
   QStringList m_arguments;
-  QProcess m_engine;
+  KProcess m_engine;
   QString m_workPath;
   boost::shared_ptr<Console> m_console;
   boost::weak_ptr<EngineNotifier> m_notifier;
