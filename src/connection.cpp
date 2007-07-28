@@ -13,11 +13,12 @@
 #include <iostream>
 
 #include <QHostInfo>
-#include <QProcess>
 #include <QTextStream>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QFile>
+
+#include <KProcess>
 
 #include "common.h"
 #include "settings.h"
@@ -42,9 +43,9 @@ Connection::~Connection() {
     logFile->close();
     delete logFile;
   }
-  if(m_device) {
-    QProcess *p = qobject_cast<QProcess*>(m_device);
-    if(p)
+  if (m_device) {
+    KProcess* p = qobject_cast<KProcess*>(m_device);
+    if (p)
       p->kill();
     delete m_device;
   }
@@ -52,9 +53,9 @@ Connection::~Connection() {
 
 void Connection::establish(const char* host, quint16 port,
                   const QString& helper, const QString& helper_cmd) {
-  if(m_device) {
-    QProcess *p = qobject_cast<QProcess*>(m_device);
-    if(p)
+  if (m_device) {
+    KProcess* p = qobject_cast<KProcess*>(m_device);
+    if (p)
       p->kill();
     delete m_device;
   }
@@ -64,7 +65,7 @@ void Connection::establish(const char* host, quint16 port,
   m_helper = helper;
   m_helper_cmd = helper_cmd;
 
-  if(helper.isEmpty()) {
+  if (helper.isEmpty()) {
     QTcpSocket *s = new QTcpSocket(this);
     s->setObjectName("IcsSocket");
 
@@ -78,42 +79,41 @@ void Connection::establish(const char* host, quint16 port,
     m_connected = true;
   }
   else {
-    m_device = new QProcess(this);
+    m_device = new KProcess(this);
     m_device->setObjectName("IcsHelper");
 
-    if(m_helper_cmd.contains("$(HOST_IP)")) {
+    if (m_helper_cmd.contains("$(HOST_IP)")) {
       QHostInfo::lookupHost(m_host, this, SLOT(lookedUp(const QHostInfo)));
     }
-    else
-      lookedUp( QHostInfo() );
+    else {
+      lookedUp(QHostInfo());
+    }
   }
 
   connect(m_device, SIGNAL(readyRead()), this, SLOT(processLine()));
 }
 
 void Connection::lookedUp(const QHostInfo &hi) {
-  QProcess *p = m_device ? qobject_cast<QProcess*>(m_device) : NULL;
-  if(!p)
-    return;
-
-  //std::cout << "Resolved to \"" << (hi.addresses().isEmpty() ? QString() :
-  //                            hi.addresses().first().toString ()) << "\" "
-  //                            << hi.errorString() << std::endl;
-  QString args = m_helper_cmd;
-  args.replace("$(HOST_NAME)", QString(m_host) );
-  args.replace("$(HOST_IP)", hi.addresses().isEmpty() ? QString() :
-                                   hi.addresses().first().toString () );
-  args.replace("$(PORT)", QString::number(m_port));
-  p->start(m_helper, args.split(' '));
-
-  m_connected = true;
-  if(!m_unsent_text.isEmpty()) {
-    QTextStream os(m_device);
-    os << m_unsent_text;
-
-    if (logStream)
-      (*logStream) << "> " << m_unsent_text;
-    m_unsent_text = QString();
+  KProcess* p = m_device ? qobject_cast<KProcess*>(m_device) : NULL;
+  if (p) {
+    QString args = m_helper_cmd;
+    args.replace("$(HOST_NAME)", QString(m_host) );
+    args.replace("$(HOST_IP)", hi.addresses().isEmpty() ? QString() :
+                                    hi.addresses().first().toString () );
+    args.replace("$(PORT)", QString::number(m_port));
+    p->setOutputChannelMode(KProcess::OnlyStdoutChannel);
+    p->setProgram(m_helper, args.split(' '));
+    p->start();
+  
+    m_connected = true;
+    if(!m_unsent_text.isEmpty()) {
+      QTextStream os(m_device);
+      os << m_unsent_text;
+  
+      if (logStream)
+        (*logStream) << "> " << m_unsent_text;
+      m_unsent_text = QString();
+    }
   }
 }
 
