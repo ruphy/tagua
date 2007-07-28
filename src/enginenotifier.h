@@ -11,9 +11,11 @@
 #ifndef ENGINENOTIFIER_H
 #define ENGINENOTIFIER_H
 
+#include <boost/enable_shared_from_this.hpp>
+
 class QString;
 
-class EngineNotifier {
+class EngineNotifier : public boost::enable_shared_from_this<EngineNotifier> {
 public:
   virtual ~EngineNotifier() { }
   virtual void notifyEngineMove(const QString&) = 0;

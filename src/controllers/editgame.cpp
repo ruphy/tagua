@@ -9,6 +9,9 @@
 */
 
 #include "editgame.h"
+
+#include <QStack>
+
 #include "graphicalgame.h"
 #include "graphicalsystem.h"
 #include "xboardengine.h"
@@ -137,15 +140,10 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
   if (m_players[side]->canDetach()) {
     shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, side,
                                                   engine, &m_agents));
-
-    std::cout << "added engine agent " << entity.get() << std::endl;
+    entity->setup();
+    
     m_agents.addAgent(entity);
-
     m_players[side] = entity;
-    engine->setNotifier(entity);
-    engine->start();
-    engine->reset(side);
-    // TODO: set engine state appropriately
 
     setUserLiberties();
   }

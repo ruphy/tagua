@@ -64,10 +64,13 @@ void XBoardEngine::initializeEngine() {
   sendCommand("nopost");
 }
 
-void XBoardEngine::reset(int side) {
-  sendCommand("force");
-  sendCommand("new");
-  if (side == 0 && !m_analysing) sendCommand("go");
+void XBoardEngine::reset() {
+  sendCommand("new"); // start a new game
+  sendCommand("force"); // do not think
+}
+
+void XBoardEngine::play() {
+  sendCommand("go"); // start playing
 }
 
 void XBoardEngine::stop() {

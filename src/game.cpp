@@ -165,7 +165,7 @@ PositionPtr Game::position() const {
 PositionPtr Game::position(const Index& index) const {
   Entry *e = (Entry*)fetch(index);
   if(!e) {
-    ERROR("Index out of range!");
+    ERROR("Index " << index << " out of range!");
     return PositionPtr();
   }
   return e->position;

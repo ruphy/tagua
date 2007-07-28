@@ -42,7 +42,7 @@ public:
 
   /** Constructor, you can contruct it from an integer that
       is the number of moves played in the main line */
-  Index(int n) : num_moves(n) {}
+  Index(int n = -1) : num_moves(n) {}
 
   /** return a string like "1_2.3_4.5" */
   operator QString() const;

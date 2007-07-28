@@ -98,7 +98,12 @@ public:
   /**
     * Begin a new game.
     */
-  virtual void reset(int side);
+  virtual void reset();
+  
+  /**
+    * Start playing.
+    */
+  virtual void play();
 
   /**
     * Stop the engine.

@@ -22,7 +22,6 @@ protected:
   
   GamePtr m_game;
 public:
-
   explicit Entity(const GamePtr& game);
   /**
     * Detach from dependent resource disposing it.

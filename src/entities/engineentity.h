@@ -26,15 +26,16 @@ class EngineEntity : public Entity
   VariantInfo* m_variant;
   int m_side;
   Index m_last_index;
+  bool m_playing;
   boost::shared_ptr<Engine> m_engine;
   AgentGroupDispatcher m_dispatcher;
 
-  void executeMove(AbstractMove::Ptr move);
 public:
   boost::shared_ptr<Engine> engine() { return m_engine; }
 
   EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&, int side,
               const boost::shared_ptr<Engine>& engine, AgentGroup* group);
+  void setup();
 
   virtual void notifyEngineMove(const QString&);
 

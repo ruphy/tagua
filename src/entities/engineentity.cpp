@@ -12,7 +12,9 @@
 #include "game.h"
 #include "algebraicnotation.h"
 #include "engine.h"
+
 #include <iostream>
+#include <stack>
 
 using namespace boost;
 
@@ -22,23 +24,55 @@ EngineEntity::EngineEntity(VariantInfo* variant, const shared_ptr<Game>& game, i
 , m_variant(variant)
 , m_side(side)
 , m_last_index(0)
+, m_playing(false)
 , m_engine(engine)
 , m_dispatcher(group, this) { }
 
-void EngineEntity::executeMove(AbstractMove::Ptr move) {
-  Q_ASSERT(move);
-  AbstractPosition::Ptr ref = position();
-  AbstractPosition::Ptr pos = ref->clone();
-  pos->move(move);
-  m_game->add(move, pos);
+void EngineEntity::setup() {
+  // setup engine
+  m_engine->setNotifier(shared_from_this());
+  m_engine->start();
+  m_engine->reset();
+  
+  // find all indexes of the current variation
+  std::stack<Index> m_indexes;
+  Index index = m_game->index();
+  while (index != 0) {
+    m_indexes.push(index);
+    std::cout << "pushed index " << index << std::endl;
+    index = index.prev();
+  }
+  
+  // set engine state playing all moves
+  // in the current variation
+  while (!m_indexes.empty()) {
+    PositionPtr pos = m_game->position(index);
+    std::cout <<  "REF:" << std::endl;
+    pos->dump();
+    
+    index = m_indexes.top();
+    m_indexes.pop();
+    
+    MovePtr move = m_game->move(index);
+    std::cout << "move = " << move->toString(pos) << std::endl;
+    
+    m_engine->sendMove(move, pos);
+  }
+  
   m_last_index = m_game->index();
-  m_dispatcher.move(m_game->index());
 }
 
 void EngineEntity::notifyEngineMove(const QString& move_str) {
   AbstractMove::Ptr move = position()->getMove(AlgebraicNotation(move_str, position()->size().y));
-  if (position()->testMove(move))
-    executeMove(move);
+  if (position()->testMove(move)) {
+    Q_ASSERT(move);
+    AbstractPosition::Ptr ref = position();
+    AbstractPosition::Ptr pos = ref->clone();
+    pos->move(move);
+    m_game->add(move, pos);
+    m_last_index = m_game->index();
+    m_dispatcher.move(m_game->index());
+  }
   else
     ERROR("Engine attempted to execute an invalid move: " << move_str);
 }
@@ -48,8 +82,13 @@ void EngineEntity::notifyMove(const Index& index) {
     // TODO: check for consistency and update if necessary
   }
   else if (index.prev() == m_last_index) {
+    // play move
     m_engine->sendMove(m_game->move(index), m_game->position(index.prev()));
     m_last_index = index;
+    if (!m_playing && m_side == m_game->position(index)->turn()) {
+      m_engine->play();
+      m_playing = true;
+    }
   }
   else {
     // TODO: handle move notification in arbitrary indexes
