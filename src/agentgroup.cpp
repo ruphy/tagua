@@ -21,7 +21,6 @@ void AgentGroup::addAgent(const AgentPtr& agent) {
        i != m_agents.end();                                         \
        ++i) {                                                       \
     if (i.get() != source) {                                        \
-      std::cout << "dispatching to " << i.get() << std::endl;       \
       i->method args;                                               \
     }                                                               \
   }                                                                 \
