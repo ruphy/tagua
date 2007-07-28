@@ -30,6 +30,7 @@ class EngineEntity : public Entity
   boost::shared_ptr<Engine> m_engine;
   AgentGroupDispatcher m_dispatcher;
 
+  void checkPlaying();
 public:
   boost::shared_ptr<Engine> engine() { return m_engine; }
 

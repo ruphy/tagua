@@ -60,6 +60,7 @@ void EngineEntity::setup() {
   }
   
   m_last_index = m_game->index();
+  checkPlaying();
 }
 
 void EngineEntity::notifyEngineMove(const QString& move_str) {
@@ -77,6 +78,14 @@ void EngineEntity::notifyEngineMove(const QString& move_str) {
     ERROR("Engine attempted to execute an invalid move: " << move_str);
 }
 
+void EngineEntity::checkPlaying() {
+  if (!m_playing && m_side == 
+      m_game->position(m_last_index)->turn()) {
+    m_engine->play();
+    m_playing = true;
+  }
+}
+
 void EngineEntity::notifyMove(const Index& index) {
   if (index == m_last_index) {
     // TODO: check for consistency and update if necessary
@@ -85,10 +94,7 @@ void EngineEntity::notifyMove(const Index& index) {
     // play move
     m_engine->sendMove(m_game->move(index), m_game->position(index.prev()));
     m_last_index = index;
-    if (!m_playing && m_side == m_game->position(index)->turn()) {
-      m_engine->play();
-      m_playing = true;
-    }
+    checkPlaying();
   }
   else {
     // TODO: handle move notification in arbitrary indexes
