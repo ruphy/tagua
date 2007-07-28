@@ -10,8 +10,6 @@
 
 #include "editgame.h"
 
-#include <QStack>
-
 #include "graphicalgame.h"
 #include "graphicalsystem.h"
 #include "xboardengine.h"
