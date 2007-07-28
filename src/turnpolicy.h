@@ -27,27 +27,6 @@ namespace TurnPolicy {
   };
   
   /**
-    * The user can always move in this turn.
-    */
-  class Always : public Abstract {
-  public:
-    virtual bool check() const { return true; }
-  };
-  
-  boost::shared_ptr<Always> always();
-  
-  /**
-    * The user cannot move in this turn. A null pointer in turn test
-    * has the same effect of this class.
-    */
-  class Never : public Abstract {
-  public:
-    virtual bool check() const { return false; }
-  };
-  
-  boost::shared_ptr<Never> never();
-  
-  /**
     * Premove policy. Used to check whether premoving is allowed.
     * It is a <i>global</i> policy.
     */

@@ -14,13 +14,12 @@ namespace TurnPolicy {
 
   Abstract::~Abstract() { }
 
-  boost::shared_ptr<Always> always() { 
-    return boost::shared_ptr<Always>(new Always); 
-  }
-  
-  boost::shared_ptr<Never> never() { 
-    return boost::shared_ptr<Never>(new Never); 
-  }
+  class Simple : public Abstract {
+    bool m_value;
+  public:
+    Simple(bool value) : m_value(value) { }
+    bool check() const { return m_value; }
+  };
 
   Premove::~Premove() { }
 
@@ -39,10 +38,7 @@ namespace TurnPolicy {
   }
   
   void Collection::setSimplePolicy(int turn, bool value) {
-    if (value)
-      setPolicy(turn, always());
-    else
-      setPolicy(turn, never());
+    setPolicy(turn, boost::shared_ptr<Simple>(new Simple(value)));
   }
   
   void Collection::clear() {
