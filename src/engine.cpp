@@ -24,6 +24,7 @@ Engine::Engine(const QString& path, const QStringList& arguments)
 : m_path(path)
 , m_arguments(arguments) {
   connect(&m_engine, SIGNAL(readyReadStandardOutput()), this, SLOT(processInput()));
+  connect(&m_engine, SIGNAL(started()), this, SLOT(engineRunning()));
   connect(&m_engine, SIGNAL(finished(int, QProcess::ExitStatus)), 
           this, SIGNAL(lostConnection()));
 }
@@ -40,14 +41,28 @@ void Engine::start() {
   initializeEngine();
 }
 
+void Engine::engineRunning() {
+  Q_ASSERT(m_engine.state() == QProcess::Running);
+  while (!m_command_queue.empty()) {
+    sendCommand(m_command_queue.front(), false);
+    m_command_queue.pop();
+  }
+}
+
 void Engine::sendCommand(const QString& command, bool echo) {
-  QTextStream os(&m_engine);
-  os << command << "\n";
   if (echo && m_console)
     m_console->echo(command);
+    
+  if (m_engine.state() == QProcess::Running) {
+    QTextStream os(&m_engine);
+    os << command << "\n";
 #ifdef ENGINE_DEBUG
-  std::cout << "> " << command << std::endl;
-#endif
+    std::cout << "> " << command << std::endl;
+#endif 
+  }
+  else {
+    m_command_queue.push(command);
+  }
 }
 
 void Engine::processInput() {

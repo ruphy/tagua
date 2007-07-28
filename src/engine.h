@@ -12,7 +12,10 @@
 #define ENGINE_H
 
 #include <KProcess>
+
 #include <boost/weak_ptr.hpp>
+#include <queue>
+
 #include "console.h"
 #include "tagua.h"
 
@@ -35,6 +38,7 @@ protected:
   QString m_workPath;
   boost::shared_ptr<Console> m_console;
   boost::weak_ptr<EngineNotifier> m_notifier;
+  std::queue<QString> m_command_queue;
 
   virtual void initializeEngine() = 0;
 public:
@@ -99,6 +103,7 @@ public:
   void setNotifier(const boost::shared_ptr<EngineNotifier>& notifier);
   void setConsole(const boost::shared_ptr<Console>& console);
 private Q_SLOTS:
+  void engineRunning();
   void processInput();
 
 Q_SIGNALS:
