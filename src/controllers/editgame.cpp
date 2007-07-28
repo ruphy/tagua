@@ -101,8 +101,9 @@ EditGameController::EditGameController(ChessTable* view,
 void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-
-  setUserLiberties();
+  m_entity->turnTest().setPolicy(0, TurnPolicy::always());
+  m_entity->turnTest().setPolicy(1, TurnPolicy::always());  
+  
   if (startingPosition) {
     // TODO update to the starting position
   }
@@ -143,8 +144,9 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
     
     m_agents.addAgent(entity);
     m_players[side] = entity;
-
-    setUserLiberties();
+    
+    // the user cannot move the entity's pieces
+    m_entity->turnTest().setPolicy(side, TurnPolicy::never());
   }
   else {
     std::cout << "** could not detach entity playing " << side << "**" << std::endl;
@@ -185,8 +187,9 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
       m_players[side] = entity;
       connection->setListener(game_number, entity);
 
-      Role user_role = setUserLiberties();
-      m_view->flip(user_role & PlayingBlack);
+      m_entity->turnTest().setPolicy(side, entity->turnPolicy());
+      m_entity->turnTest().setPremove(true); // activate premove on ICS
+      m_view->flip(m_players[1] == m_entity); // flip if we're black!
 
       m_agents.addAgent(m_clock_agent);
     }
@@ -256,31 +259,6 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
   return false;
 }
 
-EditGameController::Role EditGameController::setUserLiberties() {
-  int role = NotPlaying;
-  
-  if (m_players[0] == m_entity) {
-    m_entity->turnTest().setPolicy(0, TurnPolicy::always());
-    role |= PlayingWhite;
-  }
-  else {
-    m_entity->turnTest().setPolicy(0, TurnPolicy::never());
-  }
-  
-  if (m_players[1] == m_entity) {
-    m_entity->turnTest().setPolicy(1, TurnPolicy::always());
-    role |= PlayingBlack;
-  }
-  else {
-    m_entity->turnTest().setPolicy(1, TurnPolicy::never());
-  }
-    
-  m_entity->turnTest().setPremove(role == PlayingWhite ^ role == PlayingBlack);
-  m_entity->enableEditingTools(role == PlayingWhite | PlayingBlack);
-  
-  return static_cast<EditGameController::Role>(role);
-}
-
 void EditGameController::loadPGN(const PGN& pgn) {
   end();
   m_view->resetClock();
@@ -314,7 +292,8 @@ shared_ptr<Controller> EditGameController::end() {
   // return to edit game mode
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-  setUserLiberties();
+  m_entity->turnTest().setPolicy(0, TurnPolicy::always());
+  m_entity->turnTest().setPolicy(1, TurnPolicy::always());
 
   return Controller::end();
 }

@@ -41,6 +41,7 @@ namespace TurnPolicy {
   
   void Collection::clear() {
     m_policies.clear();
+    m_premove = false;
   }
   
   void Collection::setPremove(bool value) {

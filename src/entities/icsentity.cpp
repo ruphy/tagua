@@ -178,6 +178,10 @@ int ICSEntity::side() const {
   return m_side;
 }
 
+shared_ptr<TurnPolicy::Abstract> ICSEntity::turnPolicy() const {
+  return shared_ptr<TurnPolicy::Abstract>(new ICSTurnPolicy(this));
+}
+
 
 ObservingEntity::ObservingEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                    int gameNumber,const shared_ptr<ICSConnection>& connection, AgentGroup* group)
@@ -194,14 +198,9 @@ ObservingEntity::~ObservingEntity() {
 }
 
 
-ICSTurnPolicy::ICSTurnPolicy(const shared_ptr<ICSEntity>& entity)
+ICSTurnPolicy::ICSTurnPolicy(const ICSEntity* entity)
 : m_entity(entity) { }
 
 bool ICSTurnPolicy::check() const {
-  if (shared_ptr<ICSEntity> entity = m_entity.lock()) {
-    return entity->editingMode();
-  }
-  else {
-    return true;
-  }
+  return m_entity->editingMode();
 }

@@ -69,6 +69,7 @@ public:
   
   int side() const;
   bool editingMode() const;
+  boost::shared_ptr<TurnPolicy::Abstract> turnPolicy() const;
 };
 
 class ObservingEntity : public ICSEntity {
@@ -83,9 +84,9 @@ public:
 };
 
 class ICSTurnPolicy : public TurnPolicy::Abstract {
-  boost::weak_ptr<ICSEntity> m_entity;
+  const ICSEntity* m_entity;
 public:
-  ICSTurnPolicy(const boost::shared_ptr<ICSEntity>& entity);
+  ICSTurnPolicy(const ICSEntity* entity);
 
   virtual bool check() const;
 };

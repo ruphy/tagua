@@ -36,13 +36,7 @@ class GraphicalSystem;
   * should register it as an agent, adding it to @code m_agents.
   */
 class EditGameController : public Controller {
-  enum Role {
-    NotPlaying = 0x0,
-    PlayingWhite = 0x1,
-    PlayingBlack = 0x2
-  };
   void init(AbstractPosition::Ptr);
-  Role setUserLiberties();
   boost::shared_ptr<Agent> m_clock_agent;
   boost::shared_ptr<Agent> m_update_agent;
 protected:
