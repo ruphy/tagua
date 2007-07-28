@@ -24,7 +24,7 @@
 #include "pathinfo.h"
 #include "option.h"
 #include "interactiontype.h"
-#include "turntest.h"
+#include "turnpolicy.h"
 #include "variants/xchess/generator.h"
 #include "variants/xchess/piecetype.h"
 

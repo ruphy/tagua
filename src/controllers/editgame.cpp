@@ -89,7 +89,6 @@ EditGameController::EditGameController(ChessTable* view,
   m_game->reset(position);
 
   m_entity = shared_ptr<GameEntity>(new GameEntity(m_variant, m_game, m_view->board(), &m_agents));
-  m_entity->setPremove(false);
   m_entity->enableEditingTools(true);
 
   m_graphical->setup(m_entity);
@@ -219,7 +218,8 @@ bool EditGameController::setExaminationMode(int game_number, const shared_ptr<IC
 
       connection->setListener(game_number, entity);
       m_view->flip(false);
-      m_entity->setTurnTest(shared_ptr<TurnTest>(new NoTurnTest));
+      m_entity->turnTest().clear();
+      
       return true;
     }
     else
@@ -244,7 +244,7 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
 
       connection->setListener(game_number, entity);
       m_view->flip(false);
-      m_entity->setTurnTest(shared_ptr<TurnTest>(new NoTurnTest));
+      m_entity->turnTest().clear();
       return true;
     }
     else
@@ -257,36 +257,28 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
 }
 
 EditGameController::Role EditGameController::setUserLiberties() {
+  int role = NotPlaying;
+  
   if (m_players[0] == m_entity) {
-    if (m_players[1] == m_entity) {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new FreeTurnTest));
-      m_entity->setPremove(false);
-      m_entity->enableEditingTools(true);
-      return static_cast<EditGameController::Role>(PlayingWhite | PlayingBlack);
-    }
-    else {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new OneTurnTest(0)));
-      m_entity->setPremove(true);
-      m_entity->enableEditingTools(false);
-      return PlayingWhite;
-    }
+    m_entity->turnTest().setPolicy(0, TurnPolicy::always());
+    role |= PlayingWhite;
   }
   else {
-    if (m_players[1] == m_entity) {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new OneTurnTest(1)));
-      m_entity->setPremove(true);
-      m_entity->enableEditingTools(false);
-      return PlayingBlack;
-    }
-    else {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new NoTurnTest));
-      return NotPlaying;
-    }
+    m_entity->turnTest().setPolicy(0, TurnPolicy::never());
   }
+  
+  if (m_players[1] == m_entity) {
+    m_entity->turnTest().setPolicy(1, TurnPolicy::always());
+    role |= PlayingBlack;
+  }
+  else {
+    m_entity->turnTest().setPolicy(1, TurnPolicy::never());
+  }
+    
+  m_entity->turnTest().setPremove(role == PlayingWhite ^ role == PlayingBlack);
+  m_entity->enableEditingTools(role == PlayingWhite | PlayingBlack);
+  
+  return static_cast<EditGameController::Role>(role);
 }
 
 void EditGameController::loadPGN(const PGN& pgn) {

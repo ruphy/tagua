@@ -16,7 +16,6 @@
 
 class Entity {
 protected:
-  bool m_premove : 1;
   bool m_enabled : 1;
   bool m_highlight : 1;
   
@@ -31,7 +30,6 @@ public:
   bool highlight() const { return m_highlight; }
   void setHighlight(bool highlight) { m_highlight = highlight; }
 
-  void setPremove(bool premove) { m_premove = premove; }
   void setEnabled(bool enabled) { m_enabled = enabled; }
 
   virtual bool canDetach() const = 0;

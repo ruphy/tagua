@@ -26,6 +26,7 @@ ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
 , m_connection(connection)
 , m_side(side)
 , m_game_number(gameNumber)
+, m_editing_mode(false)
 , m_dispatcher(group, this) { }
 
 AbstractPosition::Ptr ICSEntity::position() const {
@@ -160,13 +161,21 @@ bool ICSEntity::attach() {
 
 void ICSEntity::notifyMove(const Index& index) {
   // only send mainline moves
-  if (index.mainLine()) {
+  if (index.mainLine() && !m_editing_mode) {
     m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
   }
 }
 
 void ICSEntity::requestMoves() {
   m_connection->sendText(QString("moves %1").arg(m_game_number));
+}
+
+bool ICSEntity::editingMode() const {
+  return m_editing_mode || !m_game->index().mainLine();
+}
+
+int ICSEntity::side() const {
+  return m_side;
 }
 
 
@@ -182,4 +191,17 @@ void ObservingEntity::detach() {
 ObservingEntity::~ObservingEntity() {
   if (m_attached)
     m_connection->sendText(QString("unobs %1").arg(m_game_number));
+}
+
+
+ICSTurnPolicy::ICSTurnPolicy(const shared_ptr<ICSEntity>& entity)
+: m_entity(entity) { }
+
+bool ICSTurnPolicy::check() const {
+  if (shared_ptr<ICSEntity> entity = m_entity.lock()) {
+    return entity->editingMode();
+  }
+  else {
+    return true;
+  }
 }

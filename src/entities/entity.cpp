@@ -12,8 +12,7 @@
 #include "game.h"
 
 Entity::Entity(const GamePtr& game)
-: m_premove(true)
-, m_enabled(true)
+: m_enabled(true)
 , m_highlight(true)
 , m_game(game) { }
 
