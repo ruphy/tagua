@@ -23,7 +23,7 @@ namespace TurnPolicy {
   }
 
   Collection::Collection()
-  : m_premove(true) { }
+  : m_premove(false) { }
 
   bool Collection::operator()(int turn) const {
     Policies::const_iterator it = m_policies.find(turn);
@@ -37,6 +37,13 @@ namespace TurnPolicy {
 
   void Collection::setPolicy(int turn, const PolicyPtr& policy) {
     m_policies[turn] = policy;
+  }
+  
+  void Collection::setSimplePolicy(int turn, bool value) {
+    if (value)
+      setPolicy(turn, always());
+    else
+      setPolicy(turn, never());
   }
   
   void Collection::clear() {

@@ -99,8 +99,8 @@ EditGameController::EditGameController(ChessTable* view,
 void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-  m_entity->turnTest().setPolicy(0, TurnPolicy::always());
-  m_entity->turnTest().setPolicy(1, TurnPolicy::always());  
+  m_entity->turnTest().setSimplePolicy(0, true);
+  m_entity->turnTest().setSimplePolicy(1, true);  
   
   if (startingPosition) {
     // TODO update to the starting position
@@ -144,7 +144,7 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
     m_players[side] = entity;
     
     // the user cannot move the entity's pieces
-    m_entity->turnTest().setPolicy(side, TurnPolicy::never());
+    m_entity->turnTest().setSimplePolicy(side, false);
   }
   else {
     std::cout << "** could not detach entity playing " << side << "**" << std::endl;
@@ -290,8 +290,8 @@ shared_ptr<Controller> EditGameController::end() {
   // return to edit game mode
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-  m_entity->turnTest().setPolicy(0, TurnPolicy::always());
-  m_entity->turnTest().setPolicy(1, TurnPolicy::always());
+  m_entity->turnTest().setSimplePolicy(0, true);
+  m_entity->turnTest().setSimplePolicy(1, true);
 
   return Controller::end();
 }

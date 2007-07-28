@@ -58,6 +58,7 @@ namespace TurnPolicy {
   
     bool operator()(int turn) const;
     void setPolicy(int turn, const PolicyPtr& policy);
+    void setSimplePolicy(int turn, bool value);
     void clear();
     
     void setPremove(bool value);
