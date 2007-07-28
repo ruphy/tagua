@@ -160,8 +160,7 @@ bool ICSEntity::attach() {
 }
 
 void ICSEntity::notifyMove(const Index& index) {
-  // only send mainline moves
-  if (index.mainLine() && !m_editing_mode) {
+  if (!canEdit()) {
     m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
   }
 }
@@ -170,9 +169,14 @@ void ICSEntity::requestMoves() {
   m_connection->sendText(QString("moves %1").arg(m_game_number));
 }
 
-bool ICSEntity::editingMode() const {
-  return m_editing_mode || !m_game->index().mainLine();
+bool ICSEntity::canEdit() const {
+  return canEdit(m_game->index());
 }
+
+bool ICSEntity::canEdit(const Index& index) const {
+  return m_editing_mode || index != m_game->lastMainlineIndex();
+}
+
 
 int ICSEntity::side() const {
   return m_side;
@@ -202,5 +206,5 @@ ICSTurnPolicy::ICSTurnPolicy(const ICSEntity* entity)
 : m_entity(entity) { }
 
 bool ICSTurnPolicy::check() const {
-  return m_entity->editingMode();
+  return m_entity->canEdit();
 }

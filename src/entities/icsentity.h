@@ -68,7 +68,8 @@ public:
   virtual bool attach();
   
   int side() const;
-  bool editingMode() const;
+  bool canEdit() const;
+  bool canEdit(const Index& index) const;
   boost::shared_ptr<TurnPolicy::Abstract> turnPolicy() const;
 };
 
