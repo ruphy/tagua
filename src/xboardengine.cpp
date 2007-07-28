@@ -50,7 +50,7 @@ XBoardEngine::XBoardEngine(const QString& path, const QStringList& arguments)
 XBoardEngine::~XBoardEngine() {
   std::cout << "[debug] destroying engine" << std::endl;
   stop();
-  m_engine.terminate();
+  m_engine.kill();
 }
 
 void XBoardEngine::initializeEngine() {
