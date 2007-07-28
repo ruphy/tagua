@@ -47,21 +47,30 @@ namespace TurnPolicy {
   
   boost::shared_ptr<Never> never();
   
+  /**
+    * Premove policy. Used to check whether premoving is allowed.
+    * It is a <i>global</i> policy.
+    */
+  class Premove {
+  public:
+    virtual ~Premove();
+    virtual bool check() const = 0;
+  };
+  
   class Collection {
     typedef boost::shared_ptr<Abstract> PolicyPtr;
     typedef std::map<int, PolicyPtr> Policies;
+    typedef boost::shared_ptr<Premove> PremovePolicyPtr;
     Policies m_policies;
-    
-    bool m_premove;
+        
+    PremovePolicyPtr m_premove;
   public:
-    Collection();
-  
     bool operator()(int turn) const;
     void setPolicy(int turn, const PolicyPtr& policy);
     void setSimplePolicy(int turn, bool value);
     void clear();
     
-    void setPremove(bool value);
+    void setPremovePolicy(const PremovePolicyPtr& policy);
     bool premove() const;
   };
 }

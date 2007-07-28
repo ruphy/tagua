@@ -22,8 +22,7 @@ namespace TurnPolicy {
     return boost::shared_ptr<Never>(new Never); 
   }
 
-  Collection::Collection()
-  : m_premove(false) { }
+  Premove::~Premove() { }
 
   bool Collection::operator()(int turn) const {
     Policies::const_iterator it = m_policies.find(turn);
@@ -48,15 +47,15 @@ namespace TurnPolicy {
   
   void Collection::clear() {
     m_policies.clear();
-    m_premove = false;
-  }
-  
-  void Collection::setPremove(bool value) {
-    m_premove = value;
+    m_premove.reset();
   }
   
   bool Collection::premove() const {
-    return m_premove;
+    return m_premove ? m_premove->check() : false;
+  }
+  
+  void Collection::setPremovePolicy(const PremovePolicyPtr& policy) {
+    m_premove = policy;
   }
 
 }

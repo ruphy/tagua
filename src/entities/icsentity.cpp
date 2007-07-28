@@ -18,6 +18,38 @@
 
 using namespace boost;
 
+
+class ICSTurnPolicy : public TurnPolicy::Abstract {
+  const ICSEntity* m_entity;
+public:
+  ICSTurnPolicy(const ICSEntity* entity);
+
+  virtual bool check() const;
+};
+
+ICSTurnPolicy::ICSTurnPolicy(const ICSEntity* entity)
+: m_entity(entity) { }
+
+bool ICSTurnPolicy::check() const {
+  return m_entity->canEdit();
+}
+
+class ICSPremovePolicy : public TurnPolicy::Premove {
+  const ICSEntity* m_entity;
+public:
+  ICSPremovePolicy(const ICSEntity* entity);
+  
+  virtual bool check() const;
+};
+
+ICSPremovePolicy::ICSPremovePolicy(const ICSEntity* entity)
+: m_entity(entity) { }
+
+bool ICSPremovePolicy::check() const {
+  return !m_entity->canEdit();
+}
+
+
 ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                    int side, int gameNumber,
                    const shared_ptr<ICSConnection>& connection, AgentGroup* group)
@@ -177,13 +209,9 @@ bool ICSEntity::canEdit(const Index& index) const {
   return m_editing_mode || index != m_game->lastMainlineIndex();
 }
 
-
-int ICSEntity::side() const {
-  return m_side;
-}
-
-shared_ptr<TurnPolicy::Abstract> ICSEntity::turnPolicy() const {
-  return shared_ptr<TurnPolicy::Abstract>(new ICSTurnPolicy(this));
+void ICSEntity::setupTurnTest(TurnTest& test) const {
+  test.setPolicy(m_side, shared_ptr<TurnPolicy::Abstract>(new ICSTurnPolicy(this)));
+  test.setPremovePolicy(shared_ptr<TurnPolicy::Premove>(new ICSPremovePolicy(this)));
 }
 
 
@@ -202,9 +230,3 @@ ObservingEntity::~ObservingEntity() {
 }
 
 
-ICSTurnPolicy::ICSTurnPolicy(const ICSEntity* entity)
-: m_entity(entity) { }
-
-bool ICSTurnPolicy::check() const {
-  return m_entity->canEdit();
-}

@@ -66,11 +66,10 @@ public:
 
   virtual bool canDetach() const;
   virtual bool attach();
-  
-  int side() const;
+
   bool canEdit() const;
   bool canEdit(const Index& index) const;
-  boost::shared_ptr<TurnPolicy::Abstract> turnPolicy() const;
+  void setupTurnTest(TurnTest& test) const;
 };
 
 class ObservingEntity : public ICSEntity {
@@ -82,14 +81,6 @@ public:
   ~ObservingEntity();
 
   virtual void detach();
-};
-
-class ICSTurnPolicy : public TurnPolicy::Abstract {
-  const ICSEntity* m_entity;
-public:
-  ICSTurnPolicy(const ICSEntity* entity);
-
-  virtual bool check() const;
 };
 
 #endif // ICSENTITY_H

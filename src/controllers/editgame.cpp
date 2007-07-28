@@ -185,8 +185,7 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
       m_players[side] = entity;
       connection->setListener(game_number, entity);
 
-      m_entity->turnTest().setPolicy(side, entity->turnPolicy());
-      m_entity->turnTest().setPremove(true); // activate premove on ICS
+      entity->setupTurnTest(m_entity->turnTest());
       m_view->flip(m_players[1] == m_entity); // flip if we're black!
 
       m_agents.addAgent(m_clock_agent);
