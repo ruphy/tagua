@@ -27,6 +27,7 @@ protected:
   boost::shared_ptr<ICSConnection> m_connection;
   int m_side;
   int m_game_number;
+  bool m_editing_mode;
   AgentGroupDispatcher m_dispatcher;
 
   void updateGame(const Index& index, AbstractMove::Ptr icsMove,
@@ -65,6 +66,10 @@ public:
 
   virtual bool canDetach() const;
   virtual bool attach();
+
+  bool canEdit() const;
+  bool canEdit(const Index& index) const;
+  void setupTurnTest(TurnTest& test) const;
 };
 
 class ObservingEntity : public ICSEntity {

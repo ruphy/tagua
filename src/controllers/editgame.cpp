@@ -10,8 +10,6 @@
 
 #include "editgame.h"
 
-#include <QStack>
-
 #include "graphicalgame.h"
 #include "graphicalsystem.h"
 #include "xboardengine.h"
@@ -89,7 +87,6 @@ EditGameController::EditGameController(ChessTable* view,
   m_game->reset(position);
 
   m_entity = shared_ptr<GameEntity>(new GameEntity(m_variant, m_game, m_view->board(), &m_agents));
-  m_entity->setPremove(false);
   m_entity->enableEditingTools(true);
 
   m_graphical->setup(m_entity);
@@ -102,8 +99,9 @@ EditGameController::EditGameController(ChessTable* view,
 void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-
-  setUserLiberties();
+  m_entity->turnTest().setSimplePolicy(0, true);
+  m_entity->turnTest().setSimplePolicy(1, true);  
+  
   if (startingPosition) {
     // TODO update to the starting position
   }
@@ -144,8 +142,9 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
     
     m_agents.addAgent(entity);
     m_players[side] = entity;
-
-    setUserLiberties();
+    
+    // the user cannot move the entity's pieces
+    m_entity->turnTest().setSimplePolicy(side, false);
   }
   else {
     std::cout << "** could not detach entity playing " << side << "**" << std::endl;
@@ -186,8 +185,8 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
       m_players[side] = entity;
       connection->setListener(game_number, entity);
 
-      Role user_role = setUserLiberties();
-      m_view->flip(user_role & PlayingBlack);
+      entity->setupTurnTest(m_entity->turnTest());
+      m_view->flip(m_players[1] == m_entity); // flip if we're black!
 
       m_agents.addAgent(m_clock_agent);
     }
@@ -219,7 +218,8 @@ bool EditGameController::setExaminationMode(int game_number, const shared_ptr<IC
 
       connection->setListener(game_number, entity);
       m_view->flip(false);
-      m_entity->setTurnTest(shared_ptr<TurnTest>(new NoTurnTest));
+      m_entity->turnTest().clear();
+      
       return true;
     }
     else
@@ -244,7 +244,7 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
 
       connection->setListener(game_number, entity);
       m_view->flip(false);
-      m_entity->setTurnTest(shared_ptr<TurnTest>(new NoTurnTest));
+      m_entity->turnTest().clear();
       return true;
     }
     else
@@ -254,39 +254,6 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
     std::cout << "** could not detach entity **" << std::endl;
 
   return false;
-}
-
-EditGameController::Role EditGameController::setUserLiberties() {
-  if (m_players[0] == m_entity) {
-    if (m_players[1] == m_entity) {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new FreeTurnTest));
-      m_entity->setPremove(false);
-      m_entity->enableEditingTools(true);
-      return static_cast<EditGameController::Role>(PlayingWhite | PlayingBlack);
-    }
-    else {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new OneTurnTest(0)));
-      m_entity->setPremove(true);
-      m_entity->enableEditingTools(false);
-      return PlayingWhite;
-    }
-  }
-  else {
-    if (m_players[1] == m_entity) {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new OneTurnTest(1)));
-      m_entity->setPremove(true);
-      m_entity->enableEditingTools(false);
-      return PlayingBlack;
-    }
-    else {
-      m_entity->setTurnTest(
-        shared_ptr<TurnTest>(new NoTurnTest));
-      return NotPlaying;
-    }
-  }
 }
 
 void EditGameController::loadPGN(const PGN& pgn) {
@@ -322,7 +289,8 @@ shared_ptr<Controller> EditGameController::end() {
   // return to edit game mode
   m_players[0] = m_entity;
   m_players[1] = m_entity;
-  setUserLiberties();
+  m_entity->turnTest().setSimplePolicy(0, true);
+  m_entity->turnTest().setSimplePolicy(1, true);
 
   return Controller::end();
 }

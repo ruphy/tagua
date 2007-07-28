@@ -19,39 +19,19 @@
 #include "tagua.h"
 #include "usermove.h"
 #include "agent.h"
-#include "turntest.h"
+#include "turnpolicy.h"
 
 class PGN;
-
-class FreeTurnTest : public TurnTest {
-public:
-  virtual bool operator()(int) const { return true; }
-};
-
-class NoTurnTest : public TurnTest {
-public:
-  virtual bool operator()(int) const { return false; }
-};
-
-class OneTurnTest : public TurnTest {
-  int m_turn;
-public:
-  OneTurnTest(int turn)
-  : m_turn(turn) { }
-  virtual bool operator()(int turn) const {
-    return turn == m_turn;
-  }
-};
 
 class UserEntity : public Entity
                  , public Agent {
 protected:
-  boost::shared_ptr<TurnTest> m_turn_test;
+  TurnPolicy::Collection m_turn_test;
   bool m_editing_tools;
   int m_promotion;
 public:
   UserEntity(const GamePtr& game, int);
-  virtual void setTurnTest(const boost::shared_ptr<TurnTest>& test) { m_turn_test = test; }
+  virtual TurnPolicy::Collection& turnTest() { return m_turn_test; }
   virtual void enableEditingTools(bool value);
 
   // promotion

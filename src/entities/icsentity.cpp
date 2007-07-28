@@ -18,6 +18,38 @@
 
 using namespace boost;
 
+
+class ICSTurnPolicy : public TurnPolicy::Abstract {
+  const ICSEntity* m_entity;
+public:
+  ICSTurnPolicy(const ICSEntity* entity);
+
+  virtual bool check() const;
+};
+
+ICSTurnPolicy::ICSTurnPolicy(const ICSEntity* entity)
+: m_entity(entity) { }
+
+bool ICSTurnPolicy::check() const {
+  return m_entity->canEdit();
+}
+
+class ICSPremovePolicy : public TurnPolicy::Premove {
+  const ICSEntity* m_entity;
+public:
+  ICSPremovePolicy(const ICSEntity* entity);
+  
+  virtual bool check() const;
+};
+
+ICSPremovePolicy::ICSPremovePolicy(const ICSEntity* entity)
+: m_entity(entity) { }
+
+bool ICSPremovePolicy::check() const {
+  return !m_entity->canEdit();
+}
+
+
 ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                    int side, int gameNumber,
                    const shared_ptr<ICSConnection>& connection, AgentGroup* group)
@@ -26,6 +58,7 @@ ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
 , m_connection(connection)
 , m_side(side)
 , m_game_number(gameNumber)
+, m_editing_mode(false)
 , m_dispatcher(group, this) { }
 
 AbstractPosition::Ptr ICSEntity::position() const {
@@ -159,13 +192,26 @@ bool ICSEntity::attach() {
 }
 
 void ICSEntity::notifyMove(const Index& index) {
-  //Use coordinates bacause FICS is stupid and would consider bxc6 ambiguous (Bxc6)
-  m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
-  //m_connection->sendText(move->SAN(ref));
+  if (!canEdit()) {
+    m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
+  }
 }
 
 void ICSEntity::requestMoves() {
   m_connection->sendText(QString("moves %1").arg(m_game_number));
+}
+
+bool ICSEntity::canEdit() const {
+  return canEdit(m_game->index());
+}
+
+bool ICSEntity::canEdit(const Index& index) const {
+  return m_editing_mode || index != m_game->lastMainlineIndex();
+}
+
+void ICSEntity::setupTurnTest(TurnTest& test) const {
+  test.setPolicy(m_side, shared_ptr<TurnPolicy::Abstract>(new ICSTurnPolicy(this)));
+  test.setPremovePolicy(shared_ptr<TurnPolicy::Premove>(new ICSPremovePolicy(this)));
 }
 
 
@@ -182,3 +228,5 @@ ObservingEntity::~ObservingEntity() {
   if (m_attached)
     m_connection->sendText(QString("unobs %1").arg(m_game_number));
 }
+
+

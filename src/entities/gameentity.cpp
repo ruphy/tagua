@@ -23,7 +23,6 @@ GameEntity::GameEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game
 , m_variant(variant)
 , m_chessboard(chessboard)
 , m_dispatcher(group, this) {
-  m_turn_test = shared_ptr<TurnTest>(new NoTurnTest);
 }
 
 QString GameEntity::save() const {
@@ -104,17 +103,18 @@ bool GameEntity::testPremove(const DropUserMove&) const {
 }
 
 InteractionType GameEntity::validTurn(int pool) const {
-  return position()->droppable(*m_turn_test, pool);
+  return position()->droppable(m_turn_test, pool);
 }
 
 InteractionType GameEntity::validTurn(const Point& point) const {
-  return position()->movable(*m_turn_test, point);
+  // TODO: maybe replace this call with a new API position()->owner(point) ??
+  return position()->movable(m_turn_test, point);
 }
 
 bool GameEntity::movable(const Point& point) const {
   if (!m_enabled) return false;
   InteractionType action = validTurn(point);
-  return m_premove ? action != NoAction : action == Moving;
+  return m_turn_test.premove() ? action != NoAction : action == Moving;
 }
 
 bool GameEntity::oneClickMoves() const {

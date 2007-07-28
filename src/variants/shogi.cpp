@@ -16,7 +16,7 @@
 #include "xchess/dropanimator.impl.h"
 #include "crazyhouse_p.h"
 #include "interactiontype.h"
-#include "turntest.h"
+#include "turnpolicy.h"
 #include "tagua_wrapped.h"
 #include "icsapi.impl.h"
 

@@ -21,11 +21,9 @@ void AgentGroup::addAgent(const AgentPtr& agent) {
        i != m_agents.end();                                         \
        ++i) {                                                       \
     if (i.get() != source) {                                        \
-      std::cout << "dispatching to " << i.get() << std::endl;       \
       i->method args;                                               \
     }                                                               \
-  }                                                                 \
-  std::cout << std::endl;
+  }
   
 void AgentGroup::clockUpdate(Agent* source, int white, int black) {
   FORWARD(notifyClockUpdate, (white, black))
