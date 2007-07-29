@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
   about.addCredit(ki18n("Jani Huhtanen"), ki18n("Gaussian blur code"));
   about.addCredit(ki18n("Rici Lake"), ki18n("funclib lua library"));
   about.addCredit(ki18n("Riccardo Iaconelli"), ki18n("Various fixes and cleanups"));
-  about.addCredit(ki18n("Yann Dirson"), ki18n("Shogi theme overlays"));
+  about.addCredit(ki18n("Yann Dirson"), ki18n("Shogi related patches"));
 
   KCmdLineOptions options;
   KCmdLineArgs::init(argc, argv, &about);
