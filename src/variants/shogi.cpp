@@ -337,7 +337,7 @@ ShogiPosition::ShogiPosition(const QList<boost::shared_ptr<BaseOpt> >&)
 QStringList ShogiPosition::borderCoords() const
 {
   QStringList retv;
-  for(int i=9; i>0; i--)
+  for(int i=m_board.getSize().y; i>0; i--)
     retv += QString::number(i);
   retv << QChar(0x4e5d) << QChar(0x516b) << QChar(0x4e03) << QChar(0x516d)
     << QChar(0x4e94) << QChar(0x56db) << QChar(0x4e09) << QChar(0x4e8c) << QChar(0x4e00);
@@ -466,7 +466,7 @@ bool ShogiPosition::promotionZone(Piece::Color color, const Point& p) {
 
 #define SET_PIECE(i,j, color, type) m_board[Point(i,j)] = Piece(ShogiPiece::color, ShogiPiece::type)
 void ShogiPosition::setup() {
-  for (int i = 0; i < 9; i++) {
+  for (int i = 0; i < m_board.getSize().x; i++) {
     SET_PIECE(i, 2, WHITE, PAWN);
     SET_PIECE(i, 6, BLACK, PAWN);
   }
@@ -555,7 +555,7 @@ bool ShogiPosition::pseudolegal(Move& m) const {
     if (m_board[m.to]) return false;
     if (stuckPiece(dropped, m.to)) return false;
     if (dropped.type() == Piece::PAWN) {
-      for (int i = 0; i < 9; i++)
+      for (int i = 0; i < m_board.getSize().y; i++)
         if (ShogiPiece other = m_board[Point(m.to.x, i)])
           if (other.color() == m_turn && other.type() == Piece::PAWN && !other.promoted()) return false;
     }
@@ -739,7 +739,7 @@ public:
       retv += "+";
     retv += ShogiPiece::typeSymbol(p.type());
     if (ambiguous) {
-      retv += QString::number(9-m_move.from.x);
+      retv += QString::number(m_ref.m_board.getSize().x-m_move.from.x);
       retv += QString(m_move.from.y+'a');
     }
     if (m_move.drop())
@@ -748,7 +748,7 @@ public:
       retv += "x";
     else
       retv += "-";
-    retv += QString::number(9-m_move.to.x);
+    retv += QString::number(m_ref.m_board.getSize().x-m_move.to.x);
     retv += QString(m_move.to.y+'a');
     if (!p.promoted() && !m_move.drop() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
@@ -769,7 +769,7 @@ public:
     else
       retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
     if (ambiguous) {
-      retv += MovePart(QString::number(9-m_move.from.x));
+      retv += MovePart(QString::number(m_ref.m_board.getSize().x-m_move.from.x));
       retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
     }
     QString mmm;
@@ -779,7 +779,7 @@ public:
       mmm += "x";
     else
       mmm += "-";
-    mmm += QString::number(9-m_move.to.x);
+    mmm += QString::number(m_ref.m_board.getSize().x-m_move.to.x);
     retv += MovePart(mmm);
     retv += MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine);
     if (!p.promoted() && !m_move.drop() &&
