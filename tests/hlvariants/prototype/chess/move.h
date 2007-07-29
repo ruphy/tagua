@@ -9,6 +9,7 @@ namespace Chess {
 class Move {
 public:
   enum Type {
+    INVALID = -1,
     NORMAL,
     EN_PASSANT_CAPTURE,
     EN_PASSANT_TRIGGER,
@@ -34,6 +35,7 @@ public:
   
   virtual Point from() const;
   virtual Point to() const;
+  virtual bool valid() const;
   
   virtual void setType(Type type);
 };

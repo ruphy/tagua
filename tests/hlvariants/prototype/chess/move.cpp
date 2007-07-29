@@ -53,6 +53,12 @@ Point Move::to() const {
   return m_to;
 }
 
+bool Move::valid() const {
+  return m_from != Point::invalid() &&
+         m_to != Point::invalid() &&
+         m_type != INVALID;
+}
+
 void Move::setType(Type type) {
   m_type = type;
 }

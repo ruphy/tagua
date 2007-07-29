@@ -61,6 +61,13 @@ public:
     * \return Information on the path joining @a from and @a to.
     */
   PathInfo path(const Point& from, const Point& to) const;
+  
+  /**
+    * Searches the board for a given piece.
+    * \return The first square where the piece is found, or an
+    *         invalid point, if no such piece exists on the board.
+    */
+  Point find(const Piece& piece) const;
 };
 
 // IMPLEMENTATION
@@ -154,6 +161,19 @@ PathInfo Board<Piece>::path(const Point& from, const Point& to) const {
   }
 
   return PathInfo(direction, num_obs);
+}
+
+template <typename Piece>
+Point Board<Piece>::find(const Piece& piece) const {
+  for (int i = 0; i < m_size.x; i++) {
+    for (int j = 0; j < m_size.y; j++) {
+      Point p(i, j);
+      if (get(p) == piece)
+        return p;
+    }
+  }
+  
+  return Point::invalid();
 }
 
 }

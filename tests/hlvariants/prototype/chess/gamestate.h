@@ -41,6 +41,10 @@ public:
   
   virtual bool operator==(const GameState<Board, Move>& other) const;
   
+  virtual Point enPassant() const;
+  virtual bool kingCastling(typename Piece::Color color) const;
+  virtual bool queenCastling(typename Piece::Color color) const;
+  
   virtual void move(const Move& m);
   virtual void basicMove(const Move& m);
   virtual void handleCastling(const Piece& piece, const Move& m);
@@ -48,6 +52,11 @@ public:
   
   virtual void switchTurn();
   virtual typename Piece::Color turn() const;
+  
+  virtual int startingRank(typename Piece::Color color) const;
+  virtual int promotionRank(typename Piece::Color color) const;
+  virtual Point kingStartingPosition(typename Piece::Color color) const;
+  virtual Point direction(typename Piece::Color color) const;
 };
 
 // IMPLEMENTATION
@@ -65,21 +74,46 @@ template <typename Board, typename Move>
 const Board& GameState<Board, Move>::board() const { return m_board; }
 
 template <typename Board, typename Move>
+Point GameState<Board, Move>::enPassant() const {
+  return m_en_passant;
+}
+
+template <typename Board, typename Move>
+bool GameState<Board, Move>::kingCastling(typename Piece::Color color) const {
+  if (color == Piece::WHITE) {
+    return m_castling.wk;
+  }
+  else {
+    return m_castling.bk;
+  }
+}
+
+template <typename Board, typename Move>
+bool GameState<Board, Move>::queenCastling(typename Piece::Color color) const {
+  if (color == Piece::WHITE) {
+    return m_castling.wq;
+  }
+  else {
+    return m_castling.bq;
+  }
+}
+
+template <typename Board, typename Move>
 void GameState<Board, Move>::setup() {
   for (int c = 0; c < 2; c++) {
     typename Piece::Color color = static_cast<typename Piece::Color>(c);
-    int row = color == Piece::WHITE ? m_board.size().y - 1: 0;
+    int rank = startingRank(color);
     for (int i = 0; i < m_board.size().x; i++) {
-      m_board.set(Point(i, color == Piece::WHITE ? row - 1 : row + 1), 
+      m_board.set(Point(i, rank + direction(color).y), 
                   Piece(color, Piece::PAWN));
-      m_board.set(Point(0, row), Piece(color, Piece::ROOK));
-      m_board.set(Point(1, row), Piece(color, Piece::KNIGHT));
-      m_board.set(Point(2, row), Piece(color, Piece::BISHOP));
-      m_board.set(Point(3, row), Piece(color, Piece::QUEEN));
-      m_board.set(Point(4, row), Piece(color, Piece::KING));
-      m_board.set(Point(5, row), Piece(color, Piece::BISHOP));
-      m_board.set(Point(6, row), Piece(color, Piece::KNIGHT));
-      m_board.set(Point(7, row), Piece(color, Piece::ROOK));
+      m_board.set(Point(0, rank), Piece(color, Piece::ROOK));
+      m_board.set(Point(1, rank), Piece(color, Piece::KNIGHT));
+      m_board.set(Point(2, rank), Piece(color, Piece::BISHOP));
+      m_board.set(Point(3, rank), Piece(color, Piece::QUEEN));
+      m_board.set(Point(4, rank), Piece(color, Piece::KING));
+      m_board.set(Point(5, rank), Piece(color, Piece::BISHOP));
+      m_board.set(Point(6, rank), Piece(color, Piece::KNIGHT));
+      m_board.set(Point(7, rank), Piece(color, Piece::ROOK));
     }
   }
 }
@@ -171,6 +205,27 @@ template <typename Board, typename Move>
 typename Board::Piece::Color GameState<Board, Move>::turn() const {
   return m_turn;
 }
+
+template <typename Board, typename Move>
+int GameState<Board, Move>::startingRank(typename Piece::Color color) const {
+  return color == Piece::WHITE ? m_board.size().y - 1 : 0;
+}
+
+template <typename Board, typename Move>
+int GameState<Board, Move>::promotionRank(typename Piece::Color color) const {
+  return startingRank(Piece::oppositeColor(color));
+}
+
+template <typename Board, typename Move>
+Point GameState<Board, Move>::kingStartingPosition(typename Piece::Color color) const {
+  return Point(4, startingRank(color));
+}
+
+template <typename Board, typename Move>
+Point GameState<Board, Move>::direction(typename Piece::Color color) const {
+  return Point(0, color == Piece::WHITE ? -1 : 1);
+}
+
 
 } // namespace Chess
 } // namespace HLVariant

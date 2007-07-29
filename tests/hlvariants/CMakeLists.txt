@@ -10,6 +10,7 @@ SET(hl_SRC
   chesspiecetest.cpp
   chessgamestatetest.cpp
   chessmovetest.cpp
+  chesslegalitytest.cpp
 )
 
 include_directories(

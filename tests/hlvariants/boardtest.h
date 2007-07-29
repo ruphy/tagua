@@ -20,6 +20,7 @@ class BoardTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(test_set_invalid);
   CPPUNIT_TEST(test_compare);
   CPPUNIT_TEST(test_clone);
+  CPPUNIT_TEST(test_find);
   
   CPPUNIT_TEST(test_pathinfo_h);
   CPPUNIT_TEST(test_pathinfo_v);
@@ -41,6 +42,7 @@ public:
   void test_set_invalid();
   void test_compare();
   void test_clone();
+  void test_find();
   
   // path info
   void test_pathinfo_h();

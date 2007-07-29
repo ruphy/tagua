@@ -123,6 +123,16 @@ void BoardTest::test_pathinfo_obstacles() {
   CPPUNIT_ASSERT(path.clear());
 }
 
+void BoardTest::test_find() {
+  m_board->set(Point(3, 4), 32);
+  m_board->set(Point(5, 6), 22);
+  m_board->set(Point(7, 7), 22);
+  
+  CPPUNIT_ASSERT(m_board->find(17) == Point::invalid());
+  CPPUNIT_ASSERT(m_board->find(22) == Point(5, 6));
+  CPPUNIT_ASSERT(m_board->find(32) == Point(3, 4));
+}
+
 
 
 
