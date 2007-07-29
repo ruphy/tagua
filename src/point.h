@@ -14,7 +14,9 @@
 #include <QPoint>
 #include <iostream>
 
-struct Point {
+#include "export.h"
+
+struct TAGUA_EXPORT Point {
   static Point invalid() { return Point(-1, -1); }
   bool valid() const { return x != -1 && y != -1; }
 
