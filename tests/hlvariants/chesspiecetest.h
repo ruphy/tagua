@@ -13,6 +13,7 @@ class ChessPieceTest : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(ChessPieceTest);
   CPPUNIT_TEST(test_basic);
   CPPUNIT_TEST(test_names);
+  CPPUNIT_TEST(test_compare);
   CPPUNIT_TEST_SUITE_END();
 public:
   void setUp();
@@ -20,6 +21,7 @@ public:
   
   void test_basic();
   void test_names();
+  void test_compare();
 };
 
 #endif // CHESSPIECETEST_H

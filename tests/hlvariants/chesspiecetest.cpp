@@ -22,3 +22,15 @@ void ChessPieceTest::test_names() {
   CPPUNIT_ASSERT(p.name() == "black_bishop");
 }
 
+void ChessPieceTest::test_compare() {
+  ChessPiece a(ChessPiece::BLACK, ChessPiece::KING);
+  ChessPiece b(ChessPiece::WHITE, ChessPiece::QUEEN);
+  ChessPiece c(ChessPiece::BLACK, ChessPiece::KING);
+  
+  CPPUNIT_ASSERT(a != b);
+  CPPUNIT_ASSERT(!(a == b));
+  CPPUNIT_ASSERT(a == c);
+  CPPUNIT_ASSERT(c == a);
+  CPPUNIT_ASSERT(a == a);
+}
+

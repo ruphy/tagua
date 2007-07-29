@@ -36,6 +36,11 @@ public:
   QString typeName() const;
   static QString typeName(Type type);
   QString name() const;
+  
+  static Color oppositeColor(Color color);
+  
+  bool operator==(const Piece& other) const;
+  bool operator!=(const Piece& other) const;
 };
 
 } // namespace Chess

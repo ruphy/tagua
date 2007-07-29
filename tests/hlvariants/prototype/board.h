@@ -1,6 +1,8 @@
 #ifndef HLVARIANT__BOARD_H
 #define HLVARIANT__BOARD_H
 
+#include <vector>
+
 #include "point.h"
 #include "pathinfo.h"
 

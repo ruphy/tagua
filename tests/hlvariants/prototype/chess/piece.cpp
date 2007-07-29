@@ -49,6 +49,26 @@ QString Piece::name() const {
   return colorName() + '_' + typeName();
 }
 
+Piece::Color Piece::oppositeColor(Color color) {
+  switch (color) {
+  case WHITE:
+    return BLACK;
+  case BLACK:
+    return WHITE;
+  default:
+    return INVALID_COLOR;
+  }
+}
+
+bool Piece::operator==(const Piece& other) const {
+  return m_color == other.m_color &&
+         m_type == other.m_type;
+}
+
+bool Piece::operator!=(const Piece& other) const {
+  return !((*this) == other);
+}
+
 } // namespace HLVariant
 } // namespace Chess
 
