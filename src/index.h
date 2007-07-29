@@ -14,6 +14,7 @@
 #include <QVector>
 #include <QString>
 #include "common.h"
+#include <map>
 
 /**
     \class Index index.h <index.h>
