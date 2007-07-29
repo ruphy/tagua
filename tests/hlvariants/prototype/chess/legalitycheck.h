@@ -74,7 +74,8 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
   typename Piece::Color otherTurn = Piece::oppositeColor(thisTurn);
   
   if (piece != Piece() && m_state.turn() == thisTurn) {
-    move.setType(getMoveType(piece, move));
+    typename Move::Type move_type = getMoveType(piece, move);
+    move.setType(move_type);
     if (!move.valid())
       return false;
     if (!checkPromotion(static_cast<typename Piece::Type>(move.promoteTo())))
@@ -184,21 +185,24 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
 
     // moving
     if (destinationPiece == Piece() && !enPassant) {
-      if (delta == m_state.direction(piece.color()))
+      if (delta == m_state.direction(piece.color())) {
         if (move.to().y == m_state.promotionRank(piece.color()))
           return Move::PROMOTION;
         else
           return Move::NORMAL;
-      if (move.from().y == m_state.startingRank(piece.color()) &&
+      }
+      
+      if (move.from().y == m_state.startingRank(piece.color()) 
+                           + m_state.direction(piece.color()).y &&
           delta == m_state.direction(piece.color()) * 2 &&
-          m_state.board().get(move.from() + m_state.direction(piece.color())) != Piece())
+          m_state.board().get(move.from() + m_state.direction(piece.color())) == Piece())
         return Move::EN_PASSANT_TRIGGER;
       else
         return Move::INVALID;
     }
 
     // capturing
-    else if (enPassant || destinationPiece.color() != piece.color())
+    else if (enPassant || destinationPiece.color() != piece.color()) {
       if (delta.y == m_state.direction(piece.color()).y && 
           abs(delta.x) == 1) {
         if (enPassant)
@@ -208,6 +212,7 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
         else
           return Move::NORMAL;
       }
+    }
 
     return Move::INVALID;
   }
