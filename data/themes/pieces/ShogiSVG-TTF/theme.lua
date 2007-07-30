@@ -7,16 +7,33 @@ shadow_offset_x=6
 shadow_offset_y=4
 shadow_grow=5
 
-theme.options = OptList {
-  BoolOpt("moves_overlay", "Moves overlay", true)
-}
+fontnames = {"Potraced from ???", "Potraced from shogi.net"}
+fontlist = {"Shogi.ttf", "Shogi2.ttf"}
 
-font="Shogi.ttf"
+theme.options = OptList {
+  BoolOpt("moves_overlay", "Moves overlay", true),
+  SelectOpt("symbols", "Symbol set", BoolOptList {
+    BoolOpt("use_predefined", "Predefined", true, OptList {
+      ComboOpt("font", "Symbol set", fontnames)
+    }),
+    BoolOpt("use_custom", "Custom font", false, OptList {
+      UrlOpt("file", "SVG glyph directory", "Shogi.ttf")
+    }),
+--    BoolOpt("use_system", "System font", false, OptList {
+--      FontOpt("font", "System font", Font("Arial", true, true))
+--    }),
+  })
+}
 
 function addChar(char, promoted)
   return function(i, size)
-    i:draw_glyph(Rect(0,0,size,size), "Shogi.ttf", char,
-		 promoted and "#d00000" or "#004000",
+    i:draw_glyph(Rect(0,0,size,size),
+		 theme.options.symbols.options.use_predefined.value
+		    and fontlist[theme.options.symbols.options.use_predefined.sub_options.font.selected+1]
+		    or theme.options.symbols.options.use_custom.value
+		    and theme.options.symbols.options.use_custom.sub_options.file.value
+		    or theme.options.symbols.options.use_system.sub_options.font.selected,
+		 char, promoted and "#d00000" or "#004000",
 		 "#fff3c8", 4, false)
     return i
   end

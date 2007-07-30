@@ -9,22 +9,30 @@ shadow_grow=5
 
 theme.options = OptList {
   BoolOpt("moves_overlay", "Moves overlay", true),
-  BoolOpt("single_kanji", "Single kanji on tiles", false)
+  BoolOpt("single_kanji", "Single kanji on tiles", false),
+  SelectOpt("symbols", "Symbol set", BoolOptList {
+--    BoolOpt("use_predefined", "Predefined", true, OptList {
+--      ComboOpt("font", "Symbol set", fontnames)
+--    }),
+    BoolOpt("use_custom", "Custom font", false, OptList {
+      UrlOpt("file", "SVG glyph directory", "../../figurines/ShogiTTF/mikachan.ttf")
+    }),
+--    BoolOpt("use_system", "System font", false, OptList {
+--      FontOpt("font", "System font", Font("Arial", true, true))
+--    }),
+  })
 }
-
-font="mikachan.ttf"
---font="Sword.ttf"
---font="epgyobld.ttf"
 
 function addChar(complete, single, promoted)
   return function(i, size)
+    font = theme.options.symbols.options.use_custom.sub_options.file.value
     if theme.options.single_kanji.value then
       i:draw_glyph(Rect(size*0.2,size*0.25,size*0.6,size*0.6), font, single,
 		   promoted and "#d00000" or "#004000",
 		   "#fff3c8", 4, false)
     else
       --local charsize, margin1, margin2 = 0.45, 0.09, -0.02 -- epgyobld
-      local charsize, margin1, margin2 = 0.4, 0.12, 0 -- mikachan
+      local charsize, margin1, margin2 = 0.4, 0.12, 0
       i:draw_glyph(Rect(size*(0.5-charsize/2),size*margin1,size*charsize,size*charsize),
 		   font, complete[1], promoted and "#d00000" or "#004000",
 		   "#fff3c8", 4, false)

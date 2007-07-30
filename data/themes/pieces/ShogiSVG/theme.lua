@@ -7,13 +7,30 @@ shadow_offset_x=6
 shadow_offset_y=4
 shadow_grow=5
 
+fontnames = {"Potraced from ???", "Potraced from shogi.net", "Potraced from daemonshogi"}
+fontlist = {"default", "shogi.net", "daemonshogi"}
+
 theme.options = OptList {
-  BoolOpt("moves_overlay", "Moves overlay", true)
+  BoolOpt("moves_overlay", "Moves overlay", true),
+  SelectOpt("symbols", "Symbol set", BoolOptList {
+    BoolOpt("use_predefined", "Predefined", true, OptList {
+      ComboOpt("font", "Symbol set", fontnames)
+    }),
+    BoolOpt("use_custom", "Custom", false, OptList {
+      UrlOpt("dir", "SVG glyph directory", "default/")
+    }),
+  })
 }
 
 function addGlyph(file)
   return function(i, size)
-    i:draw_svg(Rect(0,0,size,size), file)
+    local dir
+    if theme.options.symbols.options.use_predefined.value then
+      dir = fontlist[theme.options.symbols.options.use_predefined.sub_options.font.selected+1]
+    else
+      dir = theme.options.symbols.options.use_custom.sub_options.dir.value
+    end
+    i:draw_svg(Rect(0,0,size,size), dir .. '/' .. file)
     return i
   end
 end
