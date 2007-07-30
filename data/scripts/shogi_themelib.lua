@@ -44,8 +44,7 @@ function draw_arrowhead(i, p, vx,vy, length, rwidth, linecolor,linewidth)
   i:draw_line(p,Point(p.x+vxdirect-vxortho,p.y-vydirect+vyortho), linecolor,linewidth)
 end
 
-function shogi_moves(...)
-  local moves = {...}
+function shogi_moves(moves)
   return function(i,size)
     if not theme.options.moves_overlay.value then
        return i
@@ -78,3 +77,30 @@ function shogi_moves(...)
     return i
   end
 end
+
+shogimoves_king = {
+   {-1,1},{0,1},{1,1},
+   {-1,0},{1,0},
+   {-1,-1},{0,-1},{1,-1}}
+shogimoves_rook = {{-1,0,1},{1,0,1},{0,-1,1},{0,1,1}}
+shogimoves_dragon = {
+   {-1,0,1},{1,0,1},{0,-1,1},{0,1,1},
+   {-1,-1},{1,-1},{-1,1},{1,1}}
+shogimoves_bishop = {{-1,-1,1},{1,-1,1},{-1,1,1},{1,1,1}}
+shogimoves_horse = {
+   {-1,-1,1},{1,-1,1},{-1,1,1},{1,1,1},
+   {-1,0},{1,0},{0,-1},{0,1}}
+shogimoves_gold = {
+   {-1,1},{0,1},{1,1},
+   {-1,0},{1,0},{0,-1}}
+shogimoves_silver = {
+   {-1,1},{0,1},{1,1},
+   {-1,-1},{1,-1}}
+shogimoves_knight = {{-1,2},{1,2}}
+shogimoves_lance = {{0,1,1}}
+shogimoves_pawn = {{0,1}}
+
+shogimoves_freeking = {
+   {-1,1,1},{0,1,1},{1,1,1},
+   {-1,0,1},{1,0,1},
+   {-1,-1,1},{0,-1,1},{1,-1,1}}
