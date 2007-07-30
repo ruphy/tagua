@@ -41,6 +41,7 @@ int main(int argc, char **argv) {
   about.addCredit(ki18n("Rici Lake"), ki18n("funclib lua library"));
   about.addCredit(ki18n("Riccardo Iaconelli"), ki18n("Various fixes and cleanups"));
   about.addCredit(ki18n("Yann Dirson"), ki18n("Shogi related patches"));
+  about.addCredit(ki18n("Pieter Stouten"), ki18n("Allowed free use of images on shogi.net"));
 
   KCmdLineOptions options;
   KCmdLineArgs::init(argc, argv, &about);
