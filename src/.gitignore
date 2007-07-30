@@ -1,0 +1,10 @@
+tagua_automoc.cpp.files
+DartTestfile.txt
+Makefile
+cmake_install.cmake
+taguaprivate_automoc.cpp.files
+moc_*.cpp
+ui_*.h
+*_automoc.cpp
+tagua
+tagua.shell
