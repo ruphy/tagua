@@ -3,8 +3,133 @@
 
 #include "tagua.h"
 #include "fwd.h"
+#include "nopool.h"
+
+#ifdef Q_CC_GNU
+  #define __FUNC__ __PRETTY_FUNCTION__
+#else
+  #define __FUNC__ __FUNCTION__
+#endif
+
+#define MISMATCH(x,y) (std::cout << " --> Error in "<<__FUNC__<<", MISMATCH!" << std::endl \
+                       << "     got type   " << prettyTypeName(typeid(x).name()) << std::endl \
+                       << "     instead of " << prettyTypeName(typeid(y).name()) << std::endl \
+                       << "     this is    " << prettyTypeName(typeid(*this).name()) << std::endl)
 
 namespace HLVariant {
+
+  template <typename Variant> class WrappedPosition;
+
+  template <typename Variant>
+  class WrappedPool { };
+  
+  template <typename Variant>
+  class WrappedPiece : public AbstractPiece {
+    typedef typename Variant::LegalityCheck::GameState::Board::Piece Piece;
+  
+    Piece m_piece;
+  public:
+    const Piece& inner() const { return m_piece; }
+  
+    WrappedPiece(const Piece& piece)
+    : m_piece(piece) { }
+  
+    virtual bool equals(const PiecePtr& _other) const {
+      if (!_other) return false;
+      WrappedPiece<Variant>* other = dynamic_cast<WrappedPiece<Variant>*>(_other.get());
+  
+      if (other)
+        return m_piece == other->inner();
+      else {
+        MISMATCH(*_other.get(),WrappedPiece<Variant>);
+        return false;
+      }
+    }
+  
+    virtual QString name() const {
+      return m_piece.name();
+    }
+  
+    virtual PiecePtr clone() const {
+      return PiecePtr(new WrappedPiece<Variant>(m_piece));
+    }
+  };
+  
+  template <typename Variant>
+  class WrappedMove : public AbstractMove {
+    typedef typename Variant::LegalityCheck LegalityCheck;
+    typedef typename LegalityCheck::Move Move;
+    typedef typename LegalityCheck::GameState GameState;
+
+    Move m_move;
+  public:
+    const Move& inner() const { return m_move; }
+    Move& inner() { return m_move; }
+  
+    WrappedMove(const Move& move)
+    : m_move(move) { }
+  
+    virtual QString SAN(const PositionPtr& _ref) const {
+      WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
+  
+      if (ref) {
+//         MoveSerializer<Position> serializer(m_move, pos->inner());
+        return ""; //BROKEN
+      }
+      else {
+        MISMATCH(*_ref.get(), WrappedPosition<Variant>);
+        return "$@%";
+      }
+    }
+  
+    virtual DecoratedMove toDecoratedMove(const PositionPtr& _pos) const {
+      return DecoratedMove(); // BROKEN
+    }
+  
+    virtual QString toString(const PositionPtr& _pos) const {
+      return ""; // BROKEN
+    }
+  
+    virtual NormalUserMove toUserMove() const {
+      return NormalUserMove(); // BROKEN
+    }
+  
+    virtual bool equals(const MovePtr& _other) const {
+      WrappedMove<Variant>* other = dynamic_cast<WrappedMove<Variant>*>(_other.get());
+  
+      if (other)
+        return m_move == other->inner();
+      else {
+        MISMATCH(*_other.get(), WrappedMove<Variant>);
+        return false;
+      }
+    }
+  };
+
+  /**
+    * Metafunction that returns a null pointer when
+    * its template argument is NoPool.
+    */
+  template <typename Variant, typename Pool>
+  struct ReturnPoolAux {
+    static PoolPtr apply(typename Variant::GameState& state, int player) {
+      return PoolPtr(new WrappedPool<Variant>(state.pool(player)));
+    }
+  };
+  
+  template <typename Variant>
+  struct ReturnPoolAux<Variant, NoPool> {
+    static PoolPtr apply(typename Variant::GameState&, int) {
+      return PoolPtr();
+    }
+  };
+  
+  template <typename Variant>
+  struct ReturnPool {
+    static PoolPtr apply(typename Variant::GameState& state, int player) {
+      return ReturnPoolAux<Variant, typename Variant::GameState::Pool>(state, player);
+    }
+  };
 
   template <typename Variant>
   class WrappedPosition : public AbstractPosition {
@@ -62,15 +187,15 @@ namespace HLVariant {
       return PoolPtr();
     }
     
-    virtual void copyPoolFrom(AbstractPosition::Ptr) {
+    virtual void copyPoolFrom(const PositionPtr&) {
       // BROKEN
     }
   
-    virtual InteractionType movable(const TurnTest& test, const Point& p) const {
+    virtual InteractionType movable(const TurnTest&, const Point&) const {
       return Moving; // BROKEN
     }
   
-    virtual InteractionType droppable(const TurnTest& test, int p) const {
+    virtual InteractionType droppable(const TurnTest&, int) const {
       return Moving; // BROKEN
     }
   
@@ -142,7 +267,7 @@ namespace HLVariant {
       return MovePtr();
     }
   
-    virtual AbstractMove::Ptr getMove(const QString&) const {
+    virtual MovePtr getMove(const QString&) const {
       // BROKEN
       return MovePtr();
     }
@@ -155,7 +280,7 @@ namespace HLVariant {
       return ""; // BROKEN
     }
   
-    virtual AbstractPiece::Ptr moveHint(const MovePtr&) const {
+    virtual PiecePtr moveHint(const MovePtr&) const {
       return PiecePtr(); // BROKEN
     }
   

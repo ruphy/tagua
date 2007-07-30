@@ -4,6 +4,7 @@ SET(hl_SRC
   prototype/chess/piece.cpp
   prototype/chess/move.cpp
   prototype/chess/gamestate.cpp
+  prototype/chess/variant.cpp
 
   ../cppunit_main.cpp
   boardtest.cpp
@@ -11,6 +12,7 @@ SET(hl_SRC
   chessgamestatetest.cpp
   chessmovetest.cpp
   chesslegalitytest.cpp
+  chesswrappedtest.cpp
 )
 
 include_directories(

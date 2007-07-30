@@ -4,6 +4,7 @@
 #include "../board.h"
 #include "piece.h"
 #include "move.h"
+#include "nopool.h"
 
 namespace HLVariant {
 namespace Chess {
@@ -25,6 +26,7 @@ public:
   typedef _Board Board;
   typedef _Move Move;
   typedef typename Board::Piece Piece;
+  typedef NoPool Pool;
 private:
   Board m_board;
   CastlingData m_castling;
@@ -50,6 +52,8 @@ public:
   virtual void handleCastling(const Piece& piece, const Move& m);
   virtual void captureOn(const Point& p);
   
+  virtual void setTurn(typename Piece::Color color);
+  virtual typename Piece::Color previousTurn() const;
   virtual void switchTurn();
   virtual typename Piece::Color turn() const;
   
@@ -204,6 +208,16 @@ void GameState<Board, Move>::move(const Move& m) {
 template <typename Board, typename Move>
 typename Board::Piece::Color GameState<Board, Move>::turn() const {
   return m_turn;
+}
+
+template <typename Board, typename Move>
+typename Board::Piece::Color GameState<Board, Move>::previousTurn() const {
+  return Piece::oppositeColor(m_turn);
+}
+
+template <typename Board, typename Move>
+void GameState<Board, Move>::setTurn(typename Piece::Color color) {
+  m_turn = color;
 }
 
 template <typename Board, typename Move>
