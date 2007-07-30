@@ -58,6 +58,8 @@ void ChessGameStateTest::test_en_passant() {
   d5.setType(ChessMove::EN_PASSANT_TRIGGER);
   m_state->move(d5);
   
+  CPPUNIT_ASSERT(m_state->enPassant() == Point(3, 2));
+  
   ChessMove exd6(Point(4, 3), Point(3, 2));
   exd6.setType(ChessMove::EN_PASSANT_CAPTURE);
   m_state->move(exd6);
@@ -98,3 +100,5 @@ void ChessGameStateTest::test_promotion() {
   CPPUNIT_ASSERT(m_state->board().get(Point(7, 0)) ==
     ChessPiece(ChessPiece::WHITE, ChessPiece::BISHOP));
 }
+
+

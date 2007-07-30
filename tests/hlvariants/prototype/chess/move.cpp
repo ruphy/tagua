@@ -4,7 +4,8 @@ namespace HLVariant {
 namespace Chess {
 
 Move::Move(const Point& from, const Point& to, int promotionType)
-: m_from(from)
+: m_type(NORMAL)
+, m_from(from)
 , m_to(to)
 , m_promotion(promotionType) { }
 

@@ -19,10 +19,16 @@ public:
   LegalityCheck(const GameState& state);
   virtual ~LegalityCheck();
 
-  virtual typename Move::Type getMoveType(const Piece& piece, const Move& move) const;
+  virtual typename Move::Type getMoveType(
+            const Piece& piece, 
+            const Move& move, 
+            const Piece& target = Piece()) const;
   virtual bool pseudolegal(Move& move) const;
   virtual bool legal(Move& move) const;
-  virtual bool attacks(typename Piece::Color color, const Point& p) const;
+  virtual bool attacks(
+            typename Piece::Color color, 
+            const Point& p,
+            const Piece& target = Piece()) const;
   virtual bool checkPromotion(typename Piece::Type type) const;
 };
 
@@ -82,12 +88,12 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
       return false;
     if (move.kingSideCastling()) {
       if (attacks(otherTurn, move.from()) ||
-          attacks(otherTurn, move.from() + Point(1, 0)))
+          attacks(otherTurn, move.from() + Point(1, 0), piece))
           return false;
     }
     if (move.queenSideCastling()) {
       if (attacks(otherTurn, move.from()) ||
-          attacks(otherTurn, move.from() + Point(-1, 0)))
+          attacks(otherTurn, move.from() + Point(-1, 0), piece))
           return false;
     }
 
@@ -99,7 +105,11 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
 }
 
 template <typename GameState>
-typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece& piece, const Move& move) const {
+typename GameState::Move::Type 
+LegalityCheck<GameState>::
+getMoveType(const Piece& piece, const Move& move, const Piece& _target) const {
+  Piece target = _target == Piece() ? m_state.board().get(move.to()) : _target;
+
   switch (piece.type())
   {
   case Piece::ROOK:
@@ -107,8 +117,7 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
       if (move.from() == move.to())
           return Move::INVALID;
       PathInfo path = m_state.board().path(move.from(), move.to());
-      if (path.parallel() && path.clear() && 
-          m_state.board().get(move.to()).color() != piece.color())
+      if (path.parallel() && path.clear() && target.color() != piece.color())
           return Move::NORMAL;
       else
           return Move::INVALID;
@@ -119,15 +128,14 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
       if (move.from() == move.to())
           return Move::INVALID;
       PathInfo path = m_state.board().path(move.from(), move.to());
-      if (path.diagonal() && path.clear() && 
-          m_state.board().get(move.to()).color() != piece.color())
+      if (path.diagonal() && path.clear() && target.color() != piece.color())
           return Move::NORMAL;
       else
           return Move::INVALID;
   }
 
   case Piece::KNIGHT:
-      if (m_state.board().get(move.to()).color() == piece.color())
+      if (target.color() == piece.color())
           return Move::INVALID;
       else
       {
@@ -144,8 +152,7 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
       if (move.from() == move.to())
           return Move::INVALID;
       PathInfo path = m_state.board().path(move.from(), move.to());
-      if (path.valid() && path.clear() && 
-          m_state.board().get(move.to()).color() != piece.color())
+      if (path.valid() && path.clear() && target.color() != piece.color())
           return Move::NORMAL;
       else
           return Move::INVALID;
@@ -156,9 +163,9 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
     if (move.from() == move.to())
       return Move::INVALID;
     Point delta = move.to() - move.from();
-    if (abs(delta.x) <= 1 && abs(delta.y) <= 1 && 
-        m_state.board().get(move.to()).color() != piece.color())
+    if (abs(delta.x) <= 1 && abs(delta.y) <= 1 && target.color() != piece.color()) {
       return Move::NORMAL;
+    }
     else if (move.from() == m_state.kingStartingPosition(piece.color())) {
       if (delta == Point(2,0)) {
         if (m_state.board().get(move.from() + Point(1,0)) == Piece() &&
@@ -168,7 +175,7 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
       }
       else if (delta == Point(-2,0)) {
         if (m_state.board().get(move.from() - Point(1, 0)) == Piece() &&
-            m_state.board().get(move.from() - Point(2, 0)) == Piece() &&
+            m_state.board().get(move.to() + Point(1, 0)) == Piece() &&
             m_state.board().get(move.to()) == Piece() &&
             m_state.queenCastling(piece.color()))
             return Move::QUEEN_SIDE_CASTLING;
@@ -179,12 +186,11 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
 
   case Piece::PAWN:
   {
-    Piece destinationPiece = m_state.board().get(move.to());
     Point delta = move.to() - move.from();
     bool enPassant = m_state.enPassant() == move.to();
 
     // moving
-    if (destinationPiece == Piece() && !enPassant) {
+    if (target == Piece() && !enPassant) {
       if (delta == m_state.direction(piece.color())) {
         if (move.to().y == m_state.promotionRank(piece.color()))
           return Move::PROMOTION;
@@ -202,7 +208,7 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
     }
 
     // capturing
-    else if (enPassant || destinationPiece.color() != piece.color()) {
+    else if (enPassant || target.color() != piece.color()) {
       if (delta.y == m_state.direction(piece.color()).y && 
           abs(delta.x) == 1) {
         if (enPassant)
@@ -223,7 +229,17 @@ typename GameState::Move::Type LegalityCheck<GameState>::getMoveType(const Piece
 }
 
 template <typename GameState>
-bool LegalityCheck<GameState>::attacks(typename Piece::Color, const Point&) const {
+bool LegalityCheck<GameState>::attacks(typename Piece::Color color, const Point& to, const Piece& target) const {
+  for (int i = 0; i < m_state.board().size().x; i++) {
+    for (int j = 0; j < m_state.board().size().y; j++) {
+      Point p(i, j);
+      Piece piece = m_state.board().get(p);
+      Move move(p, to);
+      if (piece != Piece() && piece.color() == color 
+          && getMoveType(piece, move, target) != Move::INVALID)
+        return true;
+    }
+  }
   return false;
 }
 

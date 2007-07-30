@@ -22,6 +22,10 @@ void ChessMoveTest::test_en_passant_trigger() {
   ChessMove m(Point(4, 6), Point(4, 4));
   m.setType(ChessMove::EN_PASSANT_TRIGGER);
   CPPUNIT_ASSERT(m.enPassantTrigger() == Point(4, 5));
+  
+  ChessMove m2(Point(3, 1), Point(3, 3));
+  m2.setType(ChessMove::EN_PASSANT_TRIGGER);
+  CPPUNIT_ASSERT(m2.enPassantTrigger() == Point(3, 2));
 }
 
 void ChessMoveTest::test_promotion() {
