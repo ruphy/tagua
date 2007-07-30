@@ -1,0 +1,7 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Shogi SVG/TTF
+Type=Application
+Comment=Shogi TTF theme from SVG files,|  created with potrace from ???
+X-Tagua-ThemeType=Pieces
+X-Tagua-Variants=Chess,Shogi[default]

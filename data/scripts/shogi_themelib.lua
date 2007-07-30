@@ -25,7 +25,7 @@ function tile(white, ratio)
       b:translate(size*(1-ratio)*0.5, size*(1-ratio)*0.5)
     end
 
-    i:draw_glyph(Rect(0,0,size,size), "../ShogiTTF/Shogi.ttf", "0x2c", "black", b)
+    i:draw_glyph(Rect(0,0,size,size), "../ShogiSVG-TTF/Shogi.ttf", "0x2c", "black", b)
     --i:draw_svg(Rect(0,0,size,size), "../ShogiSVG/tile.svg")
     return i
   end
