@@ -133,6 +133,16 @@ template <typename MoveGenerator>
 QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& ref) {
   switch (m_rep) {
   case SIMPLE:
+    {
+      int ysize = ref.board().size().y;
+      QString res = move.from().toString(ysize) + move.to().toString(ysize);
+      if (move.promoteTo() != -1)
+        res = res + "=" + 
+          Piece::typeName(
+            static_cast<typename Piece::Type>(move.promoteTo())
+          )[0].toUpper();
+      return res;
+    }
   case COMPACT:
     return san(move, ref);
   case DECORATED:
