@@ -60,5 +60,12 @@ void ChessWrappedTest::test_movable() {
   CPPUNIT_ASSERT_EQUAL(Premoving, m_pos->movable(test, Point(6, 0)));
 }
 
+void ChessWrappedTest::test_san1() {
+  m_pos->setup();
+  
+  MovePtr move(new HLVariant::WrappedMove<Chess>(ChessMove(Point(4, 6), Point(4, 4))));
+  CPPUNIT_ASSERT_EQUAL(QString("e4"), move->SAN(m_pos));
+}
+
 
 

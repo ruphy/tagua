@@ -103,7 +103,8 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
     res = "O-O-O";
   }
   else {
-    res = piece.typeName()[0].toUpper();
+    if (piece.type() != Piece::PAWN)
+      res = piece.typeName()[0].toUpper();
 
     SAN tmp;
     tmp.from = move.from();
