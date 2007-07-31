@@ -1,12 +1,23 @@
+/*
+  Copyright (c) 2007 Paolo Capriotti <p.capriotti@sns.it>
+            (c) 2007 Maurizio Monge <maurizio.monge@kdemail.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+*/
+
 #ifndef HLVARIANT__CHESS__SERIALIZER_H
 #define HLVARIANT__CHESS__SERIALIZER_H
 
 #include "legalitycheck.h"
+#include "san.h"
 
 namespace HLVariant {
 namespace Chess {
 
-template <typename GameData>
+template <typename MoveGenerator>
 class Serializer {
 public:
   /**
@@ -18,8 +29,7 @@ public:
     DECORATED = 2        /// Symbolic figurine notation. Figurine names are enclosed in braces.
   } MoveRepresentation;
 private:
-  typedef typename GameData::MoveGenerator MoveGenerator;
-  typedef typename GameData::LegalityCheck LegalityCheck;
+  typedef typename MoveGenerator::LegalityCheck LegalityCheck;
   typedef typename LegalityCheck::GameState GameState;
   typedef typename GameState::Move Move;
   typedef typename GameState::Board::Piece Piece;
@@ -62,15 +72,15 @@ public:
 
 // IMPLEMENTATION
 
-template <typename GameData>
-Serializer<GameData>::Serializer(int rep)
+template <typename MoveGenerator>
+Serializer<MoveGenerator>::Serializer(int rep)
 : m_rep(rep) { }
 
-template <typename GameData>
-Serializer<GameData>::~Serializer() { }
+template <typename MoveGenerator>
+Serializer<MoveGenerator>::~Serializer() { }
 
-template <typename GameData>
-QString Serializer<GameData>::san(const Move& move, const GameState& ref) {
+template <typename MoveGenerator>
+QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
   if (!move.valid())
     return "";
     
@@ -100,23 +110,23 @@ QString Serializer<GameData>::san(const Move& move, const GameState& ref) {
     tmp.castling = SAN::NoCastling;
     minimalNotation(tmp, ref);
 
-    res += tmp.from.toString(ref.size().y);
+    res += tmp.from.toString(ref.board().size().y);
     if (captured)
       res += "x";
-    res += tmp.to.toString(m_ref.size().y);
+    res += tmp.to.toString(ref.board().size().y);
   }
 
   if (move.promoteTo() != -1)
     res += "=" + Piece::typeName(move.promoteTo())[0].toUpper();
 
-  res += checkSuffix();
+  res += suffix();
 
   return res;
 }
 
-template <typename GameData>
-QString Serializer<GameData>::serialize(const Move& move, const GameState& ref) {
-  switch (m_ref) {
+template <typename MoveGenerator>
+QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& ref) {
+  switch (m_rep) {
   case SIMPLE:
   case COMPACT:
     return san(move, ref);
@@ -136,8 +146,8 @@ QString Serializer<GameData>::serialize(const Move& move, const GameState& ref) 
   }
 }
 
-template <typename GameData>
-QString Serializer<GameData>::suffix(const Move& move, const GameState& ref) {
+template <typename MoveGenerator>
+QString Serializer<MoveGenerator>::suffix(const Move& move, const GameState& ref) {
   GameState tmp(ref);
   tmp.move(move);
   
@@ -153,15 +163,16 @@ QString Serializer<GameData>::suffix(const Move& move, const GameState& ref) {
   }
 }
 
-template <typename GameData>
-typename Serializer<GameData>::Move 
-Serializer<GameData>::deserialize(const QString& str, const GameState& ref) {
+template <typename MoveGenerator>
+typename Serializer<MoveGenerator>::Move 
+Serializer<MoveGenerator>::deserialize(const QString& str, const GameState& ref) {
   switch (m_rep) {
   case SIMPLE:
     return Move(); // BROKEN
   case COMPACT:
     {
-      SAN tmp(str);
+      SAN tmp;
+      tmp.load(str, ref.board().size().y);
       Move candidate;
     
       if (san.invalid())
@@ -171,7 +182,7 @@ Serializer<GameData>::deserialize(const QString& str, const GameState& ref) {
         Point from = ref.kingStartingPosition(ref.turn());
         Point to = from + (san.castling == SAN::KingSide? Point(2,0) : Point(-2,0));
         Piece king = ref.board().get(from);
-        if (king.type() != Piece::KING))
+        if (king.type() != Piece::KING)
           return candidate;
         else
           return Move(from, to);

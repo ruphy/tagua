@@ -58,6 +58,6 @@ private:
   int normalizeInfinityHelper(int n) const;
 };
 
-std::ostream& operator<<(std::ostream&, const Point&);
+TAGUA_EXPORT std::ostream& operator<<(std::ostream&, const Point&);
 
 #endif // POINT_H

@@ -5,6 +5,7 @@ SET(hl_SRC
   prototype/chess/move.cpp
   prototype/chess/gamestate.cpp
   prototype/chess/variant.cpp
+  prototype/chess/san.cpp
 
   ../cppunit_main.cpp
   boardtest.cpp

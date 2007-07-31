@@ -58,6 +58,7 @@ namespace HLVariant {
   template <typename Variant>
   class WrappedMove : public AbstractMove {
     typedef typename Variant::LegalityCheck LegalityCheck;
+    typedef typename Variant::Serializer Serializer;
     typedef typename LegalityCheck::Move Move;
     typedef typename LegalityCheck::GameState GameState;
 
@@ -73,7 +74,7 @@ namespace HLVariant {
       WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
   
       if (ref) {
-//         MoveSerializer<Position> serializer(m_move, pos->inner());
+        
         return ""; //BROKEN
       }
       else {
