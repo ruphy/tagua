@@ -182,8 +182,14 @@ Serializer<MoveGenerator>::get_san(const SAN& san, const GameState& ref) {
     Piece king = ref.board().get(from);
     if (king.type() != Piece::KING)
       return candidate;
-    else
-      return Move(from, to);
+    else {
+      candidate = Move(from, to);
+      LegalityCheck check(ref);
+      if (check.legal(candidate))
+        return candidate;
+      else
+        return Move();
+    }
   }
 
   if (san.from.valid()) {
