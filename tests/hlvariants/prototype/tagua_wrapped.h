@@ -275,7 +275,7 @@ namespace HLVariant {
     }
   
     virtual QString state() const {
-      return ""; // TODO
+      return ""; // BROKEN
     }
   
     virtual QString fen(int, int) const {

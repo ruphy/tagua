@@ -24,6 +24,7 @@ private:
   Point m_to;
   int m_promotion;
 public:
+  Move();
   Move(const Point& from, const Point& to, int promotionType = -1);
   virtual ~Move();
   

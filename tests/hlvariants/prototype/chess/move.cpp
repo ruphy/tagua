@@ -9,6 +9,12 @@ Move::Move(const Point& from, const Point& to, int promotionType)
 , m_to(to)
 , m_promotion(promotionType) { }
 
+Move::Move()
+: m_type(INVALID)
+, m_from(Point::invalid())
+, m_to(Point::invalid())
+, m_promotion(-1) { }
+
 Move::~Move() { }
 
 Point Move::enPassantTrigger() const {
