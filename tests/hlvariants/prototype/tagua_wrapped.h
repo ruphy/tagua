@@ -4,6 +4,7 @@
 #include "tagua.h"
 #include "fwd.h"
 #include "nopool.h"
+#include "variantdata.h"
 
 #ifdef Q_CC_GNU
   #define __FUNC__ __PRETTY_FUNCTION__
@@ -25,7 +26,7 @@ namespace HLVariant {
   
   template <typename Variant>
   class WrappedPiece : public AbstractPiece {
-    typedef typename Variant::LegalityCheck::GameState::Board::Piece Piece;
+    typedef typename VariantData<Variant>::Piece Piece;
   
     Piece m_piece;
   public:
@@ -57,10 +58,10 @@ namespace HLVariant {
   
   template <typename Variant>
   class WrappedMove : public AbstractMove {
-    typedef typename Variant::LegalityCheck LegalityCheck;
-    typedef typename Variant::Serializer Serializer;
-    typedef typename LegalityCheck::Move Move;
-    typedef typename LegalityCheck::GameState GameState;
+    typedef typename VariantData<Variant>::LegalityCheck LegalityCheck;
+    typedef typename VariantData<Variant>::Serializer Serializer;
+    typedef typename VariantData<Variant>::Move Move;
+    typedef typename VariantData<Variant>::GameState GameState;
 
     Move m_move;
   public:
@@ -74,8 +75,8 @@ namespace HLVariant {
       WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
   
       if (ref) {
-        
-        return ""; //BROKEN
+        Serializer serializer(Serializer::COMPACT);
+        return serializer.serialize(m_move, ref->inner());
       }
       else {
         MISMATCH(*_ref.get(), WrappedPosition<Variant>);
@@ -134,11 +135,11 @@ namespace HLVariant {
 
   template <typename Variant>
   class WrappedPosition : public AbstractPosition {
-    typedef typename Variant::LegalityCheck LegalityCheck;
-    typedef typename LegalityCheck::GameState GameState;
-    typedef typename GameState::Board Board;
-    typedef typename Board::Piece Piece;
-    typedef typename GameState::Move Move;
+    typedef typename VariantData<Variant>::LegalityCheck LegalityCheck;
+    typedef typename VariantData<Variant>::GameState GameState;
+    typedef typename VariantData<Variant>::Board Board;
+    typedef typename VariantData<Variant>::Piece Piece;
+    typedef typename VariantData<Variant>::Move Move;
     
     GameState m_state;
   public:

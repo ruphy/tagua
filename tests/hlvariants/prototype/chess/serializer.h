@@ -40,6 +40,10 @@ protected:
   virtual QString suffix(const Move& move, const GameState& ref);
   
   virtual QString san(const Move& move, const GameState& ref);
+  
+  virtual void minimal_notation(SAN& san, const GameState& ref);
+  
+  virtual Move get_san(const SAN& san, const GameState& ref);
 public:
   /** 
     * Create a serializer to a given string representation for moves.
@@ -92,8 +96,6 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
   if (piece == Piece())
     return ""; // no piece in the initial square
 
-  Q_ASSERT(piece);
-
   if (move.kingSideCastling()) {
     res = "O-O";
   }
@@ -108,18 +110,20 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
     tmp.to = move.to();
     tmp.type = piece.type();
     tmp.castling = SAN::NoCastling;
-    minimalNotation(tmp, ref);
+    minimal_notation(tmp, ref);
 
     res += tmp.from.toString(ref.board().size().y);
-    if (captured)
+    if (captured != Piece())
       res += "x";
     res += tmp.to.toString(ref.board().size().y);
   }
 
   if (move.promoteTo() != -1)
-    res += "=" + Piece::typeName(move.promoteTo())[0].toUpper();
+    res += "=" + QString(Piece::typeName(
+                    static_cast<typename Piece::Type>(move.promoteTo())
+                 )[0].toUpper());
 
-  res += suffix();
+  res += suffix(move, ref);
 
   return res;
 }
@@ -152,7 +156,7 @@ QString Serializer<MoveGenerator>::suffix(const Move& move, const GameState& ref
   tmp.move(move);
   
   MoveGenerator generator(tmp);
-  if (generator.check()) {
+  if (generator.check(ref.turn())) {
     if (generator.stalled())
       return "#";
     else
@@ -165,6 +169,57 @@ QString Serializer<MoveGenerator>::suffix(const Move& move, const GameState& ref
 
 template <typename MoveGenerator>
 typename Serializer<MoveGenerator>::Move 
+Serializer<MoveGenerator>::get_san(const SAN& san, const GameState& ref) {
+  Move candidate;
+
+  if (san.invalid())
+    return candidate;
+
+  if (san.castling != SAN::NoCastling) {
+    Point from = ref.kingStartingPosition(ref.turn());
+    Point to = from + (san.castling == SAN::KingSide? Point(2,0) : Point(-2,0));
+    Piece king = ref.board().get(from);
+    if (king.type() != Piece::KING)
+      return candidate;
+    else
+      return Move(from, to);
+  }
+
+  if (san.from.valid()) {
+    candidate = Move(san.from, san.to, static_cast<typename Piece::Type>(san.promotion));
+  }
+  else {
+    for (int i = 0; i < ref.board().size().x; i++) {
+      for (int j = 0; j < ref.board().size().y; j++) {
+        Point p(i, j);
+        Piece piece = ref.board().get(p);
+        
+        Move mv(p, san.to, static_cast<typename Piece::Type>(san.promotion));
+        if (p.resembles(san.from) && 
+            piece.type() == san.type && 
+            piece.color() == ref.turn()) {
+  
+          LegalityCheck check(ref);
+          if (check.legal(mv))  {
+            if (candidate.valid()) {
+              // ambiguous!
+              return Move();
+            }
+            else {
+              // ok, we have found a candidate move
+              candidate = mv;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  return candidate;
+}
+
+template <typename MoveGenerator>
+typename Serializer<MoveGenerator>::Move 
 Serializer<MoveGenerator>::deserialize(const QString& str, const GameState& ref) {
   switch (m_rep) {
   case SIMPLE:
@@ -173,58 +228,38 @@ Serializer<MoveGenerator>::deserialize(const QString& str, const GameState& ref)
     {
       SAN tmp;
       tmp.load(str, ref.board().size().y);
-      Move candidate;
-    
-      if (san.invalid())
-        return candidate;
-    
-      if (san.castling != SAN::NoCastling) {
-        Point from = ref.kingStartingPosition(ref.turn());
-        Point to = from + (san.castling == SAN::KingSide? Point(2,0) : Point(-2,0));
-        Piece king = ref.board().get(from);
-        if (king.type() != Piece::KING)
-          return candidate;
-        else
-          return Move(from, to);
-      }
-    
-      if (san.from.valid()) {
-        candidate = Move(san.from, san.to, static_cast<typename Piece::Type>(san.promotion));
-      }
-      else {
-        for (int i = 0; i < ref.board().size().x; i++) {
-          for (int j = 0; j < ref.board().size().y; j++) {
-            Point p(i, j);
-            Piece piece = ref.board().get(p);
-            
-            Move mv(p, san.to, static_cast<typename Piece::Type>(san.promotion));
-            if (p.resembles(san.from) && 
-                piece.type() == san.type && 
-                piece.color() == ref.turn()) {
-      
-              LegalityCheck check(ref);
-              if (check.legal(mv))  {
-                if (candidate.valid()) {
-                  // ambiguous!
-                  return Move();
-                }
-                else {
-                  // ok, we have found a candidate move
-                  candidate = mv;
-                }
-              }
-            }
-          }
-        }
-      }
-
-      return candidate;
+      return get_san(tmp, ref);
     }
   case DECORATED:
+  default:
     // no need to parse decorated moves
     return Move();
   }
 }
+
+
+#define TRY(x) if(get_san(x, ref).valid()) return;
+template <typename MoveGenerator>
+void Serializer<MoveGenerator>::minimal_notation(SAN& san, const GameState& ref) {
+  Point from = san.from;
+  san.castling = SAN::NoCastling;
+
+  // try notation without starting point
+  san.from = Point::invalid();
+  TRY(san);
+
+  // add column indication
+  san.from = Point(from.x, -1);
+  TRY(san);
+
+  // add row indication
+  san.from = Point(-1, from.y);
+  TRY(san);
+
+  // add complete starting point
+  san.from = from;
+}
+#undef TRY
 
 } // namespace Chess
 } // namespace HLVariant

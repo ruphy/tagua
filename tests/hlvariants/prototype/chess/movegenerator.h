@@ -56,7 +56,7 @@ MoveGenerator<LegalityCheck>::~MoveGenerator() { }
 
 template <typename LegalityCheck>
 bool MoveGenerator<LegalityCheck>::check(typename Piece::Color turn) const {
-  Point kingPosition = m_state.board().find(turn, Piece::KING);
+  Point kingPosition = m_state.board().find(Piece(turn, Piece::KING));
   if (!kingPosition.valid()) {
     // a missing king is considered in check
     return true;
@@ -87,8 +87,7 @@ template <typename LegalityCheck>
 void MoveGenerator<LegalityCheck>::generate(MoveCallback& callback) const {
   for (int i = 0; i < m_state.board().size().x; i++) {
     for (int j = 0; j < m_state.board().size().y; j++) {
-      if (!generateFrom(Point(i, j), callback))
-        return false;
+      generateFrom(Point(i, j), callback);
     }
   }
 }
@@ -108,20 +107,20 @@ bool MoveGenerator<LegalityCheck>::generateFrom(const Point& p, MoveCallback& ca
         }
         else {
           return addMove(Move(p, p + dir), callback) &&
-          addMove(p, p + dir * 2) &&
-          addMove(p, p + dir + Point(1, 0)) &&
-          addMove(p, p + dir - Point(1, 0));
+          addMove(Move(p, p + dir * 2), callback) &&
+          addMove(Move(p, p + dir + Point(1, 0)), callback) &&
+          addMove(Move(p, p + dir - Point(1, 0)), callback);
         }
       }
     case Piece::KNIGHT:
-      return addMove(p, p + Point(1, 2), callback) &&
-      addMove(p, p + Point(1, -2), callback) &&
-      addMove(p, p + Point(-1, 2), callback) &&
-      addMove(p, p + Point(-1, -2), callback) &&
-      addMove(p, p + Point(2, 1), callback) &&
-      addMove(p, p + Point(2, -1), callback) &&
-      addMove(p, p + Point(-2, 1), callback) &&
-      addMove(p, p + Point(-2, -1), callback);
+      return addMove(Move(p, p + Point(1, 2)), callback) &&
+      addMove(Move(p, p + Point(1, -2)), callback) &&
+      addMove(Move(p, p + Point(-1, 2)), callback) &&
+      addMove(Move(p, p + Point(-1, -2)), callback) &&
+      addMove(Move(p, p + Point(2, 1)), callback) &&
+      addMove(Move(p, p + Point(2, -1)), callback) &&
+      addMove(Move(p, p + Point(-2, 1)), callback) &&
+      addMove(Move(p, p + Point(-2, -1)), callback);
     case Piece::BISHOP:
       return generateSlide(p, Point(1, 1), callback) &&
       generateSlide(p, Point(1, -1), callback) &&
@@ -142,14 +141,14 @@ bool MoveGenerator<LegalityCheck>::generateFrom(const Point& p, MoveCallback& ca
       generateSlide(p, Point(-1, -1), callback) &&
       generateSlide(p, Point(-1, 1), callback);
     case Piece::KING:
-      return addMove(p, p + Point(1,0), callback) &&
-      addMove(p, p + Point(1,1), callback) &&
-      addMove(p, p + Point(0,1), callback) &&
-      addMove(p, p + Point(-1,1), callback) &&
-      addMove(p, p + Point(-1,0), callback) &&
-      addMove(p, p + Point(-1,-1), callback) &&
-      addMove(p, p + Point(0,-1), callback) &&
-      addMove(p, p + Point(1,-1), callback);
+      return addMove(Move(p, p + Point(1,0)), callback) &&
+      addMove(Move(p, p + Point(1,1)), callback) &&
+      addMove(Move(p, p + Point(0,1)), callback) &&
+      addMove(Move(p, p + Point(-1,1)), callback) &&
+      addMove(Move(p, p + Point(-1,0)), callback) &&
+      addMove(Move(p, p + Point(-1,-1)), callback) &&
+      addMove(Move(p, p + Point(0,-1)), callback) &&
+      addMove(Move(p, p + Point(1,-1)), callback);
     default:
       return true;
     }
@@ -163,7 +162,7 @@ bool MoveGenerator<LegalityCheck>::
 generateSlide(const Point& p, const Point& dir, MoveCallback& callback) const {
   Point q = p + dir;
   while (m_state.board().valid(q)) {
-    if (!addMove(Move(p, q)))
+    if (!addMove(Move(p, q), callback))
       return false;
     q += dir;
   }
@@ -175,8 +174,9 @@ generateSlide(const Point& p, const Point& dir, MoveCallback& callback) const {
 template <typename LegalityCheck>
 bool MoveGenerator<LegalityCheck>::addMove(const Move& m, MoveCallback& callback) const {
   LegalityCheck check(m_state);
-  if (check.legal(m)) {
-    return callback(m);
+  Move move(m);
+  if (check.legal(move)) {
+    return callback(move);
   }
   
   return true;
