@@ -67,5 +67,12 @@ void ChessWrappedTest::test_san1() {
   CPPUNIT_ASSERT_EQUAL(QString("e4"), move->SAN(m_pos));
 }
 
+void ChessWrappedTest::test_get_move() {
+  m_pos->setup();
+  
+  MovePtr move = m_pos->getMove("e4");
+  CPPUNIT_ASSERT_EQUAL(QString("e4"), move->SAN(m_pos));
+}
+
 
 

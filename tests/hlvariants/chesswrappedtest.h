@@ -15,6 +15,7 @@ class ChessWrappedTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(test_move);
   CPPUNIT_TEST(test_movable);
   CPPUNIT_TEST(test_san1);
+  CPPUNIT_TEST(test_get_move);
   CPPUNIT_TEST_SUITE_END();
 private:
   PositionPtr m_pos;
@@ -26,6 +27,7 @@ public:
   void test_move();
   void test_movable();
   void test_san1();
+  void test_get_move();
 };
 
 #endif // CHESSWRAPPEDTEST_H

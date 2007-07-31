@@ -140,6 +140,7 @@ namespace HLVariant {
     typedef typename VariantData<Variant>::Board Board;
     typedef typename VariantData<Variant>::Piece Piece;
     typedef typename VariantData<Variant>::Move Move;
+    typedef typename VariantData<Variant>::Serializer Serializer;
     
     GameState m_state;
   public:
@@ -271,9 +272,14 @@ namespace HLVariant {
       return MovePtr();
     }
   
-    virtual MovePtr getMove(const QString&) const {
-      // BROKEN
-      return MovePtr();
+    virtual MovePtr getMove(const QString& san) const {
+      Serializer serializer(Serializer::COMPACT);
+      Move res = serializer.deserialize(san, m_state);
+      if (res.valid()) {
+        return MovePtr(new WrappedMove<Variant>(res));
+      }
+      else
+        return MovePtr();
     }
   
     virtual QString state() const {

@@ -32,6 +32,9 @@ SAN::SAN()
 }
 
 int SAN::getType(const QString& letter) const {
+  if (letter.isEmpty())
+    return Piece::PAWN;
+    
   QChar c = letter[0].toLower();
   if (c == 'k')
     return Piece::KING;
