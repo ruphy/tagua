@@ -1,13 +1,20 @@
 #include "chesswrappedtest.h"
 #include "prototype/tagua_wrapped.h"
 #include "prototype/chess/variant.h"
+#include "prototype/variantdata.h"
+
+#define MOVE(x) { MovePtr _tmp = m_pos->getMove(#x);     \
+                  CPPUNIT_ASSERT(_tmp);                  \
+                  m_pos->move(_tmp); }
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ChessWrappedTest);
 
 typedef HLVariant::Chess::Variant Chess;
-typedef Chess::LegalityCheck LegalityCheck;
+typedef VariantData<Chess>::LegalityCheck LegalityCheck;
+typedef VariantData<Chess>::MoveGenerator MoveGenerator;
 typedef LegalityCheck::GameState GameState;
 typedef GameState::Move ChessMove;
+typedef VariantData<Chess>::Piece ChessPiece;
 
 void ChessWrappedTest::setUp() {
   m_pos = PositionPtr(new HLVariant::WrappedPosition<Chess>(GameState()));
@@ -40,7 +47,6 @@ void ChessWrappedTest::test_move() {
   CPPUNIT_ASSERT(!m_pos->get(Point(4, 6)));
   CPPUNIT_ASSERT(m_pos->get(Point(4, 4))->name() == "white_pawn");
 }
-
 void ChessWrappedTest::test_movable() {
   m_pos->setup();
   
@@ -67,12 +73,42 @@ void ChessWrappedTest::test_san1() {
   CPPUNIT_ASSERT_EQUAL(QString("e4"), move->SAN(m_pos));
 }
 
-void ChessWrappedTest::test_get_move() {
+void ChessWrappedTest::test_get_move1() {
   m_pos->setup();
   
   MovePtr move = m_pos->getMove("e4");
   CPPUNIT_ASSERT_EQUAL(QString("e4"), move->SAN(m_pos));
 }
 
+void ChessWrappedTest::test_fools_mate() {
+  m_pos->setup();
+  
+  MOVE(f3);
+  MOVE(e5);
+  MOVE(g4);
+  MOVE(Qh4);
+  
+  HLVariant::WrappedPosition<Chess>* pos = 
+    dynamic_cast<HLVariant::WrappedPosition<Chess>*>(m_pos.get());
+
+  CPPUNIT_ASSERT(pos);
+  
+  MoveGenerator generator(pos->inner());
+  CPPUNIT_ASSERT(generator.check(static_cast<ChessPiece::Color>(m_pos->turn())));
+  CPPUNIT_ASSERT(generator.stalled());
+}
+
+void ChessWrappedTest::test_check() {
+  m_pos->setup();
+  
+  MOVE(e4);
+  MOVE(d5);
+  MOVE(Bb5);
+  
+  CPPUNIT_ASSERT(!m_pos->getMove("Na6"));
+  CPPUNIT_ASSERT(m_pos->getMove("Nc6"));
+}
 
 
+
+#undef MOVE
