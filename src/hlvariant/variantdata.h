@@ -9,7 +9,7 @@ struct VariantData {
   typedef typename GameState::Board Board;
   typedef typename GameState::Move Move;
   typedef typename Board::Piece Piece;
-  
+  typedef typename Variant::Animator Animator;  
   typedef typename Variant::Serializer Serializer;
 };
 

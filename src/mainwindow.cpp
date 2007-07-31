@@ -94,7 +94,7 @@ MainWindow::MainWindow()
   //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
 
 //  start in edit game mode
-  newGame("chess", AbstractPosition::Ptr());
+  newGame("chess_old", AbstractPosition::Ptr());
 
   setupActions();
   setupGUI();

@@ -3,6 +3,7 @@
 
 #include "tagua.h"
 #include "fwd.h"
+#include "movefactory.h"
 #include "nopool.h"
 #include "variantdata.h"
 
@@ -303,7 +304,141 @@ namespace HLVariant {
     }
     
   };
+}
 
+#include "graphicalapi_unwrapped.h"
+
+namespace HLVariant {
+  
+  template <typename Variant>
+  class WrappedAnimator : public AbstractAnimator {
+    typedef typename VariantData<Variant>::GameState GameState;
+    typedef typename VariantData<Variant>::Animator Animator;
+    typedef typename VariantData<Variant>::Move Move;
+  
+    Animator m_animator;
+  public:
+    const Animator& inner() const { return m_animator; }
+  
+    WrappedAnimator(const Animator& animator)
+    : m_animator(animator) { }
+  
+    virtual AnimationPtr warp(const PositionPtr& _pos) {
+      WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+      if (pos)
+        return m_animator.warp(pos->inner());
+      else {
+        MISMATCH(*_pos.get(), WrappedPosition<Variant>);
+        return AnimationPtr();
+      }
+    }
+  
+    virtual AnimationPtr forward(const PositionPtr& _pos, const MovePtr& _move) {
+      WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+      WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+  
+      if (move && pos)
+        return m_animator.forward(pos->inner(), move->inner());
+      else {
+        if (!move)
+          MISMATCH(*_move.get(), WrappedMove<Variant>);
+        if (!pos)
+          MISMATCH(*_pos.get(), WrappedPosition<Variant>);
+        return AnimationPtr();
+      }
+    }
+  
+    virtual AnimationPtr back(const PositionPtr& _pos, const MovePtr& _move) {
+      WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
+      WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
+  
+      if (move && pos)
+        return m_animator.back(pos->inner(), move->inner());
+      else {
+        if (!move)
+          MISMATCH(*_move.get(), WrappedMove<Variant>);
+        if (!pos)
+          MISMATCH(*_pos.get(), WrappedPosition<Variant>);
+        return AnimationPtr();
+      }
+    }
+  };
+
+  
+  
+  template <typename Variant>
+  class WrappedVariantInfo : public VariantInfo {
+    typedef typename VariantData<Variant>::Animator Animator;
+    typedef typename VariantData<Variant>::GameState GameState;
+    typedef typename VariantData<Variant>::Piece Piece;
+    typedef typename VariantData<Variant>::Move Move;
+//     typedef typename VariantData<Variant>::Pool Pool;
+  public:
+    virtual PositionPtr createPosition() {
+      return PositionPtr(
+        new WrappedPosition<Variant>(GameState()));
+    }
+  
+    virtual PositionPtr createCustomPosition(const OptList&) {
+      return PositionPtr(
+        new WrappedPosition<Variant>(GameState())); // BROKEN
+    }
+  
+    virtual PositionPtr createPositionFromFEN(const QString&) {
+      return PositionPtr(); // BROKEN
+    }
+    
+    virtual void forallPieces(class PieceFunction&) {
+      // BROKEN
+    }
+    
+    virtual int moveListLayout() const {
+      return Variant::moveListLayout();
+    }
+    
+    virtual AnimatorPtr createAnimator(GraphicalAPI* graphical_api) {
+      return AnimatorPtr(
+        new WrappedAnimator<Variant>(
+                Animator(typename UnwrappedGraphicalAPI<Variant>::Ptr(
+                      new UnwrappedGraphicalAPI<Variant>(graphical_api)))));
+    }
+    
+    virtual MovePtr createNormalMove(const NormalUserMove& move) {
+      MoveFactory<GameState> factory;
+      Move m = factory.createNormalMove(move);
+      return MovePtr(new WrappedMove<Variant>(m));
+    }
+    
+    virtual MovePtr createDropMove(const DropUserMove& move) {
+      MoveFactory<GameState> factory;
+      Move m = factory.createDropMove(move);
+      return MovePtr(new WrappedMove<Variant>(m));
+    }
+  
+    virtual MovePtr getVerboseMove(int turn, const VerboseNotation& m) const {
+      return MovePtr(); // BROKEN
+    }
+    
+    virtual bool simpleMoves() {
+      return Variant::m_simple_moves;
+    }
+    
+    virtual QString name() const {
+      return Variant::m_name;
+    }
+    
+    virtual QString themeProxy() const {
+      return Variant::m_theme_proxy;
+    }
+    
+    virtual OptList positionOptions() const {
+      return Variant::positionOptions();
+    }
+    
+    virtual ICSAPIPtr icsAPI() const {
+      return ICSAPIPtr(); // BROKEN
+    }
+  };
 }
 
 #endif // HLVARIANT__TAGUA_WRAPPED_H
