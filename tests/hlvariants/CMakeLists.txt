@@ -14,6 +14,7 @@ SET(hl_SRC
   chessmovetest.cpp
   chesslegalitytest.cpp
   chesswrappedtest.cpp
+  chessserializationtest.cpp
 )
 
 include_directories(

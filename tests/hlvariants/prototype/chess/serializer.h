@@ -102,6 +102,12 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
   else if (move.queenSideCastling()) {
     res = "O-O-O";
   }
+  else if (piece.type() == Piece::PAWN) {
+    if (captured != Piece())
+      res = move.from().col() + "x";
+
+    res += move.to().toString(ref.board().size().y);
+  }
   else {
     if (piece.type() != Piece::PAWN)
       res = piece.typeName()[0].toUpper();
@@ -167,7 +173,7 @@ QString Serializer<MoveGenerator>::suffix(const Move& move, const GameState& ref
   tmp.move(move);
   
   MoveGenerator generator(tmp);
-  if (generator.check(ref.turn())) {
+  if (generator.check(Piece::oppositeColor(ref.turn()))) {
     if (generator.stalled())
       return "#";
     else

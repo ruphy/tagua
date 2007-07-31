@@ -31,6 +31,15 @@ public:
   };
 private:
   const GameState& m_state;
+  
+  class FindMove : public MoveCallback {
+    bool m_found;
+  public:
+    FindMove() : m_found(false) { }
+    virtual bool operator()(const Move&) { m_found = true; return false; }
+    
+    bool found() const { return m_found; }
+  };
 protected:
   virtual bool addMove(const Move& m, MoveCallback&) const;
   virtual bool addAllPromotions(const Move& m, MoveCallback&) const;
@@ -69,15 +78,6 @@ bool MoveGenerator<LegalityCheck>::check(typename Piece::Color turn) const {
 
 template <typename LegalityCheck>
 bool MoveGenerator<LegalityCheck>::stalled() const {
-  class FindMove : public MoveCallback {
-    bool m_found;
-  public:
-    FindMove() : m_found(false) { }
-    virtual bool operator()(const Move&) { m_found = true; return false; }
-    
-    bool found() const { return m_found; }
-  };
-  
   FindMove findMove;
   generate(findMove);
   return !findMove.found();
