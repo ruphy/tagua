@@ -38,6 +38,8 @@ public:
   virtual bool valid() const;
   
   virtual void setType(Type type);
+  
+  virtual bool operator==(const Move& move) const;
 };
 
 } // namespace Chess

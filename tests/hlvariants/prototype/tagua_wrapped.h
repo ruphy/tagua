@@ -82,11 +82,11 @@ namespace HLVariant {
       }
     }
   
-    virtual DecoratedMove toDecoratedMove(const PositionPtr& _pos) const {
+    virtual DecoratedMove toDecoratedMove(const PositionPtr&) const {
       return DecoratedMove(); // BROKEN
     }
   
-    virtual QString toString(const PositionPtr& _pos) const {
+    virtual QString toString(const PositionPtr&) const {
       return ""; // BROKEN
     }
   
@@ -191,12 +191,14 @@ namespace HLVariant {
       // BROKEN
     }
   
-    virtual InteractionType movable(const TurnTest&, const Point&) const {
-      return Moving; // BROKEN
+    virtual InteractionType movable(const TurnTest& test, const Point& p) const {
+      LegalityCheck check(m_state);
+      return check.movable(test, p);
     }
   
-    virtual InteractionType droppable(const TurnTest&, int) const {
-      return Moving; // BROKEN
+    virtual InteractionType droppable(const TurnTest& test, int index) const {
+      LegalityCheck check(m_state);
+      return check.droppable(test, index);
     }
   
     virtual int turn() const {

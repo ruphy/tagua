@@ -64,6 +64,13 @@ void Move::setType(Type type) {
   m_type = type;
 }
 
+bool Move::operator==(const Move& move) const {
+  return m_type == move.m_type &&
+         m_from == move.m_from &&
+         m_to == move.m_to     &&
+         m_promotion == move.m_promotion;
+}
+
 } // namespace Chess
 } // namespace HLVariant
 
