@@ -2,11 +2,12 @@
 #define HLVARIANT__CHESS__MOVE_H
 
 #include "point.h"
+#include "export.h"
 
 namespace HLVariant {
 namespace Chess {
 
-class Move {
+class TAGUA_EXPORT Move {
 public:
   enum Type {
     INVALID = -1,

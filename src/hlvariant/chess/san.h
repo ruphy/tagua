@@ -5,12 +5,13 @@
 
 #include <QRegExp>
 
+#include "export.h"
 #include "point.h"
 
 namespace HLVariant {
 namespace Chess {
 
-class SAN {
+class TAGUA_EXPORT SAN {
   friend std::ostream& operator<<(std::ostream& os, const SAN& move);
 
   static QRegExp pattern;

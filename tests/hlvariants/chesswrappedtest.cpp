@@ -1,7 +1,7 @@
 #include "chesswrappedtest.h"
-#include "prototype/tagua_wrapped.h"
-#include "prototype/chess/variant.h"
-#include "prototype/variantdata.h"
+#include "hlvariant/tagua_wrapped.h"
+#include "hlvariant/chess/variant.h"
+#include "hlvariant/variantdata.h"
 
 #define MOVE(x) { MovePtr _tmp = m_pos->getMove(#x);     \
                   CPPUNIT_ASSERT(_tmp);                  \

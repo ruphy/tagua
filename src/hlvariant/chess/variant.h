@@ -3,11 +3,12 @@
 
 #include "movegenerator.h"
 #include "serializer.h"
+#include "export.h"
 
 namespace HLVariant {
 namespace Chess {
 
-struct Variant {
+struct TAGUA_EXPORT Variant {
   typedef LegalityCheck<GameState<Board<Piece>, Move> > LegalityCheck;
   typedef MoveGenerator<LegalityCheck> MoveGenerator;
   typedef Serializer<MoveGenerator> Serializer;

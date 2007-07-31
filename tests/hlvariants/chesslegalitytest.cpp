@@ -1,5 +1,5 @@
 #include "chesslegalitytest.h"
-#include "prototype/chess/legalitycheck.h"
+#include "hlvariant/chess/legalitycheck.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ChessLegalityTest);

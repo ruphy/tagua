@@ -1,5 +1,5 @@
 #include "chesspiecetest.h"
-#include "prototype/chess/piece.h"
+#include "hlvariant/chess/piece.h"
 
 typedef HLVariant::Chess::Piece ChessPiece;
 

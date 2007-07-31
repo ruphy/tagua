@@ -5,11 +5,12 @@
 #include "piece.h"
 #include "move.h"
 #include "nopool.h"
+#include "export.h"
 
 namespace HLVariant {
 namespace Chess {
 
-struct CastlingData {
+struct TAGUA_EXPORT CastlingData {
   bool wk : 1;
   bool wq : 1;
   bool bk : 1;

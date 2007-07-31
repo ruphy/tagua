@@ -1,6 +1,6 @@
 #include "boardtest.h"
 #include "point.h"
-#include "prototype/board.h"
+#include "hlvariant/board.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(BoardTest);
 

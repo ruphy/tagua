@@ -1,5 +1,5 @@
 #include "chessgamestatetest.h"
-#include "prototype/chess/gamestate.h"
+#include "hlvariant/chess/gamestate.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ChessGameStateTest);
 

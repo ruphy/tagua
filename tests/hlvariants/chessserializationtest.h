@@ -7,8 +7,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestAssert.h>
 
-#include "prototype/variantdata.h"
-#include "prototype/chess/variant.h"
+#include "hlvariant/variantdata.h"
+#include "hlvariant/chess/variant.h"
 
 typedef HLVariant::Chess::Variant Chess;
 typedef VariantData<Chess>::LegalityCheck ChessCheck;

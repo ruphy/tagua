@@ -29,6 +29,12 @@ set(tagua_SRC
   variants/chess.cpp
   variants/crazyhouse.cpp
   variants/shogi.cpp
+  
+  hlvariant/chess/variant.cpp
+  hlvariant/chess/san.cpp
+  hlvariant/chess/move.cpp
+  hlvariant/chess/gamestate.cpp
+  hlvariant/chess/piece.cpp
 
   animationfactory.cpp
   constrainedtext.cpp
