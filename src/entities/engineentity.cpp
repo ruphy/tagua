@@ -64,7 +64,7 @@ void EngineEntity::setup() {
 }
 
 void EngineEntity::notifyEngineMove(const QString& move_str) {
-  AbstractMove::Ptr move = position()->getMove(AlgebraicNotation(move_str, position()->size().y));
+  AbstractMove::Ptr move = position()->getMove(move_str);
   if (position()->testMove(move)) {
     Q_ASSERT(move);
     AbstractPosition::Ptr ref = position();

@@ -124,8 +124,7 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
                   && last_move && m_variant->name() != "Dummy") {
     AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
     if (position) {
-      AlgebraicNotation last_move_alg_notation(style12.lastMoveSAN, style12.position->size().y);
-      AbstractMove::Ptr mv = position->getMove(last_move_alg_notation);
+      AbstractMove::Ptr mv = position->getMove(style12.lastMoveSAN);
       if (!mv || !mv->equals(last_move)) {
         std::cout <<
           "[server inconsistency] SAN for last move is different from verbose notation"
