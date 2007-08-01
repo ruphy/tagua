@@ -89,9 +89,9 @@ void GameState<Board, Move>::setup() {
     m_board.set(Point(8, rank), Piece(color, Piece::LANCE));
     
     m_board.set(Point(COL(1, c), rank + direction(color).y), 
-      Piece(color, Piece::LANCE));
+      Piece(color, Piece::ROOK));
     m_board.set(Point(COL(7, c), rank + direction(color).y), 
-      Piece(color, Piece::LANCE));
+      Piece(color, Piece::BISHOP));
   }
 }
 #undef COL
