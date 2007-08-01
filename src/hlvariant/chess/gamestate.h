@@ -1,7 +1,7 @@
 #ifndef HLVARIANT__CHESS__GAMESTATE_H
 #define HLVARIANT__CHESS__GAMESTATE_H
 
-#include "../board.h"
+#include "../customboard.h"
 #include "piece.h"
 #include "move.h"
 #include "nopool.h"
@@ -69,8 +69,7 @@ public:
 
 template <typename Board, typename Move>
 GameState<Board, Move>::GameState()
-: m_board(Point(8, 8))
-, m_en_passant(Point::invalid())
+: m_en_passant(Point::invalid())
 , m_turn(Piece::WHITE) { }
 
 template <typename Board, typename Move>
@@ -81,8 +80,7 @@ GameState<Board, Move>::GameState(
   bool bkCastle, 
   bool bqCastle, 
   const Point& ep)
-: m_board(Point(8, 8))
-, m_castling(wkCastle, wqCastle, bkCastle, bqCastle)
+: m_castling(wkCastle, wqCastle, bkCastle, bqCastle)
 , m_en_passant(ep)
 , m_turn(turn) { }
 
@@ -125,15 +123,18 @@ void GameState<Board, Move>::setup() {
     for (int i = 0; i < m_board.size().x; i++) {
       m_board.set(Point(i, rank + direction(color).y), 
                   Piece(color, Piece::PAWN));
-      m_board.set(Point(0, rank), Piece(color, Piece::ROOK));
-      m_board.set(Point(1, rank), Piece(color, Piece::KNIGHT));
-      m_board.set(Point(2, rank), Piece(color, Piece::BISHOP));
-      m_board.set(Point(3, rank), Piece(color, Piece::QUEEN));
-      m_board.set(Point(4, rank), Piece(color, Piece::KING));
-      m_board.set(Point(5, rank), Piece(color, Piece::BISHOP));
-      m_board.set(Point(6, rank), Piece(color, Piece::KNIGHT));
-      m_board.set(Point(7, rank), Piece(color, Piece::ROOK));
     }
+    std::cout << "setting piece on rank " << rank << std::endl;
+    m_board.set(Point(0, rank), Piece(color, Piece::ROOK));
+    Q_ASSERT(m_board.valid(Point(0, rank)));
+    Q_ASSERT(m_board.get(Point(0, rank)) == Piece(color, Piece::ROOK));
+    m_board.set(Point(1, rank), Piece(color, Piece::KNIGHT));
+    m_board.set(Point(2, rank), Piece(color, Piece::BISHOP));
+    m_board.set(Point(3, rank), Piece(color, Piece::QUEEN));
+    m_board.set(Point(4, rank), Piece(color, Piece::KING));
+    m_board.set(Point(5, rank), Piece(color, Piece::BISHOP));
+    m_board.set(Point(6, rank), Piece(color, Piece::KNIGHT));
+    m_board.set(Point(7, rank), Piece(color, Piece::ROOK));
   }
 }
 

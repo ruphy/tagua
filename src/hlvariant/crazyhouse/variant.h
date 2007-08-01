@@ -20,7 +20,7 @@ namespace Crazyhouse {
 
 struct TAGUA_EXPORT Variant {
   typedef Move<Piece> Move;
-  typedef Board<Piece> Board;
+  typedef CustomBoard<8, 8, Piece> Board;
   typedef GameState<Board, Move> GameState;
   typedef LegalityCheck<GameState> LegalityCheck;
   typedef MoveGenerator<LegalityCheck> MoveGenerator;

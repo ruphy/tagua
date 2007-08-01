@@ -25,7 +25,7 @@ namespace HLVariant {
 namespace Chess {
 
 struct TAGUA_EXPORT Variant {
-  typedef GameState<Board<Piece>, Move> GameState;
+  typedef GameState<CustomBoard<8, 8, Piece>, Move> GameState;
   typedef LegalityCheck<GameState> LegalityCheck;
   typedef MoveGenerator<LegalityCheck> MoveGenerator;
   typedef Serializer<MoveGenerator> Serializer;

@@ -7,6 +7,8 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/TestAssert.h>
 
+#include "hlvariant/customboard.h"
+
 // forward decl
 namespace HLVariant { 
   template <typename Piece> class Board;
@@ -20,7 +22,7 @@ namespace HLVariant {
 
 typedef HLVariant::Chess::Move ChessMove;
 typedef HLVariant::Chess::Piece ChessPiece;
-typedef HLVariant::Board<ChessPiece> Chessboard;
+typedef HLVariant::CustomBoard<8, 8, ChessPiece> Chessboard;
 typedef HLVariant::Chess::GameState<Chessboard, ChessMove> ChessGameState;
 
 class ChessGameStateTest : public CppUnit::TestFixture {

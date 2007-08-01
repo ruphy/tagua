@@ -52,8 +52,8 @@ void PoolTest::test_size() {
   m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
   m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
   m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
-  m_pools->pool(ChessPiece::WHITE).remove(ChessPiece::BISHOP);
-  m_pools->pool(ChessPiece::BLACK).remove(ChessPiece::BISHOP);
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::BISHOP);
+  m_pools->pool(ChessPiece::BLACK).add(ChessPiece::BISHOP);
   
   CPPUNIT_ASSERT_EQUAL(6, m_pools->pool(ChessPiece::WHITE).size());
   CPPUNIT_ASSERT_EQUAL(1, m_pools->pool(ChessPiece::BLACK).size());

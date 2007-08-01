@@ -50,7 +50,7 @@ QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& 
     res = "{" + move.drop().typeName() + '}';
   }
   
-  return res + '@' + move.to().toString(ref.board().size().y);
+  return res + '@' + move.to().toString(ref.board().size().y) + suffix(move, ref);
 }
 
 

@@ -27,6 +27,9 @@ void ChessWrappedTest::tearDown() {
 void ChessWrappedTest::test_setup() {
   m_pos->setup();
   
+  CPPUNIT_ASSERT(m_pos->get(Point(4, 1)));
+  CPPUNIT_ASSERT_EQUAL(QString("black_pawn"), m_pos->get(Point(4, 1))->name());
+  
   CPPUNIT_ASSERT(m_pos->get(Point(4, 6)));
   CPPUNIT_ASSERT(m_pos->get(Point(4, 6))->name() == "white_pawn");
   
