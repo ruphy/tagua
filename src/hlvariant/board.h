@@ -1,6 +1,7 @@
 #ifndef HLVARIANT__BOARD_H
 #define HLVARIANT__BOARD_H
 
+#include <QStringList>
 #include <vector>
 
 #include "point.h"
@@ -68,6 +69,11 @@ public:
     *         invalid point, if no such piece exists on the board.
     */
   Point find(const Piece& piece) const;
+  
+  /**
+    * Coordinates displayed at the board border.
+    */
+  QStringList borderCoords() const;
 };
 
 // IMPLEMENTATION
@@ -174,6 +180,17 @@ Point Board<Piece>::find(const Piece& piece) const {
   }
   
   return Point::invalid();
+}
+
+template <typename Piece>
+QStringList Board<Piece>::borderCoords() const {
+  QStringList retv;
+  Point p = size();
+  for (int i = 0; i < p.x; i++)
+    retv << Point(i, 0).col();
+  for (int i = 1; i <= p.y; i++)
+    retv << QString::number(i);
+  return retv + retv;
 }
 
 }

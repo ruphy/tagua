@@ -156,8 +156,7 @@ namespace HLVariant {
     }
 
     virtual QStringList borderCoords() const {
-      // BROKEN
-      return QStringList();
+      return m_state.board().borderCoords();
     }
   
     virtual void setup() {

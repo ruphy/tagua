@@ -208,8 +208,6 @@ void Board::recreateBorder() {
 }
 
 void Board::updateBorder() {
-  return; // BROKEN
-  
   while(!m_canvas_border->items()->isEmpty())
     delete m_canvas_border->items()->first();
 
