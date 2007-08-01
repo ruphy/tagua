@@ -32,6 +32,11 @@ Piece::Type Piece::actualType() const {
     return type();
 }
 
+Piece Piece::fromDescription(const QString& description) {
+  Chess::Piece res = Chess::Piece::fromDescription(description);
+  return Piece(res.color(), res.type());
+}
+
 } // namespace Crazyhouse
 } // namespace HLVariant
 

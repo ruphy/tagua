@@ -9,6 +9,7 @@
 */
 
 #include "piece.h"
+#include "san.h"
 
 namespace HLVariant {
 namespace Chess {
@@ -79,6 +80,31 @@ bool Piece::operator==(const Piece& other) const {
 
 bool Piece::operator!=(const Piece& other) const {
   return !((*this) == other);
+}
+
+Piece Piece::fromDescription(const QString& description) {
+  if (description.size() == 1) {
+    QChar c = description[0];
+    Color color;
+
+    if (c.category() == QChar::Letter_Uppercase) {
+      color = WHITE;
+    }
+    else if (c.category() == QChar::Letter_Lowercase) {
+      color = BLACK;
+    }
+    else {
+      return Piece();
+    }
+
+    Type type = static_cast<Type>(SAN::getType(c));
+
+    if (type != INVALID_TYPE) {
+      return Piece(color, type);
+    }
+  }
+
+  return Piece();
 }
 
 } // namespace HLVariant

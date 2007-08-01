@@ -50,6 +50,7 @@ public:
   virtual QString name() const;
   
   static Color oppositeColor(Color color);
+  static Piece fromDescription(const QString& description);
   
   virtual bool operator==(const Piece& other) const;
   virtual bool operator!=(const Piece& other) const;

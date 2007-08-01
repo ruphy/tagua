@@ -19,7 +19,6 @@ class TAGUA_EXPORT SAN {
   static QRegExp queenCastlingPattern;
   static QRegExp nonePattern;
   
-  int getType(const QString& letter) const;
 public:
   enum CastlingType {
       NoCastling,
@@ -28,6 +27,8 @@ public:
   };
   
   SAN();
+
+  static int getType(const QString& letter);
 
   void load(const QString&, int& offset, int ysize);
   void load(const QString&, int ysize);

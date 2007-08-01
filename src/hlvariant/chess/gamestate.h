@@ -35,6 +35,7 @@ protected:
   typename Piece::Color m_turn;
 public:
   GameState();
+  GameState(typename Piece::Color, bool, bool, bool, bool, const Point&);
   virtual ~GameState() { }
   
   virtual Board& board();
@@ -71,6 +72,19 @@ GameState<Board, Move>::GameState()
 : m_board(Point(8, 8))
 , m_en_passant(Point::invalid())
 , m_turn(Piece::WHITE) { }
+
+template <typename Board, typename Move>
+GameState<Board, Move>::GameState(
+  typename Piece::Color turn, 
+  bool wkCastle, 
+  bool wqCastle, 
+  bool bkCastle, 
+  bool bqCastle, 
+  const Point& ep)
+: m_board(Point(8, 8))
+, m_castling(wkCastle, wqCastle, bkCastle, bqCastle)
+, m_en_passant(ep)
+, m_turn(turn) { }
 
 template <typename Board, typename Move>
 Board& GameState<Board, Move>::board() { return m_board; }

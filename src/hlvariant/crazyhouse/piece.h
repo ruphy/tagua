@@ -24,6 +24,8 @@ public:
   virtual bool operator==(const Piece& other) const;
   virtual void setPromoted();
   virtual Type actualType() const;
+  
+  static Piece fromDescription(const QString& description);
 };
 
 } // namespace Crazyhouse

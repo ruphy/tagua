@@ -31,7 +31,7 @@ SAN::SAN()
 , drop(false) {
 }
 
-int SAN::getType(const QString& letter) const {
+int SAN::getType(const QString& letter) {
   if (letter.isEmpty())
     return Piece::PAWN;
     

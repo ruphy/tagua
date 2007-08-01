@@ -372,6 +372,7 @@ namespace HLVariant {
 }
 
 #include "graphicalapi_unwrapped.h"
+#include "icsapi_wrapped.h"
 
 namespace HLVariant {
   
@@ -501,7 +502,7 @@ namespace HLVariant {
     }
     
     virtual ICSAPIPtr icsAPI() const {
-      return ICSAPIPtr(); // BROKEN
+      return ICSAPIPtr(ReturnICSAPI<Variant>::apply());
     }
   };
 }
