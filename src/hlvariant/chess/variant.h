@@ -5,7 +5,7 @@
 #include "serializer.h"
 #include "export.h"
 #include "option.h"
-#include "variants/xchess/animator.impl.h"
+#include "../animator.h"
 
 class VariantInfo;
 

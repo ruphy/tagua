@@ -13,6 +13,7 @@
 #include "variants/chess.h"
 #include "variants/crazyhouse.h"
 #include "variants/shogi.h"
+#include "hlvariant/chess/variant.h"
 
 #if 0
 #include "variants/atomic.h"
@@ -39,8 +40,18 @@ void Variant::register_variant() {
 }
 
 void Variant::initialize() {
-// yes, this is a hack
-#include "variants-autogen"
+  register_variant<ChessVariant>();
+  register_variant<CrazyhouseVariant>();
+  // register_variant<AtomicVariant>();
+  // register_variant<King4PawnsVariant>();
+  // register_variant<ProgressiveVariant>();
+  // register_variant<ReversiVariant>();
+  // register_variant<Connect4Variant>();
+  // register_variant<ChainReactionVariant>();
+  // register_variant<DummyVariant>();
+  register_variant<ShogiVariant>();
+  // register_variant<XiangQiVariant>();
+  register_variant<HLVariant::Chess::Variant>();
   s_initialized = true;
 }
 

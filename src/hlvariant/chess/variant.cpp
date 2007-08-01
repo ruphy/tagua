@@ -1,11 +1,12 @@
 #include "variant.h"
 #include "../tagua_wrapped.h"
+#include "../animator.impl.h"
 
 namespace HLVariant {
 namespace Chess {
 
-const char* Variant::m_name = "Chess";
-const char* Variant::m_theme_proxy = "Chess_OLD";
+const char* Variant::m_name = "Chess_NEW";
+const char* Variant::m_theme_proxy = "Chess";
 VariantInfo* Variant::static_chess_variant = 0;
 
 

@@ -25,15 +25,15 @@ public:
   virtual ~MoveFactory() { }
   
   virtual Move createNormalMove(const NormalUserMove& move) {
-    return Move(move.from, move.to, static_cast<typename Piece::Type>(move.promotionType()));
+    return Move(move.from, move.to, static_cast<typename Piece::Type>(move.promotionType));
   }
 
-  virtual Move createDropMove(const DropUserMove& move) {
+  virtual Move createDropMove(const DropUserMove) {
     return Move();
   }
 
   virtual NormalUserMove toNormal(const Move& move) {
-    return NormalUserMove(move.from, move.to);
+    return NormalUserMove(move.from(), move.to());
   }
 };
 

@@ -24,23 +24,26 @@ AnimationGroupPtr BaseAnimator<Variant>::warp(const GameState& final) {
   const GameState* current = m_cinterface->position();
   AnimationFactory res(m_cinterface->inner());
   
-  for (Point i = current->first(); i <= current->last(); i = current->next(i)) {
-    Piece c = current->get(i);
-    Piece f = final.get(i);
-  
-    if( !c && f ) {
-      //current->set(i, f);
-      NamedSprite sprite = m_cinterface->setPiece(i, f, false);
-      res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
-    }
-    else if (c && !f) {
-      NamedSprite old_sprite = m_cinterface->takeSprite(i);
-      res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
-    }
-    else if(c && f && !(c == f) ) {
-      NamedSprite old_sprite = m_cinterface->takeSprite(i);
-      NamedSprite sprite = m_cinterface->setPiece(i, f, false);
-      res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
+  for (int i = 0; i < current->board().size().x; i++) {
+    for (int j = 0; j < current->board().size().x; j++) {
+      Point p(i, j);  
+      Piece c = current->board().get(p);
+      Piece f = final.board().get(p);
+    
+      if (c == Piece() && f != Piece()) {
+        //current->set(i, f);
+        NamedSprite sprite = m_cinterface->setPiece(p, f, false);
+        res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
+      }
+      else if (c != Piece() && f == Piece()) {
+        NamedSprite old_sprite = m_cinterface->takeSprite(p);
+        res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
+      }
+      else if (c != Piece() && f != Piece() && !(c == f)) {
+        NamedSprite old_sprite = m_cinterface->takeSprite(p);
+        NamedSprite sprite = m_cinterface->setPiece(p, f, false);
+        res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
+      }
     }
   }
   
@@ -69,7 +72,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::warp(const GameState& final) {
 
 template <typename Variant>
 SchemePtr SimpleAnimator<Variant>::movement(const NamedSprite& sprite, const Point& from, const Point& to) {
-  bool knight = m_cinterface->position()->get(from).type() == KNIGHT;
+  bool knight = m_cinterface->position()->board().get(from).type() == Piece::KNIGHT;
   int mtype = knight
     ? Animate::move::LShaped | Animate::move::Rotating 
     : Animate::move::Straight;
@@ -81,7 +84,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
   AnimationFactory res(m_cinterface->inner());
 
   NamedSprite piece = m_cinterface->takeSprite(move.from());
-  NamedSprite captured = m_cinterface->takeSprite(move.to());
+  NamedSprite captured = m_cinterface->takeSprite(move.captureSquare());
   m_cinterface->setSprite(move.to(), piece);
 
   if (piece)
@@ -92,21 +95,10 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
   if (captured)
     res.addPostAnimation(Animate::destroy(captured));
 
-  if (move.type() == Move::EnPassantCapture) {
-    Point phantom(move.to().x, move.from().y);
-    NamedSprite capturedPawn = m_cinterface->takeSprite(phantom);
+  if (move.promoteTo() != -1) {
+    Piece promoted = final.board().get(move.to());
 
-    if (capturedPawn) {
-      QPoint real = m_cinterface->converter()->toReal(phantom);
-      res.addPostAnimation(Animate::disappear(capturedPawn));
-    }
-    else
-      ERROR("Bug!!!");
-  }
-  else if (move.type() == Move::Promotion) {
-    Piece promoted = final.get(move.to());
-
-    if (promoted) {
+    if (promoted != Piece()) {
       QPoint real = m_cinterface->converter()->toReal(move.to());
       NamedSprite old_sprite = m_cinterface->getSprite(move.to());
       NamedSprite new_sprite = m_cinterface->setPiece(move.to(), promoted, /*false,*/ false);
@@ -116,7 +108,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
     else
       ERROR("Bug!!!");
   }
-  else if (move.type() == Move::KingSideCastling) {
+  else if (move.kingSideCastling()) {
     Point rookSquare = move.to() + Point(1,0);
     Point rookDestination = move.from() + Point(1,0);
 
@@ -124,7 +116,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
     m_cinterface->setSprite(rookDestination, rook);
     res.addPreAnimation(Animate::move(rook, rookDestination));
   }
-  else if (move.type() == Move::QueenSideCastling) {
+  else if (move.queenSideCastling()) {
     Point rookSquare = move.to() + Point(-2,0);
     Point rookDestination = move.from() + Point(-1,0);
 
@@ -142,30 +134,22 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
 
   NamedSprite piece = m_cinterface->takeSprite(move.to());
   NamedSprite captured;
-  if (Piece captured_piece = final.get(move.to())) {
+  Piece captured_piece = final.board().get(move.captureSquare());
+  if (captured_piece != Piece()) {
     captured = m_cinterface->setPiece(move.to(), captured_piece, false);
     res.addPreAnimation(Animate::appear(captured));
   }
 
   if (!piece) {
-    piece = m_cinterface->createPiece(move.to(), final.get(move.from()), false);
+    piece = m_cinterface->createPiece(move.to(), final.board().get(move.from()), false);
     res.addPreAnimation(Animate::appear(piece));
   }
 
   m_cinterface->setSprite(move.from(), piece);
 
-
-  if (move.type() == Move::EnPassantCapture) {
-    Point phantom(move.to().x, move.from().y);
-
-    if (Piece pawn_piece = final.get(phantom)) {
-      NamedSprite captured_pawn = m_cinterface->setPiece(phantom, pawn_piece, false);
-      res.addPreAnimation(Animate::appear(captured_pawn));
-    }
-  }
-  else if (move.type() == Move::Promotion) {
-    Piece pawn_piece = final.get(move.from());
-    if (pawn_piece) {
+  if (move.promoteTo() != -1) {
+    Piece pawn_piece = final.board().get(move.from());
+    if (pawn_piece != Piece()) {
       NamedSprite pawn = m_cinterface->createPiece(move.to(), pawn_piece, false);
       res.addPreAnimation(Animate::morph(piece, pawn));
 
@@ -174,7 +158,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
       piece = pawn;
     }
   }
-  else if (move.type() == Move::KingSideCastling) {
+  else if (move.kingSideCastling()) {
     Point rookSquare = move.to() + Point(1,0);
     Point rookDestination = move.from() + Point(1,0);
 
@@ -183,7 +167,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
 
     res.addPreAnimation(Animate::move(rook, rookSquare));
   }
-  else if (move.type() == Move::QueenSideCastling) {
+  else if (move.queenSideCastling()) {
     Point rookSquare = move.to() + Point(-2,0);
     Point rookDestination = move.from() + Point(-1,0);
 
@@ -203,4 +187,5 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
 
 }
 
-#endif HLVARIANT__ANIMATOR_IMPL_H
+#endif //HLVARIANT__ANIMATOR_IMPL_H
+

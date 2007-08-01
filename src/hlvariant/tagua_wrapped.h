@@ -397,10 +397,10 @@ namespace HLVariant {
     }
     
     virtual AnimatorPtr createAnimator(GraphicalAPI* graphical_api) {
-      return AnimatorPtr(
-        new WrappedAnimator<Variant>(
-                Animator(typename UnwrappedGraphicalAPI<Variant>::Ptr(
-                      new UnwrappedGraphicalAPI<Variant>(graphical_api)))));
+      return AnimatorPtr(new WrappedAnimator<Variant>(
+        Animator(
+          typename UnwrappedGraphicalAPIPtr<Variant>::type(
+            new UnwrappedGraphicalAPI<Variant>(graphical_api)))));
     }
     
     virtual MovePtr createNormalMove(const NormalUserMove& move) {
@@ -415,7 +415,7 @@ namespace HLVariant {
       return MovePtr(new WrappedMove<Variant>(m));
     }
   
-    virtual MovePtr getVerboseMove(int turn, const VerboseNotation& m) const {
+    virtual MovePtr getVerboseMove(int, const VerboseNotation&) const {
       return MovePtr(); // BROKEN
     }
     
