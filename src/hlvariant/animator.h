@@ -25,8 +25,10 @@ namespace HLVariant {
   * A generic animator. 
   * Can be used as a base class for other specialized animators.
   */
-template <typename Variant>
+template <typename _Variant>
 class BaseAnimator {
+public:
+  typedef _Variant Variant;
 protected:
   typedef typename UnwrappedGraphicalAPIPtr<Variant>::type API;
   typedef typename VariantData<Variant>::GameState GameState;
