@@ -14,6 +14,14 @@
 #include "variants/crazyhouse.h"
 #include "variants/shogi.h"
 #include "hlvariant/chess/variant.h"
+#include "hlvariant/crazyhouse/variant.h"
+
+// remove me
+namespace HLVariant {
+namespace Crazyhouse {
+class Variant;
+}
+}
 
 #if 0
 #include "variants/atomic.h"
@@ -52,6 +60,7 @@ void Variant::initialize() {
   register_variant<ShogiVariant>();
   // register_variant<XiangQiVariant>();
   register_variant<HLVariant::Chess::Variant>();
+  register_variant<HLVariant::Crazyhouse::Variant>();
   s_initialized = true;
 }
 

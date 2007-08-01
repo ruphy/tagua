@@ -22,7 +22,7 @@
 using namespace boost;
 typedef boost::shared_ptr<class Animation> AnimationPtr;
 
-const char *ChessVariant::m_name = "Chess";
+const char *ChessVariant::m_name = "Chess_OLD";
 const char *ChessVariant::m_theme_proxy = "Chess";
 VariantInfo* ChessVariant::static_chess_variant = 0;
 

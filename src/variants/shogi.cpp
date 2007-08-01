@@ -618,7 +618,7 @@ public:
   static const char *m_theme_proxy;
 };
 
-const char *ShogiVariantInfo::m_name = "Shogi";
+const char *ShogiVariantInfo::m_name = "Shogi_OLD";
 const char *ShogiVariantInfo::m_theme_proxy = "Shogi";
 
 

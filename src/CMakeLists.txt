@@ -35,6 +35,8 @@ set(tagua_SRC
   hlvariant/chess/move.cpp
   hlvariant/chess/gamestate.cpp
   hlvariant/chess/piece.cpp
+  
+  hlvariant/crazyhouse/variant.cpp
 
   animationfactory.cpp
   constrainedtext.cpp
