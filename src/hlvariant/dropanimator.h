@@ -12,6 +12,8 @@
 #ifndef HLVARIANT__DROPANIMATOR_H
 #define HLVARIANT__DROPANIMATOR_H
 
+#include "animationfactory.h"
+
 namespace HLVariant {
 
 template <typename Base>
@@ -44,12 +46,16 @@ template <typename Base>
 void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
   for(int color = 0; color < 2; color++) {
     typename Piece::Color c = static_cast<typename Piece::Color>(color);
-    const typename GameState::PlayerPool& before = m_cinterface->position()->rawPool(c);
-    const typename GameState::PlayerPool& after = final.rawPool(c);
-    typename GameState::PlayerPool::const_iterator before_it = before.begin();
-    typename GameState::PlayerPool::const_iterator after_it = after.begin();
+    const typename GameState::Pool::RawData& before = m_cinterface->position()->pools().pool(c).rawData();
+    const typename GameState::Pool::RawData& after = final.pools().pool(c).rawData();
+    typename GameState::Pool::RawData::const_iterator before_it = before.begin();
+    typename GameState::Pool::RawData::const_iterator after_it = after.begin();
 
     int pos = 0;
+
+    std::cout << "updating pool" << std::endl;
+    std::cout << m_cinterface->position()->pools().pool(c).size() << std::endl;
+    std::cout << final.pools().pool(c).size() << std::endl;
 
     // oh, a nice bunch of write-only magic shit
     while (before_it != before.end() || after_it != after.end()) {
@@ -59,6 +65,9 @@ void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
                                 && after_it->first < before_it->first ));
       int na = skip_after ? 0 : after_it->second;
       int nb = skip_before ? 0 : before_it->second;
+
+      std::cout << "na = " << na << std::endl;
+      std::cout << "nb = " << nb << std::endl;
 
       if (nb < na) {
         for(int i = nb; i < na; i++)
@@ -92,7 +101,11 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const GameState& final, const
   if (move.drop() != Piece()) {
     std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
     if (dropped.first != -1 && dropped.second != -1
-        && m_cinterface->position()->pool(dropped.first).get(dropped.second) == move.drop()) {
+        && m_cinterface->position()->pools().pool(
+          static_cast<typename Piece::Color>(dropped.first)
+        ).get(
+          static_cast<typename Piece::Type>(dropped.second)
+        ) == move.drop()) {
       NamedSprite drop = m_cinterface->takePoolSprite(dropped.first, dropped.second);
       m_cinterface->setSprite(move.to(), drop);
       res.addPreAnimation(Animate::move(drop, move.to()));

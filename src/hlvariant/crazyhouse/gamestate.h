@@ -20,8 +20,8 @@ public:
 private:
   Pools m_pools;
 public:
-  const Pools& pools() const;
-  Pools& pools();
+  virtual const Pools& pools() const;
+  virtual Pools& pools();
 };
 
 // IMPLEMENTATION

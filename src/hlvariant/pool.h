@@ -30,6 +30,9 @@ public:
   virtual int insert(int index, const Piece& piece);
   virtual Piece get(int index) const;
   virtual Piece take(int index);
+  
+  typedef Data RawData;
+  const RawData& rawData() const { return m_data; }
 };
 
 
@@ -87,7 +90,7 @@ bool Pool<Piece>::empty() const {
 template <typename Piece>
 int Pool<Piece>::size() const {
   int count = 0;
-  for (typename Data::const_iterator end, it = m_data.begin(); it != end; ++it)
+  for (typename Data::const_iterator end = m_data.end(), it = m_data.begin(); it != end; ++it)
     count += it->second;
   return count;
 }
@@ -98,7 +101,7 @@ int Pool<Piece>::insert(int index, const Piece& piece) {
     return -1;
 
   int fill = 0;
-  for (typename Data::iterator end, i = m_data.begin();
+  for (typename Data::iterator end = m_data.end(), i = m_data.begin();
        i != end && i->first < piece.type(); 
        ++i) {
     fill += i->second;
@@ -119,7 +122,7 @@ Piece Pool<Piece>::get(int index) const {
     return Piece();
 
   int fill = 0;
-  for (typename Data::const_iterator end, i = m_data.begin(); i != end; ++i) {
+  for (typename Data::const_iterator end = m_data.end(), i = m_data.begin(); i != end; ++i) {
     if (index < fill + i->second)
       return Piece(m_owner, i->first);
     fill += i->second;
@@ -134,7 +137,7 @@ Piece Pool<Piece>::take(int index) {
     return Piece();
 
   int fill = 0;
-  for (typename Data::iterator end, i = m_data.begin(); i != end; ++i) {
+  for (typename Data::iterator end = m_data.end(), i = m_data.begin(); i != end; ++i) {
     if(index < fill + i->second) {
       Type type = i->first;
       remove(type);
