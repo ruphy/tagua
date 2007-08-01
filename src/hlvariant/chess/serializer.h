@@ -28,7 +28,7 @@ public:
     COMPACT = 1,         /// Compact notation. This corresponds to SAN notation for games that support it.
     DECORATED = 2        /// Symbolic figurine notation. Figurine names are enclosed in braces.
   } MoveRepresentation;
-private:
+protected:
   typedef typename MoveGenerator::LegalityCheck LegalityCheck;
   typedef typename LegalityCheck::GameState GameState;
   typedef typename GameState::Move Move;
