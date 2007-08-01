@@ -28,7 +28,7 @@ public:
   typedef _Move Move;
   typedef typename Board::Piece Piece;
   typedef NoPool Pool;
-private:
+protected:
   Board m_board;
   CastlingData m_castling;
   Point m_en_passant;

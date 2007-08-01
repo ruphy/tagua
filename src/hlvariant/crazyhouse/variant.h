@@ -3,6 +3,7 @@
 
 #include "../chess/movegenerator.h"
 #include "../chess/serializer.h"
+#include "piece.h"
 #include "gamestate.h"
 #include "move.h"
 #include "export.h"
@@ -16,7 +17,6 @@ namespace HLVariant {
 namespace Crazyhouse {
 
 struct TAGUA_EXPORT Variant {
-  typedef Chess::Piece Piece;
   typedef Move<Piece> Move;
   typedef Board<Piece> Board;
   typedef GameState<Board, Move> GameState;

@@ -28,20 +28,21 @@ private:
   Type m_type;
 public:
   Piece(Color color = INVALID_COLOR, Type type = INVALID_TYPE);
+  virtual ~Piece();
   
-  Color color() const;
-  Type type() const;
+  virtual Color color() const;
+  virtual Type type() const;
   
-  QString colorName() const;
+  virtual QString colorName() const;
   static QString colorName(Color color);
-  QString typeName() const;
+  virtual QString typeName() const;
   static QString typeName(Type type);
-  QString name() const;
+  virtual QString name() const;
   
   static Color oppositeColor(Color color);
   
-  bool operator==(const Piece& other) const;
-  bool operator!=(const Piece& other) const;
+  virtual bool operator==(const Piece& other) const;
+  virtual bool operator!=(const Piece& other) const;
 };
 
 } // namespace Chess

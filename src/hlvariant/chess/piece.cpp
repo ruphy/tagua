@@ -3,6 +3,8 @@
 namespace HLVariant {
 namespace Chess {
 
+Piece::~Piece() { }
+
 Piece::Piece(Color color, Type type)
 : m_color(color)
 , m_type(type) { }

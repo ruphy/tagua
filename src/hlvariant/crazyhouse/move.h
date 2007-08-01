@@ -16,23 +16,39 @@ namespace Crazyhouse {
 
 template <typename Piece>
 class Move : public Chess::Move {
+  typedef typename Piece::Color Color;
+  
+  Color m_pool;
+  int m_index;
+  Piece m_drop;
 public:
   Move();
   Move(const Point& from, const Point& to, int promotionType = -1);
+  Move(Color pool, int index, const Point& to);
   
   Piece drop() const;
 };
 
 template <typename Piece>
-Move<Piece>::Move() { }
+Move<Piece>::Move()
+: m_pool(Piece::INVALID_COLOR)
+, m_index(-1) { }
 
 template <typename Piece>
 Move<Piece>::Move(const Point& from, const Point& to, int promotionType)
-: Chess::Move(from, to, promotionType) { }
+: Chess::Move(from, to, promotionType)
+, m_pool(Piece::INVALID_COLOR)
+, m_index(-1) { }
+
+template <typename Piece>
+Move<Piece>::Move(Color pool, int index, const Point& to)
+: Chess::Move(Point::invalid(), to)
+, m_pool(pool)
+, m_index(index) { }
 
 template <typename Piece>
 Piece Move<Piece>::drop() const {
-  return Piece(); // BROKEN
+  return m_drop;
 }
 
 }; // namespace Crazyhouse
