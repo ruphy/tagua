@@ -12,7 +12,8 @@
 #define HLVARIANT__SHOGI__GAMESTATE_H
 
 #include "../crazyhouse/gamestate.h"
-#include "nopool.h" // TODO: remove me
+#include "../pool.h"
+#include "../poolcollection.h"
 
 namespace HLVariant {
 namespace Shogi {
@@ -23,9 +24,11 @@ public:
   typedef _Board Board;
   typedef _Move Move;
   typedef typename Board::Piece Piece;
-  typedef NoPool Pool;
+  typedef Pool<Piece> Pool;
+  typedef PoolCollection<Pool> Pools;
 private:
   Board m_board;
+  Pools m_pools;
   typename Piece::Color m_turn;
 public:
   GameState();
@@ -33,6 +36,9 @@ public:
 
   virtual Board& board();
   virtual const Board& board() const;
+  
+  virtual Pools& pools();
+  virtual const Pools& pools() const;
   
   virtual void setup();
   
@@ -67,6 +73,12 @@ Board& GameState<Board, Move>::board() { return m_board; }
 
 template <typename Board, typename Move>
 const Board& GameState<Board, Move>::board() const { return m_board; }
+
+template <typename Board, typename Move>
+typename GameState<Board, Move>::Pools& GameState<Board, Move>::pools() { return m_pools; }
+
+template <typename Board, typename Move>
+const typename GameState<Board, Move>::Pools& GameState<Board, Move>::pools() const { return m_pools; }
 
 #define COL(i, c) c == Piece::BLACK ? (i) : (m_board.size().x - i - 1)
 template <typename Board, typename Move>
@@ -117,6 +129,8 @@ void GameState<Board, Move>::move(const Move& m) {
   else {
     // BROKEN
   }
+  
+  switchTurn();
 }
 
 template <typename Board, typename Move>

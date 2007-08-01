@@ -29,7 +29,7 @@ struct TAGUA_EXPORT Variant {
   typedef GameState<CustomBoard<9, 9, Piece>, Move> GameState;
   typedef LegalityCheck<GameState> LegalityCheck;
   typedef Serializer<LegalityCheck> Serializer;
-  typedef SimpleAnimator<Variant> Animator;
+  typedef DropAnimatorMixin<SimpleAnimator<Variant> > Animator;
   typedef Crazyhouse::MoveFactory<GameState> MoveFactory;
   typedef Variant MoveGenerator; // to make VariantData happy
   

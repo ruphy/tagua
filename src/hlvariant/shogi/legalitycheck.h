@@ -31,6 +31,7 @@ public:
   virtual ~LegalityCheck();
   
   bool legal(Move& move) const;
+  bool pseudolegal(Move& move) const;
   
   virtual InteractionType movable(const TurnTest&, const Point& x) const;
   virtual InteractionType droppable(const TurnTest&, int index) const;
@@ -51,13 +52,21 @@ bool LegalityCheck<GameState>::legal(Move&) const {
 }
 
 template <typename GameState>
-InteractionType LegalityCheck<GameState>::movable(const TurnTest&, const Point&) const {
-  return Moving;
+InteractionType LegalityCheck<GameState>::movable(const TurnTest& test, const Point& p) const {
+  Piece piece = m_state.board().get(p);
+  if (piece == Piece() || !test(piece.color()))
+    return NoAction;
+    
+  return piece.color() == m_state.turn() ? Moving : Premoving;
 }
 
 template <typename GameState>
-InteractionType LegalityCheck<GameState>::droppable(const TurnTest&, int) const {
-  return Moving;
+InteractionType LegalityCheck<GameState>::droppable(const TurnTest& test, int index) const {
+  if (!test(index))
+    return NoAction;
+  
+  typename Piece::Color c = static_cast<typename Piece::Color>(index);
+  return c == m_state.turn() ? Moving : Premoving;
 }
 
 } // namespace Shogi
