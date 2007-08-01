@@ -67,12 +67,18 @@ bool LegalityCheck<GameState>::legal(Move& move) const {
     
     Point kingPos = tmp.board().find(Piece(turn, Piece::KING));
     
+    std::cout << "searching king..." << std::endl;
+    
     if (kingPos == Point::invalid())
       return false;
       
+    std::cout << "king found on " << kingPos << std::endl;
+    
     LegalityCheck<GameState> tmpLegality(tmp);
     if (tmpLegality.attacks(Piece::oppositeColor(turn), kingPos))
       return false;
+      
+    std::cout << "ok, king is not attacked" << std::endl;
       
     return true;
   }

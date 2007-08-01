@@ -1,7 +1,7 @@
 #ifndef HLVARIANT__CRAZYHOUSE__VARIANT_H
 #define HLVARIANT__CRAZYHOUSE__VARIANT_H
 
-#include "../chess/movegenerator.h"
+#include "movegenerator.h"
 #include "serializer.h"
 #include "piece.h"
 #include "gamestate.h"
@@ -23,7 +23,7 @@ struct TAGUA_EXPORT Variant {
   typedef Board<Piece> Board;
   typedef GameState<Board, Move> GameState;
   typedef LegalityCheck<GameState> LegalityCheck;
-  typedef Chess::MoveGenerator<LegalityCheck> MoveGenerator;
+  typedef MoveGenerator<LegalityCheck> MoveGenerator;
   typedef Serializer<MoveGenerator> Serializer;
   typedef DropAnimatorMixin<SimpleAnimator<Variant> > Animator;
   typedef MoveFactory<GameState> MoveFactory;

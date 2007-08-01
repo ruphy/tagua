@@ -53,19 +53,27 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
     return Base::pseudolegal(move);
   }
   else {
+    std::cout << "\ndropped piece = " << dropped.name() << std::endl;
+  
     // dropping on a valid square
     if (!m_state.board().valid(move.to()))
       return false;
+      
+    std::cout << "square " << move.to() << " valid" << std::endl;
 
     // cannot drop on occupied squares
     if (m_state.board().get(move.to()) != Piece())
       return false;
+      
+    std::cout << "free square!" << std::endl;
       
     // cannot drop pawns in first or eighth rank
     if (dropped.type() == Piece::PAWN &&
           (move.to().y == m_state.startingRank(Piece::WHITE) || 
            move.to().y == m_state.promotionRank(Piece::WHITE)))
       return false;
+      
+    std::cout << "not pawn in first or last rank" << std::endl;
       
     return true;
   }

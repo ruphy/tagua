@@ -29,7 +29,7 @@ public:
     virtual ~MoveCallback() { }
     virtual bool operator()(const Move&) = 0;
   };
-private:
+protected:
   const GameState& m_state;
   
   class FindMove : public MoveCallback {
@@ -40,7 +40,7 @@ private:
     
     bool found() const { return m_found; }
   };
-protected:
+  
   virtual bool addMove(const Move& m, MoveCallback&) const;
   virtual bool addAllPromotions(const Move& m, MoveCallback&) const;
   virtual bool generateSlide(const Point& p, const Point& dir, MoveCallback&) const;
