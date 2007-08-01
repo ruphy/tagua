@@ -25,6 +25,7 @@ class PoolTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(test_add);
   CPPUNIT_TEST(test_remove);
   CPPUNIT_TEST(test_remove_clear);
+  CPPUNIT_TEST(test_size);
   CPPUNIT_TEST(test_empty_remove);
   CPPUNIT_TEST(test_pool_equality);
   CPPUNIT_TEST(test_collection_equality);
@@ -39,6 +40,7 @@ public:
   void test_add();
   void test_remove();
   void test_remove_clear();
+  void test_size();
   void test_empty_remove();
   void test_pool_equality();
   void test_collection_equality();

@@ -21,9 +21,6 @@
 namespace HLVariant {
 
   template <typename Variant> class WrappedPosition;
-
-  template <typename Variant>
-  class WrappedPool { };
   
   template <typename Variant>
   class WrappedPiece : public AbstractPiece {
@@ -54,6 +51,61 @@ namespace HLVariant {
   
     virtual PiecePtr clone() const {
       return PiecePtr(new WrappedPiece<Variant>(m_piece));
+    }
+  };
+  
+  template <typename Variant>
+  class WrappedPool : public AbstractPool {
+    typedef typename VariantData<Variant>::Pool Pool;
+    typedef typename VariantData<Variant>::Piece Piece;
+    
+    Pool& m_pool;
+  public:
+    WrappedPool(Pool& pool)
+    : m_pool(pool) { }
+  
+    WrappedPool(const Pool& pool)
+    : m_pool(const_cast<Pool&>(pool)) {
+      // FIXME: const_cast is not necessary, here, but to avoid it
+      // we would need to change the API, adding for example an
+      // AbstractConstPool with only const functions and changing the
+      // wrapper accordingly.
+    }
+    
+    virtual int size() {
+      return m_pool.size();
+    }
+  
+    virtual int insert(int pref_index, const PiecePtr& _piece) {
+      if (!_piece) {
+        return m_pool.insert(pref_index, Piece());
+      }
+      else {
+        WrappedPiece<Variant>* piece = dynamic_cast<WrappedPiece<Variant>*>(_piece.get());
+  
+        if (piece)
+          return m_pool.insert(pref_index, Piece(piece->inner()) );
+        else {
+          MISMATCH(*_piece.get(), WrappedPiece<Variant>);
+          return -1;
+        }
+      }
+    }
+  
+    virtual PiecePtr get(int index) {
+      Piece piece = m_pool.get(index);
+      if (piece != Piece())
+        return PiecePtr(new WrappedPiece<Variant>(piece));
+      else
+        return PiecePtr();
+    }
+  
+    virtual PiecePtr take(int index) {
+      Piece piece = m_pool.take(index);
+      if (piece != Piece())
+        return PiecePtr(new WrappedPiece<Variant>(piece));
+      else
+        return PiecePtr();
     }
   };
   
@@ -134,22 +186,23 @@ namespace HLVariant {
     */
   template <typename Variant, typename Pool>
   struct ReturnPoolAux {
-    static PoolPtr apply(typename Variant::GameState& state, int player) {
-      return PoolPtr(new WrappedPool<Variant>(state.pool(player)));
+    static PoolPtr apply(typename VariantData<Variant>::GameState& state, int player) {
+      return PoolPtr(new WrappedPool<Variant>(state.pools().pool(
+        static_cast<typename VariantData<Variant>::Piece::Color>(player))));
     }
   };
   
   template <typename Variant>
   struct ReturnPoolAux<Variant, NoPool> {
-    static PoolPtr apply(typename Variant::GameState&, int) {
+    static PoolPtr apply(typename VariantData<Variant>::GameState&, int) {
       return PoolPtr();
     }
   };
   
   template <typename Variant>
   struct ReturnPool {
-    static PoolPtr apply(typename Variant::GameState& state, int player) {
-      return ReturnPoolAux<Variant, typename Variant::GameState::Pool>(state, player);
+    static PoolPtr apply(typename VariantData<Variant>::GameState& state, int player) {
+      return ReturnPoolAux<Variant, typename VariantData<Variant>::Pool>::apply(state, player);
     }
   };
 
@@ -204,9 +257,8 @@ namespace HLVariant {
       }
     }
   
-    virtual PoolPtr pool(int) {
-      // BROKEN
-      return PoolPtr();
+    virtual PoolPtr pool(int player) {
+      return ReturnPool<Variant>::apply(m_state, player);
     }
     
     virtual void copyPoolFrom(const PositionPtr&) {

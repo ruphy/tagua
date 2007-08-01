@@ -44,6 +44,21 @@ void PoolTest::test_remove_clear() {
   CPPUNIT_ASSERT(m_pools->pool(ChessPiece::WHITE).empty());
 }
 
+void PoolTest::test_size() {
+  CPPUNIT_ASSERT_EQUAL(0, m_pools->pool(ChessPiece::WHITE).size());
+  
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::ROOK);
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::ROOK);
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
+  m_pools->pool(ChessPiece::WHITE).add(ChessPiece::KNIGHT);
+  m_pools->pool(ChessPiece::WHITE).remove(ChessPiece::BISHOP);
+  m_pools->pool(ChessPiece::BLACK).remove(ChessPiece::BISHOP);
+  
+  CPPUNIT_ASSERT_EQUAL(6, m_pools->pool(ChessPiece::WHITE).size());
+  CPPUNIT_ASSERT_EQUAL(1, m_pools->pool(ChessPiece::BLACK).size());
+}
+
 void PoolTest::test_empty_remove() {
   m_pools->pool(ChessPiece::WHITE).remove(ChessPiece::BISHOP);
   CPPUNIT_ASSERT_EQUAL(0, m_pools->pool(ChessPiece::WHITE).count(ChessPiece::ROOK));

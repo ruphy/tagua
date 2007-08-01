@@ -26,6 +26,10 @@ public:
   virtual int remove(Type type);
   
   virtual bool empty() const;
+  virtual int size() const;
+  virtual int insert(int index, const Piece& piece);
+  virtual Piece get(int index) const;
+  virtual Piece take(int index);
 };
 
 
@@ -78,6 +82,69 @@ int Pool<Piece>::remove(Type type) {
 template <typename Piece>
 bool Pool<Piece>::empty() const {
   return m_data.empty();
+}
+
+template <typename Piece>
+int Pool<Piece>::size() const {
+  int count = 0;
+  for (typename Data::const_iterator end, it = m_data.begin(); it != end; ++it)
+    count += it->second;
+  return count;
+}
+
+template <typename Piece>
+int Pool<Piece>::insert(int index, const Piece& piece) {
+  if (m_owner != piece.color())
+    return -1;
+
+  int fill = 0;
+  for (typename Data::iterator end, i = m_data.begin();
+       i != end && i->first < piece.type(); 
+       ++i) {
+    fill += i->second;
+  }
+
+  int nump = add(piece.type());
+
+  if (index < fill)
+    return fill;
+  if (index >= fill + nump)
+    return fill + nump - 1;
+  return index;
+}
+
+template <typename Piece>
+Piece Pool<Piece>::get(int index) const {
+  if (index < 0)
+    return Piece();
+
+  int fill = 0;
+  for (typename Data::const_iterator end, i = m_data.begin(); i != end; ++i) {
+    if (index < fill + i->second)
+      return Piece(m_owner, i->first);
+    fill += i->second;
+  }
+  
+  return Piece();
+}
+
+template <typename Piece>
+Piece Pool<Piece>::take(int index) {
+  if (index < 0)
+    return Piece();
+
+  int fill = 0;
+  for (typename Data::iterator end, i = m_data.begin(); i != end; ++i) {
+    if(index < fill + i->second) {
+      Type type = i->first;
+      remove(type);
+      return Piece(m_owner, type);
+    }
+    
+    fill += i->second;
+  }
+  
+  return Piece();
 }
 
 }
