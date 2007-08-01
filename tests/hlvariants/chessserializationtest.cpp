@@ -176,3 +176,19 @@ void ChessSerializationTest::test_castling_q() {
   CPPUNIT_ASSERT_EQUAL(QString("O-O-O"), dec.serialize(move, *m_state));
 }
 
+void ChessSerializationTest::regression_knight_king() {
+  m_state->setup();
+  
+  ChessMove move(Point(6, 7), Point(5, 5));
+  CPPUNIT_ASSERT(m_check->legal(move));
+
+  ChessSerializer san(ChessSerializer::COMPACT);
+  CPPUNIT_ASSERT_EQUAL(QString("Nf3"), san.serialize(move, *m_state));
+  
+  ChessSerializer simple(ChessSerializer::SIMPLE);
+  CPPUNIT_ASSERT_EQUAL(QString("g1f3"), simple.serialize(move, *m_state));
+  
+  ChessSerializer dec(ChessSerializer::DECORATED);
+  CPPUNIT_ASSERT_EQUAL(QString("{knight}f3"), dec.serialize(move, *m_state));
+}
+

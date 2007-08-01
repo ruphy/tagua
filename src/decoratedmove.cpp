@@ -22,7 +22,7 @@ DecoratedMove::DecoratedMove(const QString& str) {
 }
 
 void DecoratedMove::load(const QString& str) {
-  static QRegExp figurine("{[^}]*}");
+  static QRegExp figurine("\\{[^}]*\\}");
   int offset = 0;
   int begin;
   std::cout << "DecoratedMove load" << std::endl;

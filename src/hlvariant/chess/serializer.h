@@ -44,6 +44,8 @@ protected:
   virtual void minimal_notation(SAN& san, const GameState& ref);
   
   virtual Move get_san(const SAN& san, const GameState& ref);
+  
+  virtual QChar symbol(typename Piece::Type type) const;
 public:
   /** 
     * Create a serializer to a given string representation for moves.
@@ -110,7 +112,7 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
   }
   else {
     if (piece.type() != Piece::PAWN)
-      res = piece.typeName()[0].toUpper();
+      res = symbol(piece.type()).toUpper();
 
     SAN tmp;
     tmp.from = move.from();
@@ -126,9 +128,7 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
   }
 
   if (move.promoteTo() != -1)
-    res += "=" + QString(Piece::typeName(
-                    static_cast<typename Piece::Type>(move.promoteTo())
-                 )[0].toUpper());
+    res += "=" + QString(symbol(static_cast<typename Piece::Type>(move.promoteTo())).toUpper());
 
   res += suffix(move, ref);
 
@@ -144,9 +144,9 @@ QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& 
       QString res = move.from().toString(ysize) + move.to().toString(ysize);
       if (move.promoteTo() != -1)
         res = res + "=" + 
-          Piece::typeName(
+          symbol(
             static_cast<typename Piece::Type>(move.promoteTo())
-          )[0].toUpper();
+          ).toUpper();
       return res;
     }
   case COMPACT:
@@ -283,6 +283,14 @@ void Serializer<MoveGenerator>::minimal_notation(SAN& san, const GameState& ref)
   san.from = from;
 }
 #undef TRY
+
+template <typename MoveGenerator>
+QChar Serializer<MoveGenerator>::symbol(typename Piece::Type type) const {
+  if (type == Piece::KNIGHT)
+    return 'n';
+  else
+    return Piece::typeName(type)[0];
+}
 
 } // namespace Chess
 } // namespace HLVariant

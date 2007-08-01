@@ -28,6 +28,8 @@ class ChessSerializationTest : public CppUnit::TestFixture {
   CPPUNIT_TEST(test_promotion_capture_check);
   CPPUNIT_TEST(test_castling_k);
   CPPUNIT_TEST(test_castling_q);
+  
+  CPPUNIT_TEST(regression_knight_king);
   CPPUNIT_TEST_SUITE_END();
 private:
   ChessGameState* m_state;
@@ -45,6 +47,8 @@ public:
   void test_promotion_capture_check();
   void test_castling_k();
   void test_castling_q();
+  
+  void regression_knight_king();
 };
 
 #endif // CHESSSERIALIZATIONTEST_H

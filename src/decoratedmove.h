@@ -14,6 +14,8 @@
 #include <QString>
 #include <QList>
 
+#include "export.h"
+
 class MovePart {
 public:
   enum Type {
@@ -28,7 +30,7 @@ public:
     : m_string(s), m_type(t) {}
 };
 
-class DecoratedMove {
+class TAGUA_EXPORT DecoratedMove {
   typedef QList<MovePart> ElementList;
   
   ElementList m_elements;
