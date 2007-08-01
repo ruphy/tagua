@@ -91,7 +91,7 @@ void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
     Entry* e = &(*vec)[i];
     PositionPtr prev = position(index.prev());
     DecoratedMove mv = (e->move && prev) ? e->move->toDecoratedMove(prev) :
-                  DecoratedMove() << MovePart(e->position ? "(-)" : "???");
+                  DecoratedMove(e->position ? "(-)" : "???");
     int turn = prev ? prev->turn() : (index.totalNumMoves()+1)%2;
     //mv += " " + QString::number(turn);
     m_movelist->setMove(index, turn, mv, e->comment, confirm_promotion);
@@ -128,7 +128,7 @@ void GraphicalGame::onEntryChanged(const Index& at, int propagate) {
     if (pe) last_pos = pe->position;
 
     DecoratedMove mv = (e->move && last_pos) ? e->move->toDecoratedMove(last_pos) :
-                    DecoratedMove() << MovePart(e->position ? "(-)" : "???");
+                    DecoratedMove(e->position ? "(-)" : "???");
     int turn = last_pos ? last_pos->turn() : (at.totalNumMoves()+1)%2;
     m_movelist->setMove(at, turn, mv, e->comment);
     if(at == current && e->position)

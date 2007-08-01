@@ -85,8 +85,17 @@ namespace HLVariant {
       }
     }
   
-    virtual DecoratedMove toDecoratedMove(const PositionPtr&) const {
-      return DecoratedMove(); // BROKEN
+    virtual DecoratedMove toDecoratedMove(const PositionPtr& _ref) const {
+      WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
+  
+      if (ref) {
+        Serializer serializer(Serializer::DECORATED);
+        return DecoratedMove(serializer.serialize(m_move, ref->inner()));
+      }
+      else {
+        MISMATCH(*_ref.get(), WrappedPosition<Variant>);
+        return DecoratedMove("$@%");
+      }
     }
   
     virtual QString toString(const PositionPtr&) const {

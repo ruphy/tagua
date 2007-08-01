@@ -765,12 +765,12 @@ public:
     bool ambiguous = isAmbiguous();
     DecoratedMove retv;
     if(p.type() == ShogiPiece::KING)
-      retv += MovePart(p.color() == ShogiPiece::BLACK?"king1":"king2", MovePart::Figurine);
+      retv.push_back(MovePart(p.color() == ShogiPiece::BLACK?"king1":"king2", MovePart::Figurine));
     else
-      retv += MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine);
+      retv.push_back(MovePart((p.promoted() ? "p_" : "") + ShogiPiece::typeName(p.type()), MovePart::Figurine));
     if (ambiguous) {
-      retv += MovePart(QString::number(m_ref.m_board.getSize().x-m_move.from.x));
-      retv += MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine);
+      retv.push_back(MovePart(QString::number(m_ref.m_board.getSize().x-m_move.from.x)));
+      retv.push_back(MovePart("num_"+QString::number(m_move.from.y+1), MovePart::Figurine));
     }
     QString mmm;
     if (m_move.drop())
@@ -780,14 +780,14 @@ public:
     else
       mmm += "-";
     mmm += QString::number(m_ref.m_board.getSize().x-m_move.to.x);
-    retv += MovePart(mmm);
-    retv += MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine);
+    retv.push_back(mmm);
+    retv.push_back(MovePart("num_"+QString::number(m_move.to.y+1), MovePart::Figurine));
     if (!p.promoted() && !m_move.drop() &&
             ShogiPosition::promotionZone(m_ref.turn(), m_move.to)) {
       if (m_move.m_promote)
-        retv += MovePart("+");
+        retv.push_back(MovePart("+"));
       else
-        retv += MovePart("=");
+        retv.push_back(MovePart("="));
     }
     return retv;
   }

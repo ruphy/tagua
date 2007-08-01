@@ -28,6 +28,22 @@ public:
     : m_string(s), m_type(t) {}
 };
 
-typedef QList<MovePart> DecoratedMove;
+class DecoratedMove {
+  typedef QList<MovePart> ElementList;
+  
+  ElementList m_elements;
+public:
+  DecoratedMove();
+  explicit DecoratedMove(const QString& str);
+  void load(const QString& str);
+  
+  MovePart operator[](int index) const;
+  unsigned int size() const;
+  
+  // deprecated methods
+  void push_back(const MovePart& part);
+};
+
+
 
 #endif //DECORATEDMOVE_H
