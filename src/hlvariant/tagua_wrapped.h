@@ -98,12 +98,22 @@ namespace HLVariant {
       }
     }
   
-    virtual QString toString(const PositionPtr&) const {
-      return ""; // BROKEN
+    virtual QString toString(const PositionPtr& _ref) const {
+      WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
+  
+      if (ref) {
+        Serializer serializer(Serializer::SIMPLE);
+        return serializer.serialize(m_move, ref->inner());
+      }
+      else {
+        MISMATCH(*_ref.get(), WrappedPosition<Variant>);
+        return "$@%";
+      }      
     }
   
     virtual NormalUserMove toUserMove() const {
-      return NormalUserMove(); // BROKEN
+      MoveFactory<GameState> factory;
+      return factory.toNormal(m_move);
     }
   
     virtual bool equals(const MovePtr& _other) const {
