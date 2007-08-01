@@ -273,11 +273,6 @@ public:
   /**
     * Return a move from an algebraic notation, or a null pointer.
     */
-  virtual MovePtr getMove(const class AlgebraicNotation&) const = 0;
-
-  /**
-    * Return a move from an algebraic notation, or a null pointer.
-    */
   virtual MovePtr getMove(const QString&) const = 0;
 
   /**

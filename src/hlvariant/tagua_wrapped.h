@@ -286,11 +286,6 @@ namespace HLVariant {
       }
     }
   
-    virtual MovePtr getMove(const AlgebraicNotation&) const {
-      // BROKEN
-      return MovePtr();
-    }
-  
     virtual MovePtr getMove(const QString& san) const {
       Serializer serializer(Serializer::COMPACT);
       Move res = serializer.deserialize(san, m_state);
