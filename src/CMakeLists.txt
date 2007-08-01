@@ -40,6 +40,9 @@ set(tagua_SRC
   hlvariant/crazyhouse/piece.cpp
   
   hlvariant/minichess5/variant.cpp
+  
+  hlvariant/shogi/variant.cpp
+  hlvariant/shogi/piece.cpp
 
   animationfactory.cpp
   constrainedtext.cpp

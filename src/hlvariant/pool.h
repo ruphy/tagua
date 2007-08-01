@@ -1,6 +1,8 @@
 #ifndef HLVARIANT__POOL_H
 #define HLVARIANT__POOL_H
 
+#include <map>
+
 namespace HLVariant {
 
 template <typename _Piece>

@@ -124,10 +124,7 @@ void GameState<Board, Move>::setup() {
       m_board.set(Point(i, rank + direction(color).y), 
                   Piece(color, Piece::PAWN));
     }
-    std::cout << "setting piece on rank " << rank << std::endl;
     m_board.set(Point(0, rank), Piece(color, Piece::ROOK));
-    Q_ASSERT(m_board.valid(Point(0, rank)));
-    Q_ASSERT(m_board.get(Point(0, rank)) == Piece(color, Piece::ROOK));
     m_board.set(Point(1, rank), Piece(color, Piece::KNIGHT));
     m_board.set(Point(2, rank), Piece(color, Piece::BISHOP));
     m_board.set(Point(3, rank), Piece(color, Piece::QUEEN));

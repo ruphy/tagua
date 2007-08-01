@@ -11,20 +11,26 @@
 #ifndef HLVARIANT__CRAZYHOUSE__MOVE_H
 #define HLVARIANT__CRAZYHOUSE__MOVE_H
 
+#include "point.h"
+
 namespace HLVariant {
 namespace Crazyhouse {
 
-template <typename Piece>
-class Move : public Chess::Move {
+template <typename _Move, typename _Piece>
+class MoveMixin : public _Move {
+public:
+  typedef _Move Move;
+  typedef _Piece Piece;
+private:
   typedef typename Piece::Color Color;
   
   Color m_pool;
   int m_index;
   Piece m_drop;
 public:
-  Move();
-  Move(const Point& from, const Point& to, int promotionType = -1);
-  Move(Color pool, int index, const Point& to);
+  MoveMixin();
+  MoveMixin(const Point& from, const Point& to, int promotionType = -1);
+  MoveMixin(Color pool, int index, const Point& to);
   
   Piece drop() const;
   void setDrop(const Piece& piece);
@@ -33,40 +39,42 @@ public:
   int index() const;
 };
 
-template <typename Piece>
-Move<Piece>::Move()
+// IMPLEMENTATION
+
+template <typename Move, typename Piece>
+MoveMixin<Move, Piece>::MoveMixin()
 : m_pool(Piece::INVALID_COLOR)
 , m_index(-1) { }
 
-template <typename Piece>
-Move<Piece>::Move(const Point& from, const Point& to, int promotionType)
-: Chess::Move(from, to, promotionType)
+template <typename Move, typename Piece>
+MoveMixin<Move, Piece>::MoveMixin(const Point& from, const Point& to, int promotionType)
+: Move(from, to, promotionType)
 , m_pool(Piece::INVALID_COLOR)
 , m_index(-1) { }
 
-template <typename Piece>
-Move<Piece>::Move(Color pool, int index, const Point& to)
-: Chess::Move(Point::invalid(), to)
+template <typename Move, typename Piece>
+MoveMixin<Move, Piece>::MoveMixin(Color pool, int index, const Point& to)
+: Move(Point::invalid(), to)
 , m_pool(pool)
 , m_index(index) { }
 
-template <typename Piece>
-Piece Move<Piece>::drop() const {
+template <typename Move, typename Piece>
+Piece MoveMixin<Move, Piece>::drop() const {
   return m_drop;
 }
 
-template <typename Piece>
-void Move<Piece>::setDrop(const Piece& drop) {
+template <typename Move, typename Piece>
+void MoveMixin<Move, Piece>::setDrop(const Piece& drop) {
   m_drop = drop;
 }
 
-template <typename Piece>
-typename Piece::Color Move<Piece>::pool() const {
+template <typename Move, typename Piece>
+typename Piece::Color MoveMixin<Move, Piece>::pool() const {
   return m_pool;
 }
 
-template <typename Piece>
-int Move<Piece>::index() const {
+template <typename Move, typename Piece>
+int MoveMixin<Move, Piece>::index() const {
   return m_index;
 }
 

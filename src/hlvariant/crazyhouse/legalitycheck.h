@@ -11,6 +11,8 @@
 #ifndef HLVARIANT__CRAZYHOUSE__LEGALITYCHECK_H
 #define HLVARIANT__CRAZYHOUSE__LEGALITYCHECK_H
 
+#include "../chess/legalitycheck.h"
+
 namespace HLVariant {
 namespace Crazyhouse {
 

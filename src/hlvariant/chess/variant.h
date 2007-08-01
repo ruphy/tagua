@@ -21,7 +21,6 @@
 class VariantInfo;
 
 namespace HLVariant {
-
 namespace Chess {
 
 struct TAGUA_EXPORT Variant {
