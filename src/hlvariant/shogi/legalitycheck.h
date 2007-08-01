@@ -159,7 +159,28 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
 
 template <typename GameState>
 bool LegalityCheck<GameState>::legal(Move& move) const {
-  return pseudolegal(move); // BROKEN
+  if (!pseudolegal(move))
+    return false;
+
+  GameState tmp(m_state);
+  tmp.move(move);
+
+  // find king position
+  Point king_pos = tmp.board().find(Piece(m_state.turn(), Piece::KING));
+  if (!king_pos.valid()) 
+    return false;
+
+  // check if the king can be captured
+  for (int i = 0; i < m_state.board().size().x; i++) {
+    for (int j = 0; j < m_state.board().size().y; j++) {
+      Point p(i, j);
+      Piece piece = tmp.board().get(p);
+      if (piece.color() == tmp.turn() && getMoveType(piece, Move(p, king_pos)))
+        return false;
+    }
+  }
+
+  return true;
 }
 
 template <typename GameState>
