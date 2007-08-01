@@ -25,15 +25,11 @@ void DecoratedMove::load(const QString& str) {
   static QRegExp figurine("\\{[^}]*\\}");
   int offset = 0;
   int begin;
-  std::cout << "DecoratedMove load" << std::endl;
   while ((begin = figurine.indexIn(str, offset)) != -1) {
-    std::cout << "begin = " << begin << std::endl;
     if (begin > offset) {
       m_elements.push_back(str.mid(offset, begin - offset));
-      std::cout << "found text: " << str.mid(offset, begin - offset) << std::endl;
     }
     m_elements.push_back(MovePart(str.mid(begin + 1, figurine.matchedLength() - 2), MovePart::Figurine));
-    std::cout << "found figurine: " << str.mid(begin + 1, figurine.matchedLength() - 2) << std::endl;
     offset = begin + figurine.matchedLength();
   }
   

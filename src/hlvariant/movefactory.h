@@ -19,16 +19,17 @@ namespace HLVariant {
 
 template <typename GameState>
 class MoveFactory {
+public:
   typedef typename GameState::Move Move;
   typedef typename GameState::Board::Piece Piece;
-public:
+  
   virtual ~MoveFactory() { }
   
   virtual Move createNormalMove(const NormalUserMove& move) {
     return Move(move.from, move.to, static_cast<typename Piece::Type>(move.promotionType));
   }
 
-  virtual Move createDropMove(const DropUserMove) {
+  virtual Move createDropMove(const DropUserMove&) {
     return Move();
   }
 

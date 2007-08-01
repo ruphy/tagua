@@ -164,7 +164,7 @@ namespace HLVariant {
     }
   
     virtual NormalUserMove toUserMove() const {
-      MoveFactory<GameState> factory;
+      typename VariantData<Variant>::MoveFactory factory;
       return factory.toNormal(m_move);
     }
   
@@ -469,13 +469,13 @@ namespace HLVariant {
     }
     
     virtual MovePtr createNormalMove(const NormalUserMove& move) {
-      MoveFactory<GameState> factory;
+      typename VariantData<Variant>::MoveFactory factory;
       Move m = factory.createNormalMove(move);
       return MovePtr(new WrappedMove<Variant>(m));
     }
     
     virtual MovePtr createDropMove(const DropUserMove& move) {
-      MoveFactory<GameState> factory;
+      typename VariantData<Variant>::MoveFactory factory;
       Move m = factory.createDropMove(move);
       return MovePtr(new WrappedMove<Variant>(m));
     }

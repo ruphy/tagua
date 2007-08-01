@@ -8,8 +8,10 @@
 #include "move.h"
 #include "export.h"
 #include "option.h"
+#include "legalitycheck.h"
 #include "../animator.h"
 #include "../dropanimator.h"
+#include "movefactory.h"
 
 class VariantInfo;
 
@@ -20,10 +22,11 @@ struct TAGUA_EXPORT Variant {
   typedef Move<Piece> Move;
   typedef Board<Piece> Board;
   typedef GameState<Board, Move> GameState;
-  typedef Chess::LegalityCheck<GameState> LegalityCheck;
+  typedef LegalityCheck<GameState> LegalityCheck;
   typedef Chess::MoveGenerator<LegalityCheck> MoveGenerator;
   typedef Chess::Serializer<MoveGenerator> Serializer;
   typedef DropAnimatorMixin<SimpleAnimator<Variant> > Animator;
+  typedef MoveFactory<GameState> MoveFactory;
   
   static const bool hasICS = false;
   static const bool m_simple_moves = false;

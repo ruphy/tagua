@@ -12,6 +12,7 @@ struct VariantData {
   typedef typename Board::Piece Piece;
   typedef typename Variant::Animator Animator;  
   typedef typename Variant::Serializer Serializer;
+  typedef typename Variant::MoveFactory MoveFactory;
 };
 
 #endif // HLVARIANTS__VARIANTDATA_H

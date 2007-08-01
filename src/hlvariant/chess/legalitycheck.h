@@ -1,3 +1,13 @@
+/*
+  Copyright (c) 2007 Paolo Capriotti <p.capriotti@sns.it>
+            (c) 2007 Maurizio Monge <maurizio.monge@kdemail.net>
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+*/
+
 #ifndef HLVARIANT__CHESS__LEGALITYCHECK_H
 #define HLVARIANT__CHESS__LEGALITYCHECK_H
 
@@ -15,7 +25,7 @@ public:
   typedef typename GameState::Board Board;
   typedef typename GameState::Move Move;
   typedef typename GameState::Piece Piece;
-private:
+protected:
   const GameState& m_state;
 public:
   LegalityCheck(const GameState& state);
@@ -33,6 +43,7 @@ public:
             const Piece& target = Piece()) const;
   virtual bool checkPromotion(typename Piece::Type type) const;
   
+  virtual typename Piece::Color mover(const Move& move) const;
   virtual InteractionType movable(const TurnTest&, const Point& x) const;
   virtual InteractionType droppable(const TurnTest&, int index) const;
 };
@@ -49,8 +60,7 @@ LegalityCheck<GameState>::LegalityCheck(const GameState& state)
 template <typename GameState>
 bool LegalityCheck<GameState>::legal(Move& move) const {
   if (pseudolegal(move)) {
-    Piece piece = m_state.board().get(move.from());
-    typename Piece::Color turn = piece.color();
+    typename Piece::Color turn = mover(move);
     
     GameState tmp(m_state);
     tmp.move(move);
@@ -59,7 +69,7 @@ bool LegalityCheck<GameState>::legal(Move& move) const {
     
     if (kingPos == Point::invalid())
       return false;
-    
+      
     LegalityCheck<GameState> tmpLegality(tmp);
     if (tmpLegality.attacks(Piece::oppositeColor(turn), kingPos))
       return false;
@@ -255,6 +265,12 @@ bool LegalityCheck<GameState>::checkPromotion(typename Piece::Type type) const {
     type == Piece::ROOK ||
     type == Piece::BISHOP ||
     type == Piece::KNIGHT;
+}
+
+template <typename GameState>
+typename LegalityCheck<GameState>::Piece::Color 
+LegalityCheck<GameState>::mover(const Move& move) const {
+  return m_state.board().get(move.from()).color();
 }
 
 template <typename GameState>

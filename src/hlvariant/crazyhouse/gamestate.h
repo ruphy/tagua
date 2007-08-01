@@ -54,6 +54,7 @@ void GameState<Board, Move>::move(const Move& m) {
   else {
     m_board.set(m.to(), m.drop());
     m_pools.pool(m.drop().color()).remove(m.drop().type());
+    this->switchTurn();
   }
 }
 
@@ -61,7 +62,8 @@ template <typename Board, typename Move>
 void GameState<Board, Move>::captureOn(const Point& p) {
   Piece captured = m_board.get(p);
   if (captured != Piece()) {
-    m_pools.pool(captured.color()).add(captured.actualType());
+    m_pools.pool(Piece::oppositeColor(captured.color()))
+      .add(captured.actualType());
   }
   Base::captureOn(p);
 }

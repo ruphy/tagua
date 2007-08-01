@@ -53,10 +53,6 @@ void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
 
     int pos = 0;
 
-    std::cout << "updating pool" << std::endl;
-    std::cout << m_cinterface->position()->pools().pool(c).size() << std::endl;
-    std::cout << final.pools().pool(c).size() << std::endl;
-
     // oh, a nice bunch of write-only magic shit
     while (before_it != before.end() || after_it != after.end()) {
       bool skip_after = (after_it == after.end() || (before_it != before.end()
@@ -65,9 +61,6 @@ void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
                                 && after_it->first < before_it->first ));
       int na = skip_after ? 0 : after_it->second;
       int nb = skip_before ? 0 : before_it->second;
-
-      std::cout << "na = " << na << std::endl;
-      std::cout << "nb = " << nb << std::endl;
 
       if (nb < na) {
         for(int i = nb; i < na; i++)

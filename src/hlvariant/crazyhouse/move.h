@@ -27,6 +27,10 @@ public:
   Move(Color pool, int index, const Point& to);
   
   Piece drop() const;
+  void setDrop(const Piece& piece);
+  
+  Color pool() const;
+  int index() const;
 };
 
 template <typename Piece>
@@ -49,6 +53,21 @@ Move<Piece>::Move(Color pool, int index, const Point& to)
 template <typename Piece>
 Piece Move<Piece>::drop() const {
   return m_drop;
+}
+
+template <typename Piece>
+void Move<Piece>::setDrop(const Piece& drop) {
+  m_drop = drop;
+}
+
+template <typename Piece>
+typename Piece::Color Move<Piece>::pool() const {
+  return m_pool;
+}
+
+template <typename Piece>
+int Move<Piece>::index() const {
+  return m_index;
 }
 
 }; // namespace Crazyhouse
