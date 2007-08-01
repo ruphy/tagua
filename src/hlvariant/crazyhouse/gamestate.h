@@ -21,6 +21,9 @@ private:
   using Base::m_board;
   Pools m_pools;
 public:
+  GameState();
+  GameState(typename Piece::Color, bool, bool, bool, bool, const Point&);
+
   virtual const Pools& pools() const;
   virtual Pools& pools();
   
@@ -29,6 +32,19 @@ public:
 };
 
 // IMPLEMENTATION
+
+template <typename Board, typename Move>
+GameState<Board, Move>::GameState() { }
+
+template <typename Board, typename Move>
+GameState<Board, Move>::GameState(
+      typename Piece::Color turn, 
+      bool wk, 
+      bool wq, 
+      bool bk, 
+      bool bq, 
+      const Point& ep)
+: Base(turn, wk, wq, bk, bq, ep) { }
 
 template <typename Board, typename Move>
 const typename GameState<Board, Move>::Pools& GameState<Board, Move>::pools() const {

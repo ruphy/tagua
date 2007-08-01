@@ -32,7 +32,7 @@ struct TAGUA_EXPORT Variant {
   typedef SimpleAnimator<Variant> Animator;
   typedef MoveFactory<GameState> MoveFactory;
   
-  static const bool hasICS = false;
+  static const bool hasICS = true;
   static const bool m_simple_moves = false;
   static const char *m_name;
   static const char *m_theme_proxy;
