@@ -30,6 +30,7 @@ public:
   LegalityCheck(const GameState& state);
   virtual ~LegalityCheck();
   
+  virtual bool getMoveType(const Piece& piece, const Move& move) const;
   bool legal(Move& move) const;
   bool pseudolegal(Move& move) const;
   
@@ -47,8 +48,118 @@ template <typename GameState>
 LegalityCheck<GameState>::~LegalityCheck() { }
 
 template <typename GameState>
-bool LegalityCheck<GameState>::legal(Move&) const {
-  return true; // BROKEN
+bool LegalityCheck<GameState>::getMoveType(const Piece& piece, const Move& move) const {
+  if (!move.valid())
+    return false;
+  
+  if (move.from() == move.to()) 
+    return false;
+    
+  if (m_state.board().get(move.to()).color() == piece.color()) 
+    return false;
+  Point delta = move.to() - move.from();
+
+  if (!piece.promoted()) {
+    switch (piece.type()) {
+    case Piece::KING:
+      return abs(delta.x) <= 1 && abs(delta.y) <= 1;
+    case Piece::GOLD:
+      return (delta.x == 0 && abs(delta.y) == 1)
+          || (delta.y == 0 && abs(delta.x) == 1)
+          || (delta.y == m_state.direction(piece.color()).y && abs(delta.x) <= 1);
+    case Piece::SILVER:
+      return (abs(delta.x) == abs(delta.y) && abs(delta.x) == 1)
+          || (delta.y == m_state.direction(piece.color()).y && abs(delta.x) <= 1);
+    case Piece::ROOK:
+      {
+        PathInfo path = m_state.board().path(move.from(), move.to());
+        return path.parallel() && path.clear();
+      }
+    case Piece::BISHOP:
+      {
+          PathInfo path = m_state.board().path(move.from(), move.to());
+          return path.diagonal() && path.clear();
+      }
+    case Piece::KNIGHT:
+      {
+        return abs(delta.x) == 1 && delta.y == m_state.direction(piece.color()).y * 2;
+      }
+    case Piece::LANCE:
+      {
+        PathInfo path = m_state.board().path(move.from(), move.to());
+        return delta.x == 0 && 
+               path.clear() && 
+               (delta.y * m_state.direction(piece.color()).y > 0);
+      }
+    case Piece::PAWN:
+      return delta == m_state.direction(piece.color());
+    default:
+      return false;
+    }
+  }
+  else {
+    switch (piece.type()) {
+    case Piece::SILVER:
+    case Piece::PAWN:
+    case Piece::LANCE:
+    case Piece::KNIGHT:
+      return (delta.x == 0 && abs(delta.y) == 1)
+          || (delta.y == 0 && abs(delta.x) == 1)
+          || (delta.y == m_state.direction(piece.color()).y && abs(delta.x) <= 1);
+    case Piece::ROOK:
+      {
+        if (abs(delta.x) <= 1 && abs(delta.y) <= 1) return true;
+        PathInfo path = m_state.board().path(move.from(), move.to());
+        return path.parallel() && path.clear();
+      }
+    case Piece::BISHOP:
+      {
+          if (abs(delta.x) <= 1 && abs(delta.y) <= 1) return true;
+          PathInfo path = m_state.board().path(move.from(), move.to());
+          return path.diagonal() && path.clear();
+      }
+    default:
+      return false;
+    }
+  }
+}
+
+template <typename GameState>
+bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
+  if (move.drop() == Piece() && 
+      move.pool() != -1 && 
+      move.index() != -1) {
+    move.setDrop(m_state.pools().pool(move.pool()).get(move.index()));
+  }
+
+  Piece dropped = move.drop();
+  if (dropped != Piece()) {
+    if (m_state.board().get(move.to()) != Piece())
+      return false;
+
+//     if (stuckPiece(dropped, m.to)) return false; // BROKEN
+
+    if (dropped.type() == Piece::PAWN) {
+      for (int i = 0; i < m_state.board().size().y; i++) {
+        Piece other = m_state.board().get(Point(move.to().x, i));
+        if (other.type() == Piece::PAWN &&
+            other.color() == m_state.turn() &&
+            !other.promoted())
+          return false;
+      }
+    }
+    
+    return true;
+  }
+  else {
+    Piece piece = m_state.board().get(move.from());
+    return piece != Piece() && getMoveType(piece, move);
+  }
+}
+
+template <typename GameState>
+bool LegalityCheck<GameState>::legal(Move& move) const {
+  return pseudolegal(move); // BROKEN
 }
 
 template <typename GameState>

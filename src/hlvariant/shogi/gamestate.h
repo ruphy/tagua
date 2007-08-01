@@ -127,7 +127,8 @@ void GameState<Board, Move>::move(const Move& m) {
     }
   }
   else {
-    // BROKEN
+    m_board.set(m.to(), m.drop());
+    m_pools.pool(m.drop().color()).remove(m.drop().type());
   }
   
   switchTurn();
@@ -135,7 +136,9 @@ void GameState<Board, Move>::move(const Move& m) {
 
 template <typename Board, typename Move>
 void GameState<Board, Move>::captureOn(const Point& p) {
-  m_board.set(p, Piece()); // BROKEN: add to pool
+  Piece captured = m_board.get(p);
+  m_board.set(p, Piece());
+  m_pools.pool(captured.color()).add(captured.type());
 }
 
 template <typename Board, typename Move>

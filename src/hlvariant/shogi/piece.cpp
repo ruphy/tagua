@@ -24,6 +24,10 @@ void Piece::setPromoted() {
   m_promoted = true;
 }
 
+bool Piece::promoted() const {
+  return m_promoted;
+}
+
 Piece::Color Piece::color() const { return m_color; }
 
 Piece::Type Piece::type() const { return m_type; }

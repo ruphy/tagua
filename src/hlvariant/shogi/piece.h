@@ -57,6 +57,7 @@ public:
   virtual bool operator!=(const Piece& other) const;
 
   void setPromoted();
+  bool promoted() const;
 };
 
 } // namespace Shogi
