@@ -136,7 +136,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
   NamedSprite captured;
   Piece captured_piece = final.board().get(move.captureSquare());
   if (captured_piece != Piece()) {
-    captured = m_cinterface->setPiece(move.to(), captured_piece, false);
+    captured = m_cinterface->setPiece(move.captureSquare(), captured_piece, false);
     res.addPreAnimation(Animate::appear(captured));
   }
 
