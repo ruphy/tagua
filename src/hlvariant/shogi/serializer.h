@@ -36,6 +36,7 @@ protected:
   virtual bool isAmbiguous(const Move& move, const GameState& ref) const;
   virtual QString square(const Point& p, const Point& size) const;
   virtual QString symbol(const Piece& piece) const;
+  virtual typename Piece::Type getType(const QChar& letter) const;
 public:
   Serializer(int rep);
   virtual ~Serializer();
@@ -100,23 +101,56 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
   if (piece == Piece())
     piece = ref.board().get(move.from());
 
-  bool ambiguous = isAmbiguous(move, ref);
-  
   QString res;
-  res += square(move.from(), ref.board().size());
   
-  if (move.drop() != Piece())
-    res += "*";
-    
-  res += square(move.to(), ref.board().size());
-  
-  if (!piece.promoted() && 
-      move.drop() == Piece() &&
-      ref.promotionZone(ref.turn(), move.to())) {
-    if (move.promoteTo() != -1)
+  switch (m_rep) {
+  case SIMPLE:
+    res += square(move.from(), ref.board().size());
+    if (move.drop() != Piece())
+      res += '*';
+    res += square(move.to(), ref.board().size());
+    if (!piece.promoted() &&
+        move.drop() == Piece() &&
+        ref.promotionZone(ref.turn(), move.to()) &&
+        move.promoteTo() != -1)
       res += "+";
+    return res;
+  case COMPACT:
+  case DECORATED:
+  default:
+    {
+      bool ambiguous = isAmbiguous(move, ref);
+      
+      QString res;
+      if (piece.promoted())
+        res += "+";
+    
+      res += symbol(piece);
+      
+      if (ambiguous) {
+        res += square(move.from(), ref.board().size());
+      }
+      
+      if (move.drop() != Piece())
+        res += "*";
+      else if (ref.board().get(move.to()) != Piece())
+        res += "x";
+      else
+        res += "-";
+        
+      res += square(move.to(), ref.board().size());
+      
+      if (!piece.promoted() && 
+          move.drop() == Piece() &&
+          ref.promotionZone(ref.turn(), move.to())) {
+        if (move.promoteTo() != -1)
+          res += "+";
+        else
+          res += "=";
+      }
+      return res;
+    }
   }
-  return res;
 }
 
 template <typename LegalityCheck>
@@ -136,15 +170,47 @@ QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
 }
 
 template <typename LegalityCheck>
-typename Serializer<LegalityCheck>::Move Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref) {
+typename Serializer<LegalityCheck>::Piece::Type 
+Serializer<LegalityCheck>::getType(const QChar& letter) const {
+  QChar c = letter.toLower();
+  
+  if (c == 'p')
+    return Piece::PAWN;
+  else if (c == 'r')
+    return Piece::ROOK;
+  else if (c == 'b')
+    return Piece::BISHOP;
+  else if (c == 'l')
+    return Piece::LANCE;
+  else if (c == 'n')
+    return Piece::KNIGHT;
+  else if (c == 's')
+    return Piece::SILVER;
+  else if (c == 'g')
+    return Piece::GOLD;
+  else if (c == 'k')
+    return Piece::KING;
+  else
+    return Piece::INVALID_TYPE;
+}
+
+template <typename LegalityCheck>
+typename Serializer<LegalityCheck>::Move 
+Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref) {
   if (str[0].isDigit()) {
     // this is a move
-    Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii()-'a');
-    Point dest(ref.board().size().x - str[2].digitValue(), str[3].toAscii()-'a');
-    return Move(orig,dest);
-  } else {
-    // must parse drops - eg. P*2c
+    Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii() - 'a');
+    Point dest(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
+    return Move(orig, dest);
+  } 
+  else {
+    if (str[1] != '*')
+      return Move();
+    typename Piece::Type t = getType(str[0]);
+    Point to(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
+    return Move(Piece(ref.turn(), t), to);   
   }
+
 }
 
 } // namespace Shogi

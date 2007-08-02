@@ -292,6 +292,9 @@ namespace HLVariant {
     }
   
     virtual bool testMove(const MovePtr& _move) const {
+      if (!_move)
+        return false;
+        
       WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
   
       if (move) {
@@ -305,6 +308,9 @@ namespace HLVariant {
     }
   
     virtual void move(const MovePtr& _move) {
+      if (!_move)
+        return;
+        
       WrappedMove<Variant>* move = dynamic_cast<WrappedMove<Variant>*>(_move.get());
   
       if (move)

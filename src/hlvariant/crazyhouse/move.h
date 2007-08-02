@@ -31,6 +31,7 @@ public:
   MoveMixin();
   MoveMixin(const Point& from, const Point& to, int promotionType = -1);
   MoveMixin(Color pool, int index, const Point& to);
+  MoveMixin(const Piece& dropped, const Point& to);
   
   Piece drop() const;
   void setDrop(const Piece& piece);
@@ -57,6 +58,13 @@ MoveMixin<Move, Piece>::MoveMixin(Color pool, int index, const Point& to)
 : Move(Point::invalid(), to)
 , m_pool(pool)
 , m_index(index) { }
+
+template <typename Move, typename Piece>
+MoveMixin<Move, Piece>::MoveMixin(const Piece& dropped, const Point& to)
+: Move(Point::invalid(), to)
+, m_pool(dropped.color())
+, m_index(-1)
+, m_drop(dropped) { }
 
 template <typename Move, typename Piece>
 Piece MoveMixin<Move, Piece>::drop() const {
