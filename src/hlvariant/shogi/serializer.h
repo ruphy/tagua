@@ -203,7 +203,7 @@ Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref)
     // this is a move
     Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii() - 'a');
     Point dest(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
-    return Move(orig, dest);
+    return Move(orig, dest, (str.size() > 4) && (str[4] == '+'));
   } 
   else {
     if (str[1] != '*')
