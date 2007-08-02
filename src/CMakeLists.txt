@@ -77,6 +77,7 @@ set(tagua_SRC
   location.cpp
   hline.cpp
   xboardengine.cpp
+  gnushogiengine.cpp
   settings.cpp
   positioninfo.cpp
   engine.cpp

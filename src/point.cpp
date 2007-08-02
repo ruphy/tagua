@@ -55,6 +55,12 @@ QString Point::row(int ysize) const {
     else
         return QString();
 }
+QString Point::numcol(int xsize) const {
+    if (x != -1)
+        return QString::number(xsize - x);
+    else
+        return QString();
+}
 
 QString Point::col() const {
     if (x != -1) {
@@ -62,6 +68,16 @@ QString Point::col() const {
         return QChar(static_cast<char>(x - 26 + 'A'));
       else
         return QChar(static_cast<char>(x + 'a'));
+    }
+    else
+        return QString();
+}
+QString Point::alpharow() const {
+    if (y != -1) {
+      if(y >= 26)
+        return QChar(static_cast<char>(y - 26 + 'A'));
+      else
+        return QChar(static_cast<char>(y + 'a'));
     }
     else
         return QString();

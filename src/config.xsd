@@ -250,6 +250,7 @@
    <xs:simpleType name="EngineType">
       <xs:restriction base="xs:string">
          <xs:enumeration value="xboard"/>
+         <xs:enumeration value="gnushogi"/>
          <xs:enumeration value="UCI"/>
          <xs:enumeration value="tagua"/>
       </xs:restriction>

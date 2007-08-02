@@ -103,21 +103,10 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
   bool ambiguous = isAmbiguous(move, ref);
   
   QString res;
-  if (piece.promoted())
-    res += "+";
-
-  res += symbol(piece);
-  
-  if (ambiguous) {
-    res += square(move.from(), ref.board().size());
-  }
+  res += square(move.from(), ref.board().size());
   
   if (move.drop() != Piece())
     res += "*";
-  else if (ref.board().get(move.to()) != Piece())
-    res += "x";
-  else
-    res += "-";
     
   res += square(move.to(), ref.board().size());
   
@@ -126,8 +115,6 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
       ref.promotionZone(ref.turn(), move.to())) {
     if (move.promoteTo() != -1)
       res += "+";
-    else
-      res += "=";
   }
   return res;
 }
@@ -149,8 +136,15 @@ QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
 }
 
 template <typename LegalityCheck>
-typename Serializer<LegalityCheck>::Move Serializer<LegalityCheck>::deserialize(const QString&, const GameState&) {
-  return Move(); // BROKEN
+typename Serializer<LegalityCheck>::Move Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref) {
+  if (str[0].isDigit()) {
+    // this is a move
+    Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii()-'a');
+    Point dest(ref.board().size().x - str[2].digitValue(), str[3].toAscii()-'a');
+    return Move(orig,dest);
+  } else {
+    // must parse drops - eg. P*2c
+  }
 }
 
 } // namespace Shogi

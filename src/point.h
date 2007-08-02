@@ -25,7 +25,9 @@ struct TAGUA_EXPORT Point {
   Point();
 
   QString row(int ysize) const;
+  QString numcol(int xsize) const;
   QString col() const;
+  QString alpharow() const;
 
   explicit Point(const QString& str, int ysize);
   explicit Point(const QPoint&);

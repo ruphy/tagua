@@ -176,7 +176,7 @@ public:
     WrappedPosition<Variant>* pos = dynamic_cast<WrappedPosition<Variant>*>(_pos.get());
 
     if (pos)
-      return m_move.toString(pos->inner().size().y);
+      return m_move.toString(pos->inner().size().x, pos->inner().size().y);
     else {
       MISMATCH(*_pos.get(),WrappedPosition<Variant>);
       return "$@%";

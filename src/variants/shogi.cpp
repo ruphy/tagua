@@ -188,7 +188,7 @@ public:
   ShogiMove(const Point& from, const Point& to, bool promote);
   ShogiMove(int pool, int pool_index, const Point& to);
 
-  QString toString(int) const;
+  QString toString(int, int) const;
 
   bool operator==(const ShogiMove& other) const;
 
@@ -222,8 +222,12 @@ ShogiMove::ShogiMove(int pool, int pool_index, const Point& to)
 , from(Point::invalid())
 , to(to) { }
 
-QString ShogiMove::toString(int) const {
-  return "";
+QString ShogiMove::toString(int xsize, int ysize) const {
+  QString res = from.numcol(xsize) + from.alpharow()
+    + to.numcol(xsize) + to.alpharow();
+  //if (m_promote) res = res + "+";
+
+  return res;
 }
 
 bool ShogiMove::operator==(const ShogiMove& other) const {

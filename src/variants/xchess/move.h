@@ -47,7 +47,7 @@ public:
 
   static ChessMove invalid() { return ChessMove(Point::invalid(), Point::invalid()); }
   inline bool valid() const { return from != Point::invalid() && to != Point::invalid(); }
-  QString toString(int ysize) const;
+  QString toString(int xsize, int ysize) const;
   bool operator==(const ChessMove& other) const;
   bool operator!=(const ChessMove& other) const;
 
