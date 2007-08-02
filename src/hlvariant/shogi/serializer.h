@@ -35,7 +35,7 @@ protected:
   
   virtual bool isAmbiguous(const Move& move, const GameState& ref) const;
   virtual QString square(const Point& p, const Point& size) const;
-  virtual QChar symbol(typename Piece::Type type) const;
+  virtual QString symbol(const Piece& piece) const;
 public:
   Serializer(int rep);
   virtual ~Serializer();
@@ -82,7 +82,15 @@ bool Serializer<LegalityCheck>::isAmbiguous(const Move& move, const GameState& r
 
 template <typename LegalityCheck>
 QString Serializer<LegalityCheck>::square(const Point& p, const Point& size) const {
-  return QString::number(size.x - p.x) + QString(p.y + 'a');
+  QString res = QString::number(size.x - p.x);
+  if (m_rep == DECORATED) {
+    res += "{num_" + QString::number(p.y + 1) + "}";
+  }
+  else {
+    res += QString(p.y + 'a');
+  }
+  
+  return res;
 }
 
 
@@ -98,7 +106,7 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
   if (piece.promoted())
     res += "+";
 
-  res += symbol(piece.type());
+  res += symbol(piece);
   
   if (ambiguous) {
     res += square(move.from(), ref.board().size());
@@ -125,11 +133,19 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
 }
 
 template <typename LegalityCheck>
-QChar Serializer<LegalityCheck>::symbol(typename Piece::Type type) const {
-  if (type == Piece::KNIGHT)
-    return 'N';
-  else
-    return Piece::typeName(type)[0].toUpper();
+QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
+  if (m_rep == DECORATED) {
+    QString res = "{";
+    if (piece.promoted())
+      res += "p_";
+    return res + piece.typeName() + "}";
+  }
+  else {
+    if (piece.type() == Piece::KNIGHT)
+      return "N";
+    else
+      return piece.typeName()[0].toUpper();
+  }
 }
 
 template <typename LegalityCheck>

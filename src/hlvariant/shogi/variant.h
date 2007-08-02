@@ -12,6 +12,7 @@
 #define HLVARIANT__SHOGI__VARIANT_H
 
 #include "piece.h"
+#include "shogiban.h"
 #include "../chess/move.h"
 #include "../crazyhouse/move.h"
 #include "gamestate.h"
@@ -26,7 +27,7 @@ namespace Shogi {
 
 struct TAGUA_EXPORT Variant {
   typedef Crazyhouse::MoveMixin<Chess::Move, Piece> Move;
-  typedef GameState<CustomBoard<9, 9, Piece>, Move> GameState;
+  typedef GameState<ShogiBan<9, 9, Piece>, Move> GameState;
   typedef LegalityCheck<GameState> LegalityCheck;
   typedef Serializer<LegalityCheck> Serializer;
   typedef DropAnimatorMixin<SimpleAnimator<Variant> > Animator;
