@@ -45,10 +45,10 @@ public:
   CrazyhouseMove(int pool, int m_pool_index, const Point& to);
   CrazyhouseMove(const CrazyhouseMove&);
 
-  QString toString(int ysize) const {
+  QString toString(int xsize, int ysize) const {
     if(m_drop.valid())
       return CrazyhousePiece::typeSymbol(m_drop.type()) + "@" + to.toString(ysize);
-    return ChessMove::toString(ysize);
+    return ChessMove::toString(xsize, ysize);
   }
   static CrazyhouseMove createDropMove(int pool, int m_pool_index, const Point& to) {
     return CrazyhouseMove(pool, m_pool_index, to);

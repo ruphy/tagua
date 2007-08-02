@@ -28,7 +28,7 @@ QString ChessMove::promotionSymbol() const {
   return ChessPiece::typeSymbol(promotionType);
 }
 
-QString ChessMove::toString(int ysize) const {
+QString ChessMove::toString(int xsize, int ysize) const {
   QString res = from.toString(ysize) + to.toString(ysize);
   if (m_type == Promotion)
     res = res + "=" + promotionSymbol();

@@ -31,7 +31,7 @@ QString MoveSerializerBase<Pos>::SAN() const {
 
   if (!piece) {
     m_ref.dump();
-    std::cout << "Move is: " << m_move.toString(m_ref.size().y) << std::endl;
+    std::cout << "Move is: " << m_move.toString(m_ref.size().x, m_ref.size().y) << std::endl;
   }
 
   Q_ASSERT(piece);

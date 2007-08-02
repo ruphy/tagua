@@ -258,7 +258,7 @@ public:
 //BEGIN CrazyhouseVariant
 
 
-const char *CrazyhouseVariantInfo::m_name = "Crazyhouse";
+const char *CrazyhouseVariantInfo::m_name = "Crazyhouse_OLD";
 const char *CrazyhouseVariantInfo::m_theme_proxy = "Chess";
 
 VariantInfo* CrazyhouseVariant::static_crazyhouse_variant = 0;

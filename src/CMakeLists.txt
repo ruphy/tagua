@@ -29,6 +29,20 @@ set(tagua_SRC
   variants/chess.cpp
   variants/crazyhouse.cpp
   variants/shogi.cpp
+  
+  hlvariant/chess/variant.cpp
+  hlvariant/chess/san.cpp
+  hlvariant/chess/move.cpp
+  hlvariant/chess/gamestate.cpp
+  hlvariant/chess/piece.cpp
+  
+  hlvariant/crazyhouse/variant.cpp
+  hlvariant/crazyhouse/piece.cpp
+  
+  hlvariant/minichess5/variant.cpp
+  
+  hlvariant/shogi/variant.cpp
+  hlvariant/shogi/piece.cpp
 
   animationfactory.cpp
   constrainedtext.cpp
@@ -63,6 +77,7 @@ set(tagua_SRC
   location.cpp
   hline.cpp
   xboardengine.cpp
+  gnushogiengine.cpp
   settings.cpp
   positioninfo.cpp
   engine.cpp
@@ -90,6 +105,7 @@ set(tagua_SRC
   namedsprite.cpp
   icsgamedata.cpp
   turnpolicy.cpp
+  decoratedmove.cpp
 )
 
 # remove spurious xpressive warnings

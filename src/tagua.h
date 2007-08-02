@@ -71,7 +71,7 @@ public:
     * Piece equality. Return false if the second pointer
     * is null.
     */
-  virtual bool equals(AbstractPiece::Ptr other) const = 0;
+  virtual bool equals(const PiecePtr& other) const = 0;
 
   /**
     * Return a unique key for the piece.
@@ -82,7 +82,7 @@ public:
   /**
     * Create a deep copy of the piece.
     */
-  virtual AbstractPiece::Ptr clone() const = 0;
+  virtual PiecePtr clone() const = 0;
 };
 
 
@@ -100,17 +100,17 @@ public:
   /**
     * Return a compact SAN representation for the move.
     */
-  virtual QString SAN(boost::shared_ptr<AbstractPosition> ref) const = 0;
+  virtual QString SAN(const PositionPtr& ref) const = 0;
 
   /**
     * Return a decorated representation for the move.
     */
-  virtual DecoratedMove toDecoratedMove(boost::shared_ptr<AbstractPosition> ref) const = 0;
+  virtual DecoratedMove toDecoratedMove(const PositionPtr& ref) const = 0;
 
   /**
     * Return the move in coordinate notation.
     */
-  virtual QString toString(boost::shared_ptr<AbstractPosition> ref) const = 0;
+  virtual QString toString(const PositionPtr& ref) const = 0;
 
   /**
     * Convert the move to a normal user move. Used to
@@ -121,7 +121,7 @@ public:
   /**
     * Checks if the two moves are equal.
     */
-  virtual bool equals(Ptr other) const = 0;
+  virtual bool equals(const MovePtr& other) const = 0;
 
 };
 
@@ -145,18 +145,18 @@ public:
     * But the pool can be unpredictable and the piece can be placed at an arbitrary position.
     * \return the position at which the item was placed.
     */
-  virtual int insert(int pref_index, AbstractPiece::Ptr piece) = 0;
+  virtual int insert(int pref_index, const PiecePtr& piece) = 0;
 
   /**
     * Gets the piece at the position \a index in the pool.
     */
-  virtual AbstractPiece::Ptr get(int index) = 0;
+  virtual PiecePtr get(int index) = 0;
 
   /**
     * Removes the piece at the position \a index in the pool.
     * \return the removed piece.
     */
-  virtual AbstractPiece::Ptr take(int index) = 0;
+  virtual PiecePtr take(int index) = 0;
 };
 
 
@@ -194,22 +194,22 @@ public:
     * Retrieve the piece on square @a p.
     * Return a null pointer if that square is empty.
     */
-  virtual AbstractPiece::Ptr get(const Point& p) const = 0;
+  virtual PiecePtr get(const Point& p) const = 0;
 
   /**
     * Set a piece on the board.
     */
-  virtual void set(const Point& p, AbstractPiece::Ptr piece) = 0;
+  virtual void set(const Point& p, const PiecePtr& piece) = 0;
 
   /**
     * \return an interface to modify the pool of the board relative to \a player
     */
-  virtual AbstractPool::Ptr pool(int player) = 0;
+  virtual PoolPtr pool(int player) = 0;
   
   /**
     * Set a position pool, copying it from a given position.
     */
-  virtual void copyPoolFrom(AbstractPosition::Ptr pos) = 0;
+  virtual void copyPoolFrom(const PositionPtr& pos) = 0;
 
   /**
     * \return 1 if the piece can be moved, -1 if could be moved in the future (premove), or else 0.
@@ -248,37 +248,32 @@ public:
     * This function should return immediately if \a m
     * has already been tested.
     */
-  virtual bool testMove(AbstractMove::Ptr m) const = 0;
+  virtual bool testMove(const MovePtr& m) const = 0;
 
   /**
     * Execute move \a m. Assume that \a m is legal and tested.
     */
-  virtual void move(AbstractMove::Ptr m) = 0;
+  virtual void move(const MovePtr& m) = 0;
 
   /**
     * Create a deep copy of the position.
     */
-  virtual AbstractPosition::Ptr clone() const = 0;
+  virtual PositionPtr clone() const = 0;
 
   /**
     * Make the position equal to the given one.
     */
-  virtual void copyFrom(const AbstractPosition::Ptr&) = 0;
+  virtual void copyFrom(const PositionPtr&) = 0;
 
   /**
     * Tests if two positions are equal.
     */
-  virtual bool equals(AbstractPosition::Ptr p) const = 0;
+  virtual bool equals(const PositionPtr& p) const = 0;
 
   /**
     * Return a move from an algebraic notation, or a null pointer.
     */
-  virtual AbstractMove::Ptr getMove(const class AlgebraicNotation&) const = 0;
-
-  /**
-    * Return a move from an algebraic notation, or a null pointer.
-    */
-  virtual AbstractMove::Ptr getMove(const QString&) const = 0;
+  virtual MovePtr getMove(const QString&) const = 0;
 
   /**
     * Return a string representing the current state of the position.
@@ -303,7 +298,7 @@ public:
     * @note Return a null pointer if the move has no valid
     *       piece hint defined.
     */
-  virtual AbstractPiece::Ptr moveHint(AbstractMove::Ptr) const = 0;
+  virtual PiecePtr moveHint(const MovePtr&) const = 0;
 
   /**
     * Variant introspection
@@ -337,32 +332,32 @@ public:
   /**
     * Sync the graphical position with the given position.
     */
-  virtual AnimationPtr warp(AbstractPosition::Ptr) = 0;
+  virtual AnimationPtr warp(const PositionPtr&) = 0;
 
   /**
     * Animate forward syncing to the given position.
     */
-  virtual AnimationPtr forward(AbstractPosition::Ptr, AbstractMove::Ptr) = 0;
+  virtual AnimationPtr forward(const PositionPtr&, const MovePtr&) = 0;
 
   /**
     * Animate back syncing to the given position.
     */
-  virtual AnimationPtr back(AbstractPosition::Ptr, AbstractMove::Ptr) = 0;
+  virtual AnimationPtr back(const PositionPtr&, const MovePtr&) = 0;
 };
 
 
 class VariantInfo {
 public:
   virtual ~VariantInfo() { }
-  virtual AbstractPosition::Ptr createPosition() = 0;
-  virtual AbstractPosition::Ptr createCustomPosition(const OptList& l) = 0;
-  virtual AbstractPosition::Ptr createPositionFromFEN(const QString& fen) = 0;
+  virtual PositionPtr createPosition() = 0;
+  virtual PositionPtr createCustomPosition(const OptList& l) = 0;
+  virtual PositionPtr createPositionFromFEN(const QString& fen) = 0;
   virtual void forallPieces(class PieceFunction&) = 0;
   virtual int moveListLayout() const = 0;
-  virtual AbstractAnimator::Ptr createAnimator(GraphicalAPI* graphical_api) = 0;
-  virtual AbstractMove::Ptr createNormalMove(const NormalUserMove&) = 0;
-  virtual AbstractMove::Ptr createDropMove(const DropUserMove&) = 0;
-  virtual AbstractMove::Ptr getVerboseMove(int turn, const class VerboseNotation&) const = 0;
+  virtual AnimatorPtr createAnimator(GraphicalAPI* graphical_api) = 0;
+  virtual MovePtr createNormalMove(const NormalUserMove&) = 0;
+  virtual MovePtr createDropMove(const DropUserMove&) = 0;
+  virtual MovePtr getVerboseMove(int turn, const class VerboseNotation&) const = 0;
 
   /**
     * \return if moves are done by just clicking

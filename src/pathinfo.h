@@ -11,7 +11,9 @@
 #ifndef PATHINFO_H
 #define PATHINFO_H
 
-class PathInfo {
+#include "export.h"
+
+class TAGUA_EXPORT PathInfo {
 public:
   enum Direction {
     Undefined,
@@ -27,6 +29,7 @@ public:
 
   PathInfo(Direction direction, int num_obstacles);
 
+  Direction direction() const { return m_direction; }
   bool parallel() const { return m_direction == Horizontal || m_direction == Vertical; }
   bool diagonal() const { return m_direction == Diagonal1 || m_direction == Diagonal2; }
   bool clear() const { return m_num_obstacles == 0; }

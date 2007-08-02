@@ -25,6 +25,7 @@ struct EngineDetails {
     UCI,
     TaguaText,
     TaguaDBUS,
+    GNUShogi,
     Unknown
   };
 
@@ -47,6 +48,8 @@ struct EngineDetails {
       return "tagua-text";
     case TaguaDBUS:
       return "tagua-dbus";
+    case GNUShogi:
+      return "gnushogi";
     default:
       return "unknown";
     }
@@ -61,6 +64,8 @@ struct EngineDetails {
       return TaguaText;
     else if (name == "tagua-dbus")
       return TaguaDBUS;
+    else if (name == "gnushogi")
+      return GNUShogi;
     else return Unknown;
   }
 };

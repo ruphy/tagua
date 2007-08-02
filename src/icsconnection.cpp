@@ -145,7 +145,7 @@ void ICSConnection::process(QString str) {
         if (incomingGameInfo) {
           int number = game.cap(1).toInt();
           incomingGameInfo->setGameNumber(number);
-          m_games[number] = ICSGameData(-1, incomingGameInfo->type());
+          m_games.insert(std::make_pair(number, ICSGameData(-1, incomingGameInfo->type())));
         }
       }
       else {

@@ -14,7 +14,9 @@
 #include <QPoint>
 #include <iostream>
 
-struct Point {
+#include "export.h"
+
+struct TAGUA_EXPORT Point {
   static Point invalid() { return Point(-1, -1); }
   bool valid() const { return x != -1 && y != -1; }
 
@@ -23,7 +25,9 @@ struct Point {
   Point();
 
   QString row(int ysize) const;
+  QString numcol(int xsize) const;
   QString col() const;
+  QString alpharow() const;
 
   explicit Point(const QString& str, int ysize);
   explicit Point(const QPoint&);
@@ -56,6 +60,6 @@ private:
   int normalizeInfinityHelper(int n) const;
 };
 
-std::ostream& operator<<(std::ostream&, const Point&);
+TAGUA_EXPORT std::ostream& operator<<(std::ostream&, const Point&);
 
 #endif // POINT_H

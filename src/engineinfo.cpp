@@ -10,6 +10,7 @@
 
 #include "engineinfo.h"
 #include "xboardengine.h"
+#include "gnushogiengine.h"
 #include "ui.h"
 #include <iostream>
 
@@ -41,6 +42,8 @@ shared_ptr<Engine> EngineInfo::engine() {
   shared_ptr<Engine> res;
   if (m_details.type == EngineDetails::XBoard)
     res = shared_ptr<Engine>(new XBoardEngine(m_details.path, QStringList()));
+  else if (m_details.type == EngineDetails::GNUShogi)
+    res = shared_ptr<Engine>(new GNUShogiEngine(m_details.path, QStringList()));
   else {
     ERROR("Unimplemented engine type " << EngineDetails::typeName(m_details.type));
     return shared_ptr<Engine>();

@@ -13,6 +13,7 @@
 
 #include <map>
 #include <boost/shared_ptr.hpp>
+#include "export.h"
 
 namespace TurnPolicy {
   
@@ -36,7 +37,7 @@ namespace TurnPolicy {
     virtual bool check() const = 0;
   };
   
-  class Collection {
+  class TAGUA_EXPORT Collection {
     typedef boost::shared_ptr<Abstract> PolicyPtr;
     typedef std::map<int, PolicyPtr> Policies;
     typedef boost::shared_ptr<Premove> PremovePolicyPtr;

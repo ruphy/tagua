@@ -27,6 +27,14 @@ struct UnwrappedGraphicalAPIPtr {
   typedef boost::shared_ptr<UnwrappedGraphicalAPI<Variant> > type;
 };
 
+namespace HLVariant {
+  template <typename Variant> class UnwrappedGraphicalAPI;
+  template <typename Variant>
+  struct UnwrappedGraphicalAPIPtr {
+    typedef boost::shared_ptr<UnwrappedGraphicalAPI<Variant> > type;
+  };
+}
+
 typedef boost::shared_ptr<class Animation> AnimationPtr;
 typedef boost::shared_ptr<class AnimationGroup> AnimationGroupPtr;
 typedef boost::shared_ptr<class DropAnimation> DropAnimationPtr;

@@ -13,8 +13,9 @@
 
 #include "animator.h"
 #include "animationfactory.h"
+#include "common.h"
 #include "namedsprite.h"
-
+#include "variants/xchess/piecetype.h"
 
 template <typename Variant>
 AnimationGroupPtr BaseAnimator<Variant>::warp(const Position& final) {

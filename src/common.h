@@ -12,6 +12,9 @@
 #define COMMON_H
 
 #include <iosfwd>
+#include "export.h"
+
+
 class QString;
 
 enum ErrorCode {
@@ -29,7 +32,7 @@ template <typename T> class PointerGrid;
 //typedef PointerGrid<ChessPiece> PieceGrid;
 
 
-std::ostream &operator <<(std::ostream &os, const QString& s);
+TAGUA_EXPORT std::ostream &operator <<(std::ostream &os, const QString& s);
 
 inline const char* wrap_cptr(const char* ptr) {
   return ptr ? ptr : "[NULL]";
@@ -37,7 +40,7 @@ inline const char* wrap_cptr(const char* ptr) {
 
 QString qPrintf(const char* fmt, ...);
 
-QString prettyTypeName(const char* name);
+TAGUA_EXPORT QString prettyTypeName(const char* name);
 
 inline void TRAP() {
 #if defined(Q_CC_GNU)
