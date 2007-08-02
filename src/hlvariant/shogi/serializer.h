@@ -171,26 +171,26 @@ QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
 template <typename LegalityCheck>
 typename Serializer<LegalityCheck>::Piece::Type 
 Serializer<LegalityCheck>::getType(const QChar& letter) const {
-  QChar c = letter.toLower();
-  
-  if (c == 'p')
+  switch(letter.toLower().toAscii()) {
+  case 'p':
     return Piece::PAWN;
-  else if (c == 'r')
+  case 'r':
     return Piece::ROOK;
-  else if (c == 'b')
+  case 'b':
     return Piece::BISHOP;
-  else if (c == 'l')
+  case 'l':
     return Piece::LANCE;
-  else if (c == 'n')
+  case 'n':
     return Piece::KNIGHT;
-  else if (c == 's')
+  case 's':
     return Piece::SILVER;
-  else if (c == 'g')
+  case 'g':
     return Piece::GOLD;
-  else if (c == 'k')
+  case 'k':
     return Piece::KING;
-  else
+  default:
     return Piece::INVALID_TYPE;
+  }
 }
 
 template <typename LegalityCheck>

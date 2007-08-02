@@ -35,21 +35,22 @@ int SAN::getType(const QString& letter) {
   if (letter.isEmpty())
     return Piece::PAWN;
     
-  QChar c = letter[0].toLower();
-  if (c == 'k')
+  switch(letter[0].toLower().toAscii()) {
+  case 'k':
     return Piece::KING;
-  else if (c == 'q')
+  case 'q':
     return Piece::QUEEN;
-  else if (c == 'r')
+  case 'r':
     return Piece::ROOK;
-  else if (c == 'n')
+  case 'n':
     return Piece::KNIGHT;
-  else if (c == 'b')
+  case 'b':
     return Piece::BISHOP;
-  else if (c == 'p')
+  case 'p':
     return Piece::PAWN;
-  else
+  default:
     return Piece::INVALID_TYPE;
+  }
 }
 
 void SAN::load(const QString& str, int& offset, int ysize) {
