@@ -158,7 +158,10 @@ QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
     QString res = "{";
     if (piece.promoted())
       res += "p_";
-    return res + piece.typeName() + "}";
+    res += piece.typeName();
+    if (piece.type() == Piece::KING)
+      res += piece.color() == Piece::BLACK ? '1' : '2';
+    return res + "}";
   }
   else {
     if (piece.type() == Piece::KNIGHT)
