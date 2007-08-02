@@ -153,7 +153,16 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
   }
   else {
     Piece piece = m_state.board().get(move.from());
-    return piece != Piece() && getMoveType(piece, move);
+    if (piece != Piece() && getMoveType(piece, move)) {
+      if (piece.type() == Piece::PAWN &&
+          !piece.promoted() &&
+          (m_state.promotionZone(piece.color(), move.to()) ||
+            m_state.promotionZone(piece.color(), move.from())))
+        move.setType(Move::PROMOTION);
+      return true;
+    }
+    else
+      return false;
   }
 }
 

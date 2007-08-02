@@ -109,10 +109,7 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
     if (move.drop() != Piece())
       res += '*';
     res += square(move.to(), ref.board().size());
-    if (!piece.promoted() &&
-        move.drop() == Piece() &&
-        ref.promotionZone(ref.turn(), move.to()) &&
-        move.promoteTo() != -1)
+    if (move.promoteTo() != -1)
       res += "+";
     return res;
   case COMPACT:
@@ -140,14 +137,16 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
         
       res += square(move.to(), ref.board().size());
       
-      if (!piece.promoted() && 
-          move.drop() == Piece() &&
-          ref.promotionZone(ref.turn(), move.to())) {
-        if (move.promoteTo() != -1)
-          res += "+";
-        else
-          res += "=";
+      // if it is a promotion
+      if (move.promoteTo() != -1)
+        res += "+";
+      // if it is a refused promotion
+      else if (!piece.promoted() && 
+               move.drop() == Piece() &&
+               ref.promotionZone(ref.turn(), move.to())) {
+        res += "=";
       }
+      
       return res;
     }
   }
