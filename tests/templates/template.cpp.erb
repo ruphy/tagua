@@ -1,0 +1,19 @@
+#include "<%= @name.downcase %>.h"
+
+CPPUNIT_TEST_SUITE_REGISTRATION(<%= @name %>Test);
+
+void <%= @name %>Test::setUp() {
+  L = new LuaState();
+}
+
+void <%= @name %>Test::tearDown() {
+  delete L;
+}
+
+
+<% @tests.each do |test| %>
+void <%= @name %>Test::<%= test %>() {
+
+}
+<%- end %>
+

@@ -1,0 +1,28 @@
+#ifndef CPPLUA_TEST_<%= @name.upcase %>_H
+#define CPPLUA_TEST_<%= @name.upcase %>_H
+
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/TestCaller.h>
+#include <cppunit/TestResult.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/TestAssert.h>
+
+class <%= @name %>Test : public CppUnit::TestFixture {
+  CPPUNIT_TEST_SUITE(<%= @name.capitalize %>Test);
+<% @tests.each do |test| %>
+  CPPUNIT_TEST(<%= test %>)
+<%- end %>
+  CPPUNIT_TEST_SUITE_END();
+private:
+
+public:
+  void setUp();
+  void tearDown();
+
+<% @tests.each do |test| %>
+  void <%= test %>();
+<%- end %>
+};
+
+#endif // CPPLUA_TEST_<%= @name.upcase %>_H
+
