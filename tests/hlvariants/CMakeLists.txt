@@ -10,6 +10,7 @@ SET(hl_SRC
   chesswrappedtest.cpp
   chessserializationtest.cpp
   pooltest.cpp
+  shogideserializationtest.cpp
 )
 
 include_directories(
