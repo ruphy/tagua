@@ -12,11 +12,12 @@
 #define HLVARIANT__SHOGI__PIECE_H
 
 #include <QString>
+#include "export.h"
 
 namespace HLVariant {
 namespace Shogi {
 
-class Piece {
+class TAGUA_EXPORT Piece {
 public:
   enum Color {
     INVALID_COLOR = -1,
