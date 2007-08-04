@@ -61,7 +61,7 @@ Point Move::to() const {
 }
 
 bool Move::valid() const {
-  return m_from != Point::invalid() &&
+  return //m_from != Point::invalid() &&
          m_to != Point::invalid() &&
          m_type != INVALID;
 }
