@@ -144,7 +144,7 @@ template <typename Board, typename Move>
 void GameState<Board, Move>::captureOn(const Point& p) {
   Piece captured = m_board.get(p);
   m_board.set(p, Piece());
-  m_pools.pool(captured.color()).add(captured.type());
+  m_pools.pool(Piece::oppositeColor(captured.color())).add(captured.type());
 }
 
 template <typename Board, typename Move>
