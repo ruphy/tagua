@@ -78,7 +78,8 @@ QString Piece::name() const {
 }
 
 Piece::Color Piece::oppositeColor(Color color) {
-  return color == WHITE ? BLACK : WHITE;
+  return (color == WHITE) ? BLACK :
+    (color == BLACK) ? WHITE : INVALID_COLOR;
 }
 
 bool Piece::operator==(const Piece& other) const {
