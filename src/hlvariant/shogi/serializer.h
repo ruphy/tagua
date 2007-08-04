@@ -105,9 +105,11 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
   
   switch (m_rep) {
   case SIMPLE:
-    res += square(move.from(), ref.board().size());
-    if (move.drop() != Piece())
+    if (move.drop() != Piece()) {
+      res += symbol(piece);
       res += '*';
+    } else
+      res += square(move.from(), ref.board().size());
     res += square(move.to(), ref.board().size());
     if (move.promoteTo() != -1)
       res += "+";
