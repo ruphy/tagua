@@ -17,6 +17,7 @@
 #include "hlvariant/crazyhouse/variant.h"
 #include "hlvariant/minichess5/variant.h"
 #include "hlvariant/shogi/variant.h"
+#include "hlvariant/minishogi/variant.h"
 
 // remove me
 namespace HLVariant {
@@ -54,6 +55,7 @@ void Variant::initialize() {
   register_variant<HLVariant::Crazyhouse::Variant>();
   register_variant<HLVariant::Minichess5::Variant>();
   register_variant<HLVariant::Shogi::Variant>();
+  register_variant<HLVariant::MiniShogi::Variant>();
   s_initialized = true;
 }
 

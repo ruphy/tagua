@@ -44,6 +44,8 @@ set(tagua_SRC
   hlvariant/shogi/variant.cpp
   hlvariant/shogi/piece.cpp
 
+  hlvariant/minishogi/variant.cpp
+
   animationfactory.cpp
   constrainedtext.cpp
   movelist.cpp
