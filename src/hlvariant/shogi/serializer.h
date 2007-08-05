@@ -208,8 +208,10 @@ Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref)
     return Move(orig, dest, (str.size() > 4) && (str[4] == '+'));
   } 
   else {
-    if (str[1] != '*')
+    if (str[1] != '*') {
+      std::cerr << "Expected a star, got a '" << str[1].toAscii() << "'" << std::endl;
       return Move();
+    }
     typename Piece::Type t = getType(str[0]);
     Point to(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
     return Move(Piece(ref.turn(), t), to);   

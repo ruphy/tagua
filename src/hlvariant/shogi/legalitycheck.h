@@ -160,8 +160,10 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
         move.setType(Move::PROMOTION);
       return true;
     }
-    else
+    else {
+      //std::cerr << "CANNOT MOVE: piece type cannot go there" << std::endl;
       return false;
+    }
   }
 }
 
