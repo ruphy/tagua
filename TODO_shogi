@@ -1,0 +1,24 @@
+tagua core:
+- tagua should make promotion an option to the user
+  -> maybe by splitting target square if canPromote(), so the piece
+     gets promoted if it gets dropped in second half of the square ?
+- gnushogi engine gets confused when moving through history => generic pb ?
+- tooltips for figurines, for people who can't read kanji
+
+shogi variant:
+- pools overlap when too many pieces were captured
+- decorated move could show captured piece
+
+gnushogi engine:
+- gnushogi engine should catch "Illegal move: " notices from gnushogi
+- engine should detect endgame conditions from gnushogi:
+	"Drawn game!" "Black mates!"
+  (gnushogi only reports a draw on one side !?)
+- support x?(save|get) commands (need tagua support ?)
+
+other shogi:
+- implement ACS protocol and shogi-server extended commands
+	http://www.computer-shogi.org/protocol/tcp_ip_server_11_e.html
+	http://shogi-server.sourceforge.jp/protocol.html
+- support for GPS Shogi engine
+	http://gps.tanaka.ecc.u-tokyo.ac.jp/gpsshogi/
