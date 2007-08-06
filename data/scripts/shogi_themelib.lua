@@ -97,6 +97,9 @@ shogichars["narigin"] 		= {"0x5168", {"0x6210", "0x9280"}}
 shogichars["narikei"] 		= {"0x572d", {"0x6210", "0x6842"}}
 shogichars["narikyo"] 		= {"0x674f", {"0x6210", "0x9999"}}
 shogichars["tokin"] 		= {"0x3068", {"0x3068", "0x91d1"}}
+-- Sho Shogi
+shogichars["drunken elephant"]	= {"0x9154", {"0x9154", "0x8c61"}}
+shogichars["crown prince"]	= {"0x592a", {"0x592a", "0x5b50"}}
 -- Chess compatibility (part of Dai Shogi)
 shogichars["free king"]		= {"0x5954", {"0x5954", "0x738b"}}
 
@@ -121,6 +124,11 @@ shogimoves_silver = {
 shogimoves_knight = {{-1,2},{1,2}}
 shogimoves_lance = {{0,1,1}}
 shogimoves_pawn = {{0,1}}
+
+shogimoves_drunken_elephant = {
+   {-1,1},{0,1},{1,1},
+   {-1,0},{1,0},
+   {-1,-1},{1,-1}}
 
 shogimoves_freeking = {
    {-1,1,1},{0,1,1},{1,1,1},

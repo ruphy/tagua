@@ -65,6 +65,10 @@ QString Piece::typeName(Type type) {
     return "bishop";
   case PAWN:
     return "pawn";
+
+  case DRUNKEN_ELEPHANT:
+    return "drunken_elephant";
+
   default:
     return "unknown";
   }

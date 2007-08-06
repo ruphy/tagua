@@ -4,4 +4,4 @@ Name=Shogi
 Type=Application
 Comment=Shogi-like squares
 X-Tagua-ThemeType=Squares
-X-Tagua-Variants=Shogi[default],Chess
+X-Tagua-Variants=Shogi[default],LargeShogi[default],Chess

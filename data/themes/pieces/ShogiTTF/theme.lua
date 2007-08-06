@@ -108,6 +108,18 @@ theme.white_pawn      = shogi_piece(shogichars["pawn"][2], shogichars["pawn"][1]
 theme.white_p_pawn    = shogi_piece(shogichars["tokin"][2],shogichars["tokin"][1],
 				    true, true, 0.8, shogimoves_gold)
 
+-- Sho Shogi
+
+theme.black_drunken_elephant = shogi_piece(shogichars["drunken elephant"][2], shogichars["drunken elephant"][1],
+					   false, false, 1, shogimoves_drunken_elephant)
+theme.black_p_drunken_elephant = shogi_piece(shogichars["crown prince"][2], shogichars["crown prince"][1],
+					     false, true, 1, shogimoves_king)
+
+theme.white_drunken_elephant = shogi_piece(shogichars["drunken elephant"][2], shogichars["drunken elephant"][1],
+					   true, false, 1, shogimoves_drunken_elephant)
+theme.white_p_drunken_elephant = shogi_piece(shogichars["crown prince"][2], shogichars["crown prince"][1],
+					     true, true, 1, shogimoves_king)
+
 -- This is part of Dai Shohi
 
 theme.black_freeking  = shogi_piece(shogichars["free king"][2], shogichars["free king"][1],

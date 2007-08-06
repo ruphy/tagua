@@ -24,6 +24,7 @@ DECLARE_FACTORY(Crazyhouse)
 DECLARE_FACTORY(Dummy)
 DECLARE_FACTORY(Shogi)
 DECLARE_FACTORY(MiniShogi)
+DECLARE_FACTORY(ShoShogi)
 #undef DECLARE_FACTORY
 
 Variants::Variants() {
@@ -33,6 +34,7 @@ Variants::Variants() {
   addFactory(Dummy::createFactory());
   addFactory(Shogi::createFactory());
   addFactory(MiniShogi::createFactory());
+  addFactory(ShoShogi::createFactory());
 }
 
 Variants& Variants::instance() {

@@ -4,4 +4,4 @@ Name=ShogiTTF
 Type=Application
 Comment=Shogi TTF theme
 X-Tagua-ThemeType=Pieces
-X-Tagua-Variants=Chess,Shogi[default]
+X-Tagua-Variants=Chess,Shogi[default],LargeShogi[default]

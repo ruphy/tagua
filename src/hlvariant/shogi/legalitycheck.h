@@ -96,6 +96,10 @@ bool LegalityCheck<GameState>::getMoveType(const Piece& piece, const Move& move)
       }
     case Piece::PAWN:
       return delta == m_state.direction(piece.color());
+
+    case Piece::DRUNKEN_ELEPHANT:
+      return (abs(delta.x) == 1 && abs(delta.y) <= 1)
+	|| (delta.x == 0 && delta.y == m_state.direction(piece.color()).y);
     default:
       return false;
     }
@@ -121,6 +125,10 @@ bool LegalityCheck<GameState>::getMoveType(const Piece& piece, const Move& move)
           PathInfo path = m_state.board().path(move.from(), move.to());
           return path.diagonal() && path.clear();
       }
+
+    case Piece::DRUNKEN_ELEPHANT:		  // Crown Prince
+      return abs(delta.x) <= 1 && abs(delta.y) <= 1;
+
     default:
       return false;
     }

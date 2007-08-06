@@ -33,6 +33,10 @@ public:
     ROOK,
     BISHOP,
     PAWN,
+
+    // Sho Shogi
+    DRUNKEN_ELEPHANT,
+
     INVALID_TYPE = -1
   };
 private:
