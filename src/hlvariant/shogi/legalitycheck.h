@@ -24,8 +24,10 @@ public:
   typedef typename GameState::Board Board;
   typedef typename Board::Piece Piece;
   typedef typename GameState::Move Move;
-private:
+protected:
   const GameState& m_state;
+  
+  virtual bool stuckPiece(const Piece& piece, const Point& p) const;
 public:
   LegalityCheck(const GameState& state);
   virtual ~LegalityCheck();
@@ -137,7 +139,8 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
     if (m_state.board().get(move.to()) != Piece())
       return false;
 
-//     if (stuckPiece(dropped, m.to)) return false; // BROKEN
+    if (stuckPiece(dropped, move.to())) 
+      return false;
 
     if (dropped.type() == Piece::PAWN) {
       for (int i = 0; i < m_state.board().size().y; i++) {
@@ -193,6 +196,20 @@ bool LegalityCheck<GameState>::legal(Move& move) const {
   }
 
   return true;
+}
+
+template <typename GameState>
+bool LegalityCheck<GameState>::stuckPiece(const Piece& piece, const Point& p) const {
+  if (piece.type() == Piece::PAWN || piece.type() == Piece::LANCE) {
+    return p.y == m_state.startingRank(Piece::oppositeColor(piece.color()));
+  }
+  else if (piece.type() == Piece::KNIGHT) {
+    int rank = m_state.startingRank(Piece::oppositeColor(piece.color()));
+    return p.y == rank || p.y == rank - m_state.direction(piece.color()).y;
+  }
+  else {
+    return false;
+  }
 }
 
 template <typename GameState>
