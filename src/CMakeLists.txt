@@ -36,6 +36,8 @@ set(tagua_SRC
   hlvariant/chess/gamestate.cpp
   hlvariant/chess/piece.cpp
   
+  hlvariant/dummy/variant.cpp
+  
   hlvariant/crazyhouse/variant.cpp
   hlvariant/crazyhouse/piece.cpp
   

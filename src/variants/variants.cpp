@@ -15,6 +15,7 @@
 #include "variants/shogi.h"
 #include "hlvariant/chess/variant.h"
 #include "hlvariant/crazyhouse/variant.h"
+#include "hlvariant/dummy/variant.h"
 #include "hlvariant/minichess5/variant.h"
 #include "hlvariant/shogi/variant.h"
 #include "hlvariant/minishogi/variant.h"
@@ -53,6 +54,7 @@ void Variant::initialize() {
   // register_variant<XiangQiVariant>();
   register_variant<HLVariant::Chess::Variant>();
   register_variant<HLVariant::Crazyhouse::Variant>();
+  register_variant<HLVariant::Dummy::Variant>();
   register_variant<HLVariant::Minichess5::Variant>();
   register_variant<HLVariant::Shogi::Variant>();
   register_variant<HLVariant::MiniShogi::Variant>();
