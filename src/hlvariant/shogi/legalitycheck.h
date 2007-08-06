@@ -157,7 +157,7 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
   else {
     Piece piece = m_state.board().get(move.from());
     if (piece != Piece() && getMoveType(piece, move)) {
-      if (!piece.promoted() &&
+      if (m_state.canPromote(piece) &&
             (m_state.promotionZone(piece.color(), move.to()) ||
             m_state.promotionZone(piece.color(), move.from())))
         move.setType(Move::PROMOTION);

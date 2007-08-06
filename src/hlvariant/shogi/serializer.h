@@ -143,7 +143,7 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
       if (move.promoteTo() != -1)
         res += "+";
       // if it is a refused promotion
-      else if (!piece.promoted() && 
+      else if (ref.canPromote(piece) && 
                move.drop() == Piece() &&
                ref.promotionZone(ref.turn(), move.to())) {
         res += "=";

@@ -48,6 +48,7 @@ public:
   virtual void basicMove(const Move& m);
   virtual void captureOn(const Point& p);
   virtual bool promotionZone(typename Piece::Color player, const Point& p) const;
+  virtual bool canPromote(const Piece& p) const;
   
   virtual void setTurn(typename Piece::Color color);
   virtual typename Piece::Color previousTurn() const;
@@ -112,6 +113,17 @@ void GameState<Board, Move>::setup() {
 template <typename Board, typename Move>
 bool GameState<Board, Move>::promotionZone(typename Piece::Color player, const Point& p) const {
   return player == Piece::WHITE ? p.y >= 6 : p.y <= 2;
+}
+
+template <typename Board, typename Move>
+bool GameState<Board, Move>::canPromote(const Piece& p) const {
+  if (p.promoted())
+    return false;
+
+  if ((p.type() == Piece::KING) || (p.type() == Piece::GOLD))
+    return false;
+  else
+    return true;
 }
 
 template <typename Board, typename Move>
