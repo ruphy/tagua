@@ -13,6 +13,8 @@
 #define HLVARIANT__DROPANIMATOR_H
 
 #include "animationfactory.h"
+#include "namedsprite.h"
+#include "common.h"
 
 namespace HLVariant {
 
@@ -46,37 +48,50 @@ template <typename Base>
 void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
   for(int color = 0; color < 2; color++) {
     typename Piece::Color c = static_cast<typename Piece::Color>(color);
-    const typename GameState::Pool::RawData& before = m_cinterface->position()->pools().pool(c).rawData();
-    const typename GameState::Pool::RawData& after = final.pools().pool(c).rawData();
-    typename GameState::Pool::RawData::const_iterator before_it = before.begin();
-    typename GameState::Pool::RawData::const_iterator after_it = after.begin();
-
-    int pos = 0;
-
-    // oh, a nice bunch of write-only magic shit
-    while (before_it != before.end() || after_it != after.end()) {
-      bool skip_after = (after_it == after.end() || (before_it != before.end()
-                                && before_it->first < after_it->first ));
-      bool skip_before = (before_it == before.end() || (after_it != after.end()
-                                && after_it->first < before_it->first ));
-      int na = skip_after ? 0 : after_it->second;
-      int nb = skip_before ? 0 : before_it->second;
-
-      if (nb < na) {
-        for(int i = nb; i < na; i++)
-          m_cinterface->insertPoolPiece(color, pos + (i - nb), Piece(c, after_it->first) );
+    const typename GameState::Pool pool = final.pools().pool(c);
+    const int n = pool.size();
+    
+    for (int index = 0; index < n; ) {
+      // precondition: pool and graphical pool match up to index
+    
+      // no more sprites on the graphical pool
+      if (index >= m_cinterface->poolSize(color)) {
+        // add extra sprites
+        for (int i = index; i < n; i++)
+          m_cinterface->insertPoolPiece(color, i, pool.get(i));
+        
+        // done
+        break;
       }
-      else if (na < nb) {
-        for (int i = na; i < nb; i++)
-          m_cinterface->removePoolSprite(color, pos);
+      
+      NamedSprite sprite = m_cinterface->getPoolSprite(color, index);
+      Piece piece;
+      int i;
+      
+      // find a matching piece on the pool
+      for (i = index; i < n; i++) {
+        piece = pool.get(i);
+        if (piece.name() == sprite.name())
+          break;
       }
-
-      if (!skip_before)
-        ++before_it;
-      if (!skip_after) {
-        pos += after_it->second;
-        ++after_it;
+      
+      if (i < n) {
+        // matching piece found on the pool
+        // insert all pieces before this one on the graphical pool
+        for (int j = index; j < i; j++) {
+          m_cinterface->insertPoolPiece(color, j, piece);
+        }
+        index = i + 1;
       }
+      else {
+        // no such piece found: remove it from the graphical pool
+        m_cinterface->removePoolSprite(color, index);
+      }
+    }
+    
+    // remove extra pieces from the graphical pool
+    while (m_cinterface->poolSize(color) > n) {
+      m_cinterface->removePoolSprite(color, n);
     }
   }
 }
@@ -92,6 +107,8 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const GameState& final, const
   AnimationFactory res(m_cinterface->inner());
 
   if (move.drop() != Piece()) {
+    NamedSprite captured = m_cinterface->takeSprite(move.to());
+  
     std::pair<int, int> dropped = m_cinterface->droppedPoolPiece();
     if (dropped.first != -1 && dropped.second != -1
         && m_cinterface->position()->pools().pool(
@@ -102,18 +119,22 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const GameState& final, const
       NamedSprite drop = m_cinterface->takePoolSprite(dropped.first, dropped.second);
       m_cinterface->setSprite(move.to(), drop);
       res.addPreAnimation(Animate::move(drop, move.to()));
-      return res;
     }
-    else {
+    else {      
       NamedSprite drop = m_cinterface->setPiece(move.to(), move.drop(), false);
+      drop.sprite()->raise();
       res.addPreAnimation(Animate::appear(drop));
     }
     
+      
+    if (captured)
+      res.addPostAnimation(Animate::destroy(captured));
     res.group()->addPostAnimation(warp(final));
   }
   else {
     res.setGroup(Base::forward(final, move));
   }
+  
   return res;
 }
 
