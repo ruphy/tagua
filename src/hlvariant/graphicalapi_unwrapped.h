@@ -81,9 +81,9 @@ namespace HLVariant {
       return m_graphical_api->insertPoolPiece(pool, index, &wpiece);
     }
   
-    // virtual NamedSprite getPoolSprite(int pool, int index) {
-    //   return m_graphical_api->getPoolSprite(pool, index);
-    // }
+    virtual NamedSprite getPoolSprite(int pool, int index) {
+      return m_graphical_api->getPoolSprite(pool, index);
+    }
   
     virtual void removePoolSprite(int pool, int index) {
       m_graphical_api->removePoolSprite(pool, index);

@@ -137,9 +137,9 @@ int GraphicalSystem::poolSize(int pool) {
   return m_view->pool(pool)->fill();
 }
 
-// NamedSprite GraphicalSystem::getPoolSprite(int pool, int index) {
-//   return m_view->pool(pool)->getSprite(index);
-// }
+NamedSprite GraphicalSystem::getPoolSprite(int pool, int index) {
+  return m_view->pool(pool)->getSprite(index);
+}
 
 void GraphicalSystem::removePoolSprite(int pool, int index) {
   m_view->pool(pool)->removeSprite(index);

@@ -102,7 +102,7 @@ private:
   /**
     * \return the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)
     */
-  //virtual NamedSprite getPoolSprite(int pool, int index);
+  virtual NamedSprite getPoolSprite(int pool, int index);
 
   /**
     * Removes the sprite at the position \a index in the graphical pool. (interface for GraphicalAPI)

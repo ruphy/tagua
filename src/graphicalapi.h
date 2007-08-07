@@ -76,7 +76,7 @@ public:
   /**
     * \return the sprite at the position \a index in the graphical pool.
     */
-  //virtual NamedSprite getPoolSprite(int pool, int index) = 0;
+  virtual NamedSprite getPoolSprite(int pool, int index) = 0;
 
   /**
     * Removes the sprite at the position \a index in the graphical pool.
