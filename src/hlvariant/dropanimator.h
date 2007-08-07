@@ -108,12 +108,12 @@ AnimationGroupPtr DropAnimatorMixin<Base>::forward(const GameState& final, const
       NamedSprite drop = m_cinterface->setPiece(move.to(), move.drop(), false);
       res.addPreAnimation(Animate::appear(drop));
     }
+    
+    res.group()->addPostAnimation(warp(final));
   }
   else {
     res.setGroup(Base::forward(final, move));
   }
-
-  updatePool(final);
   return res;
 }
 
@@ -124,12 +124,13 @@ AnimationGroupPtr DropAnimatorMixin<Base>::back(const GameState& final, const Mo
   if(move.drop() != Piece()) {
     NamedSprite drop = m_cinterface->takeSprite(move.to());
     res.addPostAnimation(Animate::disappear(drop));
+    
+    res.group()->addPostAnimation(warp(final));
   }
   else {
     res.setGroup(Base::back(final, move));
   }
 
-  updatePool(final);
   return res;
 }
 

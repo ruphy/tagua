@@ -25,24 +25,27 @@ AnimationGroupPtr BaseAnimator<Variant>::warp(const GameState& final) {
   AnimationFactory res(m_cinterface->inner());
   
   for (int i = 0; i < current->board().size().x; i++) {
-    for (int j = 0; j < current->board().size().x; j++) {
+    for (int j = 0; j < current->board().size().y; j++) {
       Point p(i, j);  
-      Piece c = current->board().get(p);
-      Piece f = final.board().get(p);
+      
+      NamedSprite sprite = m_cinterface->getSprite(p);
+      Piece piece = final.board().get(p);
     
-      if (c == Piece() && f != Piece()) {
-        //current->set(i, f);
-        NamedSprite sprite = m_cinterface->setPiece(p, f, false);
-        res.addPreAnimation(Animate::appear(sprite), Animate::Instant);
+      if (!sprite && piece != Piece()) {
+        res.addPreAnimation(Animate::appear(m_cinterface->setPiece(p, piece, false)), 
+                            Animate::Instant);
       }
-      else if (c != Piece() && f == Piece()) {
-        NamedSprite old_sprite = m_cinterface->takeSprite(p);
-        res.addPreAnimation(Animate::disappear(old_sprite), Animate::Instant);
+      
+      else if (sprite && piece == Piece()) {
+        m_cinterface->takeSprite(p);
+        res.addPreAnimation(Animate::disappear(sprite), Animate::Instant);
       }
-      else if (c != Piece() && f != Piece() && !(c == f)) {
-        NamedSprite old_sprite = m_cinterface->takeSprite(p);
-        NamedSprite sprite = m_cinterface->setPiece(p, f, false);
-        res.addPreAnimation(Animate::morph(old_sprite, sprite), Animate::Instant);
+      
+      // sprite and piece differ
+      else if (sprite && piece != Piece() && piece.name() != sprite.name()) {
+        m_cinterface->takeSprite(p);
+        res.addPreAnimation(Animate::morph(sprite, m_cinterface->setPiece(p, piece, false)), 
+          Animate::Instant);
       }
     }
   }
@@ -125,6 +128,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
     res.addPreAnimation(Animate::move(rook, rookDestination));
   }
 
+  res.group()->addPostAnimation(warp(final));
   return res;
 }
 
@@ -178,6 +182,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::back(const GameState& final, const Mo
   }
   
   res.addPreAnimation(*movement(piece, move.to(), move.from()));
+  res.group()->addPostAnimation(warp(final));
   
   return res;
 
