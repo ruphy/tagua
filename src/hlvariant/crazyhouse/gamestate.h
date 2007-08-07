@@ -68,8 +68,16 @@ void GameState<Board, Move>::move(const Move& m) {
     }
   }
   else {
+    Piece captured = m_board.get(m.to());
+    
     m_board.set(m.to(), m.drop());
     m_pools.pool(m.drop().color()).remove(m.drop().type());
+    
+    // handle capturing by drop: some variants
+    // could use it
+    if (captured != Piece())
+      m_pools.pool(Piece::oppositeColor(captured.color())).add(captured.type());
+      
     this->switchTurn();
   }
 }
