@@ -31,9 +31,7 @@
 #include "console.h"
 #include "clock.h"
 #include "newgame.h"
-#include "variants/variants.h"
-#include "variants/xchess/piecetype.h"
-#include "variants/chess.h"
+#include "variants.h"
 #include "gameinfo.h"
 #include "controllers/editgame.h"
 #include "controllers/editposition.h"
@@ -362,7 +360,7 @@ void MainWindow::setupGame(const GameInfo* gameInfo, const PositionInfo& style12
 
 void MainWindow::setupExaminedGame(const GameInfo* /*gameInfo*/, const PositionInfo& style12) {
   shared_ptr<EditGameController> controller(new EditGameController(
-                                      table(), ChessVariant::info()));
+                                      table(), Variant::variant("chess")));
   if (controller->setExaminationMode(style12.gameNumber, m_connection)) {
     table()->setPlayers(Player(style12.whitePlayer, -1),
                       Player(style12.blackPlayer, -1));

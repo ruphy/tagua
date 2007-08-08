@@ -10,7 +10,6 @@
 
 #include "icsentity.h"
 #include "game.h"
-#include "algebraicnotation.h"
 #include "icsconnection.h"
 #include "positioninfo.h"
 #include "poolinfo.h"
@@ -126,8 +125,6 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
     AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
     if (position) {
       AbstractMove::Ptr mv = position->getMove(style12.lastMoveSAN);
-      std::cout << "mv = " << mv->toString(position) << std::endl;
-      std::cout << "last = " << last_move->toString(position) << std::endl;
       if (!mv || !mv->equals(last_move)) {
         std::cout <<
           "[server inconsistency] SAN for last move is different from verbose notation"

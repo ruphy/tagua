@@ -15,12 +15,11 @@
 #include "icsconnection.h"
 #include "poolinfo.h"
 #include "positioninfo.h"
-#include "algebraicnotation.h"
 #include "player.h"
 #include "gameinfo.h"
 #include "pgnparser.h"
 #include "icslistener.h"
-#include "variants/variants.h"
+#include "variants.h"
 
 using namespace boost;
 

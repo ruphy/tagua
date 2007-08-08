@@ -20,7 +20,6 @@
 #include "piecefactory.h"
 #include "moveserializer.h"
 #include "nopool.h"
-#include "algebraicnotation.h"
 
 template <typename V> class WrappedPiece;
 template <typename V> class WrappedMove;

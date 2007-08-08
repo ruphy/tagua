@@ -12,7 +12,6 @@
 #define MOVESERIALIZER_IMPL_H
 
 #include "moveserializer.h"
-#include "algebraicnotation.h"
 
 /**
  * Assume the move has already been tested against @a ref.

@@ -12,9 +12,8 @@
 #include "game.h"
 #include "icsconnection.h"
 #include "positioninfo.h"
-#include "algebraicnotation.h"
 #include "pgnparser.h"
-#include "variants/xchess/piecetype.h"
+#include "hlvariant/chess/piece.h"
 #include "icsapi.h"
 
 #include <iostream>
@@ -22,7 +21,7 @@
 ExaminationEntity::ExaminationEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
                   int game_number, const boost::shared_ptr<ICSConnection>& connection,
                   AgentGroup* group)
-: UserEntity(game, QUEEN)
+: UserEntity(game, HLVariant::Chess::Piece::QUEEN)
 , m_variant(variant)
 , m_icsapi(variant->icsAPI())
 , m_game_number(game_number)

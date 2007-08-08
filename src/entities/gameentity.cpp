@@ -13,13 +13,13 @@
 #include "game.h"
 #include "board.h"
 #include "pgnparser.h"
-#include "variants/xchess/piecetype.h"
+#include "hlvariant/chess/piece.h"
 
 using namespace boost;
 
 GameEntity::GameEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
                        Board* chessboard, AgentGroup* group)
-: UserEntity(game, QUEEN)
+: UserEntity(game, HLVariant::Chess::Piece::QUEEN)
 , m_variant(variant)
 , m_chessboard(chessboard)
 , m_dispatcher(group, this) {

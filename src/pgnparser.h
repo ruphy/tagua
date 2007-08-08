@@ -23,7 +23,6 @@
   #include <boost/variant.hpp>
 #endif
 #include <QString>
-#include "algebraicnotation.h"
 
 class QRegExp;
 

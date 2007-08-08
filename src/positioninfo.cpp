@@ -9,8 +9,7 @@
 */
 
 #include "positioninfo.h"
-#include "variants/chess.h"
-#include "variants/variants.h"
+#include "variants.h"
 #include "gameinfo.h"
 #include "icsapi.h"
 
@@ -68,7 +67,7 @@ PositionInfo::PositionRow::PositionRow(const ICSAPIPtr& icsapi, const QString& s
  */
 int PositionInfo::index() const {
   int res = (moveIndex - 1) * 2;
-  if (turn == BLACK) res++;
+  if (turn == 1) res++;
   return res;
 }
 
@@ -99,13 +98,13 @@ PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QStrin
   moveIndex = pattern.cap(CaptureIndexes::MoveOrdinal).toInt();
   whitePlayer = pattern.cap(CaptureIndexes::WhitePlayer);
   blackPlayer = pattern.cap(CaptureIndexes::BlackPlayer);
-  turn = pattern.cap(CaptureIndexes::Turn) == "W"? WHITE : BLACK;
+  turn = pattern.cap(CaptureIndexes::Turn) == "W"? 0 : 1;
 
   int ep = pattern.cap(CaptureIndexes::EnPassant).toInt();
   if (ep == -1)
     enPassantSquare = Point::invalid();
   else
-    enPassantSquare = Point(ep, turn == WHITE? 2 : 5);
+    enPassantSquare = Point(ep, turn == 0? 2 : 5);
 
   bool wkCastle = pattern.cap(CaptureIndexes::WhiteKingCastle).toInt() == 1;
   bool wqCastle = pattern.cap(CaptureIndexes::WhiteQueenCastle).toInt() == 1;

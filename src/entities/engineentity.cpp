@@ -10,7 +10,6 @@
 
 #include "engineentity.h"
 #include "game.h"
-#include "algebraicnotation.h"
 #include "engine.h"
 
 #include <iostream>

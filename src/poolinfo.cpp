@@ -10,8 +10,7 @@
 
 #include "poolinfo.h"
 #include "gameinfo.h"
-#include "variants/chess.h"
-#include "variants/variants.h"
+#include "variants.h"
 
 QRegExp PoolInfo::s_pattern("^<b1>\\s+game\\s+(\\d+)" //game num
                             "\\s+white\\s+\\[([QKBNRP]*)\\]"  // white pieces

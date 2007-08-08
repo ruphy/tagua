@@ -12,7 +12,7 @@
 #include <QComboBox>
 #include <QHBoxLayout>
 #include "common.h"
-#include "variants/variants.h"
+#include "variants.h"
 #include "tagua.h"
 #include "newgame.h"
 

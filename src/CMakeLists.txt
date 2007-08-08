@@ -22,14 +22,6 @@ set(tagua_SRC
   entities/entity.cpp
   entities/engineentity.cpp
   entities/icsentity.cpp
-
-  variants/variants.cpp
-  variants/xchess/move.cpp
-  variants/xchess/piece.cpp
-
-  variants/chess.cpp
-  variants/crazyhouse.cpp
-  variants/shogi.cpp
   
   hlvariant/chess/variant.cpp
   hlvariant/chess/san.cpp
@@ -78,7 +70,6 @@ set(tagua_SRC
   clock.cpp
   chesstable.cpp
   index.cpp
-  algebraicnotation.cpp
   mastersettings.cpp
   location.cpp
   hline.cpp
@@ -112,6 +103,7 @@ set(tagua_SRC
   icsgamedata.cpp
   turnpolicy.cpp
   decoratedmove.cpp
+  variants.cpp
 )
 
 # remove spurious xpressive warnings

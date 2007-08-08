@@ -15,7 +15,6 @@
 #include "animationfactory.h"
 #include "common.h"
 #include "namedsprite.h"
-#include "variants/xchess/piecetype.h"
 
 namespace HLVariant {
 

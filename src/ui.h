@@ -53,10 +53,6 @@ public Q_SLOTS:
   void pgnPaste(const QString&);
 
   // promotion type
-  void promoteToQueen();
-  void promoteToRook();
-  void promoteToBishop();
-  void promoteToKnight();
   int promotionType() const;
 
   // do promotion

@@ -17,7 +17,7 @@
 #include "foreach.h"
 #include "mastersettings.h"
 #include "luaapi/loader.h"
-#include "variants/variants.h"
+#include "variants.h"
 #include "tagua.h"
 #include "pref_theme.h"
 

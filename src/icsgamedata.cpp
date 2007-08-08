@@ -11,7 +11,7 @@
 #include "icsgamedata.h"
 #include "tagua.h"
 #include "gameinfo.h"
-#include "variants/variants.h"
+#include "variants.h"
 
 ICSGameData::ICSGameData()
 : index(0) {

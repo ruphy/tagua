@@ -11,6 +11,7 @@
 #include <iostream>
 #include <QRegExp>
 #include "pgnparser.h"
+#include "common.h"
 
 QRegExp PGN::number("^(\\d+)(?:(?:\\.\\s+)?(\\.\\.\\.)|\\.?)?");
 QRegExp PGN::begin_var("^\\(");

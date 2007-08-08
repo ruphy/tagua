@@ -19,7 +19,7 @@
   #include <boost/variant.hpp>
 #endif
 #ifndef NO_PGN
-#include "variants/variants.h"
+#include "variants.h"
 #include "pgnparser.h"
 #include "tagua.h"
 #endif //NO_PGN

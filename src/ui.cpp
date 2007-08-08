@@ -13,7 +13,6 @@
 #include <qclipboard.h>
 #include "ui.h"
 #include "controllers/abstract.h"
-#include "variants/xchess/piecetype.h"
 
 using namespace boost;
 
@@ -100,22 +99,6 @@ void UI::pgnPaste() {
 
 void UI::pgnPaste(const QString&) {
   //controller()->loadPGN(pgn);
-}
-
-void UI::promoteToQueen() {
-  controller()->setPromotionType(QUEEN);
-}
-
-void UI::promoteToRook() {
-  controller()->setPromotionType(ROOK);
-}
-
-void UI::promoteToBishop() {
-  controller()->setPromotionType(BISHOP);
-}
-
-void UI::promoteToKnight() {
-  controller()->setPromotionType(KNIGHT);
 }
 
 int UI::promotionType() const {
