@@ -1,37 +1,35 @@
 What you need
 ==================
 
-  * qt (at least a 4.2 snapshot)
-  * kdelibs
-  * boost headers
+  * A KDE4 development environment with kdelibs and libkdegames
+  * boost 1.34 (headers will suffice)
 
 Further you will need GNU make, a working C++ compiler (e.g. gcc 3.4.x or later)
-and CMake 2.4.3 or later.
+and CMake 2.4.7 or later.
 
 The following packages are optional:
 
-  * X11 headers (UNIX only - to enable task bar flashing)
   * lua (5.1.1, if it is not available you can use the internal copy)
 
 Preparations
 ==================
 
-Installing CMake:
+Setting up a KDE4 development environment:
 
-Get the latest version of CMake from http://www.cmake.org/
-unpack, run "./configure && make && make install" will install into /usr/local.
+Follow the tutorial at http://techbase.kde.org/Getting_Started/Build/KDE4
 
-Ensure cmake is in your $PATH.
-
-Compiling KBoard
+Compiling Tagua
 ==================
 
-Unpack the KBoard package, change to the package root directory, and type:
+Unpack the Tagua package, change to the package root directory, and type:
 
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local
-make
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=$KDEDIR -DCMAKE_BUILD_TYPE=release ..
+make -j2
 make install
 
-If you want kboard to be linked to system lua instead that the internall one,
-and -DSYSTEM_LUA=1 to the command line, and optionally add -DLUA_PKG=xyz to
+If you want tagua to be linked to system lua instead that the internall one,
+add -DSYSTEM_LUA=1 to the command line, and optionally add -DLUA_PKG=xyz to
 specify the pkg-config lua package.
+

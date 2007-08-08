@@ -1,3 +1,11 @@
+Version 1.0 - Tiny
+==================
+   01-Sep-2007
+
+* Internal variant structure completely redesigned.
+* Chessboard and pool layout improved and made customizable.
+* More shogi themes.
+
 Version 0.9
 ===========
 25-Sep-2006

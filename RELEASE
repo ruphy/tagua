@@ -1,13 +1,8 @@
 Introduction
 ===============
-KBoard is a platform independent generic game application, written using the QT library.
+Tagua is a generic board game application and framewok for KDE.
 It can be used as a replacement for chess applications like XBoard and Winboard, both for playing in internet servers and for local editing of games.
-Support for chess engines is scheduled, but not yet ready.
-
-KBoard alpha release
-=======================
-This alpha 0.9 release is a sneak peek at some of the most innovative features that KBoard introduces with respect to its most direct alternatives, such as XBoard (for Linux) and BabasChess (for Windows).
-Most of the functionality is there, with some important exceptions and some usability issues that will be gradually addressed in future releases.
+However, Tagua is much more: it has an extensible board game infrastructure which makes developing new board games extremely easy. So far, a number of games have been developed, including Chess, Shogi and Xiangqi.
 
 Feature list
 ===============
@@ -16,22 +11,18 @@ Feature list
   A user friendly and graphically appealing move list control provides a mean to visualize complicated subvariant nesting.
   Games can be loaded and copy / pasted through the clipboard.
 * FICS / ICC compatible server support:
-  KBoard can manage a connection to a FICS-like server, with which the user can interact using a detachable console.
+  Tagua can manage a connection to a FICS-like server, with which the user can interact using a detachable console.
   Games of any chess variant can be played, examined and observed.
 * Generic game support:
-  Many board games can be easily implemented using the extensible KBoard infrastructure. So far, the following board games are implemented:
+  Many board games can be easily implemented using the extensible Tagua infrastructure. So far, the following board games are implemented:
     - Chess
+    - Chess 5x5
     - Crazyhouse
-    - Atomic
-    - Monster Chess (King and four pawns)
-    - Progressive Chess
-    - Reversi
-    - Connect Four
-    - Chain Reaction
+    - Shogi
+    - Minishogi
+    - Sho Shogi
 * Graphics:
-  KBoard features an advanced animation engine which can be easily extended on a per-variant basis.
-  It includes a powerful theme loader based on lua scripts that allows to dynamically create effects like drop down shadows.
+  Tagua features an advanced animation engine which can be easily extended on a per-variant basis.
+  It includes a powerful theme loader based on lua scripts that allows to dynamically create effects like drop down shadows. Themes can customize the appearance of pieces, board squares and borders, clocks, backgrounds and the layout of all these elements.
 
-
-
-For more information, screenshots and design notes, visit http://kboard.sf.net.
+For more information, screenshots and design notes, visit http://www.tagua-project.org

@@ -1,4 +1,0 @@
-[DONE] * Add tab support.
-* Add support for multiple ICS interactions.
-[IN PROGRESS] * Add ruby bindings.
-* Restore all animators that have been removed in order to speed up the refactoring.
