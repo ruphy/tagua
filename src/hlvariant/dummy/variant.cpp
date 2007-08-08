@@ -10,7 +10,6 @@
 
 #include "variant.h"
 #include "../tagua_wrapped.h"
-#include "../animator.impl.h"
 
 namespace HLVariant {
 namespace Dummy {
