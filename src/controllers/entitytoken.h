@@ -1,6 +1,6 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
-            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
+  Copyright (c) 2006-2007 Paolo Capriotti <p.capriotti@gmail.com>
+            (c) 2006-2007 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -8,26 +8,23 @@
   (at your option) any later version.
 */
 
-#ifndef ENGINETOKEN_H
-#define ENGINETOKEN_H
+#ifndef ENTITYTOKEN_H
+#define ENTITYTOKEN_H
 
 #include <set>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 
 class Entity;
 
 class EntityToken {
-  typedef std::set<boost::shared_ptr<Entity> >::const_iterator Iterator;
-  Iterator m_iterator;
-  bool m_valid;
+  boost::weak_ptr<Entity> m_entity;
 public:
-  EntityToken(const Iterator& iterator)
-  : m_iterator(iterator)
-  , m_valid(true) { }
-  EntityToken()
-  : m_valid(false) { }
-  const Iterator& iterator() const { return m_iterator; }
-  bool valid() const { return m_valid; }
+  EntityToken(const boost::shared_ptr<Entity>& entity);
+  EntityToken();
+  
+  boost::shared_ptr<Entity> entity() const;
+  bool valid() const;
 };
 
-#endif // ENGINETOKEN_H
+#endif // ENTITYTOKEN_H

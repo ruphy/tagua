@@ -17,21 +17,31 @@
 using namespace boost;
 
 void EngineInfo::playAsWhite() {
-  m_ui.addPlayingEngine(0, engine());
+  playAs(0);
 }
 
 void EngineInfo::playAsBlack() {
-  m_ui.addPlayingEngine(1, engine());
+  playAs(1);
 }
 
-void EngineInfo::analyze() {
-  if (m_token.valid()) {
-    m_ui.removeAnalysingEngine(m_token);
-    m_token = EntityToken();
+void EngineInfo::playAs(int player) {
+  if (m_token[player].valid()) {
+    m_ui.removeEntity(m_token[player]);
+    m_token[player] = EntityToken();
   }
-  else
-    m_token = m_ui.addAnalysingEngine(engine());
+  else {
+    m_token[player] = m_ui.addPlayingEngine(player, engine());
+  }
 }
+
+// void EngineInfo::analyze() {
+//   if (m_token.valid()) {
+//     m_ui.removeAnalysingEngine(m_token);
+//     m_token = EntityToken();
+//   }
+//   else
+//     m_token = m_ui.addAnalysingEngine(engine());
+// }
 
 EngineInfo::EngineInfo(const EngineDetails& details, UI& ui)
 : QObject(&ui)

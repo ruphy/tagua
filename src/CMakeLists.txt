@@ -2,6 +2,7 @@ set(tagua_SRC
   controllers/editgame.cpp
   controllers/abstract.cpp
   controllers/editposition.cpp
+  controllers/entitytoken.cpp
 
   loader/image.cpp
   loader/theme.cpp

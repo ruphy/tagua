@@ -74,16 +74,17 @@ class EngineInfo : public QObject {
 Q_OBJECT
   EngineDetails m_details;
   UI& m_ui;
-  EntityToken m_token;
+  EntityToken m_token[2];
 protected:
   virtual boost::shared_ptr<Engine> engine();
+  void playAs(int player);
 public:
   EngineInfo(const EngineDetails& details, UI& ui);
   void setWorkPath(const QString& wp) { m_details.workPath = wp; }
 public Q_SLOTS:
   void playAsWhite();
   void playAsBlack();
-  void analyze();
+//   void analyze();
 };
 
 #endif // ENGINEINFO_H

@@ -170,20 +170,15 @@ public:
 
   /**
     * Let an engine play as player @a side.
-    */
-  virtual bool addPlayingEngine(int /*side*/, const boost::shared_ptr<Engine>&) { return false; }
-
-  /**
-    * Start the engine in analysis mode.
-    * @return a token which uniquely identifies the analysing engine entity
+    * @return a token which uniquely identifies the engine entity
     *         and can be used to remove it from the entity list.
     */
-  virtual EntityToken addAnalysingEngine(const boost::shared_ptr<Engine>&) { return EntityToken(); }
+  virtual EntityToken addPlayingEngine(int /*side*/, const boost::shared_ptr<Engine>&) { return EntityToken(); }
 
   /**
-    * Stop an analysing engine entity.
+    * Remove an entity from the controller list.
     */
-  virtual void removeAnalysingEngine(const EntityToken&) { }
+  virtual void removeEntity(const EntityToken&) { }
 };
 
 

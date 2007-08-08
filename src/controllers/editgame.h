@@ -56,9 +56,9 @@ public:
   virtual void setPromotionType(int);
 
   virtual QString variant() const;
-  bool addPlayingEngine(int side, const boost::shared_ptr<Engine>& engine);
-  EntityToken addAnalysingEngine(const boost::shared_ptr<Engine>& engine);
-  void removeAnalysingEngine(const EntityToken& token);
+  EntityToken addPlayingEngine(int side, const boost::shared_ptr<Engine>& engine);
+//   EntityToken addAnalysingEngine(const boost::shared_ptr<Engine>& engine);
+  void removeEntity(const EntityToken& token);
   bool addICSPlayer(int side, int game_number, const boost::shared_ptr<ICSConnection>& connection);
   bool setExaminationMode(int game_number, const boost::shared_ptr<ICSConnection>& connection);
   bool setObserveMode(int game_number, const boost::shared_ptr<ICSConnection>& connection);

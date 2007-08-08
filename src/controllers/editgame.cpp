@@ -130,10 +130,10 @@ void EditGameController::setPromotionType(int type) {
 
 void EditGameController::onNavigation() { }
 
-bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
+EntityToken EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
   Q_ASSERT(side == 0 || side == 1);
   if (!engine)
-    return false;
+    return EntityToken();
     
   if (m_players[side]->canDetach()) {
     shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, side,
@@ -145,30 +145,47 @@ bool EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& en
     
     // the user cannot move the entity's pieces
     m_entity->turnTest().setSimplePolicy(side, false);
+    
+    return EntityToken(entity);
   }
   else {
     std::cout << "** could not detach entity playing " << side << "**" << std::endl;
   }
 
-  return true;
+  return EntityToken();
 }
 
-EntityToken EditGameController::addAnalysingEngine(const shared_ptr<Engine>& engine) {
-  Q_ASSERT(engine.use_count() == 1);
-  shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, -1, engine, &m_agents));
-  m_agents.addAgent(entity);
-  EntityToken res(m_entities.insert(entity).first);
+// EntityToken EditGameController::addAnalysingEngine(const shared_ptr<Engine>& engine) {
+//   Q_ASSERT(engine.use_count() == 1);
+//   shared_ptr<EngineEntity> entity(new EngineEntity(m_variant, m_game, -1, engine, &m_agents));
+//   m_agents.addAgent(entity);
+//   EntityToken res(m_entities.insert(entity).first);
+// 
+//   engine->setNotifier(entity);
+//   engine->start();
+//   engine->setBoard(m_game->position(), 0, 0);
+//   engine->startAnalysis();
+// 
+//   return res;
+// }
 
-  engine->setNotifier(entity);
-  engine->start();
-  engine->setBoard(m_game->position(), 0, 0);
-  engine->startAnalysis();
-
-  return res;
-}
-
-void EditGameController::removeAnalysingEngine(const EntityToken& token) {
-  m_entities.erase(token.iterator());
+void EditGameController::removeEntity(const EntityToken& token) {
+  shared_ptr<Entity> entity = token.entity();
+  if (entity) {
+    // check players
+    for (int i = 0; i < 2; i++) {
+      if (entity == m_players[i]) {
+        m_players[i] = m_entity;
+        m_entity->turnTest().setSimplePolicy(i, true);
+      }
+    }
+    
+    // check other entities
+    std::set<boost::shared_ptr<Entity> >::iterator it = m_entities.find(entity);
+    if (it != m_entities.end()) {
+      m_entities.erase(it);
+    }
+  }
   std::cout << "there are " << m_entities.size() << " entities left" << std::endl;
 }
 

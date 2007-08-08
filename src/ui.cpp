@@ -164,16 +164,16 @@ void UI::destroyCtrlAction() {
   controller()->destroyCtrlAction();
 }
 
-void UI::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
-  controller()->addPlayingEngine(side, engine);
+EntityToken UI::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
+  return controller()->addPlayingEngine(side, engine);
 }
 
-EntityToken UI::addAnalysingEngine(const shared_ptr<Engine>& engine) {
-  return controller()->addAnalysingEngine(engine);
-}
+// EntityToken UI::addAnalysingEngine(const shared_ptr<Engine>& engine) {
+//   return controller()->addAnalysingEngine(engine);
+// }
 
-void UI::removeAnalysingEngine(const EntityToken& token) {
-  controller()->removeAnalysingEngine(token);
+void UI::removeEntity(const EntityToken& token) {
+  controller()->removeEntity(token);
 }
 
 void UI::end() {

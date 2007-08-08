@@ -148,20 +148,24 @@ void MainWindow::setupEngineMenu() {
 
     {
       KAction* play_white = new KAction(i18n("Play as &white"), this);
+      play_white->setCheckable(true);
       connect(play_white, SIGNAL(triggered()), engine, SLOT(playAsWhite()));
       menu->addAction(play_white);
     }
     {
       KAction* play_black = new KAction(i18n("Play as &black"), this);
+      play_black->setCheckable(true);
       connect(play_black, SIGNAL(triggered()), engine, SLOT(playAsBlack()));
       menu->addAction(play_black);
     }
+#if 0 // disable analysis for the moment
     {
       KAction* analyze = new KAction(i18n("&Analyze"), this);
       analyze->setCheckable(true);
       connect(analyze, SIGNAL(triggered()), engine, SLOT(analyze()));
       menu->addAction(analyze);
     }
+#endif
   }
 }
 
