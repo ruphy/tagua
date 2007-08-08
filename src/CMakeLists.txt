@@ -33,6 +33,7 @@ set(tagua_SRC
   
   hlvariant/chess/variant.cpp
   hlvariant/chess/san.cpp
+  hlvariant/chess/icsverbose.cpp
   hlvariant/chess/move.cpp
   hlvariant/chess/gamestate.cpp
   hlvariant/chess/piece.cpp

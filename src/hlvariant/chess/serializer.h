@@ -13,6 +13,7 @@
 
 #include "legalitycheck.h"
 #include "san.h"
+#include "icsverbose.h"
 
 namespace HLVariant {
 namespace Chess {
@@ -26,7 +27,8 @@ public:
   enum {
     SIMPLE = 0,          /// The most direct way of representing a move.
     COMPACT = 1,         /// Compact notation. This corresponds to SAN notation for games that support it.
-    DECORATED = 2        /// Symbolic figurine notation. Figurine names are enclosed in braces.
+    DECORATED = 2,       /// Symbolic figurine notation. Figurine names are enclosed in braces.
+    ICS_VERBOSE = 3      /// Verbose notation as defined by ICS.
   } MoveRepresentation;
 protected:
   typedef typename MoveGenerator::LegalityCheck LegalityCheck;
@@ -46,6 +48,8 @@ protected:
   virtual Move get_san(const SAN& san, const GameState& ref);
   
   virtual QChar symbol(typename Piece::Type type) const;
+  
+  virtual Move parse_ics_verbose(const QString& str, const GameState& ref);
 public:
   /** 
     * Create a serializer to a given string representation for moves.
@@ -162,6 +166,7 @@ QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& 
       res.replace('P', "{pawn}");
       return res;
     }
+  case ICS_VERBOSE:
   default:
     return "";
   }
@@ -245,14 +250,15 @@ template <typename MoveGenerator>
 typename Serializer<MoveGenerator>::Move 
 Serializer<MoveGenerator>::deserialize(const QString& str, const GameState& ref) {
   switch (m_rep) {
-  case SIMPLE:
-    return Move(); // BROKEN
   case COMPACT:
     {
       SAN tmp;
       tmp.load(str, ref.board().size().y);
       return get_san(tmp, ref);
     }
+  case ICS_VERBOSE:
+    return parse_ics_verbose(str, ref);
+  case SIMPLE:
   case DECORATED:
   default:
     // no need to parse decorated moves
@@ -290,6 +296,27 @@ QChar Serializer<MoveGenerator>::symbol(typename Piece::Type type) const {
     return 'n';
   else
     return Piece::typeName(type)[0];
+}
+
+template <typename MoveGenerator>
+typename Serializer<MoveGenerator>::Move
+Serializer<MoveGenerator>::parse_ics_verbose(const QString& str, const GameState& ref) {
+  ICSVerbose verbose;
+  verbose.load(str, ref.board().size().y);
+  
+  Point from;
+  Point to;
+  
+  if (verbose.castling == SAN::NoCastling) {
+    from = verbose.from;
+    to = verbose.to;
+  }
+  else {
+    from = ref.kingStartingPosition(ref.turn());
+    to = from + (verbose.castling == SAN::KingSide ? Point(2,0) : Point(-2, 0));
+  }
+
+  return Move(from, to, static_cast<typename Piece::Type>(verbose.promotion));
 }
 
 } // namespace Chess

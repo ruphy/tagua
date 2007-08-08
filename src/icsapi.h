@@ -41,7 +41,15 @@ public:
     *                     meaning is defined by the variant.
     * \return A newly created piece.
     */
-  virtual AbstractPiece::Ptr createPiece(const QString& description) = 0;
+  virtual PiecePtr createPiece(const QString& description) = 0;
+  
+  /**
+    * Parse ICS verbose notation.
+    * \param str A string representation of the move to be parsed.
+    * \param turn The player who is moving.
+    * \return A move object corresponding to the given verbose representation.
+    */
+  virtual MovePtr parseVerbose(const QString& str, const PositionPtr& ref) = 0;
 };
 
 // wrapper
@@ -51,6 +59,7 @@ class WrappedICSAPI : public ICSAPI {
 public:
   virtual PositionPtr createChessboard(int, bool, bool, bool, bool, const Point&);
   virtual PiecePtr createPiece(const QString& description);
+  virtual MovePtr parseVerbose(const QString&, const PositionPtr&) { return MovePtr(); }
 };
 
 #endif // ICSAPI_H

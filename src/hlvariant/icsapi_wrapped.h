@@ -11,6 +11,7 @@ class WrappedICSAPI : public ICSAPI {
 public:
   virtual PositionPtr createChessboard(int, bool, bool, bool, bool, const Point&);
   virtual PiecePtr createPiece(const QString& description);
+  virtual MovePtr parseVerbose(const QString& str, const PositionPtr& ref);
 };
 
 // IMPLEMENTATION
@@ -37,6 +38,24 @@ template <typename Variant>
 PiecePtr WrappedICSAPI<Variant>::createPiece(const QString& description) {
   return PiecePtr(new WrappedPiece<Variant>(
     VariantData<Variant>::Piece::fromDescription(description)));
+}
+
+template <typename Variant>
+MovePtr WrappedICSAPI<Variant>::parseVerbose(const QString& str, const PositionPtr& _ref) {
+  if (!_ref)
+    return MovePtr();
+    
+  WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
+  if (ref) {
+    typename VariantData<Variant>::Serializer serializer(
+      VariantData<Variant>::Serializer::ICS_VERBOSE);
+    return MovePtr(new WrappedMove<Variant>(
+      serializer.deserialize(str, ref->inner())));
+  }
+  else {
+    MISMATCH(*_ref.get(), WrappedPosition<Variant>);
+    return MovePtr();
+  }
 }
 
 /**

@@ -488,7 +488,7 @@ namespace HLVariant {
     }
   
     virtual MovePtr getVerboseMove(int, const VerboseNotation&) const {
-      return MovePtr(); // BROKEN
+      return MovePtr();
     }
     
     virtual bool simpleMoves() {
