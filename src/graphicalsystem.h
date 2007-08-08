@@ -37,7 +37,7 @@ public:
   AbstractAnimator::Ptr m_animator;
 
   /** The current variant */
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
 
   /** @a GraphicalPosition interface function implementation */
 //   virtual void addTag(const QString& name, Point, bool over = false);
@@ -134,7 +134,7 @@ private:
 public:
   /** Constructor */
   GraphicalSystem(ChessTable* view, AbstractPosition::Ptr startingPosition,
-                                              VariantInfo* variant);
+                                              const VariantPtr& variant);
   virtual ~GraphicalSystem();
 
   /** Sets the reference entity */

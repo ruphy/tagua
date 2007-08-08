@@ -387,4 +387,12 @@ public:
   virtual ICSAPIPtr icsAPI() const = 0;
 };
 
+
+class VariantFactory {
+public:
+  virtual ~VariantFactory() { }
+  virtual VariantInfo* createVariant() const = 0;
+};
+
+
 #endif // LOWLEVEL_H

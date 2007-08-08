@@ -17,11 +17,10 @@
 #include "fwd.h"
 
 class ICSListener;
-class VariantInfo;
 
 struct ICSGameData {
   int index;
-  VariantInfo* variant;
+  VariantPtr variant;
   ICSAPIPtr icsapi;
   boost::weak_ptr<ICSListener> listener;
   

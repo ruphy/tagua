@@ -17,13 +17,6 @@ namespace Minichess5 {
 const char* Variant::m_name = "Chess 5x5";
 const char* Variant::m_theme_proxy = "Chess";
 
-VariantInfo* Variant::static_variant = 0;
-
-VariantInfo* Variant::info() {
-  if (!static_variant)
-    static_variant = new WrappedVariantInfo<Variant>;
-  return static_variant;
-}
 
 } // namespace Minichess5
 } // namespace HLVariant

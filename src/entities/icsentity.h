@@ -24,7 +24,7 @@ class ICSEntity : public Entity
                 , public Agent
                 , public ICSListener {
 protected:
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
   ICSAPIPtr m_icsapi;
   
   boost::shared_ptr<ICSConnection> m_connection;
@@ -47,7 +47,7 @@ protected:
 
   UpdateType getUpdate(const Index& index);
 public:
-  ICSEntity(VariantInfo*, const boost::shared_ptr<Game>&,
+  ICSEntity(const VariantPtr&, const boost::shared_ptr<Game>&,
            int, int,
            const boost::shared_ptr<ICSConnection>&, AgentGroup*);
 
@@ -79,7 +79,7 @@ class ObservingEntity : public ICSEntity {
 protected:
   bool m_attached;
 public:
-  ObservingEntity(VariantInfo*, const boost::shared_ptr<Game>&,
+  ObservingEntity(const VariantPtr&, const boost::shared_ptr<Game>&,
                   int gameNumber, const boost::shared_ptr<ICSConnection>&, AgentGroup*);
   ~ObservingEntity();
 

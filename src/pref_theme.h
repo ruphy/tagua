@@ -20,6 +20,7 @@
 #include "themeinfo.h"
 #include "ui_pref_theme.h"
 #include "ui_pref_theme_page.h"
+#include "fwd.h"
 
 class VariantInfo;
 class Settings;
@@ -51,7 +52,7 @@ public:
 
   void apply();
 
-  static ThemeInfo getBestTheme(VariantInfo* vi, const QString&);
+  static ThemeInfo getBestTheme(const VariantPtr& vi, const QString&);
 };
 
 

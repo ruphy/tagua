@@ -45,13 +45,13 @@ protected:
   boost::shared_ptr<UserEntity> m_entity;
   boost::shared_ptr<GraphicalSystem> m_graphical;
   AgentGroup m_agents;
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
   boost::shared_ptr<GraphicalGame> m_game;
   virtual boost::shared_ptr<UserEntity> entity() const { return m_entity; }
   boost::shared_ptr<Entity> m_players[2];
   std::set<boost::shared_ptr<Entity> > m_entities;
 public:
-  EditGameController(ChessTable*, VariantInfo*,
+  EditGameController(ChessTable*, const VariantPtr& variant,
     AbstractPosition::Ptr startingPos = AbstractPosition::Ptr());
   virtual void setPromotionType(int);
 

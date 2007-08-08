@@ -22,14 +22,14 @@ class ICSConnection;
 
 class ExaminationEntity : public UserEntity
                         , public ICSListener {
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
   ICSAPIPtr m_icsapi;
   
   int m_game_number;
   boost::shared_ptr<ICSConnection> m_connection;
   AgentGroupDispatcher m_dispatcher;
 public:
-  ExaminationEntity(VariantInfo*, const boost::shared_ptr<Game>&,
+  ExaminationEntity(const VariantPtr&, const boost::shared_ptr<Game>&,
                     int, const boost::shared_ptr<ICSConnection>&, AgentGroup*);
 
   virtual QString save() const;

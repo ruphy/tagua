@@ -18,7 +18,7 @@
 
 #include <iostream>
 
-ExaminationEntity::ExaminationEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
+ExaminationEntity::ExaminationEntity(const VariantPtr& variant, const boost::shared_ptr<Game>& game,
                   int game_number, const boost::shared_ptr<ICSConnection>& connection,
                   AgentGroup* group)
 : UserEntity(game, HLVariant::Chess::Piece::QUEEN)

@@ -24,7 +24,7 @@ ICSGameData::ICSGameData(int index, const QString& type)
 }
 
 void ICSGameData::setType(const QString& type) {
-  variant = Variant::variant(GameInfo::variantCode(type));
+  variant = Variants::instance().get(GameInfo::variantCode(type));
   if (!variant) {
     ERROR("BUG: No variant corresponding to " << type);
   }

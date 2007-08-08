@@ -33,9 +33,6 @@ struct TAGUA_EXPORT Variant {
   static const char *m_theme_proxy;
 
   static int moveListLayout() { return 0; }
-
-  static VariantInfo* static_variant;
-  static VariantInfo* info();
   static OptList positionOptions() { return OptList(); }
 };
 

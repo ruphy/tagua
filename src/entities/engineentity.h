@@ -17,13 +17,14 @@
 #include "entity.h"
 #include "index.h"
 #include "tagua.h"
+#include "fwd.h"
 
 class Engine;
 
 class EngineEntity : public Entity
                    , public Agent
                    , public EngineNotifier {
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
   int m_side;
   Index m_last_index;
   bool m_playing;
@@ -34,7 +35,7 @@ class EngineEntity : public Entity
 public:
   boost::shared_ptr<Engine> engine() { return m_engine; }
 
-  EngineEntity(VariantInfo* variant, const boost::shared_ptr<Game>&, int side,
+  EngineEntity(const VariantPtr& variant, const boost::shared_ptr<Game>&, int side,
               const boost::shared_ptr<Engine>& engine, AgentGroup* group);
   void setup();
 

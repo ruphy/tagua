@@ -14,31 +14,27 @@
 
 #include <QString>
 #include <map>
+#include "tagua.h"
+#include "fwd.h"
 
-class VariantInfo;
-
-class Variant {
-public:
+class Variants {
   class case_comparer {
   public:
-    bool operator()(const QString& a, const QString& b) {
+    bool operator()(const QString& a, const QString& b) const {
       return a.compare(b, Qt::CaseInsensitive) < 0;
     }
   };
-
-  typedef std::map<QString, VariantInfo*, case_comparer> Variants;
-
-  static bool s_initialized;
-  static Variants s_registered;
-
-  static void register_variant(VariantInfo* v);
-  template<typename T>
-  static void register_variant();
-  static void initialize();
-
-  static VariantInfo* variant(const QString& name);
-  static const Variants& allVariants();
-  //static VariantInfo* variant(Code code);
+  
+  typedef std::map<QString, VariantFactory*, case_comparer> Factories;
+  Factories m_factories;
+  
+  Variants();
+public:
+  VariantPtr get(const QString& name) const;
+  void addFactory(const QString& name, VariantFactory* factory);
+  QStringList all() const;
+  
+  static Variants& instance();
 };
 
 #endif // VARIANTS_H

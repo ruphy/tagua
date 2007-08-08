@@ -165,14 +165,14 @@ PrefTheme::PrefTheme(const QString& currentVariant, QWidget *parent)
     //std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
   }
 
-  const Variant::Variants& all = Variant::allVariants();
+  QStringList all = Variants::instance().all();
   int index = 0;
   int current = -1;
-  for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it) {
-    if (it->first == currentVariant) {
+  foreach (QString variant, all) {
+    if (variant == currentVariant) {
       current = index;
     }
-    comboVariant->addItem(it->first, QVariant(it->first));
+    comboVariant->addItem(variant, QVariant(variant));
     index++;
   }
 
@@ -240,10 +240,10 @@ void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
 
 void PrefTheme::variantChanged() {
   QString category = comboVariant->itemData(comboVariant->currentIndex()).toString();
-  VariantInfo *vi = Variant::variant(category);
+  VariantPtr vi = Variants::instance().get(category);
 
-  if(!vi) {
-    for(CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
+  if (!vi) {
+    for (CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
       Category* c = cit->second;
 
       c->m_check->hide();
@@ -287,7 +287,7 @@ void PrefTheme::variantChanged() {
   }
 }
 
-ThemeInfo PrefTheme::getBestTheme(VariantInfo* vi, const QString& category) {
+ThemeInfo PrefTheme::getBestTheme(const VariantPtr& vi, const QString& category) {
   QString tag = category + "-theme";
   QString deftag = category + "-use-def";
   QString variant_name = vi->name();
@@ -369,7 +369,7 @@ void PrefThemeCategory::themeChanged() {
       m_label->setText(m_themes[i].description);
 
       QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-      VariantInfo *vi = Variant::variant(c);
+      VariantPtr vi = Variants::instance().get(c);
       if(vi)
         m_new_themes[vi->name()] = m_themes[i].desktopFile;
 
@@ -396,8 +396,8 @@ void PrefThemeCategory::themeChecked(bool ck) {
   m_label->setEnabled(!ck);
 
   QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-  VariantInfo *vi = Variant::variant(c);
-  if(vi)
+  VariantPtr vi = Variants::instance().get(c);
+  if (vi)
     m_new_use_def[vi->name()] = ck;
 }
 

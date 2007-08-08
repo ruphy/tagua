@@ -9,7 +9,7 @@
 */
 
 #include "variants.h"
-#include "tagua.h"
+#include "hlvariant/tagua_wrapped.h"
 #include "hlvariant/chess/variant.h"
 #include "hlvariant/crazyhouse/variant.h"
 #include "hlvariant/dummy/variant.h"
@@ -17,47 +17,49 @@
 #include "hlvariant/shogi/variant.h"
 #include "hlvariant/minishogi/variant.h"
 
-// remove me
-namespace HLVariant {
-namespace Crazyhouse {
-class Variant;
-}
-}
+using namespace HLVariant;
 
-bool Variant::s_initialized = false;
-
-Variant::Variants Variant::s_registered;
-
-void Variant::register_variant(VariantInfo* v) {
-  s_registered[v->name()] = v;
+template <typename Variant>
+void register_variant(Variants* variants) {
+  variants->addFactory(
+    Variant::m_name, 
+    new WrappedVariantFactory<Variant>);
 }
 
-template<typename T>
-void Variant::register_variant() {
-  register_variant(T::info());
+
+Variants::Variants() {
+  register_variant<Chess::Variant>(this);
+  register_variant<Minichess5::Variant>(this);
+  register_variant<Crazyhouse::Variant>(this);
+  register_variant<Shogi::Variant>(this);
+  register_variant<MiniShogi::Variant>(this);
 }
 
-void Variant::initialize() {
-  register_variant<HLVariant::Chess::Variant>();
-  register_variant<HLVariant::Crazyhouse::Variant>();
-  register_variant<HLVariant::Dummy::Variant>();
-  register_variant<HLVariant::Minichess5::Variant>();
-  register_variant<HLVariant::Shogi::Variant>();
-  register_variant<HLVariant::MiniShogi::Variant>();
-  s_initialized = true;
+Variants& Variants::instance() {
+  static Variants inst;
+  return inst;
 }
 
-VariantInfo* Variant::variant(const QString& name) {
-  if(!s_initialized)
-    initialize();
-
-  Variants::iterator it = s_registered.find(name);
-  return it == s_registered.end() ? NULL : it->second;
+VariantPtr Variants::get(const QString& name) const {
+  Factories::const_iterator it = m_factories.find(name);
+  if (it != m_factories.end()) {
+    return VariantPtr(it->second->createVariant());
+  }
+  
+  return VariantPtr();
 }
 
-const Variant::Variants& Variant::allVariants(){
-  if(!s_initialized)
-    initialize();
-
-  return s_registered;
+void Variants::addFactory(const QString& name, VariantFactory* factory) {
+  m_factories[name] = factory;
+  std::cout << "added factory for variant " << name << std::endl;
 }
+
+QStringList Variants::all() const {
+  QStringList s;
+  for (Factories::const_iterator end = m_factories.end(), it = m_factories.begin(); it != end; ++it) {
+    s << it->first;
+  }
+  
+  return s;
+}
+

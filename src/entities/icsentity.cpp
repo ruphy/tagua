@@ -50,7 +50,7 @@ bool ICSPremovePolicy::check() const {
 }
 
 
-ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
+ICSEntity::ICSEntity(const VariantPtr& variant, const shared_ptr<Game>& game,
                    int side, int gameNumber,
                    const shared_ptr<ICSConnection>& connection, AgentGroup* group)
 : Entity(game)
@@ -214,7 +214,7 @@ void ICSEntity::setupTurnTest(TurnTest& test) const {
 }
 
 
-ObservingEntity::ObservingEntity(VariantInfo* variant, const shared_ptr<Game>& game,
+ObservingEntity::ObservingEntity(const VariantPtr& variant, const shared_ptr<Game>& game,
                    int gameNumber,const shared_ptr<ICSConnection>& connection, AgentGroup* group)
 : ICSEntity(variant, game, -1, gameNumber, connection, group)
 , m_attached(true) { }

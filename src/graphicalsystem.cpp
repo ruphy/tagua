@@ -26,7 +26,7 @@ using namespace boost;
 
 GraphicalSystem::GraphicalSystem(ChessTable* view,
                              AbstractPosition::Ptr startingPosition,
-                             VariantInfo* variant)
+                             const VariantPtr& variant)
 : m_view(view)
 , m_variant(variant) {
 

@@ -14,18 +14,19 @@
 #include "userentity.h"
 #include "agent.h"
 #include "agentgroup.h"
+#include "fwd.h"
 
 class Board;
 
 class GameEntity : public UserEntity {
-  VariantInfo* m_variant;
+  VariantPtr m_variant;
   Board* m_chessboard;
   AgentGroupDispatcher m_dispatcher;
   boost::shared_ptr<class Premove> m_premoveQueue;
 
   AbstractPosition::Ptr doMove(AbstractMove::Ptr move) const;
 public:
-  GameEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
+  GameEntity(const VariantPtr& variant, const boost::shared_ptr<Game>& game,
                  Board* chessboard, AgentGroup* group);
 
   /**

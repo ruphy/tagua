@@ -17,7 +17,7 @@
 
 using namespace boost;
 
-GameEntity::GameEntity(VariantInfo* variant, const boost::shared_ptr<Game>& game,
+GameEntity::GameEntity(const VariantPtr& variant, const boost::shared_ptr<Game>& game,
                        Board* chessboard, AgentGroup* group)
 : UserEntity(game, HLVariant::Chess::Piece::QUEEN)
 , m_variant(variant)

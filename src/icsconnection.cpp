@@ -307,7 +307,7 @@ void ICSConnection::process(QString str) {
             ERROR("BUG: Received move list for unknown game  " << m_move_list_game_num);
           }
           else {
-            VariantInfo* variant = gi->second.variant;
+            VariantPtr variant = gi->second.variant;
             p = variant->createPosition();
             p->setup();
           }

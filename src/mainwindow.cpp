@@ -297,9 +297,10 @@ void MainWindow::cleanupGame() {
 
 
 bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr startingPos) {
-  VariantInfo* variant = Variant::variant(variantName);
+  VariantPtr variant = Variants::instance().get(variantName);
   if (!variant) {
-    variant = Variant::variant("chess");
+    WARNING("no variant " << variantName << " found");
+    variant = Variants::instance().get("chess");
   }
 
   if (variant) {
@@ -310,7 +311,11 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
       QString("Editing %1 game").arg(variant->name().toLower()));
     return true;
   }
-  else return false;
+  else {
+    ERROR("Could not find the chess variant");
+    exit(1);
+    return false;
+  }
 }
 
 
@@ -325,7 +330,7 @@ void MainWindow::editPosition() {
 
 void MainWindow::setupGame(const GameInfo* gameInfo, const PositionInfo& style12) {
   QString variantCode = gameInfo->variant();
-  VariantInfo* variant = Variant::variant(variantCode);
+  VariantPtr variant = Variants::instance().get(variantCode);
   shared_ptr<EditGameController> controller(new EditGameController(
     table(), variant));
   Q_ASSERT(style12.relation == PositionInfo::NotMyMove ||
@@ -345,7 +350,7 @@ void MainWindow::setupGame(const GameInfo* gameInfo, const PositionInfo& style12
 
 void MainWindow::setupExaminedGame(const GameInfo* /*gameInfo*/, const PositionInfo& style12) {
   shared_ptr<EditGameController> controller(new EditGameController(
-                                      table(), Variant::variant("chess")));
+                                      table(), Variants::instance().get("chess")));
   if (controller->setExaminationMode(style12.gameNumber, m_connection)) {
     table()->setPlayers(Player(style12.whitePlayer, -1),
                       Player(style12.blackPlayer, -1));
@@ -361,7 +366,7 @@ void MainWindow::setupObservedGame(const GameInfo* g, const PositionInfo& style1
   std::auto_ptr<ChessTable> board(new ChessTable);
 
   shared_ptr<EditGameController> controller(new EditGameController(
-                                      board.get(), Variant::variant(g->variant())));
+                                      board.get(), Variants::instance().get(g->variant())));
   if (controller->setObserveMode(style12.gameNumber, m_connection)) {
     board->setPlayers(Player(style12.whitePlayer, -1),
                       Player(style12.blackPlayer, -1));
@@ -378,11 +383,12 @@ void MainWindow::setupPGN(const QString& s) {
   PGN pgn(s);
 
   std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
-  VariantInfo *variant;
+  VariantPtr variant;
 
-  if(var == pgn.m_tags.end())
-    variant = Variant::variant("Chess");
-  else if(!(variant = Variant::variant(var->second))) {
+  if (var == pgn.m_tags.end()) {
+    variant = Variants::instance().get("chess");
+  }
+  else if (!(variant = Variants::instance().get(var->second))) {
     std::cout << " --> MainWindow::setupPGN: Error, no such variant " << var->second << std::endl;
     return;
   }
@@ -571,7 +577,7 @@ void MainWindow::newGame() {
   scoped_ptr<NewGame> dialog(new NewGame(this, pos));
   if (dialog->exec() == QDialog::Accepted) {
     if(dialog->isCustom()) {
-      VariantInfo *vi = Variant::variant(dialog->variant());
+      VariantPtr vi = Variants::instance().get(dialog->variant());
       std::cout << "vi[" << dialog->variant() << "] = " << vi << std::endl;
       pos = vi->createCustomPosition(dialog->customOptions());
       pos->setup();

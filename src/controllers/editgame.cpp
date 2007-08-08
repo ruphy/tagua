@@ -69,7 +69,7 @@ public:
 };
 
 EditGameController::EditGameController(ChessTable* view,
-                                       VariantInfo* variant,
+                                       const VariantPtr& variant,
                                        AbstractPosition::Ptr startingPosition)
 : Controller(view) , m_variant(variant) {
 

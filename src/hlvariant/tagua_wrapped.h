@@ -511,6 +511,15 @@ namespace HLVariant {
       return ICSAPIPtr(ReturnICSAPI<Variant>::apply());
     }
   };
+  
+  template <typename Variant>
+  class WrappedVariantFactory : public VariantFactory {
+  public:
+    virtual VariantInfo* createVariant() const {
+      return new WrappedVariantInfo<Variant>;
+    }
+  };
+  
 }
 
 #endif // HLVARIANT__TAGUA_WRAPPED_H

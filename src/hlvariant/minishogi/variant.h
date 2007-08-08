@@ -43,8 +43,6 @@ struct TAGUA_EXPORT Variant {
 
   static int moveListLayout() { return 0; }
 
-  static VariantInfo* static_variant;
-  static VariantInfo* info();
   static OptList positionOptions() { return OptList(); }
   
 };

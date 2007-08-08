@@ -804,12 +804,13 @@ QString Game::pgn() const {
 #ifndef NO_PGN
 void Game::load(const PGN& pgn) {
   std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
-  VariantInfo *vi;
+  VariantPtr vi;
 
-  if(var == pgn.m_tags.end())
-    vi = Variant::variant("Chess");
-  else if(!(vi = Variant::variant(var->second))) {
-    ERROR("No such variant "<<var->second);
+  if (var == pgn.m_tags.end()) {
+    vi = Variants::instance().get("chess");
+  }
+  else if (!(vi = Variants::instance().get(var->second))) {
+    ERROR("No such variant " << var->second);
     return;
   }
 

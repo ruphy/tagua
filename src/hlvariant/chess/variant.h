@@ -18,8 +18,6 @@
 #include "../animator.h"
 #include "../movefactory.h"
 
-class VariantInfo;
-
 namespace HLVariant {
 namespace Chess {
 
@@ -37,9 +35,6 @@ struct TAGUA_EXPORT Variant {
   static const char *m_theme_proxy;
 
   static int moveListLayout() { return 0; }
-
-  static VariantInfo* static_chess_variant;
-  static VariantInfo* info();
   static OptList positionOptions() { return OptList(); }
   
 };

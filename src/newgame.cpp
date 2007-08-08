@@ -15,6 +15,7 @@
 #include "variants.h"
 #include "tagua.h"
 #include "newgame.h"
+#include "foreach.h"
 
 NewGame::NewGame(QWidget* parent, bool allowCurrent)
 : QDialog(parent)
@@ -29,9 +30,10 @@ NewGame::NewGame(QWidget* parent, bool allowCurrent)
 
   m_custom_opt_layout = new QHBoxLayout(widgetCustom);
 
-  const Variant::Variants& all = Variant::allVariants();
-  for(Variant::Variants::const_iterator it = all.begin(); it != all.end(); ++it)
-    cmbVariant->addItem(it->first, QVariant(it->first));
+  QStringList variants = Variants::instance().all();
+  foreach (QString variant, variants) {
+    cmbVariant->addItem(variant, QVariant(variant));
+  }
 }
 
 QString NewGame::variant() const {
@@ -57,7 +59,7 @@ void NewGame::variantChanged(const QString& var) {
   if(m_custom_opt_widget)
     delete m_custom_opt_widget;
   m_custom_options = OptList();
-  VariantInfo* vi = Variant::variant(var);
+  VariantPtr vi = Variants::instance().get(var);
   if(vi) {
     m_custom_options = vi->positionOptions();
     m_custom_opt_widget = new OptionWidget(m_custom_options, widgetCustom);

@@ -84,7 +84,7 @@ PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QStrin
   
   if (gi == games.end()) {
     ERROR("Received style12 for unknown game  " << gn);
-    icsapi = Variant::variant("Dummy")->icsAPI();
+    icsapi = Variants::instance().get("dummy")->icsAPI();
   }
   else {
     icsapi = gi->second.icsapi;

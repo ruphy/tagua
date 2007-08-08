@@ -18,13 +18,5 @@ namespace MiniShogi {
 const char* Variant::m_name = "MiniShogi";
 const char* Variant::m_theme_proxy = "Shogi";
 
-VariantInfo* Variant::static_variant = 0;
-
-VariantInfo* Variant::info() {
-  if (!static_variant)
-    static_variant = new WrappedVariantInfo<Variant>;
-  return static_variant;
-}
-
 } // namespace MiniShogi
 } // namespace HLVariant
