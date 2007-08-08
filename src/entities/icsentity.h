@@ -16,6 +16,7 @@
 #include "agentgroup.h"
 #include "icslistener.h"
 #include "tagua.h"
+#include "fwd.h"
 
 class ICSConnection;
 
@@ -24,6 +25,8 @@ class ICSEntity : public Entity
                 , public ICSListener {
 protected:
   VariantInfo* m_variant;
+  ICSAPIPtr m_icsapi;
+  
   boost::shared_ptr<ICSConnection> m_connection;
   int m_side;
   int m_game_number;

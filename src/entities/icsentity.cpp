@@ -14,6 +14,7 @@
 #include "icsconnection.h"
 #include "positioninfo.h"
 #include "poolinfo.h"
+#include "icsapi.h"
 #include <iostream>
 
 using namespace boost;
@@ -55,11 +56,14 @@ ICSEntity::ICSEntity(VariantInfo* variant, const shared_ptr<Game>& game,
                    const shared_ptr<ICSConnection>& connection, AgentGroup* group)
 : Entity(game)
 , m_variant(variant)
+, m_icsapi(variant->icsAPI())
 , m_connection(connection)
 , m_side(side)
 , m_game_number(gameNumber)
 , m_editing_mode(false)
-, m_dispatcher(group, this) { }
+, m_dispatcher(group, this) {
+  Q_ASSERT(m_icsapi);
+}
 
 AbstractPosition::Ptr ICSEntity::position() const {
   return m_game->position();
@@ -114,17 +118,16 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
 
   // get last move verbose notation
   AbstractMove::Ptr last_move;
-  VerboseNotation last_move_verbose_notation(style12.lastMove, style12.position->size().y);
-  if (!is_starting && last_move_verbose_notation.valid())
-    last_move = m_variant->getVerboseMove(
-                  style12.position->previousTurn(),
-                  last_move_verbose_notation);
+  if (!is_starting)
+    last_move = m_icsapi->parseVerbose(style12.lastMove, style12.position);
 
   if (style12.index() > 0 && m_game->containsIndex(style12.index() - 1)
                   && last_move && m_variant->name() != "Dummy") {
     AbstractPosition::Ptr position = m_game->position(style12.index() - 1);
     if (position) {
       AbstractMove::Ptr mv = position->getMove(style12.lastMoveSAN);
+      std::cout << "mv = " << mv->toString(position) << std::endl;
+      std::cout << "last = " << last_move->toString(position) << std::endl;
       if (!mv || !mv->equals(last_move)) {
         std::cout <<
           "[server inconsistency] SAN for last move is different from verbose notation"

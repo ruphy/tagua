@@ -15,6 +15,7 @@
 #include "algebraicnotation.h"
 #include "pgnparser.h"
 #include "variants/xchess/piecetype.h"
+#include "icsapi.h"
 
 #include <iostream>
 
@@ -23,9 +24,12 @@ ExaminationEntity::ExaminationEntity(VariantInfo* variant, const boost::shared_p
                   AgentGroup* group)
 : UserEntity(game, QUEEN)
 , m_variant(variant)
+, m_icsapi(variant->icsAPI())
 , m_game_number(game_number)
 , m_connection(connection)
-, m_dispatcher(group, this) { }
+, m_dispatcher(group, this) {
+  Q_ASSERT(m_icsapi);
+}
 
 QString ExaminationEntity::save() const {
   return m_game->pgn();
@@ -96,9 +100,7 @@ void ExaminationEntity::notifyStyle12(const PositionInfo& style12, bool /*is_sta
   m_dispatcher.clockUpdate(style12.whiteTime, style12.blackTime);
 
   if (style12.index() > 0) {
-    AbstractMove::Ptr last_move = m_variant->getVerboseMove(
-      style12.position->previousTurn(),
-      VerboseNotation(style12.lastMove, style12.position->size().y));
+    MovePtr last_move = m_icsapi->parseVerbose(style12.lastMove, style12.position);
     m_game->insert(last_move, style12.position, style12.index());
   }
 

@@ -16,12 +16,15 @@
 #include "icslistener.h"
 #include "agent.h"
 #include "agentgroup.h"
+#include "fwd.h"
 
 class ICSConnection;
 
 class ExaminationEntity : public UserEntity
                         , public ICSListener {
   VariantInfo* m_variant;
+  ICSAPIPtr m_icsapi;
+  
   int m_game_number;
   boost::shared_ptr<ICSConnection> m_connection;
   AgentGroupDispatcher m_dispatcher;
