@@ -22,14 +22,6 @@
   </Menu>
   <Menu name="gameMenu">
    <text>&amp;Game</text>
-   <Action name="doPromotion" />
-   <Menu name="promotionType">
-    <text>&amp;Promote to</text>
-    <Action name="promoteQueen"/>
-    <Action name="promoteRook"/>
-    <Action name="promoteBishop"/>
-    <Action name="promoteKnight"/>
-   </Menu>
    <Action name="begin" />
    <Action name="back" />
    <Action name="pause" />

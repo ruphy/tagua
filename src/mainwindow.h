@@ -52,14 +52,7 @@ Q_OBJECT
   Console* console;
 
   QMenu* m_engine_menu;
-  KAction* m_promote_queen;
-  KAction* m_promote_rook;
-  KAction* m_promote_bishop;
-  KAction* m_promote_knight;
-  QActionGroup* m_promote_group;
-
-  KAction* m_do_promotion;
-
+  
   ChessTable* table();
   UI m_ui;
   UI& ui() { return m_ui; }

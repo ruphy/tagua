@@ -104,15 +104,6 @@ ChessTable* MainWindow::table() {
   return qobject_cast<ChessTable*>(m_main->currentWidget());
 }
 
-KAction* MainWindow::addPromotionAction(const QString& name, const QString& text, const char* uiSlot) {
-  KAction* temp = new KAction(KIcon(name), text, this);
-  temp->setCheckable(true);
-  connect(temp, SIGNAL(triggered(bool)), &ui(), uiSlot);
-  m_promote_group->addAction(temp);
-  actionCollection()->addAction(name, temp);
-  return temp;
-}
-
 KAction* MainWindow::installRegularAction(const QString& name, const KIcon& icon, const QString& text, QObject* obj, const char* slot) {
   KAction* temp = new KAction(icon, text, this);
   actionCollection()->addAction(name, temp);
@@ -171,16 +162,6 @@ void MainWindow::setupActions() {
   KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
   KStandardAction::open(this, SLOT(loadGame()), actionCollection());
   KStandardAction::quit(this, SLOT(quit()), actionCollection());
-
-  m_promote_group = new QActionGroup(this);
-
-  m_promote_queen = addPromotionAction("promoteQueen", i18n("Promote to &queen"), SLOT(promoteToQueen()));
-  m_promote_rook = addPromotionAction("promoteRook", i18n("Promote to &Rook"), SLOT(promoteToRook()));
-  m_promote_bishop = addPromotionAction("promoteBishop", i18n("Promote to &Bishop"), SLOT(promoteToBishop()));
-  m_promote_knight = addPromotionAction("promoteKnight", i18n("Promote to K&night"), SLOT(promoteToKnight()));
-
-  m_do_promotion = installRegularAction("doPromotion", KIcon("favorites"), i18n("Do &promotion"), &ui(),SLOT(setDoPromotion(bool)));
-  m_do_promotion->setCheckable(true);
 
   installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
   installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
