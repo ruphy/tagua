@@ -65,22 +65,19 @@ void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
       }
       
       NamedSprite sprite = m_cinterface->getPoolSprite(color, index);
-      Piece piece;
       int i;
       
       // find a matching piece on the pool
       for (i = index; i < n; i++) {
-        piece = pool.get(i);
-        if (piece.name() == sprite.name())
+        if (pool.get(i).name() == sprite.name())
           break;
       }
       
       if (i < n) {
         // matching piece found on the pool
         // insert all pieces before this one on the graphical pool
-        for (int j = index; j < i; j++) {
-          m_cinterface->insertPoolPiece(color, j, piece);
-        }
+        for (int j = index; j < i; j++)
+          m_cinterface->insertPoolPiece(color, j, pool.get(j));
         index = i + 1;
       }
       else {
@@ -90,9 +87,8 @@ void DropAnimatorMixin<Base>::updatePool(const GameState& final) {
     }
     
     // remove extra pieces from the graphical pool
-    while (m_cinterface->poolSize(color) > n) {
+    while (m_cinterface->poolSize(color) > n)
       m_cinterface->removePoolSprite(color, n);
-    }
   }
 }
 
