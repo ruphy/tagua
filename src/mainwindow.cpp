@@ -317,12 +317,16 @@ void MainWindow::cleanupGame() {
 
 bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr startingPos) {
   VariantInfo* variant = Variant::variant(variantName);
+  if (!variant) {
+    variant = Variant::variant("chess");
+  }
+
   if (variant) {
     ChessTable* board = new ChessTable;
     shared_ptr<Controller> controller(new EditGameController(
       board, variant, startingPos));
     createTab(board, controller,
-      QString("Editing %1 game").arg(variantName.toLower()));
+      QString("Editing %1 game").arg(variant->name().toLower()));
     return true;
   }
   else return false;
