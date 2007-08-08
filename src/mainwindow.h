@@ -86,7 +86,7 @@ Q_OBJECT
   void readSettings();
   void writeSettings();
 public:
-  MainWindow();
+  MainWindow(const QString& variant);
   virtual ~MainWindow();
 
  protected:

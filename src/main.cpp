@@ -44,8 +44,14 @@ int main(int argc, char **argv) {
   about.addCredit(ki18n("Pieter Stouten"), ki18n("Allowed free use of images on shogi.net"));
 
   KCmdLineOptions options;
+  options.add("+variant", ki18n("Initial variant"));
+  
   KCmdLineArgs::init(argc, argv, &about);
   KCmdLineArgs::addCmdLineOptions(options);
+  
+  KCmdLineArgs* args = KCmdLineArgs::parsedArgs();
+  
+  QString variant = args->count() > 0 ? args->arg(0) : "chess";  
   KApplication app;
 
 #ifdef TAGUA_DEBUG
@@ -54,7 +60,7 @@ int main(int argc, char **argv) {
   atexit(trap);
 #endif // TAGUA_DEBUG
 
-  MainWindow* widget = new MainWindow;
+  MainWindow* widget = new MainWindow(variant);
   widget->show();
 
   return app.exec();

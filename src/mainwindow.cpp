@@ -56,7 +56,7 @@ MainWindow::~MainWindow() {
   qApp->quit();
 }
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(const QString& variant)
 : KXmlGuiWindow(0) {
   setObjectName("tagua_main");
   m_main = new KTabWidget(this);
@@ -94,7 +94,7 @@ MainWindow::MainWindow()
   //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
 
 //  start in edit game mode
-  newGame("chess", AbstractPosition::Ptr());
+  newGame(variant, AbstractPosition::Ptr());
 
   setupActions();
   setupGUI();
