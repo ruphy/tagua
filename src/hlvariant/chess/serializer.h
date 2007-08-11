@@ -301,6 +301,7 @@ QChar Serializer<MoveGenerator>::symbol(typename Piece::Type type) const {
 template <typename MoveGenerator>
 typename Serializer<MoveGenerator>::Move
 Serializer<MoveGenerator>::parse_ics_verbose(const QString& str, const GameState& ref) {
+  // here ref is the position _after_ this move
   ICSVerbose verbose;
   verbose.load(str, ref.board().size().y);
   
@@ -312,7 +313,7 @@ Serializer<MoveGenerator>::parse_ics_verbose(const QString& str, const GameState
     to = verbose.to;
   }
   else {
-    from = ref.kingStartingPosition(ref.turn());
+    from = ref.kingStartingPosition(ref.previousTurn());
     to = from + (verbose.castling == SAN::KingSide ? Point(2,0) : Point(-2, 0));
   }
 
