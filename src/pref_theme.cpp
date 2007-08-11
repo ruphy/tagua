@@ -378,7 +378,7 @@ void PrefThemeCategory::themeChanged() {
         m_opt_widget = NULL;
       }
       OptList ol = m_parent->get_file_options(m_themes[i].file_name);
-      if(ol.size() != 0) {
+      if (ol.size() != 0 && m_list->isEnabled()) {
         m_opt_widget = new OptionWidget(ol, m_widget);
         m_opt_layout->addWidget(m_opt_widget);
         m_reset->setEnabled(true);
