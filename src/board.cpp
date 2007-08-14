@@ -298,7 +298,7 @@ void Board::setPremove(const NormalUserMove& premove) {
 
 void Board::setPremove(const DropUserMove& premove) {
   m_premove_from = Point::invalid();
-  m_premove_to = premove.m_to;
+  m_premove_to = premove.to;
   setTags("premove", m_premove_to);
 }
 
@@ -395,8 +395,7 @@ void Board::onMousePress(const QPoint& pos, int button) {
 
   if (button == Qt::LeftButton) {
     if (m_entity.lock()->oneClickMoves()) {
-      NormalUserMove m(Point::invalid(), point);
-      m_entity.lock()->setPromotion(m);
+      NormalUserMove m = m_entity.lock()->createMove(Point::invalid(), point);
       doMove(m);
     }
     else {
@@ -413,8 +412,7 @@ void Board::onMousePress(const QPoint& pos, int button) {
       else if (selection != Point::invalid()) {
           piece = m_sprites[selection].sprite();
           Q_ASSERT(piece);
-          NormalUserMove m(selection, point);
-          m_entity.lock()->setPromotion(m);
+          NormalUserMove m = m_entity.lock()->createMove(selection, point);
 
           switch(m_entity.lock()->validTurn(selection)) {
 
@@ -476,11 +474,9 @@ void Board::onMouseRelease(const QPoint& pos, int button) {
       }
 
       else  {
-        NormalUserMove m(m_drag_info->from, point, true);
+        NormalUserMove m = m_entity.lock()->createMove(m_drag_info->from, point);
         if (!m_sprites.valid(point))
           m.to = Point::invalid();
-
-        m_entity.lock()->setPromotion(m);
 
         switch(m_entity.lock()->validTurn(m_drag_info->from)) {
 
@@ -536,7 +532,7 @@ void Board::onMouseMove(const QPoint& pos, int /*button*/) {
       m_drag_info->sprite->moveTo(pos - QPoint(m_square_size / 2, m_square_size / 2) );
 
     // highlight valid moves
-    NormalUserMove move(m_drag_info->from,  point);
+    NormalUserMove move = m_entity.lock()->createMove(m_drag_info->from,  point);
     bool valid = m_sprites.valid(point);
     if (valid) {
       InteractionType action = m_entity.lock()->validTurn(m_drag_info->from);
@@ -557,7 +553,7 @@ void Board::onMouseMove(const QPoint& pos, int /*button*/) {
 
     if (m_sprites.valid(point)) {
       if (AbstractMove::Ptr move = m_entity.lock()->testMove(
-                              NormalUserMove(Point::invalid(), point))) {
+                              m_entity.lock()->createMove(Point::invalid(), point))) {
         // set move hint
         hint = m_entity.lock()->moveHint(move);
       }
@@ -572,7 +568,7 @@ void Board::onPositionChanged() {
     AbstractPiece::Ptr hint;
 
     if (AbstractMove::Ptr move = m_entity.lock()->testMove(
-                            NormalUserMove(Point::invalid(), m_hinting_pos)) ) {
+                            m_entity.lock()->createMove(Point::invalid(), m_hinting_pos))) {
       // set move hint
       hint = m_entity.lock()->moveHint(move);
     }
@@ -665,7 +661,7 @@ void Board::draggingOn(int pool, int index, const QPoint& point) {
   if (m_sprites.valid(to))
   switch(m_entity.lock()->validTurn(pool)) {
     case Moving: {
-      DropUserMove m(pool, index, to);
+      DropUserMove m = m_entity.lock()->createDrop(pool, index, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv) {
         setTags("validmove", to);
@@ -696,7 +692,7 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
   switch(m_entity.lock()->validTurn(pool)) {
 
     case Moving: {
-      DropUserMove m(pool, index, to);
+      DropUserMove m = m_entity.lock()->createDrop(pool, index, to);
       AbstractMove::Ptr mv = m_entity.lock()->testMove(m);
       if (mv)  {
           m_entity.lock()->executeMove(mv);
@@ -706,7 +702,7 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
     }
 
     case Premoving: {
-      DropUserMove m(pool, index, to);
+      DropUserMove m = m_entity.lock()->createDrop(pool, index, to);
       if (m_entity.lock()->testPremove(m)) {
         m_entity.lock()->addPremove(m);
         setPremove(m);

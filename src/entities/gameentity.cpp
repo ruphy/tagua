@@ -13,13 +13,12 @@
 #include "game.h"
 #include "board.h"
 #include "pgnparser.h"
-#include "hlvariant/chess/piece.h"
 
 using namespace boost;
 
 GameEntity::GameEntity(const VariantPtr& variant, const boost::shared_ptr<Game>& game,
                        Board* chessboard, AgentGroup* group)
-: UserEntity(game, HLVariant::Chess::Piece::QUEEN)
+: UserEntity(game)
 , m_variant(variant)
 , m_chessboard(chessboard)
 , m_dispatcher(group, this) {
@@ -73,6 +72,11 @@ void GameEntity::notifyBack() { }
 void GameEntity::notifyForward() { }
 void GameEntity::notifyGotoFirst() { }
 void GameEntity::notifyGotoLast() { }
+
+NormalUserMove GameEntity::createMove(const Point& from, const Point& to) const {
+  NormalUserMove m = UserEntity::createMove(from, to);
+  return m;
+}
 
 AbstractMove::Ptr GameEntity::testMove(const NormalUserMove& move) const {
   AbstractMove::Ptr m = m_variant->createNormalMove(move);

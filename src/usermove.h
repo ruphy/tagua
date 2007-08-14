@@ -19,35 +19,26 @@ struct NormalUserMove {
   Point from;
   Point to;
   int promotionType;
-  bool dragged;
 
-  NormalUserMove()
-  : from(Point::invalid())
-  , to(Point::invalid())
-  , promotionType(0) { }
-  NormalUserMove(const Point& from, const Point& to, bool dragged = false)
+  NormalUserMove(const Point& from, const Point& to)
   : from(from)
   , to(to)
-  , promotionType(0)
-  , dragged(dragged) {  }
-  static NormalUserMove invalid() {
-    return NormalUserMove();
-  }
-
+  , promotionType(-1) { }
+  
   bool valid() const {
     return from != Point::invalid() && to != Point::invalid();
   }
 };
 
 struct DropUserMove {
-  int   m_pool;
-  int   m_piece_index;
-  Point m_to;
+  int   pool;
+  int   piece_index;
+  Point to;
 
   DropUserMove(int pool, int piece_index, const Point& to)
-  : m_pool(pool)
-  , m_piece_index(piece_index)
-  , m_to(to) { }
+  : pool(pool)
+  , piece_index(piece_index)
+  , to(to) { }
 };
 
 #endif //USERMOVE_H

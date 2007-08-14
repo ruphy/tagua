@@ -14,9 +14,9 @@ public:
   typedef typename Base::Piece Piece;
   
   virtual Move createDropMove(const DropUserMove& drop) {
-    return Move(static_cast<typename Piece::Color>(drop.m_pool), 
-                drop.m_piece_index, 
-                drop.m_to);
+    return Move(static_cast<typename Piece::Color>(drop.pool), 
+                drop.piece_index, 
+                drop.to);
   }
 };
 

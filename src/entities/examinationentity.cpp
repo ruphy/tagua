@@ -21,7 +21,7 @@
 ExaminationEntity::ExaminationEntity(const VariantPtr& variant, const boost::shared_ptr<Game>& game,
                   int game_number, const boost::shared_ptr<ICSConnection>& connection,
                   AgentGroup* group)
-: UserEntity(game, HLVariant::Chess::Piece::QUEEN)
+: UserEntity(game)
 , m_variant(variant)
 , m_icsapi(variant->icsAPI())
 , m_game_number(game_number)

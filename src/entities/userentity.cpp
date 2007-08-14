@@ -10,13 +10,20 @@
 
 #include "userentity.h"
 
-UserEntity::UserEntity(const GamePtr& game, int promotionType)
+UserEntity::UserEntity(const GamePtr& game)
 : Entity(game)
-, m_editing_tools(false)
-, m_promotion(promotionType) { }
+, m_editing_tools(false) { }
 
 void UserEntity::enableEditingTools(bool value) {
   m_editing_tools = value;
+}
+
+NormalUserMove UserEntity::createMove(const Point& from, const Point& to) const {
+  return NormalUserMove(from, to);
+}
+
+DropUserMove UserEntity::createDrop(int pool, int index, const Point& to) const {
+  return DropUserMove(pool, index, to);
 }
 
 void UserEntity::handleRightClick(const Point&) const { }

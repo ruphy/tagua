@@ -28,16 +28,10 @@ class UserEntity : public Entity
 protected:
   TurnPolicy::Collection m_turn_test;
   bool m_editing_tools;
-  int m_promotion;
 public:
-  UserEntity(const GamePtr& game, int);
+  UserEntity(const GamePtr& game);
   virtual TurnPolicy::Collection& turnTest() { return m_turn_test; }
   virtual void enableEditingTools(bool value);
-
-  // promotion
-  void changePromotionType(int type) { m_promotion = type; }
-  void setPromotion(NormalUserMove& move) { move.promotionType = m_promotion; }
-  int promotionType() const { return m_promotion; }
 
   /**
     * Return a PGN for the game.
@@ -48,11 +42,16 @@ public:
     * Load the content of a PGN inside the game.
     */
   virtual void loadPGN(const PGN& pgn) = 0;
-
+  
+  virtual NormalUserMove createMove(const Point& from, const Point& to) const;
+  virtual DropUserMove createDrop(int pool, int index, const Point& to) const;
+  
   virtual AbstractMove::Ptr testMove(const NormalUserMove& m) const = 0;
   virtual AbstractMove::Ptr testMove(const DropUserMove& m) const = 0;
+  
   virtual bool testPremove(const NormalUserMove& m) const = 0;
   virtual bool testPremove(const DropUserMove&) const = 0;
+  
   virtual void executeMove(AbstractMove::Ptr move) = 0;
   virtual void addPremove(const NormalUserMove& m) = 0;
   virtual void addPremove(const DropUserMove& m) = 0;

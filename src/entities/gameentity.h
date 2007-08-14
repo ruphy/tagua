@@ -51,6 +51,7 @@ public:
   virtual void notifyGotoFirst();
   virtual void notifyGotoLast();
 
+  virtual NormalUserMove createMove(const Point& from, const Point& to) const;
   virtual AbstractMove::Ptr testMove(const NormalUserMove&) const;
   virtual AbstractMove::Ptr testMove(const DropUserMove&) const;
   virtual AbstractPiece::Ptr moveHint(AbstractMove::Ptr move) const;
