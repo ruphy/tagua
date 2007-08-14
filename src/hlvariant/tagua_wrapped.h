@@ -445,6 +445,8 @@ namespace HLVariant {
     typedef typename VariantData<Variant>::Piece Piece;
     typedef typename VariantData<Variant>::Move Move;
 //     typedef typename VariantData<Variant>::Pool Pool;
+
+    Variant m_variant;
   public:
     virtual PositionPtr createPosition() {
       return PositionPtr(
