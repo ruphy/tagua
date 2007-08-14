@@ -29,10 +29,11 @@ void register_variant(Variants* variants) {
 
 Variants::Variants() {
   register_variant<Chess::Variant>(this);
-//   register_variant<Minichess5::Variant>(this);
-//   register_variant<Crazyhouse::Variant>(this);
-//   register_variant<Shogi::Variant>(this);
-//   register_variant<MiniShogi::Variant>(this);
+  register_variant<Minichess5::Variant>(this);
+  register_variant<Crazyhouse::Variant>(this);
+  register_variant<Dummy::Variant>(this);
+  register_variant<Shogi::Variant>(this);
+  register_variant<MiniShogi::Variant>(this);
 }
 
 Variants& Variants::instance() {

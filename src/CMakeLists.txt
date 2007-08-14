@@ -40,6 +40,7 @@ set(tagua_SRC
   
   hlvariant/shogi/variant.cpp
   hlvariant/shogi/piece.cpp
+  hlvariant/shogi/shogiactions.cpp
 
   hlvariant/minishogi/variant.cpp
 

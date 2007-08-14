@@ -17,6 +17,13 @@ namespace Minichess5 {
 const char* Variant::m_name = "Chess 5x5";
 const char* Variant::m_theme_proxy = "Chess";
 
+void Variant::setupMove(NormalUserMove& m) const {
+  m.promotionType = m_actions.promotion();
+}
+
+ActionCollection* Variant::actions() {
+  return &m_actions;
+}
 
 } // namespace Minichess5
 } // namespace HLVariant

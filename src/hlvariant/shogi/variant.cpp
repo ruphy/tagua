@@ -17,5 +17,13 @@ namespace Shogi {
 const char* Variant::m_name = "Shogi";
 const char* Variant::m_theme_proxy = "Shogi";
 
+void Variant::setupMove(NormalUserMove& m) const {
+  m.promotionType = m_actions.promotion() ? 0 : -1;
+}
+
+ActionCollection* Variant::actions() {
+  return &m_actions;
+}
+
 } // namespace Shogi
 } // namespace HLVariant

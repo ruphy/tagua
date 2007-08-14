@@ -8,22 +8,26 @@
   (at your option) any later version.
 */
 
-#include "variant.h"
-#include "../tagua_wrapped.h"
+#ifndef HLVARIANT__SHOGI__SHOGIACTIONS_H
+#define HLVARIANT__SHOGI__SHOGIACTIONS_H
+
+#include "actioncollection.h"
 
 namespace HLVariant {
-namespace Dummy {
+namespace Shogi {
 
-const char* Variant::m_name = "Dummy";
-const char* Variant::m_theme_proxy = "Chess";
+class ShogiActions : public ActionCollection {
+Q_OBJECT
+  bool m_promotion;
+public:
+  ShogiActions();
+  
+  bool promotion() const;
+private Q_SLOTS:
+  void toggle_promotion();
+};
 
-void Variant::setupMove(NormalUserMove& m) const {
-  m.promotionType = m_actions.promotion();
-}
-
-ActionCollection* Variant::actions() {
-  return &m_actions;
-}
-
-} // namespace Dummy
+} // namespace Shogi
 } // namespace HLVariant
+
+#endif // HLVARIANT__SHOGI__SHOGIACTIONS_H

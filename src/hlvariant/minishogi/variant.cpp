@@ -18,5 +18,13 @@ namespace MiniShogi {
 const char* Variant::m_name = "MiniShogi";
 const char* Variant::m_theme_proxy = "Shogi";
 
+void Variant::setupMove(NormalUserMove& m) const {
+  m.promotionType = m_actions.promotion() ? 0 : -1;
+}
+
+ActionCollection* Variant::actions() {
+  return &m_actions;
+}
+
 } // namespace MiniShogi
 } // namespace HLVariant

@@ -14,6 +14,7 @@
 #include "../crazyhouse/variant.h"
 #include "legalitycheck.h"
 #include "movegenerator.h"
+#include "../chess/actions.h"
 
 namespace HLVariant {
 namespace Dummy {
@@ -33,7 +34,12 @@ struct TAGUA_EXPORT Variant {
   static const char *m_theme_proxy;
 
   static int moveListLayout() { return 0; }
-  static OptList positionOptions() { return OptList(); }
+   
+  OptList positionOptions() const { return OptList(); }
+  void setupMove(NormalUserMove& m) const;
+  ActionCollection* actions();
+private:
+  Chess::Actions m_actions;
 };
 
 } // namespace Dummy

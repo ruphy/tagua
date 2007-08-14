@@ -12,6 +12,7 @@
 #define HLVARIANT__MINICHESS5__VARIANT_H
 
 #include "../chess/variant.h"
+#include "../chess/actions.h"
 
 namespace HLVariant {
 namespace Minichess5 {
@@ -34,7 +35,11 @@ struct TAGUA_EXPORT Variant {
 
   static int moveListLayout() { return 0; }
 
-  static OptList positionOptions() { return OptList(); }
+  OptList positionOptions() const { return OptList(); }
+  void setupMove(NormalUserMove& m) const;
+  ActionCollection* actions();
+private:
+  Chess::Actions m_actions;
 };
 
 } // namespace Minichess5

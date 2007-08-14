@@ -21,6 +21,7 @@
 #include "../crazyhouse/movefactory.h"
 #include "../animator.h"
 #include "../dropanimator.h"
+#include "shogiactions.h"
 
 namespace HLVariant {
 namespace Shogi {
@@ -41,8 +42,11 @@ struct TAGUA_EXPORT Variant {
 
   static int moveListLayout() { return 0; }
 
-  static OptList positionOptions() { return OptList(); }
-  
+  OptList positionOptions() const { return OptList(); }
+  void setupMove(NormalUserMove& m) const;
+  ActionCollection* actions();
+private:
+  ShogiActions m_actions;
 };
 
 } // namespace Shogi
