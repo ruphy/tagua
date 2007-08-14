@@ -27,6 +27,7 @@
    <Action name="pause" />
    <Action name="forward" />
    <Action name="end" />
+   <ActionList name="variantActions" />
   </Menu>
   <Menu name="viewMenu" >
    <text>&amp;View</text>
@@ -49,5 +50,6 @@
   <Action name="pause" />
   <Action name="forward" />
   <Action name="end" />
+  <ActionList name="variantActions" />
  </ToolBar>
 </kpartgui>

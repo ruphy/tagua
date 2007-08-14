@@ -20,6 +20,7 @@
 
 class Controller;
 class Engine;
+class ActionCollection;
 
 class UI : public QObject {
 Q_OBJECT
@@ -47,6 +48,7 @@ public Q_SLOTS:
   void setTurn(int);
   void createCtrlAction();
   void destroyCtrlAction();
+  ActionCollection* variantActions() const;
 
   void pgnCopy();
   void pgnPaste();

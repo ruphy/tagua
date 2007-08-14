@@ -147,6 +147,10 @@ void UI::destroyCtrlAction() {
   controller()->destroyCtrlAction();
 }
 
+ActionCollection* UI::variantActions() const {
+  return controller()->variantActions();
+}
+
 EntityToken UI::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
   return controller()->addPlayingEngine(side, engine);
 }

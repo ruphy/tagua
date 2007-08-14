@@ -21,6 +21,7 @@ class ChessTable;
 class UserEntity;
 class Engine;
 class PGN;
+class ActionCollection;
 
 /**
   * @b Controller is the base abstract class for all controllers in Tagua.
@@ -33,12 +34,17 @@ class PGN;
 class Controller : public boost::enable_shared_from_this<Controller> {
 protected:
   ChessTable* m_view;
+  ActionCollection* m_variant_actions;
   virtual boost::shared_ptr<UserEntity> entity() const = 0;
 public:
-  Controller(ChessTable* view)
-  : m_view(view) { }
-  virtual ~Controller() { }
+  Controller(ChessTable* view);
+  virtual ~Controller();
 
+  /**
+    * Variant specific actions.
+    */
+  ActionCollection* variantActions() const;
+  
   /**
     * Variant associated to the controller.
     */

@@ -510,6 +510,10 @@ namespace HLVariant {
     virtual ICSAPIPtr icsAPI() const {
       return ICSAPIPtr(ReturnICSAPI<Variant>::apply());
     }
+    
+    virtual void setupActions(ActionCollection* c) const {
+      Variant::setupActions(c);
+    }
   };
   
   template <typename Variant>

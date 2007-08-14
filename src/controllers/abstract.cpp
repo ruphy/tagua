@@ -11,6 +11,15 @@
 #include "abstract.h"
 #include "entities/userentity.h"
 
+Controller::Controller(ChessTable* view)
+: m_view(view) { }
+
+Controller::~Controller() { }
+
+ActionCollection* Controller::variantActions() const {
+  return m_variant_actions;
+}
+
 bool Controller::undo() {
   return entity()->undo();
 }

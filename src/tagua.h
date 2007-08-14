@@ -26,6 +26,7 @@
 
 class GraphicalAPI;
 class ICSAPI;
+class ActionCollection;
 
 /**
   * @file tagua.h
@@ -385,6 +386,12 @@ public:
     *         ICS (in that case a Dummy variant will be used).
     */
   virtual ICSAPIPtr icsAPI() const = 0;
+  
+  /**
+    * Setup a list of variant specific actions to be displayed on a game toolbar
+    * and menu.
+    */
+  virtual void setupActions(ActionCollection*) const = 0;
 };
 
 

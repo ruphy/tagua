@@ -104,6 +104,7 @@ set(tagua_SRC
   turnpolicy.cpp
   decoratedmove.cpp
   variants.cpp
+  actioncollection.cpp
 )
 
 # remove spurious xpressive warnings

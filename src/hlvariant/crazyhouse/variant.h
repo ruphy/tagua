@@ -18,6 +18,7 @@
 #include "gamestate.h"
 #include "move.h"
 #include "../chess/move.h"
+#include "../chess/variant.h"
 #include "export.h"
 #include "option.h"
 #include "legalitycheck.h"
@@ -44,7 +45,6 @@ struct TAGUA_EXPORT Variant {
   static const char *m_theme_proxy;
 
   static int moveListLayout() { return 0; }
-
   static OptList positionOptions() { return OptList(); }
 };
 

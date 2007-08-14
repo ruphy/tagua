@@ -11,6 +11,8 @@
 #ifndef HLVARIANT__CHESS__VARIANT_H
 #define HLVARIANT__CHESS__VARIANT_H
 
+#include <kactioncollection.h>
+
 #include "movegenerator.h"
 #include "serializer.h"
 #include "export.h"
@@ -36,7 +38,7 @@ struct TAGUA_EXPORT Variant {
 
   static int moveListLayout() { return 0; }
   static OptList positionOptions() { return OptList(); }
-  
+  static void setupActions(ActionCollection*);
 };
 
 } // namespace Chess

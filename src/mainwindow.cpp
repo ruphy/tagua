@@ -1,6 +1,6 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
-            (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
+  Copyright (c) 2006-2007 Paolo Capriotti <p.capriotti@gmail.com>
+            (c) 2006-2007 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@
 #include <QTextStream>
 #include <QTextCodec>
 #include <ktabwidget.h>
+
+#include "actioncollection.h"
 #include "chesstable.h"
 #include "console.h"
 #include "clock.h"
@@ -97,7 +99,7 @@ MainWindow::MainWindow(const QString& variant)
   setupActions();
   setupGUI();
   setupEngineMenu();
-  updatePromotionType();
+  updateVariantActions();
 }
 
 ChessTable* MainWindow::table() {
@@ -187,37 +189,10 @@ void MainWindow::setupActions() {
   installRegularAction("configure", KIcon("configure"), i18n("&Configure Tagua..."), this, SLOT(preferences()));
 }
 
-void MainWindow::updatePromotionType() {
-  // TODO: I'm removing this code because it causes a crash
-  // and I don't want to investigate further, since the promotion
-  // stuff needs to be changed completely.
-#if 0
-  int ptype = m_ui.promotionType();
-  if (ptype == 0)
-    m_promote_group->setEnabled(false);
-  else {
-    m_promote_group->setEnabled(true);
-    switch(ptype) {
-    case QUEEN:
-      m_promote_queen->setChecked(true);
-      break;
-    case ROOK:
-      m_promote_rook->setChecked(true);
-      break;
-    case BISHOP:
-      m_promote_bishop->setChecked(true);
-      break;
-    case KNIGHT:
-      m_promote_knight->setChecked(true);
-      break;
-    default:
-      m_promote_group->setEnabled(false);
-    }
-  }
-
-  std::cout << "do promotion: " << m_ui.doPromotion() << std::endl;
-  m_do_promotion->setChecked(m_ui.doPromotion());
-#endif
+void MainWindow::updateVariantActions() {
+  ActionCollection* variant_actions = m_ui.variantActions();
+  unplugActionList("variantActions");
+  plugActionList("variantActions", variant_actions->actions());
 }
 
 void MainWindow::readSettings() { }
@@ -245,7 +220,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event) {
 void MainWindow::changeTab(int index) {
   m_ui.setCurrentTab(m_main->currentWidget());
   m_movelist_stack->setCurrentIndex(index);
-  updatePromotionType();
+  updateVariantActions();
 }
 
 void MainWindow::closeTab() {

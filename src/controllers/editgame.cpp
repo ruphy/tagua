@@ -22,6 +22,7 @@
 #include "icsconnection.h"
 #include "chesstable.h"
 #include "foreach.h"
+#include "actioncollection.h"
 #include <iostream>
 
 using namespace boost;
@@ -96,6 +97,10 @@ EditGameController::EditGameController(ChessTable* view,
   init(AbstractPosition::Ptr());
 }
 
+EditGameController::~EditGameController() {
+  delete m_variant_actions;
+}
+
 void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_players[0] = m_entity;
   m_players[1] = m_entity;
@@ -114,6 +119,10 @@ void EditGameController::init(AbstractPosition::Ptr startingPosition) {
 
   // add clock update agent
   m_agents.addAgent(m_update_agent);
+  
+  // setup variant actions
+  m_variant_actions = new ActionCollection;
+  m_variant->setupActions(m_variant_actions);
 }
 
 QString EditGameController::variant() const {

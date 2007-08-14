@@ -72,7 +72,7 @@ Q_OBJECT
   KAction* addPromotionAction(const QString& name, const QString& text, const char* uiSlot);
   KAction* installRegularAction(const QString& name, const KIcon& icon, const QString& text,
                                 QObject* obj, const char* slot);
-  void updatePromotionType();
+  void updateVariantActions();
 
   bool openFile(const QString&);
 
