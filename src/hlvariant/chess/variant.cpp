@@ -42,6 +42,10 @@ void Variant::setupActions(ActionCollection* actions) {
   actions->add(knight, boost::bind(std::mem_fun(&Variant::promote_to_knight), this));
 }
 
+void Variant::setupMove(NormalUserMove& move) const {
+  move.promotionType = m_promotion;
+}
+
 void Variant::promote_to_queen() {
   m_promotion = GameState::Board::Piece::QUEEN;
 }

@@ -392,6 +392,11 @@ public:
     * and menu.
     */
   virtual void setupActions(ActionCollection*) = 0;
+  
+  /**
+    * Add variant specific information (i.e. promotionType) to a move.
+    */
+  virtual void setupMove(NormalUserMove& m) const = 0;
 };
 
 

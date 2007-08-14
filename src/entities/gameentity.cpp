@@ -75,6 +75,7 @@ void GameEntity::notifyGotoLast() { }
 
 NormalUserMove GameEntity::createMove(const Point& from, const Point& to) const {
   NormalUserMove m = UserEntity::createMove(from, to);
+  m_variant->setupMove(m);
   return m;
 }
 

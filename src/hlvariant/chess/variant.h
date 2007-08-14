@@ -40,6 +40,7 @@ struct TAGUA_EXPORT Variant {
   
   OptList positionOptions() const { return OptList(); }
   void setupActions(ActionCollection*);
+  void setupMove(NormalUserMove& m) const;
   
   Variant();
 private:

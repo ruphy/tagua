@@ -516,6 +516,10 @@ namespace HLVariant {
     virtual void setupActions(ActionCollection* c) {
       m_variant.setupActions(c);
     }
+    
+    virtual void setupMove(NormalUserMove& m) const {
+      m_variant.setupMove(m);
+    }
   };
   
   template <typename Variant>
