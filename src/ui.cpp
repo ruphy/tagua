@@ -23,13 +23,18 @@ UI::UI()
 boost::shared_ptr<Controller>& UI::controller() {
   Q_ASSERT(m_current_tab);
 
-  return m_controller[m_current_tab];
+  boost::shared_ptr<Controller>& res = m_controller[m_current_tab];
+  Q_ASSERT(res);
+  
+  return res;
 }
 
-const boost::shared_ptr<Controller>& UI::controller() const {
+boost::shared_ptr<Controller> UI::controller() const {
   Q_ASSERT(m_current_tab);
 
-  return m_controller.find(m_current_tab)->second;
+  ControllerMap::const_iterator it = m_controller.find(m_current_tab);
+  Q_ASSERT(it != m_controller.end());
+  return it->second;
 }
 
 void UI::addController(QWidget* w, const shared_ptr<Controller>& controller) {

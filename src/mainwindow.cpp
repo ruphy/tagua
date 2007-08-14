@@ -192,7 +192,12 @@ void MainWindow::setupActions() {
 void MainWindow::updateVariantActions() {
   ActionCollection* variant_actions = m_ui.variantActions();
   unplugActionList("variantActions");
-  plugActionList("variantActions", variant_actions->actions());
+  if (variant_actions) {
+    plugActionList("variantActions", variant_actions->actions());
+  }
+  else {
+    WARNING("No variant actions");
+  }
 }
 
 void MainWindow::readSettings() { }
@@ -249,11 +254,13 @@ void MainWindow::createTab(ChessTable* board, const shared_ptr<Controller>& cont
   else
     m_main->insertTab(index, board, caption);
 
-  m_main->setCurrentIndex(index);
   m_ui.addController(board, controller);
   m_ui.setCurrentTab(board);
   m_movelist_stack->addWidget(board->moveListTable());
+  
+  m_main->setCurrentIndex(index);
   m_movelist_stack->setCurrentIndex(index);
+  
   if (m_main->count() > 1) m_main->setTabBarHidden(false);
 }
 

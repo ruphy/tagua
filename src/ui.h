@@ -28,7 +28,7 @@ Q_OBJECT
   ControllerMap m_controller;
   QWidget* m_current_tab;
   boost::shared_ptr<Controller>& controller();
-  const boost::shared_ptr<Controller>& controller() const;
+  boost::shared_ptr<Controller> controller() const;
 public:
   UI();
   void addController(QWidget* w, const boost::shared_ptr<Controller>&);
