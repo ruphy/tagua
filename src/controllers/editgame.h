@@ -54,7 +54,6 @@ public:
   EditGameController(ChessTable*, const VariantPtr& variant,
     AbstractPosition::Ptr startingPos = AbstractPosition::Ptr());
   ~EditGameController();
-  virtual void setPromotionType(int);
 
   virtual QString variant() const;
   EntityToken addPlayingEngine(int side, const boost::shared_ptr<Engine>& engine);

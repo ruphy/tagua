@@ -101,18 +101,6 @@ void UI::pgnPaste(const QString&) {
   //controller()->loadPGN(pgn);
 }
 
-int UI::promotionType() const {
-  return controller()->promotionType();
-}
-
-bool UI::doPromotion() const {
-  return controller()->doPromotion();
-}
-
-void UI::setDoPromotion(bool value) {
-  controller()->setDoPromotion(value);
-}
-
 void UI::clearBoard() {
   controller()->clearBoard();
 }

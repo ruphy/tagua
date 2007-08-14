@@ -93,21 +93,6 @@ public:
   virtual PositionPtr currentPosition() const { return PositionPtr(); }
 
   /**
-    * Set autopromotion type. In chess and variants with promotions,
-    * all pawns will be automatically promoted to @a type.
-   */
-  virtual void setPromotionType(int);
-
-  /**
-    * Retrieve current promotion type.
-    * @sa setPromotionType.
-    */
-  virtual int promotionType() const;
-
-  virtual void setDoPromotion(bool);
-  virtual bool doPromotion() const;
-
-  /**
     * Change turn. Used for example in edit position mode.
     */
   virtual void setTurn(int) { }

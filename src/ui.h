@@ -53,14 +53,7 @@ public Q_SLOTS:
   void pgnCopy();
   void pgnPaste();
   void pgnPaste(const QString&);
-
-  // promotion type
-  int promotionType() const;
-
-  // do promotion
-  void setDoPromotion(bool);
-  bool doPromotion() const;
-
+  
   // editing
   void clearBoard();
   void setStartingPosition();

@@ -36,22 +36,6 @@ bool Controller::promoteVariation() {
   return entity()->promoteVariation();
 }
 
-void Controller::setPromotionType(int p) {
-  entity()->changePromotionType(p);
-}
-
-int Controller::promotionType() const {
-  return entity()->promotionType();
-}
-
-bool Controller::doPromotion() const {
-  return entity()->promotionType() >= 0;
-}
-
-void Controller::setDoPromotion(bool value) {
-  return entity()->changePromotionType(value ? 0 : -1);
-}
-
 bool Controller::back() {
   return entity()->back();
 }

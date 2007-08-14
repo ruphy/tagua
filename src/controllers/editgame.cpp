@@ -133,10 +133,6 @@ QString EditGameController::variant() const {
     return QString();
 }
 
-void EditGameController::setPromotionType(int type) {
-  m_entity->changePromotionType(type);
-}
-
 void EditGameController::onNavigation() { }
 
 EntityToken EditGameController::addPlayingEngine(int side, const shared_ptr<Engine>& engine) {
