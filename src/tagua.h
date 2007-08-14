@@ -391,7 +391,7 @@ public:
     * Setup a list of variant specific actions to be displayed on a game toolbar
     * and menu.
     */
-  virtual void setupActions(ActionCollection*) = 0;
+  virtual ActionCollection* actions() = 0;
   
   /**
     * Add variant specific information (i.e. promotionType) to a move.

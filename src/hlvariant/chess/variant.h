@@ -19,6 +19,9 @@
 #include "option.h"
 #include "../animator.h"
 #include "../movefactory.h"
+#include "actions.h"
+
+class ActionCollection;
 
 namespace HLVariant {
 namespace Chess {
@@ -39,17 +42,11 @@ struct TAGUA_EXPORT Variant {
   static int moveListLayout() { return 0; }
   
   OptList positionOptions() const { return OptList(); }
-  void setupActions(ActionCollection*);
   void setupMove(NormalUserMove& m) const;
   
-  Variant();
+  ActionCollection* actions();
 private:
-  GameState::Board::Piece::Type m_promotion;
-  
-  void promote_to_queen();
-  void promote_to_rook();
-  void promote_to_bishop();
-  void promote_to_knight();
+  Actions m_actions;
 };
 
 } // namespace Chess

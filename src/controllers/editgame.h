@@ -55,6 +55,7 @@ public:
     AbstractPosition::Ptr startingPos = AbstractPosition::Ptr());
   ~EditGameController();
 
+  virtual ActionCollection* variantActions() const;
   virtual QString variant() const;
   EntityToken addPlayingEngine(int side, const boost::shared_ptr<Engine>& engine);
 //   EntityToken addAnalysingEngine(const boost::shared_ptr<Engine>& engine);

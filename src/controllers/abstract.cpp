@@ -16,10 +16,6 @@ Controller::Controller(ChessTable* view)
 
 Controller::~Controller() { }
 
-ActionCollection* Controller::variantActions() const {
-  return m_variant_actions;
-}
-
 bool Controller::undo() {
   return entity()->undo();
 }

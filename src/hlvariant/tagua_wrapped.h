@@ -513,8 +513,8 @@ namespace HLVariant {
       return ICSAPIPtr(ReturnICSAPI<Variant>::apply());
     }
     
-    virtual void setupActions(ActionCollection* c) {
-      m_variant.setupActions(c);
+    virtual ActionCollection* actions() {
+      return m_variant.actions();
     }
     
     virtual void setupMove(NormalUserMove& m) const {

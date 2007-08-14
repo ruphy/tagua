@@ -97,9 +97,7 @@ EditGameController::EditGameController(ChessTable* view,
   init(AbstractPosition::Ptr());
 }
 
-EditGameController::~EditGameController() {
-  delete m_variant_actions;
-}
+EditGameController::~EditGameController() { }
 
 void EditGameController::init(AbstractPosition::Ptr startingPosition) {
   m_players[0] = m_entity;
@@ -119,10 +117,10 @@ void EditGameController::init(AbstractPosition::Ptr startingPosition) {
 
   // add clock update agent
   m_agents.addAgent(m_update_agent);
-  
-  // setup variant actions
-  m_variant_actions = new ActionCollection;
-  m_variant->setupActions(m_variant_actions);
+}
+
+ActionCollection* EditGameController::variantActions() const {
+  return m_variant->actions();
 }
 
 QString EditGameController::variant() const {

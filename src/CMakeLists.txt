@@ -29,6 +29,7 @@ set(tagua_SRC
   hlvariant/chess/move.cpp
   hlvariant/chess/gamestate.cpp
   hlvariant/chess/piece.cpp
+  hlvariant/chess/actions.cpp
   
   hlvariant/dummy/variant.cpp
   
