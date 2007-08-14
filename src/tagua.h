@@ -391,7 +391,7 @@ public:
     * Setup a list of variant specific actions to be displayed on a game toolbar
     * and menu.
     */
-  virtual void setupActions(ActionCollection*) const = 0;
+  virtual void setupActions(ActionCollection*) = 0;
 };
 
 

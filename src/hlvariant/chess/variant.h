@@ -37,8 +37,18 @@ struct TAGUA_EXPORT Variant {
   static const char *m_theme_proxy;
 
   static int moveListLayout() { return 0; }
-  static OptList positionOptions() { return OptList(); }
-  static void setupActions(ActionCollection*);
+  
+  OptList positionOptions() const { return OptList(); }
+  void setupActions(ActionCollection*);
+  
+  Variant();
+private:
+  GameState::Board::Piece::Type m_promotion;
+  
+  void promote_to_queen();
+  void promote_to_rook();
+  void promote_to_bishop();
+  void promote_to_knight();
 };
 
 } // namespace Chess

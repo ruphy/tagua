@@ -506,15 +506,15 @@ namespace HLVariant {
     }
     
     virtual OptList positionOptions() const {
-      return Variant::positionOptions();
+      return m_variant.positionOptions();
     }
     
     virtual ICSAPIPtr icsAPI() const {
       return ICSAPIPtr(ReturnICSAPI<Variant>::apply());
     }
     
-    virtual void setupActions(ActionCollection* c) const {
-      Variant::setupActions(c);
+    virtual void setupActions(ActionCollection* c) {
+      m_variant.setupActions(c);
     }
   };
   
