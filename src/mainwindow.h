@@ -35,7 +35,7 @@ class QConnect;
 class NewGame;
 class EngineInfo;
 class QDockWidget;
-class KTabWidget;
+class TabWidget;
 class QStackedWidget;
 class QActionGroup;
 class KAction;
@@ -46,7 +46,7 @@ Q_OBJECT
   QDockWidget* movelist_dock;
   QDockWidget* console_dock;
 
-  KTabWidget* m_main;
+  TabWidget* m_main;
   QStackedWidget* m_movelist_stack;
   boost::shared_ptr<ICSConnection> m_connection;
   Console* console;

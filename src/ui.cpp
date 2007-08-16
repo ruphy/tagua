@@ -49,6 +49,7 @@ void UI::setController(const shared_ptr<Controller>& controller) {
 
 void UI::removeController(QWidget* w) {
   controller()->end();
+  std::cout << "removing controller " << w << std::endl;
   m_controller.erase(w);
 }
 

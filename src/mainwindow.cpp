@@ -26,7 +26,6 @@
 #include <QCloseEvent>
 #include <QTextStream>
 #include <QTextCodec>
-#include <ktabwidget.h>
 
 #include "actioncollection.h"
 #include "chesstable.h"
@@ -47,6 +46,7 @@
 #include "pgnparser.h"
 #include "pref_highlight.h"
 #include "pref_preferences.h"
+#include "tabwidget.h"
 
 using namespace Qt;
 using namespace boost;
@@ -59,7 +59,8 @@ MainWindow::~MainWindow() {
 MainWindow::MainWindow(const QString& variant)
 : KXmlGuiWindow(0) {
   setObjectName("tagua_main");
-  m_main = new KTabWidget(this);
+  m_main = new TabWidget(this);
+  m_main->setTabBarHidden(true);
   setCentralWidget(m_main);
 
   m_movelist_stack = new QStackedWidget;
@@ -223,6 +224,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void MainWindow::changeTab(int index) {
+  std::cout << "changing tab, widget = " << m_main->currentWidget() << std::endl;
   m_ui.setCurrentTab(m_main->currentWidget());
   m_movelist_stack->setCurrentIndex(index);
   updateVariantActions();
@@ -230,6 +232,23 @@ void MainWindow::changeTab(int index) {
 
 void MainWindow::closeTab() {
   if (m_main->count() > 1) {
+    int old_index = m_main->currentIndex();
+    ChessTable* old_board = table();
+    
+    int new_index = old_index - 1;
+    if (new_index < 0)
+      new_index = old_index + 1;
+    m_main->setCurrentIndex(new_index);
+    
+    m_main->removeTab(old_index);
+    m_movelist_stack->removeWidget(m_movelist_stack->widget(old_index));
+    m_ui.removeController(old_board);
+    
+    if (m_main->count() <= 1) {
+      m_main->setTabBarHidden(true);
+    }
+
+#if 0 // this doesn't work... why?
     ChessTable* old_board = table();
     m_ui.removeController(old_board);
     m_movelist_stack->removeWidget(
@@ -239,11 +258,12 @@ void MainWindow::closeTab() {
     delete old_board;
 
     if (m_main->count() <= 1) {
-      m_main->setTabBarHidden(true);
+      m_main->hideTabBar();
     }
 
     // update ui controller (just in case...)
     m_ui.setCurrentTab(m_main->currentWidget());
+#endif
   }
 }
 
@@ -262,6 +282,8 @@ void MainWindow::createTab(ChessTable* board, const shared_ptr<Controller>& cont
   m_movelist_stack->setCurrentIndex(index);
   
   if (m_main->count() > 1) m_main->setTabBarHidden(false);
+  
+  std::cout << "created tab " << board << std::endl;
 }
 
 

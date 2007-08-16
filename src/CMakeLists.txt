@@ -107,6 +107,7 @@ set(tagua_SRC
   decoratedmove.cpp
   variants.cpp
   actioncollection.cpp
+  tabwidget.cpp
 )
 
 # remove spurious xpressive warnings
