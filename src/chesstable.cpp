@@ -183,9 +183,11 @@ void ChessTable::layout(bool force_reload) {
 
   m_clocks[x]->resize(clock_size);
   m_clocks[x]->moveTo(clock0_position.x(), clock0_position.y());
+  std::cout << "moving clock " << x << " to " << clock0_position.y() << std::endl;
 
   m_clocks[!x]->resize(clock_size);
   m_clocks[!x]->moveTo(clock1_position.x(), clock1_position.y());
+  std::cout << "moving clock " << !x << " to " << clock1_position.y() << std::endl;
 
   m_pools[x]->m_flipped = false;
   m_pools[x]->onResize(pool_piece_size, force_reload);
@@ -276,6 +278,11 @@ void ChessTable::flip() {
   int delta = qAbs(m_pools[0]->pos().y() - m_pools[1]->pos().y());
   for(int i=0;i<2;i++)
     m_pools[i]->flipAndMoveBy( QPoint(0, delta) );
+    
+  // flip clocks
+  QPoint pos = m_clocks[0]->pos();
+  m_clocks[0]->moveTo(m_clocks[1]->pos());
+  m_clocks[1]->moveTo(pos);
 }
 
 void ChessTable::flip(bool flipped) {
