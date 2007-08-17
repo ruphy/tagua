@@ -83,7 +83,7 @@ void GNUShogiEngine::processCommand(const QString& command) {
 }
 
 void GNUShogiEngine::sendMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref) {
-  QString move_str = move->toString(ref);
+  QString move_str = move->toString("simple", ref);
   sendCommand(move_str);
 }
 

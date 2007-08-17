@@ -192,7 +192,8 @@ bool ICSEntity::attach() {
 
 void ICSEntity::notifyMove(const Index& index) {
   if (!canEdit()) {
-    m_connection->sendText(m_game->move(index)->toString(m_game->position(index.prev())));
+    m_connection->sendText(m_game->move(index)->toString(
+      "simple", m_game->position(index.prev())));
   }
 }
 

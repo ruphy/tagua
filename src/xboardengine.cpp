@@ -149,7 +149,7 @@ void XBoardEngine::processCommand(const QString& command) {
 }
 
 void XBoardEngine::sendMove(AbstractMove::Ptr move, AbstractPosition::Ptr ref) {
-  QString move_str = m_features.san ? move->SAN(ref) : move->toString(ref);
+  QString move_str = move->toString(m_features.san ? "compact" : "simple", ref);
   if (m_features.usermove)
     move_str = "usermove " + move_str;
   sendCommand(move_str);

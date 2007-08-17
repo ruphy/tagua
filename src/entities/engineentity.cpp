@@ -53,7 +53,7 @@ void EngineEntity::setup() {
     m_indexes.pop();
     
     MovePtr move = m_game->move(index);
-    std::cout << "move = " << move->toString(pos) << std::endl;
+    std::cout << "move = " << move->toString("simple", pos) << std::endl;
     
     m_engine->sendMove(move, pos);
   }

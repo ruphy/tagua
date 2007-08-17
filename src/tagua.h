@@ -99,19 +99,11 @@ public:
   virtual ~AbstractMove() { }
 
   /**
-    * Return a compact SAN representation for the move.
+    * Serialize the move.
+    * \param rep The type of representation to use.
+    * \param ref A reference position. Its meaning is defined by the serializer.
     */
-  virtual QString SAN(const PositionPtr& ref) const = 0;
-
-  /**
-    * Return a decorated representation for the move.
-    */
-  virtual DecoratedMove toDecoratedMove(const PositionPtr& ref) const = 0;
-
-  /**
-    * Return the move in coordinate notation.
-    */
-  virtual QString toString(const PositionPtr& ref) const = 0;
+  virtual QString toString(const QString& rep, const PositionPtr& ref) const = 0;
 
   /**
     * Convert the move to a normal user move. Used to

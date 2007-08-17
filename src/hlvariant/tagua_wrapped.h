@@ -124,37 +124,11 @@ namespace HLVariant {
     WrappedMove(const Move& move)
     : m_move(move) { }
   
-    virtual QString SAN(const PositionPtr& _ref) const {
+    virtual QString toString(const QString& rep, const PositionPtr& _ref) const {
       WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
   
       if (ref) {
-        Serializer serializer("compact");
-        return serializer.serialize(m_move, ref->inner());
-      }
-      else {
-        MISMATCH(*_ref.get(), WrappedPosition<Variant>);
-        return "$@%";
-      }
-    }
-  
-    virtual DecoratedMove toDecoratedMove(const PositionPtr& _ref) const {
-      WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
-  
-      if (ref) {
-        Serializer serializer("decorated");
-        return DecoratedMove(serializer.serialize(m_move, ref->inner()));
-      }
-      else {
-        MISMATCH(*_ref.get(), WrappedPosition<Variant>);
-        return DecoratedMove("$@%");
-      }
-    }
-  
-    virtual QString toString(const PositionPtr& _ref) const {
-      WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
-  
-      if (ref) {
-        Serializer serializer("simple");
+        Serializer serializer(rep);
         return serializer.serialize(m_move, ref->inner());
       }
       else {

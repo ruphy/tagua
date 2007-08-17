@@ -764,7 +764,7 @@ QString Game::variationPgn(const History& vec, const Entry& e,
     const Entry& preve = (i > start) ? vec[i-1] : e;
 
     QString mv = (vec[i].move && preve.position) ?
-              vec[i].move->SAN( preve.position ) : "???";
+              vec[i].move->toString("compact", preve.position ) : "???";
 #if 0
     if (ix == current)
       mv = "[[" + mv + "]]";
