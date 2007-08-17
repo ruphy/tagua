@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2007 Paolo Capriotti <p.capriotti@sns.it>
+  Copyright (c) 2007 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2007 Maurizio Monge <maurizio.monge@kdemail.net>
 	    (c) 2007 Yann Dirson <ydirson@altern.org>
 

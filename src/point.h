@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@sns.it>
+  Copyright (c) 2006 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
