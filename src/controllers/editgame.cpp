@@ -314,3 +314,7 @@ shared_ptr<Controller> EditGameController::end() {
 
   return Controller::end();
 }
+
+void EditGameController::reloadSettings() {
+  m_graphical->settingsChanged();
+}

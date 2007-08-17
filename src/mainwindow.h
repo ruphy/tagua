@@ -128,6 +128,7 @@ public Q_SLOTS:
 
 //  void prefHighlight();
   void preferences();
+  void settingsChanged();
 };
 
 

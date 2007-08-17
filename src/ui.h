@@ -69,6 +69,7 @@ public Q_SLOTS:
   void detach();
   
   QString currentVariant() const;
+  void reloadSettings();
 };
 
 #endif

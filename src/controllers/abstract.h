@@ -169,6 +169,8 @@ public:
     * Remove an entity from the controller list.
     */
   virtual void removeEntity(const EntityToken&) { }
+  
+  virtual void reloadSettings() = 0;
 };
 
 

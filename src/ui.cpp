@@ -169,3 +169,12 @@ QString UI::currentVariant() const {
   return controller()->variant();
 }
 
+void UI::reloadSettings() {
+  for (ControllerMap::iterator it = m_controller.begin(),
+       end = m_controller.end();
+       it != end;
+       ++it) {
+    it->second->reloadSettings();
+  }
+}
+

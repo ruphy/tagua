@@ -46,7 +46,7 @@ GraphicalSystem::GraphicalSystem(ChessTable* view,
 
   m_animator = m_variant->createAnimator(this);
 
-  settings().onChange(this, "settingsChanged", "Loader::Theme");
+//   settings().onChange(this, "settingsChanged", "Loader::Theme");
   settingsChanged();
 
   if (startingPosition)

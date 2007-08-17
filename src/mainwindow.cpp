@@ -90,6 +90,8 @@ MainWindow::MainWindow(const QString& variant)
   addDockWidget(Qt::BottomDockWidgetArea, console_dock, Qt::Horizontal);
   console_dock->setWindowFlags(console_dock->windowFlags() & ~Qt::WindowStaysOnTopHint);
   console_dock->show();
+  
+  settings().onChange(this, "settingsChanged");
 
   connect(board, SIGNAL(error(ErrorCode)), this, SLOT(displayErrorMessage(ErrorCode)));
   //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
@@ -654,6 +656,10 @@ void MainWindow::preferences() {
   int result = dialog.exec();
   if (result == QDialog::Accepted)
     dialog.apply();
+}
+
+void MainWindow::settingsChanged() {
+  ui().reloadSettings();
 }
 
 

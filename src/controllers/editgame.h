@@ -71,6 +71,8 @@ public:
 
   virtual boost::shared_ptr<Controller> end();
   virtual void detach();
+  
+  virtual void reloadSettings();
 };
 
 
