@@ -331,11 +331,7 @@ namespace HLVariant {
     virtual QString state() const {
       return ""; // BROKEN
     }
-  
-    virtual QString fen(int, int) const {
-      return ""; // BROKEN
-    }
-  
+
     virtual PiecePtr moveHint(const MovePtr&) const {
       return PiecePtr(); // BROKEN
     }
@@ -430,10 +426,6 @@ namespace HLVariant {
     virtual PositionPtr createCustomPosition(const OptList&) {
       return PositionPtr(
         new WrappedPosition<Variant>(GameState())); // BROKEN
-    }
-  
-    virtual PositionPtr createPositionFromFEN(const QString&) {
-      return PositionPtr(); // BROKEN
     }
     
     virtual void forallPieces(class PieceFunction&) {

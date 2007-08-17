@@ -821,10 +821,12 @@ void Game::load(const PGN& pgn) {
     pos = vi->createPosition();
     pos->setup();
   }
+#if 0 // BROKEN
   else if( !(pos = vi->createPositionFromFEN(fen->second))) {
     ERROR("Wrong fen " << fen->second);
     return;
   }
+#endif
 
   //TODO: what about options? FEN rules?
 

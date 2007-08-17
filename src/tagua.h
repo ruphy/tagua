@@ -274,13 +274,6 @@ public:
   virtual QString state() const = 0;
 
   /**
-    * Return a FEN representation for the position, assuming
-    * @a halfmove as halfmove clock and @a fullmove as full move
-    * number.
-    */
-  virtual QString fen(int halfmove, int fullmove) const = 0;
-
-  /**
     * A piece somehow representing or related to the move
     * which has to be drawn by the interface.
     * Examples:
@@ -344,7 +337,6 @@ public:
   virtual ~VariantInfo() { }
   virtual PositionPtr createPosition() = 0;
   virtual PositionPtr createCustomPosition(const OptList& l) = 0;
-  virtual PositionPtr createPositionFromFEN(const QString& fen) = 0;
   virtual void forallPieces(class PieceFunction&) = 0;
   virtual int moveListLayout() const = 0;
   virtual AnimatorPtr createAnimator(GraphicalAPI* graphical_api) = 0;
