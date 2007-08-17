@@ -71,24 +71,30 @@ int PositionInfo::index() const {
   return res;
 }
 
-PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QString& str) {
+PositionInfo::PositionInfo()
+: valid(false) { }
+
+bool PositionInfo::load(std::map<int, ICSGameData>& games, const QString& str) {
   if (pattern.indexIn(str) != 0) {
     valid = false;
-    return;
+    return true;
   }
 
+  bool new_game = false;
+  
   valid = true;
   int gn = pattern.cap(CaptureIndexes::GameNumber).toInt();
-  std::map<int, ICSGameData>::const_iterator gi = games.find(gn);
+  std::map<int, ICSGameData>::iterator gi = games.find(gn);
   ICSAPIPtr icsapi;
   
   if (gi == games.end()) {
-    ERROR("Received style12 for unknown game  " << gn);
-    icsapi = Variants::instance().get("dummy")->icsAPI();
+    WARNING("Received style12 for unknown game  " << gn);
+    // create a gameinfo of type "dummy"
+    gi = games.insert(std::make_pair(gn, ICSGameData(gn, ""))).first;
+    new_game = true;
   }
-  else {
-    icsapi = gi->second.icsapi;
-  }
+  
+  icsapi = gi->second.icsapi;
 
   std::vector<PositionRow> rows;
   for (uint i = 0; i < 8; ++i)
@@ -130,4 +136,6 @@ PositionInfo::PositionInfo(const std::map<int, ICSGameData>& games, const QStrin
 
   lastMoveSAN = pattern.cap(CaptureIndexes::LastMove);
   lastMove = pattern.cap(CaptureIndexes::LastMoveVerbose);
+  
+  return new_game;
 }

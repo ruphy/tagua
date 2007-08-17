@@ -352,9 +352,9 @@ void MainWindow::setupGame(const GameInfo* gameInfo, const PositionInfo& style12
   }
 }
 
-void MainWindow::setupExaminedGame(const GameInfo* /*gameInfo*/, const PositionInfo& style12) {
-  shared_ptr<EditGameController> controller(new EditGameController(
-                                      table(), Variants::instance().get("chess")));
+void MainWindow::setupExaminedGame(const GameInfo* gameInfo, const PositionInfo& style12) {
+  shared_ptr<EditGameController> controller(
+    new EditGameController(table(), Variants::instance().get(gameInfo->variant())));
   if (controller->setExaminationMode(style12.gameNumber, m_connection)) {
     table()->setPlayers(Player(style12.whitePlayer, -1),
                       Player(style12.blackPlayer, -1));

@@ -69,7 +69,15 @@ public:
   static QRegExp pattern;
 
   bool valid;
-  PositionInfo(const std::map<int, ICSGameData>& games, const QString&);
+  PositionInfo();
+  
+  /** 
+    * Parse a style12 line filling the fields of this PositionInfo object.
+    * \param games Games we know about.
+    * \param style12 A style12 line.
+    * \return Whether the game is new.
+    */
+  bool load(std::map<int, ICSGameData>& games, const QString& style12);
 
   int turn;
   int moveIndex;

@@ -26,7 +26,8 @@ class ICSListener;
 
 class ICSConnection : public Connection {
 Q_OBJECT
-private:
+  typedef std::map<int, ICSGameData> GameList;
+  
   enum State {
     Normal,
     MoveListHeader,
@@ -49,7 +50,7 @@ private:
 
   GameInfo* incomingGameInfo;
   int m_processed_offset;
-  std::map<int, ICSGameData> m_games;
+  GameList m_games;
 
   int m_move_list_game_num;
   QStringList m_move_list_players;

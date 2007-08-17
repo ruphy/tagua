@@ -80,7 +80,6 @@ bool ExaminationEntity::goTo(const Index& index) {
 }
 
 bool ExaminationEntity::forward() {
-  std::cout << "[entity] forward" << std::endl;
   m_connection->sendText("forward");
   return true;
 }

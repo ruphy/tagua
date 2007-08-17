@@ -175,34 +175,35 @@ void ICSConnection::process(QString str) {
       state = MoveListHeader;
     }
     else {
-      PositionInfo positionInfo(m_games, str);
+      PositionInfo positionInfo;
+      bool game_start = positionInfo.load(m_games, str);
       if (positionInfo.valid) {
-        // if this is the first style12 for this game, notify game creation
         int gameNumber = positionInfo.gameNumber;
-        bool game_start =  ( !m_games.count(gameNumber)
-                            || (incomingGameInfo &&
-                              (incomingGameInfo->gameNumber() == gameNumber
-                                || incomingGameInfo->gameNumber()==-1) ) );
+        GameList::const_iterator game_it = m_games.find(gameNumber);
+        Q_ASSERT(game_it != m_games.end());
 
-        if (game_start) {
-          //std::cout << "notifying game creation" << std::endl;
-          if(!m_games.count(gameNumber))
-            m_games[gameNumber] = ICSGameData(-1, "unknown"); //???
-
-          if (incomingGameInfo && (incomingGameInfo->gameNumber() != -1)
-                && (incomingGameInfo->gameNumber() != gameNumber) ) {
-            m_games.erase(incomingGameInfo->gameNumber());
+        bool incoming = incomingGameInfo &&
+                        incomingGameInfo->gameNumber() == gameNumber;
+        
+        if (game_start || incoming) {
+          // delete extraneous game info
+          if (incomingGameInfo &&
+              incomingGameInfo->gameNumber() != gameNumber) {
+            int n = incomingGameInfo->gameNumber();
+            if (n != -1)
+              m_games.erase(n);
             delete incomingGameInfo;
-            incomingGameInfo = NULL; // discard game info
+            incomingGameInfo = 0;
           }
-
+          
+          // no info on this game
           if (!incomingGameInfo) {
-            std::cout << "warning, got unexpected style12!!! " << gameNumber << std::endl;
+            WARNING("unexpected style 12 for game " << gameNumber);
             incomingGameInfo = new GameInfo(Player(positionInfo.whitePlayer, 0),
                                           Player(positionInfo.blackPlayer, 0),
-                                          "rated", "unknown", 0, 0 );
+                                          "rated", "", 0, 0);
           }
-
+          
           switch (positionInfo.relation) {
             case PositionInfo::NotMyMove:
             case PositionInfo::MyMove:
@@ -222,14 +223,14 @@ void ICSConnection::process(QString str) {
               // unknown relation: ignoring
               break;
           }
+          
           delete incomingGameInfo;
-          incomingGameInfo = NULL;
+          incomingGameInfo = 0;
         }
-
-        m_games[positionInfo.gameNumber].index = positionInfo.index();
+        
         if (shared_ptr<ICSListener> listener = m_games[positionInfo.gameNumber].listener.lock())
           listener->notifyStyle12(positionInfo, game_start);
-//        time(positionInfo.whiteTime, positionInfo.blackTime);
+          
         if (positionInfo.relation == PositionInfo::MyMove) {
           notification();
         }
@@ -285,7 +286,8 @@ void ICSConnection::process(QString str) {
       state = MoveListMoves;
     }
     else {
-      PositionInfo pi(m_games, str);
+      PositionInfo pi;
+      pi.load(m_games, str);
       if (pi.valid)
         m_move_list_position_info = new PositionInfo(pi);
       else {
