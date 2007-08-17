@@ -11,6 +11,8 @@
 #ifndef HLVARIANT__CHESS__SERIALIZER_H
 #define HLVARIANT__CHESS__SERIALIZER_H
 
+#include <boost/function.hpp>
+
 #include "legalitycheck.h"
 #include "san.h"
 #include "icsverbose.h"
@@ -20,23 +22,13 @@ namespace Chess {
 
 template <typename MoveGenerator>
 class Serializer {
-public:
-  /**
-    * Possible string representations for moves.
-    */
-  enum {
-    SIMPLE = 0,          /// The most direct way of representing a move.
-    COMPACT = 1,         /// Compact notation. This corresponds to SAN notation for games that support it.
-    DECORATED = 2,       /// Symbolic figurine notation. Figurine names are enclosed in braces.
-    ICS_VERBOSE = 3      /// Verbose notation as defined by ICS.
-  } MoveRepresentation;
 protected:
   typedef typename MoveGenerator::LegalityCheck LegalityCheck;
   typedef typename LegalityCheck::GameState GameState;
   typedef typename GameState::Move Move;
   typedef typename GameState::Board::Piece Piece;
   
-  int m_rep;
+  QString m_rep;
 
 protected:
   virtual QString suffix(const Move& move, const GameState& ref);
@@ -53,10 +45,9 @@ protected:
 public:
   /** 
     * Create a serializer to a given string representation for moves.
-    * \param rep A move representation.
-    * \sa MoveRepresentation.
+    * \param rep A move representation type.
     */
-  Serializer(int rep);
+  Serializer(const QString& rep);
   
   virtual ~Serializer();
   
@@ -83,7 +74,7 @@ public:
 // IMPLEMENTATION
 
 template <typename MoveGenerator>
-Serializer<MoveGenerator>::Serializer(int rep)
+Serializer<MoveGenerator>::Serializer(const QString& rep)
 : m_rep(rep) { }
 
 template <typename MoveGenerator>
@@ -141,33 +132,30 @@ QString Serializer<MoveGenerator>::san(const Move& move, const GameState& ref) {
 
 template <typename MoveGenerator>
 QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& ref) {
-  switch (m_rep) {
-  case SIMPLE:
-    {
-      int ysize = ref.board().size().y;
-      QString res = move.from().toString(ysize) + move.to().toString(ysize);
-      if (move.promoteTo() != -1)
-        res = res + "=" + 
-          symbol(
-            static_cast<typename Piece::Type>(move.promoteTo())
-          ).toUpper();
-      return res;
-    }
-  case COMPACT:
+  if (m_rep == "simple") {
+    int ysize = ref.board().size().y;
+    QString res = move.from().toString(ysize) + move.to().toString(ysize);
+    if (move.promoteTo() != -1)
+      res = res + "=" + 
+        symbol(
+          static_cast<typename Piece::Type>(move.promoteTo())
+        ).toUpper();
+    return res;
+  }
+  else if (m_rep == "compact") {
     return san(move, ref);
-  case DECORATED:
-    {
-      QString res = san(move, ref);
-      res.replace('K', "{king}");
-      res.replace('Q', "{queen}");
-      res.replace('R', "{rook}");
-      res.replace('N', "{knight}");
-      res.replace('B', "{bishop}");
-      res.replace('P', "{pawn}");
-      return res;
-    }
-  case ICS_VERBOSE:
-  default:
+  }
+  else if (m_rep == "decorated") {
+    QString res = san(move, ref);
+    res.replace('K', "{king}");
+    res.replace('Q', "{queen}");
+    res.replace('R', "{rook}");
+    res.replace('N', "{knight}");
+    res.replace('B', "{bishop}");
+    res.replace('P', "{pawn}");
+    return res;
+  }
+  else {
     return "";
   }
 }
@@ -249,19 +237,16 @@ Serializer<MoveGenerator>::get_san(const SAN& san, const GameState& ref) {
 template <typename MoveGenerator>
 typename Serializer<MoveGenerator>::Move 
 Serializer<MoveGenerator>::deserialize(const QString& str, const GameState& ref) {
-  switch (m_rep) {
-  case COMPACT:
-    {
-      SAN tmp;
-      tmp.load(str, ref.board().size().y);
-      return get_san(tmp, ref);
-    }
-  case ICS_VERBOSE:
+  if (m_rep == "compact") {
+    SAN tmp;
+    tmp.load(str, ref.board().size().y);
+    return get_san(tmp, ref);
+  }
+  else if (m_rep == "ics-verbose") {
     return parse_ics_verbose(str, ref);
-  case SIMPLE:
-  case DECORATED:
-  default:
-    // no need to parse decorated moves
+  }
+  else {
+    // no need to parse simple or decorated moves
     return Move();
   }
 }

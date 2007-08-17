@@ -25,14 +25,14 @@ class Serializer : public Chess::Serializer<MoveGenerator> {
 protected:
   using Base::m_rep;
 public:
-  Serializer(int rep);
+  Serializer(const QString& rep);
   virtual QString serialize(const Move& move, const GameState& ref);
 };
 
 // IMPLEMENTATION
 
 template <typename MoveGenerator>
-Serializer<MoveGenerator>::Serializer(int rep)
+Serializer<MoveGenerator>::Serializer(const QString& rep)
 : Base(rep) { }
 
 template <typename MoveGenerator>
@@ -42,12 +42,11 @@ QString Serializer<MoveGenerator>::serialize(const Move& move, const GameState& 
   }
   
   QString res;
-  switch (m_rep) {
-  case Base::SIMPLE:
-  case Base::COMPACT:
-    res = symbol(move.drop().type()).toUpper();
-  case Base::DECORATED:
+  if (m_rep == "decorated") {
     res = "{" + move.drop().typeName() + '}';
+  }
+  else {
+    res = symbol(move.drop().type()).toUpper();
   }
   
   return res + '@' + move.to().toString(ref.board().size().y) + suffix(move, ref);

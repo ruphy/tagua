@@ -19,26 +19,20 @@ namespace Shogi {
 template <typename _LegalityCheck>
 class Serializer {
 public:
-  enum {
-    SIMPLE = 0,
-    COMPACT = 1,
-    DECORATED = 2
-  };
-
   typedef _LegalityCheck LegalityCheck;
   typedef typename LegalityCheck::GameState GameState;
   typedef typename GameState::Board Board;
   typedef typename Board::Piece Piece;
   typedef typename GameState::Move Move;
 protected:
-  int m_rep;
+  QString m_rep;
   
   virtual bool isAmbiguous(const Move& move, const GameState& ref) const;
   virtual QString square(const Point& p, const Point& size) const;
   virtual QString symbol(const Piece& piece) const;
   virtual typename Piece::Type getType(const QChar& letter) const;
 public:
-  Serializer(int rep);
+  Serializer(const QString& rep);
   virtual ~Serializer();
   
   QString serialize(const Move&, const GameState& ref);
@@ -48,7 +42,7 @@ public:
 // IMPLEMENTATION
 
 template <typename LegalityCheck>
-Serializer<LegalityCheck>::Serializer(int rep)
+Serializer<LegalityCheck>::Serializer(const QString& rep)
 : m_rep(rep) { }
 
 
@@ -84,7 +78,7 @@ bool Serializer<LegalityCheck>::isAmbiguous(const Move& move, const GameState& r
 template <typename LegalityCheck>
 QString Serializer<LegalityCheck>::square(const Point& p, const Point& size) const {
   QString res = QString::number(size.x - p.x);
-  if (m_rep == DECORATED) {
+  if (m_rep == "decorated") {
     res += "{num_" + QString::number(p.y + 1) + "}";
   }
   else {
@@ -103,8 +97,7 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
 
   QString res;
   
-  switch (m_rep) {
-  case SIMPLE:
+  if (m_rep == "simple") {
     if (move.drop() != Piece()) {
       res += symbol(piece);
       res += '*';
@@ -114,49 +107,46 @@ QString Serializer<LegalityCheck>::serialize(const Move& move, const GameState& 
     if (move.promoteTo() != -1)
       res += "+";
     return res;
-  case COMPACT:
-  case DECORATED:
-  default:
-    {
-      bool ambiguous = isAmbiguous(move, ref);
-      
-      QString res;
-      if (piece.promoted())
-        res += "+";
+  }
+  else {
+    bool ambiguous = isAmbiguous(move, ref);
     
-      res += symbol(piece);
-      
-      if (ambiguous) {
-        res += square(move.from(), ref.board().size());
-      }
-      
-      if (move.drop() != Piece())
-        res += "*";
-      else if (ref.board().get(move.to()) != Piece())
-        res += "x";
-      else
-        res += "-";
-        
-      res += square(move.to(), ref.board().size());
-      
-      // if it is a promotion
-      if (move.promoteTo() != -1)
-        res += "+";
-      // if it is a refused promotion
-      else if (ref.canPromote(piece) && 
-               move.drop() == Piece() &&
-               ref.promotionZone(ref.turn(), move.to())) {
-        res += "=";
-      }
-      
-      return res;
+    QString res;
+    if (piece.promoted())
+      res += "+";
+  
+    res += symbol(piece);
+    
+    if (ambiguous) {
+      res += square(move.from(), ref.board().size());
     }
+    
+    if (move.drop() != Piece())
+      res += "*";
+    else if (ref.board().get(move.to()) != Piece())
+      res += "x";
+    else
+      res += "-";
+      
+    res += square(move.to(), ref.board().size());
+    
+    // if it is a promotion
+    if (move.promoteTo() != -1)
+      res += "+";
+    // if it is a refused promotion
+    else if (ref.canPromote(piece) && 
+            move.drop() == Piece() &&
+            ref.promotionZone(ref.turn(), move.to())) {
+      res += "=";
+    }
+    
+    return res;
   }
 }
 
 template <typename LegalityCheck>
 QString Serializer<LegalityCheck>::symbol(const Piece& piece) const {
-  if (m_rep == DECORATED) {
+  if (m_rep == "decorated") {
     QString res = "{";
     if (piece.promoted())
       res += "p_";

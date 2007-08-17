@@ -47,8 +47,7 @@ MovePtr WrappedICSAPI<Variant>::parseVerbose(const QString& str, const PositionP
     
   WrappedPosition<Variant>* ref = dynamic_cast<WrappedPosition<Variant>*>(_ref.get());
   if (ref) {
-    typename VariantData<Variant>::Serializer serializer(
-      VariantData<Variant>::Serializer::ICS_VERBOSE);
+    typename VariantData<Variant>::Serializer serializer("ics-verbose");
     return MovePtr(new WrappedMove<Variant>(
       serializer.deserialize(str, ref->inner())));
   }
