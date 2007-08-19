@@ -18,11 +18,9 @@
 #else
   #include <boost/variant.hpp>
 #endif
-#ifndef NO_PGN
 #include "variants.h"
 #include "pgnparser.h"
 #include "tagua.h"
-#endif //NO_PGN
 #include "game.h"
 #include "game_p.h"
 
@@ -801,7 +799,6 @@ QString Game::pgn() const {
   return variationPgn(history, history[0], 1, Index(1));
 }
 
-#ifndef NO_PGN
 void Game::load(const PGN& pgn) {
   std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
   VariantPtr vi;
@@ -960,5 +957,4 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
   current = Index(0);
   onCurrentIndexChanged();
 }
-#endif //NO_PGN
 
