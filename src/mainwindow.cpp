@@ -320,6 +320,7 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
       createTab(board, controller, text);
     }
     else {
+      unplugActionList("variantActions");
       ui().setController(controller);
       table()->setPlayers(Player(), Player());
       m_main->setTabText(m_main->currentIndex(), text);
