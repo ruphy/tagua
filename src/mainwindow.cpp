@@ -97,7 +97,7 @@ MainWindow::MainWindow(const QString& variant)
   //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
 
 //  start in edit game mode
-  newGame(variant, AbstractPosition::Ptr());
+  newGame(variant, AbstractPosition::Ptr(), true);
 
   setupActions();
   setupGUI();
@@ -302,19 +302,28 @@ void MainWindow::cleanupGame() {
 }
 
 
-bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr startingPos) {
+bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr startingPos, 
+                         bool newTab) {
   VariantPtr variant = Variants::instance().get(variantName);
   if (!variant) {
     WARNING("no variant " << variantName << " found");
     variant = Variants::instance().get("chess");
   }
-
+  
   if (variant) {
-    ChessTable* board = new ChessTable;
+    ChessTable* board = newTab ? new ChessTable : table();
+    QString text = QString("Editing %1 game").arg(variant->name().toLower());
+    
     shared_ptr<Controller> controller(new EditGameController(
       board, variant, startingPos));
-    createTab(board, controller,
-      QString("Editing %1 game").arg(variant->name().toLower()));
+    if (newTab) {
+      createTab(board, controller, text);
+    }
+    else {
+      ui().setController(controller);
+      table()->setPlayers(Player(), Player());
+      m_main->setTabText(m_main->currentIndex(), text);
+    }
     return true;
   }
   else {
@@ -580,18 +589,10 @@ void MainWindow::prompt() {
 
 void MainWindow::newGame() {
   AbstractPosition::Ptr pos = ui().position();
-  scoped_ptr<NewGame> dialog(new NewGame(this, pos));
+  scoped_ptr<NewGame> dialog(new NewGame(this));
   if (dialog->exec() == QDialog::Accepted) {
-    if(dialog->isCustom()) {
-      VariantPtr vi = Variants::instance().get(dialog->variant());
-      std::cout << "vi[" << dialog->variant() << "] = " << vi << std::endl;
-      pos = vi->createCustomPosition(dialog->customOptions());
-      pos->setup();
-    }
-    else if (!dialog->playFromCurrent())
-      pos = AbstractPosition::Ptr();
-    if (!newGame(dialog->variant(), pos))
-      QMessageBox::information(this, tr("Error"), tr("Variant not implemented, yet"));
+    if (!newGame(dialog->variant(), PositionPtr(), dialog->newTab()))
+      QMessageBox::information(this, i18n("Error"), i18n("Error creating game"));
   }
 }
 
@@ -631,7 +632,7 @@ void MainWindow::displayMessage(const QString& msg) {
 void MainWindow::displayErrorMessage(ErrorCode code) {
   switch(code) {
   case InvalidMove:
-    displayMessage(tr("Illegal move"));
+    displayMessage(i18n("Illegal move"));
     break;
   }
 }

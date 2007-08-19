@@ -115,7 +115,7 @@ public Q_SLOTS:
   void setupExaminedGame(const GameInfo*, const PositionInfo&);
   void setupObservedGame(const GameInfo*, const PositionInfo&);
   void newGame();
-  bool newGame(const QString& var, AbstractPosition::Ptr);
+  bool newGame(const QString& var, AbstractPosition::Ptr, bool);
   void loadGame();
   void quit();
   void flipView();

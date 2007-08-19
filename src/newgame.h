@@ -11,25 +11,15 @@
 #ifndef NEWGAME_H
 #define NEWGAME_H
 
+#include <QDialog>
 #include "ui_newgamedialog.h"
-#include "option.h"
-
-class QHBoxLayout;
 
 class NewGame : public QDialog, public Ui::NewGameDialog {
 Q_OBJECT
-  bool m_allow_current;
-  OptList m_custom_options;
-  OptionWidget *m_custom_opt_widget;
-  QHBoxLayout *m_custom_opt_layout;
 public:
-  NewGame(QWidget* parent = 0, bool allowCurrent = false);
+  NewGame(QWidget* parent = 0);
   QString variant() const;
-  bool playFromCurrent() const;
-  bool isCustom() const;
-  OptList customOptions() { return m_custom_options; }
-private Q_SLOTS:
-  void variantChanged(const QString&);
+  bool newTab() const;
 };
 
 #endif

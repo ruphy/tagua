@@ -5,8 +5,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>470</width>
-    <height>261</height>
+    <width>263</width>
+    <height>108</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -16,19 +16,22 @@
    <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" >
-   <property name="margin" >
-    <number>9</number>
-   </property>
-   <property name="spacing" >
-    <number>6</number>
-   </property>
    <item>
     <layout class="QHBoxLayout" >
-     <property name="margin" >
-      <number>0</number>
-     </property>
      <property name="spacing" >
       <number>6</number>
+     </property>
+     <property name="leftMargin" >
+      <number>0</number>
+     </property>
+     <property name="topMargin" >
+      <number>0</number>
+     </property>
+     <property name="rightMargin" >
+      <number>0</number>
+     </property>
+     <property name="bottomMargin" >
+      <number>0</number>
      </property>
      <item>
       <widget class="QLabel" name="textLabel_1" >
@@ -36,7 +39,7 @@
         <string>&amp;Variant:</string>
        </property>
        <property name="buddy" >
-        <cstring>cmbVariant</cstring>
+        <cstring>m_variant</cstring>
        </property>
       </widget>
      </item>
@@ -54,11 +57,9 @@
       </spacer>
      </item>
      <item>
-      <widget class="QComboBox" name="cmbVariant" >
+      <widget class="QComboBox" name="m_variant" >
        <property name="sizePolicy" >
-        <sizepolicy>
-         <hsizetype>7</hsizetype>
-         <vsizetype>0</vsizetype>
+        <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
          <horstretch>1</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -68,109 +69,14 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
-      <string>&amp;Starting position</string>
+    <widget class="QCheckBox" name="m_new_tab" >
+     <property name="text" >
+      <string>Create in new &amp;tab</string>
      </property>
-     <layout class="QVBoxLayout" >
-      <property name="margin" >
-       <number>9</number>
-      </property>
-      <property name="spacing" >
-       <number>6</number>
-      </property>
-      <item>
-       <widget class="QRadioButton" name="rdStandard" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="text" >
-         <string>S&amp;tandard</string>
-        </property>
-        <property name="shortcut" >
-         <string>Alt+T</string>
-        </property>
-        <property name="checked" >
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="rdCurrent" >
-        <property name="enabled" >
-         <bool>true</bool>
-        </property>
-        <property name="text" >
-         <string>C&amp;urrent</string>
-        </property>
-        <property name="shortcut" >
-         <string>Alt+U</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="rdCustom" >
-        <property name="text" >
-         <string>Cu&amp;stom</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" >
-        <property name="margin" >
-         <number>0</number>
-        </property>
-        <property name="spacing" >
-         <number>6</number>
-        </property>
-        <item>
-         <spacer>
-          <property name="orientation" >
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType" >
-           <enum>QSizePolicy::Minimum</enum>
-          </property>
-          <property name="sizeHint" >
-           <size>
-            <width>21</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QWidget" native="1" name="widgetCustom" >
-          <property name="enabled" >
-           <bool>false</bool>
-          </property>
-          <property name="sizePolicy" >
-           <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>5</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
     </widget>
-   </item>
-   <item>
-    <spacer>
-     <property name="orientation" >
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" >
-      <size>
-       <width>452</width>
-       <height>61</height>
-      </size>
-     </property>
-    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox" >
@@ -217,22 +123,6 @@
     <hint type="destinationlabel" >
      <x>176</x>
      <y>230</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>rdCustom</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>widgetCustom</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>59</x>
-     <y>126</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>59</x>
-     <y>150</y>
     </hint>
    </hints>
   </connection>

@@ -8,62 +8,23 @@
   (at your option) any later version.
 */
 
-#include <iostream>
-#include <QComboBox>
-#include <QHBoxLayout>
-#include "common.h"
-#include "variants.h"
-#include "tagua.h"
 #include "newgame.h"
 #include "foreach.h"
+#include "variants.h"
 
-NewGame::NewGame(QWidget* parent, bool allowCurrent)
-: QDialog(parent)
-, m_custom_opt_widget(NULL)
-, m_custom_opt_layout(NULL) {
+NewGame::NewGame(QWidget* parent)
+: QDialog(parent) {
   setupUi(this);
-
-  std::cout << "allow current = " << allowCurrent << std::endl;
-  m_allow_current = allowCurrent;
-  connect(cmbVariant, SIGNAL(currentIndexChanged(const QString&)),
-          this, SLOT(variantChanged(const QString&)));
-
-  m_custom_opt_layout = new QHBoxLayout(widgetCustom);
-
   QStringList variants = Variants::instance().all();
   foreach (QString variant, variants) {
-    cmbVariant->addItem(variant, QVariant(variant));
+    m_variant->addItem(variant, QVariant(variant));
   }
 }
 
 QString NewGame::variant() const {
-  QString res = cmbVariant->itemData(cmbVariant->currentIndex()).toString();
-  return res;
+  return m_variant->itemData(m_variant->currentIndex()).toString();
 }
 
-bool NewGame::playFromCurrent() const {
-  return rdCurrent->isChecked();
+bool NewGame::newTab() const {
+  return m_new_tab->isChecked();
 }
-
-bool NewGame::isCustom() const {
-  return rdCustom->isChecked();
-}
-
-void NewGame::variantChanged(const QString& var) {
-  std::cout << "var = " << var << std::endl;
-  bool enabled = m_allow_current && var == "Chess";
-  rdCurrent->setEnabled(enabled);
-  if (!enabled)
-    rdStandard->setChecked(true);
-
-  if(m_custom_opt_widget)
-    delete m_custom_opt_widget;
-  m_custom_options = OptList();
-  VariantPtr vi = Variants::instance().get(var);
-  if(vi) {
-    m_custom_options = vi->positionOptions();
-    m_custom_opt_widget = new OptionWidget(m_custom_options, widgetCustom);
-    m_custom_opt_layout->addWidget(m_custom_opt_widget);
-  }
-}
-
