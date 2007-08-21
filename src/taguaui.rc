@@ -15,10 +15,10 @@
       <Text>&amp;Edit</Text>
       <Action name="copyPosition" />
       <Action name="pastePosition" />
-      <Separator />
+<!--      <Separator />
       <Action name="editPosition" />
       <Action name="clearBoard" />
-      <Action name="setStartingPosition" />
+      <Action name="setStartingPosition" />-->
   </Menu>
   <Menu name="gameMenu">
    <text>&amp;Game</text>
