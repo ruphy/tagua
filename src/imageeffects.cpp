@@ -14,7 +14,7 @@
 #include <cmath>
 #include <QPainter>
 #include "imageeffects.h"
-#include <kcpuinfo.h>
+#include "kcpuinfo.h"
 
 
 template<int aprec, int zprec>
