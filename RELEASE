@@ -1,15 +1,17 @@
 Introduction
 ===============
 Tagua is a generic board game application and framewok for KDE.
-It can be used as a replacement for chess applications like XBoard and Winboard, both for playing in internet servers and for local editing of games.
-However, Tagua is much more: it has an extensible board game infrastructure which makes developing new board games extremely easy. So far, a number of games have been developed, including Chess, Shogi and Xiangqi.
+It can be used as a replacement for chess applications like XBoard and 
+Winboard, both for playing in internet servers and for local editing of games.
+However, Tagua is much more: it has an extensible board game infrastructure
+which makes developing new board games extremely easy. So far, a number of
+games have been developed, including Chess, Shogi and Xiangqi.
 
 Feature list
 ===============
 * Local editing of games:
   Games of chess and a number of variants (see below) can be edited and played locally.
   A user friendly and graphically appealing move list control provides a mean to visualize complicated subvariant nesting.
-  Games can be loaded and copy / pasted through the clipboard.
 * FICS / ICC compatible server support:
   Tagua can manage a connection to a FICS-like server, with which the user can interact using a detachable console.
   Games of any chess variant can be played, examined and observed.
@@ -20,9 +22,9 @@ Feature list
     - Crazyhouse
     - Shogi
     - Minishogi
-    - Sho Shogi
 * Graphics:
   Tagua features an advanced animation engine which can be easily extended on a per-variant basis.
   It includes a powerful theme loader based on lua scripts that allows to dynamically create effects like drop down shadows. Themes can customize the appearance of pieces, board squares and borders, clocks, backgrounds and the layout of all these elements.
 
 For more information, screenshots and design notes, visit http://www.tagua-project.org
+

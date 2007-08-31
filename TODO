@@ -5,9 +5,6 @@ FEATURES:
 
 * Configuration dialog.
 
-  This should not present problems, but is quite boring.
-  There are already pages for highlighting and clock configurations, but they should be linked in a tabbed configuration dialog similar to that of Kate, for example.
-  Needed pages:
   * General: language choice, automatically connect on startup, default variant, etc...
   * Connection: manage ics connections and options.
   * [DONE] Highlighting: manage highlighting patterns for the ics console.

@@ -1,10 +1,16 @@
-Version 1.0 - Tiny
-==================
-   01-Sep-2007
+Version 1.0 alpha - "Clintz"
+===========================
+01-Sep-2007
 
 * Internal variant structure completely redesigned.
 * Chessboard and pool layout improved and made customizable.
 * More shogi themes.
+* New variants: Minichess, Minishogi.
+
+NOTE: Some features and variants that were in the 0.9 release got lost in 
+refactoring. In particular, loading PGN's does not work anymore, and there are
+no more position editing facilities. Some of these features will be restored
+for the final 1.0 release, as well as the missing variants.
 
 Version 0.9
 ===========

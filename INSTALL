@@ -1,7 +1,7 @@
 What you need
 ==================
 
-  * A KDE4 development environment with kdelibs and libkdegames
+  * A KDE4 development environment with kdelibs and libkdegames (>= KDE 3.92)
   * boost 1.34 (headers will suffice)
 
 Further you will need GNU make, a working C++ compiler (e.g. gcc 3.4.x or later)
@@ -17,6 +17,9 @@ Preparations
 Setting up a KDE4 development environment:
 
 Follow the tutorial at http://techbase.kde.org/Getting_Started/Build/KDE4
+
+Alternatively, you can install KDE beta packages if your system supports them 
+(e.g. debian, kubuntu, openSUSE).
 
 Compiling Tagua
 ==================

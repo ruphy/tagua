@@ -31,13 +31,3 @@
   Qt-4.2, or maybe 4.3. They are not even supported in the snapshot
   anyway)
 
-Ah, i decided to add here all the reasons that Qt-4.2 would be good for a release:
-- Application fonts, also for the movelist.
-- SVG CSS (will probably be in 4.2 release)
-- Improved dock widgets
-- Easer to add text at the end of the console
-- Rehighlight of the highlither
-- Better brushes (from image ad with transformation), ok this is a minor thing
-  but could make certain things a bit faster.
-- QPainter::setOpacity, ie quite faster transparent canvas items
-- can set properties for gradients
