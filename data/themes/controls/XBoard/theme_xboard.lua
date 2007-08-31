@@ -10,10 +10,6 @@ local pool_width = 3
 local pool_piece_ratio = clock_ratio/pool_width
 
 theme.layout = function(args)
-  for key,value in pairs(args) do
-    print("args[",key,"] = ",value)
-  end
-
   retv = {}
   retv.square_size = math.floor(math.min(
                   args.width/(args.grid_size.x+2*border_ratio),

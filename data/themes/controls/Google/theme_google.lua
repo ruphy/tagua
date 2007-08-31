@@ -21,10 +21,6 @@ local border_text_near = 0.05
 local border_text_far  = 0.6
 
 theme.layout = function(args)
-  for key,value in pairs(args) do
-    print("args[",key,"] = ",value)
-  end
-
   retv = {}
   retv.square_size = math.floor(math.min(
                   args.width/(args.grid_size.x+2*border_ratio+clock_ratio+2*clock_border_ratio),
