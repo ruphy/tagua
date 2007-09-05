@@ -178,8 +178,8 @@ void MainWindow::setupActions() {
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
 
-  installRegularAction("pgnCopy", KIcon("edit-copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
-  installRegularAction("pgnPaste", KIcon("edit-paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
+//   installRegularAction("pgnCopy", KIcon("edit-copy"), i18n("Copy PGN"), this, SLOT(pgnCopy()));
+//   installRegularAction("pgnPaste", KIcon("edit-paste"), i18n("Paste PGN"), this, SLOT(pgnPaste()));
   installRegularAction("editPosition", KIcon("edit"), i18n("&Edit position"), this, SLOT(editPosition()));
   installRegularAction("clearBoard", KIcon("edit-delete"), i18n("&Clear board"), &ui(), SLOT(clearBoard()));
   installRegularAction("setStartingPosition", KIcon("contents"), i18n("&Set starting position"),
@@ -226,7 +226,6 @@ void MainWindow::keyReleaseEvent(QKeyEvent* event) {
 }
 
 void MainWindow::changeTab(int index) {
-  std::cout << "changing tab, widget = " << m_main->currentWidget() << std::endl;
   m_ui.setCurrentTab(m_main->currentWidget());
   m_movelist_stack->setCurrentIndex(index);
   updateVariantActions();
@@ -284,8 +283,6 @@ void MainWindow::createTab(ChessTable* board, const shared_ptr<Controller>& cont
   m_movelist_stack->setCurrentIndex(index);
   
   if (m_main->count() > 1) m_main->setTabBarHidden(false);
-  
-  std::cout << "created tab " << board << std::endl;
 }
 
 
@@ -577,7 +574,6 @@ void MainWindow::sendLogin() {
 }
 
 void MainWindow::sendBlankPassword() {
-  std::cout << "sending blank password" << std::endl;
   m_connection->sendText("");
 }
 
