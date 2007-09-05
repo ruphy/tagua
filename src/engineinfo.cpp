@@ -16,6 +16,21 @@
 
 using namespace boost;
 
+void EngineDetails::load(Settings s) {
+  s["name"] >> name;
+  s["path"] >> path;
+  type = typeFromName(s["type"].value<QString>());
+  if (s["work-path"])
+    s["work-path"] >> workPath;
+}
+
+void EngineDetails::save(Settings s) {
+  s["name"] = name;
+  s["path"] = path;
+  s["type"] = typeName(type);
+  s["work-path"] = workPath;
+}
+
 void EngineInfo::playAsWhite() {
   playAs(0);
 }

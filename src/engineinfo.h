@@ -15,6 +15,7 @@
 #include <QObject>
 #include <boost/shared_ptr.hpp>
 #include "controllers/entitytoken.h"
+#include "settings.h"
 
 class Engine;
 class UI;
@@ -68,6 +69,9 @@ struct EngineDetails {
       return GNUShogi;
     else return Unknown;
   }
+  
+  void load(Settings s);
+  void save(Settings s);
 };
 
 class EngineInfo : public QObject {

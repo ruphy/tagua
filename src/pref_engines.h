@@ -13,31 +13,32 @@
 
 #include "ui_pref_engines.h"
 #include "engineinfo.h"
+#include "settings.h"
 #include <vector>
 #include <map>
 
+class QPushButton;
+class QListWidget;
 
-class PrefEngines : public QWidget
-                  , public Ui::PrefEngines {
+class PrefEngines : public QWidget {
 Q_OBJECT
-  std::map<QListWidgetItem*, EngineDetails> m_engines;
+  QPushButton* m_new;
+  QPushButton* m_edit;
+  QPushButton* m_delete;
+  QListWidget* m_list;
   
-  EngineDetails& currentEngine();
+  QList<EngineDetails> m_engines;
+  void reload_engines();
 public:
   PrefEngines(const QString&, QWidget* parent = 0);
   ~PrefEngines();
-  
-  QListWidgetItem* addEngine(const EngineDetails& details);
-public Q_SLOTS:
+
   void apply();
-  void setName(QListWidgetItem*);
-  void add();
-  void remove();
-  void changeEngine(QListWidgetItem* item);
-  
-  void setPath();
-  void setType();
-  void setWorkDir();
+private Q_SLOTS:
+  void new_engine();
+  void edit_engine();
+  void delete_engine();
+  void update_buttons();
 };
 
 #endif // PREF_ENGINES_H

@@ -127,11 +127,7 @@ void MainWindow::setupEngineMenu() {
 
     QString name;
     EngineDetails engine_details;
-    s["name"] >> engine_details.name;
-    s["path"] >> engine_details.path;
-    engine_details.type = EngineDetails::typeFromName(s["type"].value<QString>());
-    if (s["work-path"])
-      s["work-path"] >> engine_details.workPath;
+    engine_details.load(s);
 
     kDebug() << "creating engine " << engine_details.name << endl;
     EngineInfo* engine = new EngineInfo(engine_details, ui());
