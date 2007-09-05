@@ -399,5 +399,6 @@ void PrefThemeCategory::themeChecked(bool ck) {
   VariantFactory* vi = Variants::instance().getFactory(c);
   if (vi)
     m_new_use_def[vi->name()] = ck;
+  themeChanged();
 }
 
