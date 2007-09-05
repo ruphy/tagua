@@ -31,6 +31,8 @@ class Variants {
   Variants();
 public:
   VariantPtr get(const QString& name) const;
+  VariantFactory* getFactory(const QString& name) const;
+  
   void addFactory(const QString& name, VariantFactory* factory);
   QStringList all() const;
   

@@ -240,7 +240,7 @@ void PrefTheme::update_list_view(QListWidget* list, const ThemeInfoList& themes,
 
 void PrefTheme::variantChanged() {
   QString category = comboVariant->itemData(comboVariant->currentIndex()).toString();
-  VariantPtr vi = Variants::instance().get(category);
+  VariantFactory* vi = Variants::instance().getFactory(category);
 
   if (!vi) {
     for (CategoryMap::iterator cit = m_categories.begin(); cit != m_categories.end(); ++cit) {
@@ -369,7 +369,7 @@ void PrefThemeCategory::themeChanged() {
       m_label->setText(m_themes[i].description);
 
       QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-      VariantPtr vi = Variants::instance().get(c);
+      VariantFactory* vi = Variants::instance().getFactory(c);
       if(vi)
         m_new_themes[vi->name()] = m_themes[i].desktopFile;
 
@@ -396,7 +396,7 @@ void PrefThemeCategory::themeChecked(bool ck) {
   m_label->setEnabled(!ck);
 
   QString c = m_parent->comboVariant->itemData(m_parent->comboVariant->currentIndex()).toString();
-  VariantPtr vi = Variants::instance().get(c);
+  VariantFactory* vi = Variants::instance().getFactory(c);
   if (vi)
     m_new_use_def[vi->name()] = ck;
 }

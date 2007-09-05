@@ -41,13 +41,18 @@ Variants& Variants::instance() {
   return inst;
 }
 
-VariantPtr Variants::get(const QString& name) const {
+VariantFactory* Variants::getFactory(const QString& name) const {
   Factories::const_iterator it = m_factories.find(name);
   if (it != m_factories.end()) {
-    return VariantPtr(it->second->createVariant());
+    return it->second;
   }
   
-  return VariantPtr();
+  return 0;
+}
+
+VariantPtr Variants::get(const QString& name) const {
+  VariantFactory* factory = getFactory(name);
+  return factory ? VariantPtr(factory->createVariant()) : VariantPtr();
 }
 
 void Variants::addFactory(const QString& name, VariantFactory* factory) {
