@@ -36,6 +36,7 @@ struct TAGUA_EXPORT Variant {
   
   static const bool hasICS = true;
   static const bool m_simple_moves = false;
+  static const bool m_hidden = false;
   static const char *m_name;
   static const char *m_theme_proxy;
 

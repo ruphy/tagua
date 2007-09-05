@@ -34,6 +34,10 @@ public:
   VariantFactory* getFactory(const QString& name) const;
   
   void addFactory(VariantFactory* factory);
+  
+  /**
+    * \return a list of all non-hidden variants.
+    */
   QStringList all() const;
   
   static Variants& instance();

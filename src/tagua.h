@@ -390,6 +390,7 @@ public:
   virtual VariantInfo* createVariant() const = 0;
   virtual QString name() const = 0;
   virtual QString themeProxy() const = 0;
+  virtual bool hidden() const = 0;
 };
 
 

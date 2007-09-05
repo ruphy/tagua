@@ -507,6 +507,10 @@ namespace HLVariant {
     virtual QString themeProxy() const {
       return Variant::m_theme_proxy;
     }
+    
+    virtual bool hidden() const {
+      return Variant::m_hidden;
+    }
   };
   
 }

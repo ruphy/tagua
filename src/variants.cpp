@@ -61,7 +61,8 @@ void Variants::addFactory(VariantFactory* factory) {
 QStringList Variants::all() const {
   QStringList s;
   for (Factories::const_iterator end = m_factories.end(), it = m_factories.begin(); it != end; ++it) {
-    s << it->first;
+    if (!it->second->hidden())
+      s << it->first;
   }
   
   return s;
