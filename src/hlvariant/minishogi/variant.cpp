@@ -26,5 +26,7 @@ ActionCollection* Variant::actions() {
   return &m_actions;
 }
 
+DEFINE_VARIANT_FACTORY();
+
 } // namespace MiniShogi
 } // namespace HLVariant

@@ -17,6 +17,11 @@
                        << "     got type   " << prettyTypeName(typeid(x).name()) << std::endl \
                        << "     instead of " << prettyTypeName(typeid(y).name()) << std::endl \
                        << "     this is    " << prettyTypeName(typeid(*this).name()) << std::endl)
+                       
+#define DEFINE_VARIANT_FACTORY() \
+  VariantFactory* createFactory() { \
+    return new WrappedVariantFactory<Variant>; \
+  }
 
 namespace HLVariant {
 

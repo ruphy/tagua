@@ -25,5 +25,7 @@ ActionCollection* Variant::actions() {
   return &m_actions;
 }
 
+DEFINE_VARIANT_FACTORY();
+
 } // namespace Dummy
 } // namespace HLVariant

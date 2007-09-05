@@ -9,31 +9,30 @@
 */
 
 #include "variants.h"
-#include "hlvariant/tagua_wrapped.h"
-#include "hlvariant/chess/variant.h"
-#include "hlvariant/crazyhouse/variant.h"
-#include "hlvariant/dummy/variant.h"
-#include "hlvariant/minichess5/variant.h"
-#include "hlvariant/shogi/variant.h"
-#include "hlvariant/minishogi/variant.h"
 
 using namespace HLVariant;
 
-template <typename Variant>
-void register_variant(Variants* variants) {
-  variants->addFactory(
-    Variant::m_name,
-    new WrappedVariantFactory<Variant>);
-}
-
+#define DECLARE_FACTORY(VARIANT) \
+  namespace HLVariant { \
+  namespace VARIANT { \
+    VariantFactory* createFactory(); \
+  } \
+  }
+DECLARE_FACTORY(Chess)
+DECLARE_FACTORY(Minichess5)
+DECLARE_FACTORY(Crazyhouse)
+DECLARE_FACTORY(Dummy)
+DECLARE_FACTORY(Shogi)
+DECLARE_FACTORY(MiniShogi)
+#undef DECLARE_FACTORY
 
 Variants::Variants() {
-  register_variant<Chess::Variant>(this);
-  register_variant<Minichess5::Variant>(this);
-  register_variant<Crazyhouse::Variant>(this);
-  register_variant<Dummy::Variant>(this);
-  register_variant<Shogi::Variant>(this);
-  register_variant<MiniShogi::Variant>(this);
+  addFactory(Chess::createFactory());
+  addFactory(Minichess5::createFactory());
+  addFactory(Crazyhouse::createFactory());
+  addFactory(Dummy::createFactory());
+  addFactory(Shogi::createFactory());
+  addFactory(MiniShogi::createFactory());
 }
 
 Variants& Variants::instance() {
@@ -55,9 +54,8 @@ VariantPtr Variants::get(const QString& name) const {
   return factory ? VariantPtr(factory->createVariant()) : VariantPtr();
 }
 
-void Variants::addFactory(const QString& name, VariantFactory* factory) {
-  m_factories[name] = factory;
-  std::cout << "added factory for variant " << name << std::endl;
+void Variants::addFactory(VariantFactory* factory) {
+  m_factories[factory->name()] = factory;
 }
 
 QStringList Variants::all() const {

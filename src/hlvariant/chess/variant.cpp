@@ -23,6 +23,7 @@ ActionCollection* Variant::actions() {
   return &m_actions;
 }
 
+DEFINE_VARIANT_FACTORY();
 
 } // namespace Chess
 } // namespace HLVariant
