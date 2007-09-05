@@ -167,6 +167,7 @@ void MainWindow::setupActions() {
   KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
   KStandardAction::open(this, SLOT(loadGame()), actionCollection());
   KStandardAction::quit(this, SLOT(quit()), actionCollection());
+  KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
   installRegularAction("back", KIcon("go-previous"), i18n("&Back"), &ui(), SLOT(back()));
   installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
@@ -189,7 +190,6 @@ void MainWindow::setupActions() {
   installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
   installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
   installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
-  installRegularAction("configure", KIcon("configure"), i18n("&Configure Tagua..."), this, SLOT(preferences()));
 }
 
 void MainWindow::updateVariantActions() {
