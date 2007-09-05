@@ -129,9 +129,9 @@ public:
 
   ~StackCheck() {
     if (lua_gettop(l) != top) {
-      std::cout << "Wrong lua stack size!"  << std::endl
-                << "    expected = " << top << std::endl
-                << "    actual = " << lua_gettop(l) << std::endl;
+      std::cout << "Wrong lua stack size!\n"
+                   "    expected = " << top << "\n"
+                   "    actual = " << lua_gettop(l) << std::endl;
     }
   }
 };

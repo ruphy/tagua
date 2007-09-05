@@ -314,29 +314,31 @@ int Loader::create_value_func(lua_State *l) {
   lua_getfield(l, -1, data->key.toAscii().constData());
   lua_remove(l, -2);
 
-  /* If it is a function call it, or else try to retrieve directly the value */
-  if(lua_isnil(l, -1)) {
-    if(!data->allow_nil)
-      luaL_error(l, "No such entry: %s", data->key.toAscii().constData());
-  }
-  else {
-    if(lua_isfunction(l, -1)) {
-      int nparams = 0;
-      if(data->size) {
-        lua_pushnumber(l, data->size);
-        nparams++;
-      }
-      if(data->args) {
-        lua_pushvaluemap(l, data->args);
-        nparams++;
-      }
-      lua_call(l, nparams, 1);
+  // If it is a function, call it
+  if(lua_isfunction(l, -1)) {
+//     std::cout << "CALLING FUNCTION" << std::endl;
+    int nparams = 0;
+    if(data->size) {
+      lua_pushnumber(l, data->size);
+      nparams++;
     }
-
+    if(data->args) {
+      lua_pushvaluemap(l, data->args);
+      nparams++;
+    }
+    lua_call(l, nparams, 1);
+  }
+  
+  // retrieve value
+  if (!lua_isnil(l, -1)) {
     retrieve<T>(data, l, -1);
   }
-
+  else if (!data->allow_nil) {
+    luaL_error(l, "No such entry: %s", data->key.toAscii().constData());        
+  }
+  
   lua_pop(l, 1);
+
   return 0;
 }
 

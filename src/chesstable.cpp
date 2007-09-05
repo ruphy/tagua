@@ -84,8 +84,8 @@ void ChessTable::settingsChanged() {
   if(m_wallpaper)
     delete m_wallpaper;
 
-  QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper");
-  if(!bg.isNull()) {
+  QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper", 0, true);
+  if (!bg.isNull()) {
     m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
     m_wallpaper->lower();
     m_wallpaper->show();

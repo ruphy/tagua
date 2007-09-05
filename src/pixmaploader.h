@@ -70,11 +70,11 @@ public:
 
   /** returns a value */
   template<typename T>
-  T getValue(const QString& id, const ::LuaApi::LuaValueMap* args = NULL);
+  T getValue(const QString& id, const ::LuaApi::LuaValueMap* args = NULL, bool allow_nil = false);
 
   /** returns a static value (not depending on the size) */
   template<typename T>
-  T getStaticValue(const QString& id, const ::LuaApi::LuaValueMap* args = NULL);
+  T getStaticValue(const QString& id, const ::LuaApi::LuaValueMap* args = NULL, bool allow_nil = false);
 };
 
 #endif // PIXMAPLOADER_H

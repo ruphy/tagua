@@ -73,7 +73,7 @@ public:
 
   /** Loads a value */
   template<typename T>
-  T getValue(const QString& key, int size, const ::LuaApi::LuaValueMap* args = NULL);
+  T getValue(const QString& key, int size, const ::LuaApi::LuaValueMap* args = NULL, bool allow_nil = false);
 };
 
 } //end namespace loader

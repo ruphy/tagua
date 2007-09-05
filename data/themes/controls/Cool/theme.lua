@@ -95,7 +95,7 @@ theme.wallpaper = function()
     end
     return i
   else
-    return Image()
+    return nil
   end
 end
 
