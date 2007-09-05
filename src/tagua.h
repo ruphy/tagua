@@ -388,6 +388,8 @@ class VariantFactory {
 public:
   virtual ~VariantFactory() { }
   virtual VariantInfo* createVariant() const = 0;
+  virtual QString name() const = 0;
+  virtual QString themeProxy() const = 0;
 };
 
 

@@ -22,7 +22,7 @@ using namespace HLVariant;
 template <typename Variant>
 void register_variant(Variants* variants) {
   variants->addFactory(
-    Variant::m_name, 
+    Variant::m_name,
     new WrappedVariantFactory<Variant>);
 }
 

@@ -494,6 +494,14 @@ namespace HLVariant {
     virtual VariantInfo* createVariant() const {
       return new WrappedVariantInfo<Variant>;
     }
+    
+    virtual QString name() const {
+      return Variant::m_name;
+    }
+    
+    virtual QString themeProxy() const {
+      return Variant::m_theme_proxy;
+    }
   };
   
 }
