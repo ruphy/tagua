@@ -11,8 +11,6 @@
 #ifndef HLVARIANT__CHESS__VARIANT_H
 #define HLVARIANT__CHESS__VARIANT_H
 
-#include <kactioncollection.h>
-
 #include "movegenerator.h"
 #include "serializer.h"
 #include "export.h"
