@@ -32,6 +32,7 @@ Q_OBJECT
   boost::shared_ptr<Controller>& controller();
   boost::shared_ptr<Controller> controller() const;
   KActionCollection* m_actions;
+  friend class UIActionStateObserver;
 public:
   UI(KActionCollection* actions);
   void addController(QWidget* w, const boost::shared_ptr<Controller>&);

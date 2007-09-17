@@ -20,20 +20,25 @@
 using namespace boost;
 
 #define SYNC_ACTION(NAME, ENUM) \
-  m_actions->action(NAME)->setEnabled(state & GraphicalGame::ENUM)
+  m_ui->m_actions->action(NAME)->setEnabled(state & GraphicalGame::ENUM)
 class UIActionStateObserver : public ActionStateObserver {
-  KActionCollection* m_actions;
+  const UI* m_ui;
+  Controller* m_controller;
 public:
-  UIActionStateObserver(KActionCollection* actions)
-  : m_actions(actions) { }
+  UIActionStateObserver(const UI* ui, const shared_ptr<Controller>& controller)
+  : m_ui(ui)
+  , m_controller(controller.get()) { }
   
   virtual void notifyActionStateChange(GraphicalGame::ActionState state) {
-    SYNC_ACTION("begin", BEGIN);
-    SYNC_ACTION("back", BACK);
-    SYNC_ACTION("forward", FORWARD);
-    SYNC_ACTION("end", END);
-    SYNC_ACTION("undo", UNDO);
-    SYNC_ACTION("redo", BEGIN);
+    // check that the associated controller is active
+    if (m_ui->controller().get() == m_controller) {
+      SYNC_ACTION("begin", BEGIN);
+      SYNC_ACTION("back", BACK);
+      SYNC_ACTION("forward", FORWARD);
+      SYNC_ACTION("end", END);
+      SYNC_ACTION("undo", UNDO);
+      SYNC_ACTION("redo", BEGIN);
+    }
   }
 };
 #undef SYNC_ACTION
@@ -204,5 +209,5 @@ void UI::reloadSettings() {
 shared_ptr<ActionStateObserver>
 UI::createActionStateObserver() const {
   return shared_ptr<UIActionStateObserver>(
-    new UIActionStateObserver(m_actions));
+    new UIActionStateObserver(this, controller()));
 }
