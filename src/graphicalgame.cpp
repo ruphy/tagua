@@ -21,6 +21,15 @@
 
 using namespace GamePrivate; // is this ok?
 
+template <typename Enum>
+inline void setFlag(QFlags<Enum>& flag, Enum e, bool value) {
+  if (value)
+    flag |= e;
+  else
+    flag &= ~e;
+}
+
+
 class CtrlAction {
   Game* m_game;
   bool m_done;
@@ -45,6 +54,7 @@ GraphicalGame::GraphicalGame(GraphicalSystem* graphical,
 , m_graphical(graphical)
 , m_movelist(m)
 , m_anim_sequence(false) {
+  m_action_state = 0;
   if(m_movelist) {
     m_movelist->reset();
     m_movelist->setLayoutStyle(graphical->m_variant->moveListLayout());
@@ -221,14 +231,28 @@ void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
   }
   else
     m_graphical->warp( move(), position());
+    
+  // set m_action_state
+  ActionState old_state = m_action_state;
+  setFlag(m_action_state, BACK, current != 0);
+  setFlag(m_action_state, BEGIN, current != 0);
+  Entry* next_entry = fetch(current.next());
+  setFlag(m_action_state, FORWARD, next_entry);
+  setFlag(m_action_state, END, next_entry);
+  if (old_state != m_action_state)
+    onActionStateChange();
 }
 
 void GraphicalGame::onAvailableUndo(bool e) {
+  setFlag(m_action_state, UNDO, e);
+  onActionStateChange();
   if(m_movelist)
     m_movelist->enableUndo(e);
 }
 
 void GraphicalGame::onAvailableRedo(bool e) {
+  setFlag(m_action_state, REDO, e);
+  onActionStateChange();
   if(m_movelist)
     m_movelist->enableRedo(e);
 }
@@ -310,3 +334,13 @@ void GraphicalGame::destroyCtrlAction() {
   m_ctrl.reset();
 }
 
+void GraphicalGame::setActionStateObserver(
+                      const boost::shared_ptr<ActionStateObserver>& obs) {
+  m_action_state_observer = obs;
+}
+
+void GraphicalGame::onActionStateChange() {
+  if (boost::shared_ptr<ActionStateObserver> obs = m_action_state_observer.lock()) {
+    obs->notifyActionStateChange(m_action_state);
+  }
+}

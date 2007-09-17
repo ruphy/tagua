@@ -12,6 +12,7 @@
 #define GRAPHICALGAME_H
 
 #include <QObject>
+#include <QFlags>
 #include <boost/weak_ptr.hpp>
 #include "game.h"
 #include "movelist_notifier.h"
@@ -24,7 +25,29 @@ namespace MoveList { class Table; }
 
 class GraphicalGame : public QObject, public Game, public MoveList::Notifier {
 Q_OBJECT
-
+public:
+  /**
+    * @brief State of GUI actions associated to a game.
+    */
+  enum ActionStateFlag {
+    UNDO = 0x0,
+    REDO = 0x1,
+    BEGIN = 0x2,
+    BACK = 0x4,
+    FORWARD = 0x8,
+    END = 0x10
+  };
+  Q_DECLARE_FLAGS(ActionState, ActionStateFlag)
+  
+  /**
+    * @brief An observer that is notified of changes in the ActionState flags.
+    */
+  class ActionStateObserver {
+  public:
+    virtual ~ActionStateObserver();
+    
+    virtual void notifyActionStateChange(ActionState state);
+  };
 private:
   GraphicalSystem*    m_graphical;
   MoveList::Table*    m_movelist;
@@ -33,6 +56,8 @@ private:
 
   boost::shared_ptr<CtrlAction> m_ctrl;
   boost::weak_ptr<UserEntity> m_listener_entity;
+  boost::weak_ptr<ActionStateObserver> m_action_state_observer;
+  ActionState m_action_state;
 
 private Q_SLOTS:
   void settingsChanged();
@@ -67,6 +92,10 @@ public:
 
   void setEntity(const boost::shared_ptr<UserEntity>& entity) { m_listener_entity = entity; }
   void detachEntity() { m_listener_entity.reset(); }
+  void setActionStateObserver(const boost::shared_ptr<ActionStateObserver>& obs);
+  void onActionStateChange();
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS(GraphicalGame::ActionState)
 
 #endif //GRAPHICALGAME_H
