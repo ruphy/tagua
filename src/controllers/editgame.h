@@ -73,6 +73,7 @@ public:
   virtual void detach();
   
   virtual void reloadSettings();
+  virtual void setUI(UI& ui);
 };
 
 

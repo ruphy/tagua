@@ -319,3 +319,6 @@ void EditGameController::reloadSettings() {
   m_graphical->settingsChanged();
 }
 
+void EditGameController::setUI(UI& ui) {
+  
+}

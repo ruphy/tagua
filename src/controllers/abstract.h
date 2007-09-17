@@ -22,6 +22,7 @@ class UserEntity;
 class Engine;
 class PGN;
 class ActionCollection;
+class UI;
 
 /**
   * @b Controller is the base abstract class for all controllers in Tagua.
@@ -171,6 +172,13 @@ public:
   virtual void removeEntity(const EntityToken&) { }
   
   virtual void reloadSettings() = 0;
+  
+  /**
+    * Set owning user interface.
+    * Used to setup callbacks towards the main window, like action state
+    * change notifications.
+    */
+  virtual void setUI(UI& ui) = 0;
 };
 
 

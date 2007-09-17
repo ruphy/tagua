@@ -298,7 +298,6 @@ void MainWindow::cleanupGame() {
   ui().end();
 }
 
-
 bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr startingPos, 
                          bool newTab) {
   VariantPtr variant = Variants::instance().get(variantName);

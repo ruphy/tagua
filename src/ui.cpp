@@ -71,8 +71,8 @@ void UI::addController(QWidget* w, const shared_ptr<Controller>& controller) {
 
 void UI::setController(const shared_ptr<Controller>& controller) {
   Q_ASSERT(m_current_tab);
-
   m_controller[m_current_tab] = controller;
+  controller->setUI(*this);
 }
 
 void UI::removeController(QWidget* w) {
