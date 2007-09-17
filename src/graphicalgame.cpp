@@ -341,6 +341,9 @@ void GraphicalGame::setActionStateObserver(
 
 void GraphicalGame::onActionStateChange() {
   if (boost::shared_ptr<ActionStateObserver> obs = m_action_state_observer.lock()) {
+    std::cout << "we have an observer" << std::endl;
     obs->notifyActionStateChange(m_action_state);
   }
 }
+
+ActionStateObserver::~ActionStateObserver() { }

@@ -57,7 +57,8 @@ MainWindow::~MainWindow() {
 }
 
 MainWindow::MainWindow(const QString& variant)
-: KXmlGuiWindow(0) {
+: KXmlGuiWindow(0)
+, m_ui(actionCollection()) {
   setObjectName("tagua_main");
   m_main = new TabWidget(this);
   m_main->setTabBarHidden(true);

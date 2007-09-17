@@ -21,6 +21,8 @@
 class Controller;
 class Engine;
 class ActionCollection;
+class KActionCollection;
+class ActionStateObserver;
 
 class UI : public QObject {
 Q_OBJECT
@@ -29,11 +31,15 @@ Q_OBJECT
   QWidget* m_current_tab;
   boost::shared_ptr<Controller>& controller();
   boost::shared_ptr<Controller> controller() const;
+  KActionCollection* m_actions;
 public:
-  UI();
+  UI(KActionCollection* actions);
   void addController(QWidget* w, const boost::shared_ptr<Controller>&);
   void setController(const boost::shared_ptr<Controller>&);
   void removeController(QWidget* w);
+  
+  boost::shared_ptr<ActionStateObserver> 
+    createActionStateObserver() const;
 public Q_SLOTS:
   void setCurrentTab(QWidget* w);
 

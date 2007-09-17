@@ -9,15 +9,38 @@
 */
 
 #include <iostream>
-#include <qapplication.h>
-#include <qclipboard.h>
+#include <QApplication>
+#include <QClipboard>
+#include <KActionCollection>
+#include <KAction>
 #include "ui.h"
 #include "controllers/abstract.h"
+#include "graphicalgame.h"
 
 using namespace boost;
 
-UI::UI()
-: m_current_tab(NULL) {
+#define SYNC_ACTION(NAME, ENUM) \
+  m_actions->action(NAME)->setEnabled(state & GraphicalGame::ENUM)
+class UIActionStateObserver : public ActionStateObserver {
+  KActionCollection* m_actions;
+public:
+  UIActionStateObserver(KActionCollection* actions)
+  : m_actions(actions) { }
+  
+  virtual void notifyActionStateChange(GraphicalGame::ActionState state) {
+    SYNC_ACTION("begin", BEGIN);
+    SYNC_ACTION("back", BACK);
+    SYNC_ACTION("forward", FORWARD);
+    SYNC_ACTION("end", END);
+    SYNC_ACTION("undo", UNDO);
+    SYNC_ACTION("redo", BEGIN);
+  }
+};
+#undef SYNC_ACTION
+
+UI::UI(KActionCollection* actions)
+: m_current_tab(NULL)
+, m_actions(actions) {
 }
 
 boost::shared_ptr<Controller>& UI::controller() {
@@ -178,3 +201,8 @@ void UI::reloadSettings() {
   }
 }
 
+shared_ptr<ActionStateObserver>
+UI::createActionStateObserver() const {
+  return shared_ptr<UIActionStateObserver>(
+    new UIActionStateObserver(m_actions));
+}

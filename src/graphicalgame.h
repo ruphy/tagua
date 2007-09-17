@@ -21,6 +21,7 @@ class GraphicalSystem;
 class CtrlAction;
 class UserEntity;
 class GraphicalGame;
+class ActionStateObserver;
 namespace MoveList { class Table; }
 
 class GraphicalGame : public QObject, public Game, public MoveList::Notifier {
@@ -38,16 +39,6 @@ public:
     END = 0x10
   };
   Q_DECLARE_FLAGS(ActionState, ActionStateFlag)
-  
-  /**
-    * @brief An observer that is notified of changes in the ActionState flags.
-    */
-  class ActionStateObserver {
-  public:
-    virtual ~ActionStateObserver();
-    
-    virtual void notifyActionStateChange(ActionState state);
-  };
 private:
   GraphicalSystem*    m_graphical;
   MoveList::Table*    m_movelist;
@@ -97,5 +88,16 @@ public:
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(GraphicalGame::ActionState)
+
+
+/**
+  * @brief An observer that is notified of changes in the ActionState flags.
+  */
+class ActionStateObserver {
+public:
+  virtual ~ActionStateObserver();
+  
+  virtual void notifyActionStateChange(GraphicalGame::ActionState state) = 0;
+};
 
 #endif //GRAPHICALGAME_H
