@@ -321,6 +321,6 @@ void EditGameController::reloadSettings() {
 }
 
 void EditGameController::setUI(UI& ui) {
-  m_game->setActionStateObserver(ui.createActionStateObserver());
+  m_game->setActionStateObserver(ui.createActionStateObserver(shared_from_this()));
   m_game->onActionStateChange();
 }

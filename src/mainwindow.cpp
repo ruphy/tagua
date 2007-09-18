@@ -97,12 +97,12 @@ MainWindow::MainWindow(const QString& variant)
   connect(board, SIGNAL(error(ErrorCode)), this, SLOT(displayErrorMessage(ErrorCode)));
   //BROKEN connect(board->clock(), SIGNAL(labelClicked(int)), &ui(), SLOT(setTurn(int)));
 
-//  start in edit game mode
-  newGame(variant, AbstractPosition::Ptr(), true);
-
   setupActions();
   setupGUI();
   setupEngineMenu();
+  
+  //  start in edit game mode
+  newGame(variant, AbstractPosition::Ptr(), true);
   updateVariantActions();
 }
 
@@ -276,7 +276,7 @@ void MainWindow::createTab(ChessTable* board, const shared_ptr<Controller>& cont
     m_main->insertTab(index, board, caption);
 
   m_ui.addController(board, controller);
-  m_ui.setCurrentTab(board);
+//   m_ui.setCurrentTab(board);
   m_movelist_stack->addWidget(board->moveListTable());
   
   m_main->setCurrentIndex(index);

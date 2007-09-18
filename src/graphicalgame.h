@@ -31,12 +31,12 @@ public:
     * @brief State of GUI actions associated to a game.
     */
   enum ActionStateFlag {
-    UNDO = 0x0,
-    REDO = 0x1,
-    BEGIN = 0x2,
-    BACK = 0x4,
-    FORWARD = 0x8,
-    END = 0x10
+    UNDO = 0x1,
+    REDO = 0x2,
+    BEGIN = 0x4,
+    BACK = 0x8,
+    FORWARD = 0x10,
+    END = 0x20
   };
   Q_DECLARE_FLAGS(ActionState, ActionStateFlag)
 private:
@@ -47,7 +47,7 @@ private:
 
   boost::shared_ptr<CtrlAction> m_ctrl;
   boost::weak_ptr<UserEntity> m_listener_entity;
-  boost::weak_ptr<ActionStateObserver> m_action_state_observer;
+  boost::shared_ptr<ActionStateObserver> m_action_state_observer;
   ActionState m_action_state;
 
 private Q_SLOTS:

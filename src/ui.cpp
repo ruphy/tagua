@@ -36,8 +36,8 @@ public:
       SYNC_ACTION("back", BACK);
       SYNC_ACTION("forward", FORWARD);
       SYNC_ACTION("end", END);
-      SYNC_ACTION("undo", UNDO);
-      SYNC_ACTION("redo", BEGIN);
+      SYNC_ACTION("edit_undo", UNDO);
+      SYNC_ACTION("edit_redo", REDO);
     }
   }
 };
@@ -66,7 +66,8 @@ boost::shared_ptr<Controller> UI::controller() const {
 }
 
 void UI::addController(QWidget* w, const shared_ptr<Controller>& controller) {
-  m_controller[w] = controller;
+  m_current_tab = w;
+  setController(controller);
 }
 
 void UI::setController(const shared_ptr<Controller>& controller) {
@@ -207,7 +208,7 @@ void UI::reloadSettings() {
 }
 
 shared_ptr<ActionStateObserver>
-UI::createActionStateObserver() const {
+UI::createActionStateObserver(const shared_ptr<Controller>& controller) const {
   return shared_ptr<UIActionStateObserver>(
-    new UIActionStateObserver(this, controller()));
+    new UIActionStateObserver(this, controller));
 }

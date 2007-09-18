@@ -40,7 +40,7 @@ public:
   void removeController(QWidget* w);
   
   boost::shared_ptr<ActionStateObserver> 
-    createActionStateObserver() const;
+    createActionStateObserver(const boost::shared_ptr<Controller>&) const;
 public Q_SLOTS:
   void setCurrentTab(QWidget* w);
 
