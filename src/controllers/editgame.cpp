@@ -23,6 +23,7 @@
 #include "chesstable.h"
 #include "foreach.h"
 #include "actioncollection.h"
+#include "ui.h"
 #include <iostream>
 
 using namespace boost;
@@ -320,5 +321,6 @@ void EditGameController::reloadSettings() {
 }
 
 void EditGameController::setUI(UI& ui) {
-  
+  m_game->setActionStateObserver(ui.createActionStateObserver());
+  m_game->onActionStateChange();
 }
