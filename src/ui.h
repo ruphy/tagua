@@ -24,6 +24,24 @@ class ActionCollection;
 class KActionCollection;
 class ActionStateObserver;
 
+/**
+  * @brief Utility class to handle GUI actions.
+  * 
+  * An instance of UI is owned by MainWindow, and every GUI action
+  * is connected to a slot of UI.
+  * A UI instance maintains a correspondence between Tagua tabs and
+  * associated controllers. Besides, UI knows the active tab (hence
+  * controller) and directs all user interaction to it.
+  * Whenever a new tab is created, the corresponding controller is
+  * added to the association, and its setUI member function is called,
+  * so that it can setup all the observers.
+  * 
+  * To add a new tab <-> controller association, use the addController
+  * member function. 
+  * If you want to replace the current controller, use setController.
+  * Both functions assume that the controller is new, hence initialize
+  * it via setUI.
+  */
 class UI : public QObject {
 Q_OBJECT
   typedef std::map<QWidget*, boost::shared_ptr<Controller> > ControllerMap;
@@ -34,15 +52,44 @@ Q_OBJECT
   KActionCollection* m_actions;
   friend class UIActionStateObserver;
 public:
+  /**
+    * Constructor.
+    * \param actions The action collection associated to this UI instance. 
+    *                This will be used to enable/disable actions according
+    *                to notifications coming from the controller.
+    */
   UI(KActionCollection* actions);
-  void addController(QWidget* w, const boost::shared_ptr<Controller>&);
-  void setController(const boost::shared_ptr<Controller>&);
-  void removeController(QWidget* w);
   
+  /**
+    * Add a new tab <-> controller association.
+    * The controller is assumed to be new, and it is initialized by calling
+    * its setUI member function.
+    */
+  void addController(QWidget* tab, const boost::shared_ptr<Controller>&);
+  /**
+    * Just like addController, but replace the current controller instead
+    * of creating a new association. The old controller is no longer referenced
+    * by UI, so it will be destroyed, unless other objects keep it alive.
+    */
+  void setController(const boost::shared_ptr<Controller>& controller);
+  /**
+    * Remove a controller. The controller will no longer be referenced by
+    * UI, so it will be destroyed, unless other objects keep it alive.
+    */
+  void removeController(QWidget* tab);
+  
+  /**
+    * Create an action state observer that reacts to action state
+    * updates by enabling / disabling the corresponding actions.
+    * \sa ActionStateObserver
+    */
   boost::shared_ptr<ActionStateObserver> 
     createActionStateObserver(const boost::shared_ptr<Controller>&) const;
 public Q_SLOTS:
-  void setCurrentTab(QWidget* w);
+  /**
+    * Change the current tab and associated controller.
+    */
+  void setCurrentTab(QWidget* tab);
 
   bool undo();
   bool redo();
