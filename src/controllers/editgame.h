@@ -74,6 +74,7 @@ public:
   
   virtual void reloadSettings();
   virtual void setUI(UI& ui);
+  virtual void activate();
 };
 
 

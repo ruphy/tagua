@@ -179,6 +179,11 @@ public:
     * change notifications.
     */
   virtual void setUI(UI& ui) = 0;
+  
+  /**
+    * Called whenever a controller becomes active in the main window.
+    */
+  virtual void activate() = 0;
 };
 
 

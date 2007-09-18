@@ -324,3 +324,7 @@ void EditGameController::setUI(UI& ui) {
   m_game->setActionStateObserver(ui.createActionStateObserver(shared_from_this()));
   m_game->onActionStateChange();
 }
+
+void EditGameController::activate() {
+  m_game->onActionStateChange();
+}

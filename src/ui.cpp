@@ -84,6 +84,7 @@ void UI::removeController(QWidget* w) {
 
 void UI::setCurrentTab(QWidget* w) {
   m_current_tab = w;
+  controller()->activate();
 }
 
 bool UI::undo() {
