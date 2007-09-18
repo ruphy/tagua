@@ -194,6 +194,16 @@ void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
   if(m_movelist)
     m_movelist->select(current);
 
+  // update action state
+  ActionState old_state = m_action_state;
+  setFlag(m_action_state, BACK, current != 0);
+  setFlag(m_action_state, BEGIN, current != 0);
+  Entry* next_entry = fetch(current.next());
+  setFlag(m_action_state, FORWARD, next_entry);
+  setFlag(m_action_state, END, next_entry);
+  if (old_state != m_action_state)
+    onActionStateChange();
+
   Entry *oe = fetch(old_c);
   Entry *e = fetch(current);
   std::pair<int, int> steps = old_c.stepsTo(current);
@@ -233,14 +243,7 @@ void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
     m_graphical->warp( move(), position());
     
   // set m_action_state
-  ActionState old_state = m_action_state;
-  setFlag(m_action_state, BACK, current != 0);
-  setFlag(m_action_state, BEGIN, current != 0);
-  Entry* next_entry = fetch(current.next());
-  setFlag(m_action_state, FORWARD, next_entry);
-  setFlag(m_action_state, END, next_entry);
-  if (old_state != m_action_state)
-    onActionStateChange();
+
 }
 
 void GraphicalGame::onAvailableUndo(bool e) {
