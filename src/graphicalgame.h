@@ -49,7 +49,8 @@ private:
   boost::weak_ptr<UserEntity> m_listener_entity;
   boost::shared_ptr<ActionStateObserver> m_action_state_observer;
   ActionState m_action_state;
-
+  void updateActionState();
+  
 private Q_SLOTS:
   void settingsChanged();
 

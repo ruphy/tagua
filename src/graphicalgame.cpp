@@ -81,6 +81,7 @@ void GraphicalGame::settingsChanged() {
 
 void GraphicalGame::onAdded(const Index& ix) {
   onAddedInternal(ix);
+  updateActionState();
 }
 
 void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
@@ -163,6 +164,7 @@ void GraphicalGame::onEntryChanged(const Index& at, int propagate) {
 void GraphicalGame::onRemoved(const Index& i) {
   if(m_movelist)
     m_movelist->remove(i);
+  updateActionState();
 }
 
 void GraphicalGame::onPromoteVariation(const Index& i, int v) {
@@ -176,6 +178,7 @@ void GraphicalGame::onPromoteVariation(const Index& i, int v) {
       m_movelist->setVComment(i, v, it->second, true);
     m_movelist->select(current, true);
   }
+  updateActionState();
 }
 
 void GraphicalGame::onSetComment(const Index& i, const QString& s) {
@@ -188,13 +191,7 @@ void GraphicalGame::onSetVComment(const Index& i, int v, const QString& s) {
     m_movelist->setVComment(i, v, s);
 }
 
-void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
-  if (m_ctrl) m_ctrl->forfait();
-
-  if(m_movelist)
-    m_movelist->select(current);
-
-  // update action state
+void GraphicalGame::updateActionState() {
   ActionState old_state = m_action_state;
   setFlag(m_action_state, BACK, current != 0);
   setFlag(m_action_state, BEGIN, current != 0);
@@ -203,6 +200,15 @@ void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
   setFlag(m_action_state, END, next_entry);
   if (old_state != m_action_state)
     onActionStateChange();
+}
+
+void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
+  if (m_ctrl) m_ctrl->forfait();
+
+  if(m_movelist)
+    m_movelist->select(current);
+
+  updateActionState();
 
   Entry *oe = fetch(old_c);
   Entry *e = fetch(current);
