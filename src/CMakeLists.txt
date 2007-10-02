@@ -1,3 +1,4 @@
+
 set(tagua_SRC
   controllers/editgame.cpp
   controllers/abstract.cpp
@@ -131,6 +132,7 @@ include_directories(
   ${KDE4_INCLUDES}
   ${LUA_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIRS}
+  ${BLITZ_INCLUDES}
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
@@ -178,6 +180,7 @@ target_link_libraries(${TAGUA_TARGET}
   ${LUA_LINK_FLAGS}
   ${KDE4_KDEUI_LIBS}
   ${KDE4_KIO_LIBS}
+  ${BLITZ_LIBRARIES}
   dl
   kdegames
 )  

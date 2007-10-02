@@ -13,9 +13,8 @@
 
 #include <cmath>
 #include <QPainter>
+#include <blitzcpu.h>
 #include "imageeffects.h"
-#include "kcpuinfo.h"
-
 
 template<int aprec, int zprec>
 static inline void blurinner(unsigned char *bptr, int &zR,
@@ -155,14 +154,14 @@ void expBlur(QImage& img, int radius) {
 //KCPUInfo:: returns false on x86_64, and x86_64 always have sse/mmx
 #ifdef HAVE_X86_SSE2
   #ifndef __x86_64__
-    if(KCPUInfo::haveExtension( KCPUInfo::IntelSSE ) )
+    if(BlitzCPUInfo::haveExtension( BlitzCPUInfo::SSE2 ) )
   #endif //__x86_64__
       return expblur_sse(img, radius);
 #endif //HAVE_X86_SSE2
 
 #ifdef HAVE_X86_MMX
   #ifndef __x86_64__
-    if(KCPUInfo::haveExtension( KCPUInfo::IntelMMX ) )
+    if(BlitzCPUInfo::haveExtension( BlitzCPUInfo::MMX ) )
   #endif //__x86_64__
       return expblur_mmx(img, radius);
 #endif //HAVE_X86_MMX
