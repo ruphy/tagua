@@ -14,6 +14,7 @@
 #include <QDir>
 #include <QFileInfo>
 #include <KDesktopFile>
+#include <KConfigGroup>
 
 #include "foreach.h"
 #include "settings.h"

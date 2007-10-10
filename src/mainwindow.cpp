@@ -130,7 +130,6 @@ void MainWindow::setupEngineMenu() {
     EngineDetails engine_details;
     engine_details.load(s);
 
-    kDebug() << "creating engine " << engine_details.name << endl;
     EngineInfo* engine = new EngineInfo(engine_details, ui());
 
     m_engines.push_back(engine);
