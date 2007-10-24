@@ -39,7 +39,7 @@ Table::Table(QWidget* w)
   vbox->setSpacing(1);
 
   QToolButton *b1 = new QToolButton(this);
-  m_undo = new QAction(KIcon("undo"), "&Undo", this);
+  m_undo = new QAction(KIcon("edit-undo"), "&Undo", this);
   m_undo->setShortcut(Qt::CTRL+Qt::Key_Z);
   connect(m_undo, SIGNAL(triggered()), this, SLOT(onUndo()));
   b1->setDefaultAction(m_undo);
@@ -47,7 +47,7 @@ Table::Table(QWidget* w)
   hbox->addWidget(b1);
 
   QToolButton *b2 = new QToolButton(this);
-  m_redo = new QAction(KIcon("redo"), "Re&do", this);
+  m_redo = new QAction(KIcon("edit-redo"), "Re&do", this);
   m_redo->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
   connect(m_redo, SIGNAL(triggered()), this, SLOT(onRedo()));
   b2->setDefaultAction(m_redo);
