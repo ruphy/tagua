@@ -1,10 +1,10 @@
 
 function addShadow(func)
-  return function(size)
+  return function(size, args)
     local isz = math.floor( size*100/(100+shadow_grow) + 0.5)
     local offx = shadow_offset_x*isz/200
     local offy = shadow_offset_y*isz/200
-    local i = func(isz)
+    local i = func(isz, args)
     local s = i:create_shadow( shadow*isz/100, shadow_color,
                                   Point(size-isz, size-isz),
                                   Point(offx, offy) )
@@ -14,7 +14,7 @@ function addShadow(func)
 end
 
 function fromSVG_Direct(file)
-  return function(size)
+  return function(size, args)
     local i = Image(size,size)
     i:clear()
     i:draw_svg(Rect(0,0,size,size), file)
@@ -32,7 +32,7 @@ end
 
 function fromFontGlyph_Direct(...)
   local t = (function(...) return ... end):partial(...)
-  return function(size)
+  return function(size, args)
     local i = Image(size,size)
     i:clear()
     i:draw_glyph(Rect(0,0,size,size), t())
@@ -58,7 +58,7 @@ function fromFontGlyph(...)
 end
 
 function fromPixmap(file)
-  return function(size)
+  return function(size, args)
     local i = Image(size,size)
     i:set_paint_over(false)
     i:draw_image(Rect(0,0,size,size), file)
@@ -67,7 +67,7 @@ function fromPixmap(file)
 end
 
 function fromColor(color)
-  return function(size)
+  return function(size, args)
     local i = Image(size,size)
     i:clear(color)
     return i
@@ -76,9 +76,9 @@ end
 
 function overlay(func1,func2,...)
    if func2 then
-      return overlay(function(size)
-			return func2(func1(size), size)
-		     end, ...)
+      return overlay(function(size, args)
+        return func2(func1(size, args), size)
+          end, ...)
    else
       return func1
    end

@@ -319,7 +319,7 @@ void Board::updateSprites() {
 
     if (p) {
       // drawing sprite
-      p->setPixmap( m_loader( m_sprites[i].name() ) );
+      p->setPixmap(m_loader.piecePixmap(m_sprites[i].name(), m_flipped));
       adjustSprite(i, true);
     }
   }
@@ -646,9 +646,13 @@ void Board::flip(bool flipped)
     m_flipped = flipped;
 
     // update sprite positions
-    for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i))
-    if (m_sprites[i].sprite())
-      adjustSprite(i);
+    for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
+      SpritePtr p = m_sprites[i].sprite();
+      if (p) {
+        p->setPixmap(m_loader.piecePixmap(m_sprites[i].name(), m_flipped));
+        adjustSprite(i, true);
+      }
+    }
 
     updateTags();
     updateBorder();

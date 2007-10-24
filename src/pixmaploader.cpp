@@ -103,6 +103,15 @@ QPixmap PixmapLoader::operator()(const QString& id) {
   return getValue<QPixmap>(id);
 }
 
+QPixmap PixmapLoader::piecePixmap(const QString& id, bool flipped) {
+  ::LuaApi::LuaValueMap args;
+  if (flipped)
+    args["flipped"] = 0.0;
+
+  return getValue<QPixmap>(id, &args);
+//   return getValue<QPixmap>(id);
+}
+
 template<typename T>
 T PixmapLoader::getValue(const QString& id, const ::LuaApi::LuaValueMap* args, bool allow_nil) {
   if (!m_size || !m_theme)

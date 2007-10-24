@@ -2,7 +2,7 @@
 -- FIXME: still depends on Shogi.ttf for the tile
 
 function tile(white, ratio)
-  return function(size)
+  return function(size, args)
     local i = Image(size,size)
     i:clear()
 
@@ -11,7 +11,9 @@ function tile(white, ratio)
     g[1] = "#c0a870"
     local b = Brush(g)
 
-    if white then
+    local flip = (white or args.flipped) and not (white and args.flipped)
+
+    if flip then
       i:translate(-size, -size)
       i:rotate(180)
       b:translate(-size, -size)
