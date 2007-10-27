@@ -32,32 +32,6 @@ Table::Table(QWidget* w)
   setWindowTitle("Move List");
 
   QVBoxLayout *vbox = new QVBoxLayout(this);
-  QHBoxLayout *hbox = new QHBoxLayout();
-  hbox->setMargin(0);
-  hbox->setSpacing(1);
-  vbox->setMargin(1);
-  vbox->setSpacing(1);
-
-  QToolButton *b1 = new QToolButton(this);
-  m_undo = new QAction(KIcon("edit-undo"), "&Undo", this);
-  m_undo->setShortcut(Qt::CTRL+Qt::Key_Z);
-  connect(m_undo, SIGNAL(triggered()), this, SLOT(onUndo()));
-  b1->setDefaultAction(m_undo);
-  b1->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  hbox->addWidget(b1);
-
-  QToolButton *b2 = new QToolButton(this);
-  m_redo = new QAction(KIcon("edit-redo"), "Re&do", this);
-  m_redo->setShortcut(Qt::CTRL+Qt::SHIFT+Qt::Key_Z);
-  connect(m_redo, SIGNAL(triggered()), this, SLOT(onRedo()));
-  b2->setDefaultAction(m_redo);
-  b2->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-  hbox->addWidget(b2);
-
-  hbox->addStretch(1);
-
-  vbox->addLayout(hbox);
-
   QTabWidget *tw = new QTabWidget(this);
   tw->setTabPosition(QTabWidget::West);
   vbox->addWidget(tw);
@@ -138,8 +112,6 @@ void Table::select(const Index& index, bool confirm_promotion) {
 }
 
 void Table::reset() {
-  m_undo->setEnabled(false);
-  m_redo->setEnabled(false);
   if(m_movelist) m_movelist->reset();
   if(m_movelist_textual) m_movelist_textual->reset();
 }
@@ -160,14 +132,6 @@ int Table::layoutStyle() {
 void Table::setLayoutStyle(int x) {
   if(m_movelist) m_movelist->setLayoutStyle(x);
   if(m_movelist_textual) m_movelist_textual->setLayoutStyle(x);
-}
-
-void Table::enableUndo(bool e) {
-  m_undo->setEnabled(e);
-}
-
-void Table::enableRedo(bool e) {
-  m_redo->setEnabled(e);
 }
 
 //END Table--------------------------------------------------------------------

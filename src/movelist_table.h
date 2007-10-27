@@ -32,12 +32,6 @@ namespace MoveList {
   class Table : public QWidget {
   Q_OBJECT
   public:
-    /** the action for undo */
-    QAction *m_undo;
-
-    /** the action for redo */
-    QAction *m_redo;
-
     /** the scroll area that contains the move list */
     QScrollArea *m_scroll_area;
 
@@ -85,12 +79,6 @@ namespace MoveList {
 
     /** Sets the currently selected index */
     void select(const Index& index, bool confirm_promotion = false);
-
-    /** Enables/disables the undo action */
-    void enableUndo(bool e);
-
-    /** Enables/disables the redo action */
-    void enableRedo(bool e);
 
   private Q_SLOTS:
     void onUndo();

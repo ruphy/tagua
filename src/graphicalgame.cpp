@@ -255,15 +255,11 @@ void GraphicalGame::onCurrentIndexChanged(const Index& old_c) {
 void GraphicalGame::onAvailableUndo(bool e) {
   setFlag(m_action_state, UNDO, e);
   onActionStateChange();
-  if(m_movelist)
-    m_movelist->enableUndo(e);
 }
 
 void GraphicalGame::onAvailableRedo(bool e) {
   setFlag(m_action_state, REDO, e);
   onActionStateChange();
-  if(m_movelist)
-    m_movelist->enableRedo(e);
 }
 
 void GraphicalGame::onUserSelectMove(const Index& i) {
