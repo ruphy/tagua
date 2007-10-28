@@ -4,7 +4,7 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 PROJECT_NAME           = Tagua
-PROJECT_NUMBER         = 0.10
+PROJECT_NUMBER         = 1.0
 OUTPUT_DIRECTORY       = doxy/en
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
