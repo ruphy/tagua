@@ -35,6 +35,7 @@ public:
   virtual bool getMoveType(const Piece& piece, const Move& move) const;
   bool legal(Move& move) const;
   bool pseudolegal(Move& move) const;
+  bool canBeCaptured(const GameState& state, const Point& point) const;
   
   virtual InteractionType movable(const TurnTest&, const Point& x) const;
   virtual InteractionType droppable(const TurnTest&, int index) const;
@@ -170,6 +171,23 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
   }
 }
 
+
+template <typename GameState>
+  bool LegalityCheck<GameState>::canBeCaptured(const GameState& state, const Point& point) const {
+  for (int i = 0; i < m_state.board().size().x; i++) {
+    for (int j = 0; j < m_state.board().size().y; j++) {
+      Point p(i, j);
+      Piece piece = state.board().get(p);
+      LegalityCheck<GameState> check(state);
+      if (piece.color() == state.turn() && check.getMoveType(piece, Move(p, point))) {
+	std::cerr << state.board().get(point).name() << " can be captured" << std::endl;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 template <typename GameState>
 bool LegalityCheck<GameState>::legal(Move& move) const {
   if (!pseudolegal(move))
@@ -184,16 +202,8 @@ bool LegalityCheck<GameState>::legal(Move& move) const {
     return false;
 
   // check if the king can be captured
-  for (int i = 0; i < m_state.board().size().x; i++) {
-    for (int j = 0; j < m_state.board().size().y; j++) {
-      Point p(i, j);
-      Piece piece = tmp.board().get(p);
-      LegalityCheck<GameState> check(tmp);
-      if (piece.color() == tmp.turn() && check.getMoveType(piece, Move(p, king_pos))) {
-        return false;
-      }
-    }
-  }
+  if (canBeCaptured(tmp, king_pos))
+    return false;
 
   return true;
 }
