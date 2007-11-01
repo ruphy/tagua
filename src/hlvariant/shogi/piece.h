@@ -40,7 +40,7 @@ private:
   Type m_type;
   bool m_promoted;
 public:
-  Piece(Color color = INVALID_COLOR, Type type = INVALID_TYPE);
+  Piece(Color color = INVALID_COLOR, Type type = INVALID_TYPE, bool promoted = false);
   virtual ~Piece();
   
   virtual Color color() const;

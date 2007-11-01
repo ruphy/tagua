@@ -13,10 +13,10 @@
 namespace HLVariant {
 namespace Shogi {
 
-Piece::Piece(Color color, Type type)
+  Piece::Piece(Color color, Type type, bool promoted)
 : m_color(color)
 , m_type(type)
-, m_promoted(false) { }
+, m_promoted(promoted) { }
 
 Piece::~Piece() { }
 
