@@ -4,4 +4,4 @@ Name=Shogi
 Type=Application
 Comment=Shogi figurines
 X-Tagua-ThemeType=Figurines
-X-Tagua-Variants=Shogi[default]
+X-Tagua-Variants=Shogi[default],LargeShogi[default]
