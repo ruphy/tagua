@@ -25,6 +25,7 @@ DECLARE_FACTORY(Dummy)
 DECLARE_FACTORY(Shogi)
 DECLARE_FACTORY(MiniShogi)
 DECLARE_FACTORY(ShoShogi)
+DECLARE_FACTORY(ToriShogi)
 #undef DECLARE_FACTORY
 
 Variants::Variants() {
@@ -35,6 +36,7 @@ Variants::Variants() {
   addFactory(Shogi::createFactory());
   addFactory(MiniShogi::createFactory());
   addFactory(ShoShogi::createFactory());
+  addFactory(ToriShogi::createFactory());
 }
 
 Variants& Variants::instance() {

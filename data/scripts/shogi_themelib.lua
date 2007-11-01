@@ -100,6 +100,15 @@ shogichars["tokin"] 		= {"0x3068", {"0x3068", "0x91d1"}}
 -- Sho Shogi
 shogichars["drunken elephant"]	= {"0x9154", {"0x9154", "0x8c61"}}
 shogichars["crown prince"]	= {"0x592a", {"0x592a", "0x5b50"}}
+-- Tori Shogi
+shogichars["tori phoenix"] 		= { "0x9d6c" }
+shogichars["tori falcon"] 		= { "0x9df9" }
+shogichars["tori eagle"] 		= { "0x9d70" }
+shogichars["tori crane"] 		= { "0x9db4" }
+shogichars["tori quail"] 		= { "0x9d89" }
+shogichars["tori pheasant"] 		= { "0x96c9" }
+shogichars["tori swallow"] 		= { "0x71d5" }
+shogichars["tori goose"] 		= { "0x9d08" }
 -- Chess compatibility (part of Dai Shogi)
 shogichars["free king"]		= {"0x5954", {"0x5954", "0x738b"}}
 
@@ -134,3 +143,15 @@ shogimoves_freeking = {
    {-1,1,1},{0,1,1},{1,1,1},
    {-1,0,1},{1,0,1},
    {-1,-1,1},{0,-1,1},{1,-1,1}}
+
+shogimoves_eagle = {
+   {-1,1,1},{0,1},{1,1,1},
+   {-1,0},{1,0},
+   {-1,-1},{-2,-2},{0,-1,1},{1,-1},{2,-2}}
+shogimoves_crane = {
+   {-1,1},{0,1},{1,1},
+   {-1,-1},{0,-1},{1,-1}}
+shogimoves_right_quail = {{0,1,1},{-1,-1,1},{1,-1}}
+shogimoves_left_quail = {{0,1,1},{1,-1,1},{-1,-1}}
+shogimoves_pheasant = {{0,2},{-1,-1},{1,-1}}
+shogimoves_goose = {{-2,2},{2,2},{0,-2}}
