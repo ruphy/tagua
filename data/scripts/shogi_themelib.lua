@@ -80,6 +80,26 @@ function shogi_moves(moves)
   end
 end
 
+shogichars = {}
+-- standard Shogi
+shogichars["king"] 		= {"0x7389", {"0x7389", "0x5c06"}}
+shogichars["jade general"] 	= {"0x738b", {"0x738b", "0x5c06"}}
+shogichars["flying chariot"] 	= {"0x98db", {"0x98db", "0x8eca"}}
+shogichars["bishop"] 		= {"0x89d2", {"0x89d2", "0x884c"}}
+shogichars["gold general"] 	= {"0x91d1", {"0x91d1", "0x5c06"}}
+shogichars["silver general"] 	= {"0x9280", {"0x9280", "0x5c06"}}
+shogichars["knight"] 		= {"0x6842", {"0x6842", "0x99ac"}}
+shogichars["incense chariot"] 	= {"0x9999", {"0x9999", "0x8eca"}}
+shogichars["pawn"] 		= {"0x6b69", {"0x6b69", "0x5175"}}
+shogichars["dragon king"] 	= {"0x9f8d", {"0x9f8d", "0x738b"}}
+shogichars["dragon horse"] 	= {"0x99ac", {"0x9f8d", "0x99ac"}}
+shogichars["narigin"] 		= {"0x5168", {"0x6210", "0x9280"}}
+shogichars["narikei"] 		= {"0x572d", {"0x6210", "0x6842"}}
+shogichars["narikyo"] 		= {"0x674f", {"0x6210", "0x9999"}}
+shogichars["tokin"] 		= {"0x3068", {"0x3068", "0x91d1"}}
+-- Chess compatibility (part of Dai Shogi)
+shogichars["free king"]		= {"0x5954", {"0x5954", "0x738b"}}
+
 shogimoves_king = {
    {-1,1},{0,1},{1,1},
    {-1,0},{1,0},

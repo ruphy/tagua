@@ -50,70 +50,70 @@ function shogi_piece(first, char, white, promoted, ratio, moves)
 			   addChar(first, char, promoted)))
 end
 
-theme.black_king      = shogi_piece({"0x738b", "0x5c06"}, "0x738b", false, false, 1,
-				    shogimoves_king)
-theme.black_rook      = shogi_piece({"0x98db", "0x8eca"}, "0x98db", false, false, 0.96,
-				    shogimoves_rook)
-theme.black_p_rook    = shogi_piece({"0x9f8d", "0x738b"}, "0x9f8d", false, true, 0.96,
-				    shogimoves_dragon)
-theme.black_bishop    = shogi_piece({"0x89d2", "0x884c"}, "0x89d2", false, false, 0.93,
-				    shogimoves_bishop)
-theme.black_p_bishop  = shogi_piece({"0x9f8d", "0x99ac"}, "0x99ac", false, true, 0.93,
-				    shogimoves_horse)
-theme.black_gold      = shogi_piece({"0x91d1", "0x5c06"}, "0x91d1", false, false, 0.9,
-				    shogimoves_gold)
-theme.black_silver    = shogi_piece({"0x9280", "0x5c06"}, "0x9280", false, false, 0.9,
-				    shogimoves_silver)
-theme.black_p_silver  = shogi_piece({"0x6210", "0x9280"}, "0x5168", false, true, 0.9,
-				    shogimoves_gold)
-theme.black_knight    = shogi_piece({"0x6842", "0x99ac"}, "0x6842", false, false, 0.86,
-				    shogimoves_knight)
-theme.black_p_knight  = shogi_piece({"0x6210", "0x6842"}, "0x572d", false, true, 0.86,
-				    shogimoves_gold)
-theme.black_lance     = shogi_piece({"0x9999", "0x8eca"}, "0x9999", false, false, 0.83,
-				    shogimoves_lance)
-theme.black_p_lance   = shogi_piece({"0x6210", "0x9999"}, "0x674f", false, true, 0.83,
-				    shogimoves_gold)
-theme.black_pawn      = shogi_piece({"0x6b69", "0x5175"}, "0x6b69", false, false, 0.8,
-				    shogimoves_pawn)
-theme.black_p_pawn    = shogi_piece({"0x3068", "0x91d1"}, "0x3068", false, true, 0.8,
-				    shogimoves_gold)
+theme.black_king      = shogi_piece(shogichars["jade general"][2], shogichars["jade general"][1],
+				    false, false, 1, shogimoves_king)
+theme.black_rook      = shogi_piece(shogichars["flying chariot"][2], shogichars["flying chariot"][1],
+				    false, false, 0.96, shogimoves_rook)
+theme.black_p_rook    = shogi_piece(shogichars["dragon king"][2], shogichars["dragon king"][1],
+				    false, true, 0.96, shogimoves_dragon)
+theme.black_bishop    = shogi_piece(shogichars["bishop"][2], shogichars["bishop"][1],
+				    false, false, 0.93, shogimoves_bishop)
+theme.black_p_bishop  = shogi_piece(shogichars["dragon horse"][2], shogichars["dragon horse"][1],
+				    false, true, 0.93, shogimoves_horse)
+theme.black_gold      = shogi_piece(shogichars["gold general"][2], shogichars["gold general"][1],
+				    false, false, 0.9, shogimoves_gold)
+theme.black_silver    = shogi_piece(shogichars["silver general"][2], shogichars["silver general"][1],
+				    false, false, 0.9, shogimoves_silver)
+theme.black_p_silver  = shogi_piece(shogichars["narikei"][2], shogichars["narikei"][1],
+				    false, true, 0.9, shogimoves_gold)
+theme.black_knight    = shogi_piece(shogichars["knight"][2], shogichars["knight"][1],
+				    false, false, 0.86, shogimoves_knight)
+theme.black_p_knight  = shogi_piece(shogichars["narikei"][2], shogichars["narikei"][1],
+				    false, true, 0.86, shogimoves_gold)
+theme.black_lance     = shogi_piece(shogichars["incense chariot"][2], shogichars["incense chariot"][1],
+				    false, false, 0.83, shogimoves_lance)
+theme.black_p_lance   = shogi_piece(shogichars["narikyo"][2], shogichars["narikyo"][1],
+				    false, true, 0.83, shogimoves_gold)
+theme.black_pawn      = shogi_piece(shogichars["pawn"][2], shogichars["pawn"][1],
+				    false, false, 0.8, shogimoves_pawn)
+theme.black_p_pawn    = shogi_piece(shogichars["tokin"][2], shogichars["tokin"][1],
+				    false, true, 0.8, shogimoves_gold)
 
-theme.white_king      = shogi_piece({"0x7389", "0x5c06"}, "0x7389", true, false, 1,
-				    shogimoves_king)
-theme.white_rook      = shogi_piece({"0x98db", "0x8eca"}, "0x98db", true, false, 0.96,
-				    shogimoves_rook)
-theme.white_p_rook    = shogi_piece({"0x9f8d", "0x738b"}, "0x9f8d", true, true, 0.96,
-				    shogimoves_dragon)
-theme.white_bishop    = shogi_piece({"0x89d2", "0x884c"}, "0x89d2", true, false, 0.93,
-				    shogimoves_bishop)
-theme.white_p_bishop  = shogi_piece({"0x9f8d", "0x99ac"}, "0x99ac", true, true, 0.93,
-				    shogimoves_horse)
-theme.white_gold      = shogi_piece({"0x91d1", "0x5c06"}, "0x91d1", true, false, 0.9,
-				    shogimoves_gold)
-theme.white_silver    = shogi_piece({"0x9280", "0x5c06"}, "0x9280", true, false, 0.9,
-				    shogimoves_silver)
-theme.white_p_silver  = shogi_piece({"0x6210", "0x9280"}, "0x5168", true, true, 0.9,
-				    shogimoves_gold)
-theme.white_knight    = shogi_piece({"0x6842", "0x99ac"}, "0x6842", true, false, 0.86,
-				    shogimoves_knight)
-theme.white_p_knight  = shogi_piece({"0x6210", "0x6842"}, "0x572d", true, true, 0.86,
-				    shogimoves_gold)
-theme.white_lance     = shogi_piece({"0x9999", "0x8eca"}, "0x9999", true, false, 0.83,
-				    shogimoves_lance)
-theme.white_p_lance   = shogi_piece({"0x6210", "0x9999"}, "0x674f", true, true, 0.83,
-				    shogimoves_gold)
-theme.white_pawn      = shogi_piece({"0x6b69", "0x5175"}, "0x6b69", true, false, 0.8,
-				    shogimoves_pawn)
-theme.white_p_pawn    = shogi_piece({"0x3068", "0x91d1"}, "0x3068", true, true, 0.8,
-				    shogimoves_gold)
+theme.white_king      = shogi_piece(shogichars["king"][2], shogichars["king"][1],
+				    true, false, 1, shogimoves_king)
+theme.white_rook      = shogi_piece(shogichars["flying chariot"][2], shogichars["flying chariot"][1],
+				    true, false, 0.96, shogimoves_rook)
+theme.white_p_rook    = shogi_piece(shogichars["dragon king"][2], shogichars["dragon king"][1],
+				    true, true, 0.96, shogimoves_dragon)
+theme.white_bishop    = shogi_piece(shogichars["bishop"][2], shogichars["bishop"][1],
+				    true, false, 0.93, shogimoves_bishop)
+theme.white_p_bishop  = shogi_piece(shogichars["dragon horse"][2], shogichars["dragon horse"][1],
+				    true, true, 0.93, shogimoves_horse)
+theme.white_gold      = shogi_piece(shogichars["gold general"][2], shogichars["gold general"][1],
+				    true, false, 0.9, shogimoves_gold)
+theme.white_silver    = shogi_piece(shogichars["silver general"][2], shogichars["silver general"][1],
+				    true, false, 0.9, shogimoves_silver)
+theme.white_p_silver  = shogi_piece(shogichars["narikei"][2], shogichars["narikei"][1],
+				    true, true, 0.9, shogimoves_gold)
+theme.white_knight    = shogi_piece(shogichars["knight"][2], shogichars["knight"][1],
+				    true, false, 0.86, shogimoves_knight)
+theme.white_p_knight  = shogi_piece(shogichars["narikei"][2], shogichars["narikei"][1],
+				    true, true, 0.86, shogimoves_gold)
+theme.white_lance     = shogi_piece(shogichars["incense chariot"][2], shogichars["incense chariot"][1],
+				    true, false, 0.83, shogimoves_lance)
+theme.white_p_lance   = shogi_piece(shogichars["narikyo"][2], shogichars["narikyo"][1],
+				    true, true, 0.83, shogimoves_gold)
+theme.white_pawn      = shogi_piece(shogichars["pawn"][2], shogichars["pawn"][1],
+				    true, false, 0.8, shogimoves_pawn)
+theme.white_p_pawn    = shogi_piece(shogichars["tokin"][2],shogichars["tokin"][1],
+				    true, true, 0.8, shogimoves_gold)
 
 -- This is part of Dai Shohi
 
-theme.black_freeking  = shogi_piece({"0x5954", "0x738b"}, "0x5954", false, false, 1,
-				    shogimoves_freeking)
-theme.white_freeking  = shogi_piece({"0x5954", "0x738b"}, "0x5954", true, false, 1,
-				    shogimoves_freeking)
+theme.black_freeking  = shogi_piece(shogichars["free king"][2], shogichars["free king"][1],
+				    false, false, 1, shogimoves_freeking)
+theme.white_freeking  = shogi_piece(shogichars["free king"][2], shogichars["free king"][1],
+				    true, false, 1, shogimoves_freeking)
 
 -- To be able to adapt this theme to chess too
 theme.black_queen  = theme.black_freeking
