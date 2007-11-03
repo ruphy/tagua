@@ -300,6 +300,10 @@ void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
 }
 
 QPixmap PiecePool::loadSprite(const QString& id) {
-  return m_loader.piecePixmap(id, m_flipped);
+  // use board flipped state here, because the pool
+  // flipping only refers to the displaying of pieces
+  // and should not affect their orientation (which should
+  // stay coherent with that of the pieces on the board).
+  return m_loader.piecePixmap(id, m_board->flipped());
 }
 
