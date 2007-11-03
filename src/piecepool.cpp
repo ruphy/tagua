@@ -225,8 +225,11 @@ void PiecePool::flipAndMoveBy(QPoint p) {
   moveTo(pos() + deltapos);
   m_flipped = !m_flipped;
 
-  for(int i=0;i<(int)m_sprites.size(); i++)
-  animate(Animate::Pool::move(m_sprites[i], i));
+  for(int i=0;i<(int)m_sprites.size(); i++) {
+    SpritePtr p = m_sprites[i].sprite();
+    p->setPixmap(loadSprite(m_sprites[i].name()));
+    animate(Animate::Pool::move(m_sprites[i], i), Animate::Instant);
+  }
 }
 
 

@@ -653,7 +653,7 @@ void Board::flip(bool flipped)
     for (Point i = m_sprites.first(); i <= m_sprites.last(); i = m_sprites.next(i)) {
       SpritePtr p = m_sprites[i].sprite();
       if (p) {
-        p->setPixmap(m_loader.piecePixmap(m_sprites[i].name(), m_flipped));
+        p->setPixmap(loadSprite(m_sprites[i].name()));
         adjustSprite(i, true);
       }
     }
