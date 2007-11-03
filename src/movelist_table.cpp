@@ -32,17 +32,13 @@ Table::Table(QWidget* w)
   setWindowTitle("Move List");
 
   QVBoxLayout *vbox = new QVBoxLayout(this);
-  QTabWidget *tw = new QTabWidget(this);
-  tw->setTabPosition(QTabWidget::West);
-  vbox->addWidget(tw);
-
-  m_scroll_area = new QScrollArea(tw);
+  // here there used to be a QTabWidget
+  m_scroll_area = new QScrollArea(this);
   m_movelist = new Widget(m_scroll_area, this);
   m_scroll_area->setFocusPolicy(Qt::NoFocus);
   m_scroll_area->setWidgetResizable(true);
   m_scroll_area->setWidget(m_movelist);
-  m_scroll_area->resize(50,100);
-  tw->addTab(m_scroll_area, KIcon("prefMoveList"), "&List");
+  vbox->addWidget(m_scroll_area);
 
   m_movelist_textual = NULL;
   //m_movelist_textual = new Textual(tw);
