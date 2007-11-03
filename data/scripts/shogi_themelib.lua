@@ -10,7 +10,7 @@ function tile(white, ratio)
     g[0] = "#ffeda2"
     g[1] = "#c0a870"
     local b = Brush(g)
-
+    
     local flip = (white or args.flipped) and not (white and args.flipped)
 
     if flip then

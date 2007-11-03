@@ -66,7 +66,8 @@ public:
   void setSize(int s);
 
   /** looks up a string id (for instance a predefined id, like "background" or "highlighting") */
-  QPixmap operator()(const QString& id);
+//   QPixmap operator()(const QString& id);
+  QPixmap getPixmap(const QString& id);
   
   QPixmap piecePixmap(const QString& id, bool flipped = false);
 

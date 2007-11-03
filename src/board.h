@@ -226,6 +226,9 @@ public:
 
   /** returns the sprite loader */
   PixmapLoader* loader() { return &m_loader; }
+  
+  /** Load a sprite using the sprite loader */
+  QPixmap loadSprite(const QString& id);
 
   /** returns the sprite loader */
   const PixmapLoader* loader() const { return &m_loader; }

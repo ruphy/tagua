@@ -212,7 +212,7 @@ void PiecePool::cancelDragging(bool fadeOff) {
   }
 
   m_dragged.sprite()->putInCanvas(this);
-  m_dragged.sprite()->setPixmap( m_loader( m_dragged.name() ) );
+  m_dragged.sprite()->setPixmap(loadSprite(m_dragged.name()));
   insertSprite(m_dragged_index, m_dragged);
 
   m_dragged = NamedSprite();
@@ -239,7 +239,7 @@ void PiecePool::onResize(int new_size, bool force_reload) {
 
   // update the sprites
   for (int i=0;i<(int)m_sprites.size(); i++) {
-    m_sprites[i].sprite()->setPixmap( m_loader( m_sprites[i].name() ) );
+    m_sprites[i].sprite()->setPixmap(loadSprite(m_sprites[i].name()));
     m_main_animation->addAnimation(AnimationPtr(new InstantAnimation(m_sprites[i].sprite(), toReal(i))));
   }
 }
@@ -281,7 +281,7 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
   got.sprite()->hide();
 
   /* recreate the sprite, as "got" may be being animated */
-  QPixmap px = m_board->m_loader( got.name() );
+  QPixmap px = m_board->loadSprite(got.name());
   QPoint at = pos + this->pos() - m_board->pos() - QPoint(px.width(), px.height())/2;
   m_dragged = NamedSprite(  got.name(), SpritePtr(new Sprite(px, m_board->piecesGroup(),  at) ) );
   m_dragged.sprite()->raise();
@@ -298,3 +298,8 @@ void PiecePool::onMouseMove(const QPoint& pos, int /*button*/) {
     m_board->draggingOn( m_pool_num, m_dragged_index, pos + this->pos() - m_board->pos() );
   }
 }
+
+QPixmap PiecePool::loadSprite(const QString& id) {
+  return m_loader.piecePixmap(id, m_flipped);
+}
+

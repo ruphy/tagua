@@ -99,7 +99,7 @@ void PixmapLoader::initialize() {
   m_loader->refSize(0);
 }
 
-QPixmap PixmapLoader::operator()(const QString& id) {
+QPixmap PixmapLoader::getPixmap(const QString& id) {
   return getValue<QPixmap>(id);
 }
 

@@ -95,6 +95,9 @@ public:
 
   /** returns the sprite loader */
   const PixmapLoader* loader() const { return &m_loader; }
+  
+  /** Load a sprite using the sprite loader */
+  QPixmap loadSprite(const QString& id);
 
   /** returns the flipped value */
   bool flipped() const { return m_flipped; }

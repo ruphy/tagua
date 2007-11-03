@@ -119,7 +119,7 @@ NamedSprite GraphicalSystem::createPiece(const Point& p, const AbstractPiece* pi
   if (!m_board->m_sprites.valid(p))
     return NamedSprite();
 
-  NamedSprite s(piece->name(), SpritePtr(new Sprite(m_board->m_loader(piece->name()),
+  NamedSprite s(piece->name(), SpritePtr(new Sprite(m_board->loadSprite(piece->name()),
                                  m_board->piecesGroup(), m_board->converter()->toReal(p))) );
   if (show)
     s.sprite()->show();
@@ -151,7 +151,8 @@ NamedSprite GraphicalSystem::takePoolSprite(int pool, int index) {
 
 NamedSprite GraphicalSystem::insertPoolPiece(int pool, int index, const AbstractPiece* piece) {
   PiecePool *pl = m_view->pool(pool);
-  QPixmap px = pl->m_loader(piece->name());
+  QPixmap px = pl->loadSprite(piece->name());
+//   QPixmap px = pl->m_loader(piece->name());
 
   NamedSprite s( piece->name(), SpritePtr( new Sprite( px, pl, QPoint() ) ) );
   pl->insertSprite(index, s);

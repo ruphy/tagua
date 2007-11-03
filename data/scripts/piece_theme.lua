@@ -77,7 +77,7 @@ end
 function overlay(func1,func2,...)
    if func2 then
       return overlay(function(size, args)
-        return func2(func1(size, args), size)
+        return func2(func1(size, args), size, args)
           end, ...)
    else
       return func1

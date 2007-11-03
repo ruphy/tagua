@@ -316,7 +316,6 @@ int Loader::create_value_func(lua_State *l) {
 
   // If it is a function, call it
   if(lua_isfunction(l, -1)) {
-//     std::cout << "CALLING FUNCTION" << std::endl;
     int nparams = 0;
     if(data->size) {
       lua_pushnumber(l, data->size);

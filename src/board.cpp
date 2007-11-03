@@ -133,7 +133,7 @@ boost::shared_ptr<KGameCanvasPixmap> Board::addTag(const QString& name, Point pt
   if(!m_sprites.valid(pt))
     return boost::shared_ptr<KGameCanvasPixmap>();
 
-  QPixmap p = m_tags_loader(name);
+  QPixmap p = m_tags_loader.getPixmap(name);
   boost::shared_ptr<KGameCanvasPixmap> item =
       boost::shared_ptr<KGameCanvasPixmap>(new KGameCanvasPixmap(p, this));
   item->moveTo(converter()->toReal(pt));
@@ -262,6 +262,10 @@ void Board::createGrid(Point p, const QStringList& border_coords) {
   recreateBorder();
 }
 
+QPixmap Board::loadSprite(const QString& id) {
+  return m_loader.piecePixmap(id, m_flipped);
+}
+
 QRect Board::computeRect(Point p) const {
   QPoint realPoint = converter()->toReal(p);
   return squareRect(realPoint.x(), realPoint.y());
@@ -319,7 +323,7 @@ void Board::updateSprites() {
 
     if (p) {
       // drawing sprite
-      p->setPixmap(m_loader.piecePixmap(m_sprites[i].name(), m_flipped));
+      p->setPixmap(loadSprite(m_sprites[i].name()));
       adjustSprite(i, true);
     }
   }
@@ -333,7 +337,7 @@ void Board::updateTags() {
   for(std::map<Point, boost::shared_ptr<KGameCanvasPixmap> >::iterator pt =
                           tit->second.begin(); pt != tit->second.end(); ++pt) {
     pt->second->moveTo(converter()->toReal(pt->first));
-    pt->second->setPixmap(m_tags_loader(tit->first));
+    pt->second->setPixmap(m_tags_loader.getPixmap(tit->first));
   }
 }
 
@@ -601,7 +605,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
     if(pt == m_hinting_pos) {
       if(!(piece->name() == m_hinting.name())) {
         m_hinting = NamedSprite(piece->name(), m_hinting.sprite());
-        m_hinting.sprite()->setPixmap(m_loader(piece->name()));
+        m_hinting.sprite()->setPixmap(loadSprite(piece->name()));
       }
     }
     else {
@@ -613,7 +617,7 @@ void Board::updateHinting(Point pt, AbstractPiece::Ptr piece) {
           enqueue( boost::shared_ptr<Animation>(new CaptureAnimation(m_hinting.sprite())) );
       }
 
-      QPixmap pix = m_loader(piece->name());
+      QPixmap pix = loadSprite(piece->name());
       SpritePtr sprite(new Sprite(pix, piecesGroup(), converter()->toReal(pt)));
       sprite->setOpacity(160);
       sprite->raise();
