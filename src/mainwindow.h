@@ -13,8 +13,8 @@
 
 #include <map>
 #include <vector>
-#include <kxmlguiwindow.h>
-#include <kmainwindow.h>
+#include <KXmlGuiWindow>
+#include <KUrl>
 
 #include <QApplication>
 #include <QMainWindow>
@@ -54,6 +54,7 @@ Q_OBJECT
   QMenu* m_engine_menu;
   
   ChessTable* table();
+  KUrl m_url;
   UI m_ui;
   UI& ui() { return m_ui; }
   void createTab(ChessTable*, const boost::shared_ptr<Controller>&,
@@ -75,6 +76,7 @@ Q_OBJECT
   void updateVariantActions();
 
   bool openFile(const QString&);
+  void saveFile(QFile&);
 
   void readSettings();
   void writeSettings();
@@ -117,6 +119,7 @@ public Q_SLOTS:
   void newGame();
   bool newGame(const QString& var, AbstractPosition::Ptr, bool);
   void loadGame();
+  void saveGame();
   void quit();
   void flipView();
   void toggleConsole();

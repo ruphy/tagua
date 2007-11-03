@@ -125,7 +125,11 @@ void UI::gotoLast() {
 
 void UI::pgnCopy() {
   QClipboard* cb = QApplication::clipboard();
-  cb->setText(controller()->save());
+  cb->setText(currentPGN());
+}
+
+QString UI::currentPGN() {
+  return controller()->save();
 }
 
 void UI::pgnPaste() {

@@ -10,22 +10,24 @@
 
 #include "mainwindow.h"
 #include <boost/scoped_ptr.hpp>
-#include <kaction.h>
-#include <kstandardaction.h>
-#include <kactioncollection.h>
-#include <kicon.h>
-#include <klocale.h>
-#include <kurl.h>
-#include <kfiledialog.h>
-#include <kio/netaccess.h>
-#include <kmessagebox.h>
-#include <kmenubar.h>
+
 #include <QKeySequence>
 #include <QStackedWidget>
 #include <QDockWidget>
 #include <QCloseEvent>
 #include <QTextStream>
 #include <QTextCodec>
+
+#include <KAction>
+#include <KStandardAction>
+#include <KActionCollection>
+#include <KIcon>
+#include <KLocale>
+#include <KFileDialog>
+#include <kio/netaccess.h>
+#include <KMessageBox>
+#include <KMenuBar>
+#include <KTemporaryFile>
 
 #include "actioncollection.h"
 #include "chesstable.h"
@@ -164,6 +166,7 @@ void MainWindow::setupActions() {
   
   KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
   KStandardAction::open(this, SLOT(loadGame()), actionCollection());
+  KStandardAction::save(this, SLOT(saveGame()), actionCollection());
   KStandardAction::quit(this, SLOT(quit()), actionCollection());
   KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
@@ -458,6 +461,36 @@ void MainWindow::loadGame() {
   }
   else
     KMessageBox::error(this, KIO::NetAccess::lastErrorString());
+}
+
+void MainWindow::saveGame() {
+  if (m_url.isEmpty())
+    m_url = KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Save PGN file"));
+
+  if (m_url.isEmpty())
+    return;
+    
+  if (!m_url.isLocalFile()) {
+    // save in a temporary file
+    KTemporaryFile tmp_file;
+    tmp_file.open();
+    saveFile(tmp_file);
+    if (!KIO::NetAccess::upload(tmp_file.fileName(), m_url, this))
+      m_url = KUrl();
+  }
+  else {
+    QFile file(m_url.path());
+    file.open(QIODevice::WriteOnly);
+    saveFile(file);
+  }
+}
+
+void MainWindow::saveFile(QFile& file) {
+  QTextStream stream(&file);
+  QTextCodec *codec;
+  codec = QTextCodec::codecForLocale();
+  stream.setCodec(codec);
+  stream << ui().currentPGN() << "\n";
 }
 
 void MainWindow::createConnection(const QString& username, const QString& password,

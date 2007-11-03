@@ -107,6 +107,7 @@ public Q_SLOTS:
   void pgnCopy();
   void pgnPaste();
   void pgnPaste(const QString&);
+  QString currentPGN();
   
   // editing
   void clearBoard();
