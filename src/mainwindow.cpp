@@ -167,6 +167,7 @@ void MainWindow::setupActions() {
   KStandardAction::openNew(this, SLOT(newGame()), actionCollection());
   KStandardAction::open(this, SLOT(loadGame()), actionCollection());
   KStandardAction::save(this, SLOT(saveGame()), actionCollection());
+  KStandardAction::saveAs(this, SLOT(saveGameAs()), actionCollection());
   KStandardAction::quit(this, SLOT(quit()), actionCollection());
   KStandardAction::preferences(this, SLOT(preferences()), actionCollection());
 
@@ -465,24 +466,35 @@ void MainWindow::loadGame() {
 
 void MainWindow::saveGame() {
   if (m_url.isEmpty())
-    m_url = KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Save PGN file"));
+    saveGameAs();
+  else
+    m_url = saveGame(m_url);
+}
 
-  if (m_url.isEmpty())
-    return;
+void MainWindow::saveGameAs() {
+  m_url = saveGame(KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Save PGN file")));
+}
+
+KUrl MainWindow::saveGame(const KUrl& url) {
+  if (url.isEmpty())
+    return KUrl();
     
-  if (!m_url.isLocalFile()) {
+  if (!url.isLocalFile()) {
     // save in a temporary file
     KTemporaryFile tmp_file;
     tmp_file.open();
     saveFile(tmp_file);
-    if (!KIO::NetAccess::upload(tmp_file.fileName(), m_url, this))
-      m_url = KUrl();
+    if (!KIO::NetAccess::upload(tmp_file.fileName(), url, this))
+      return KUrl();
   }
   else {
-    QFile file(m_url.path());
-    file.open(QIODevice::WriteOnly);
+    QFile file(url.path());
+    if (!file.open(QIODevice::WriteOnly))
+      return KUrl();
     saveFile(file);
   }
+  
+  return url;
 }
 
 void MainWindow::saveFile(QFile& file) {

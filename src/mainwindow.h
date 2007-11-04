@@ -77,6 +77,7 @@ Q_OBJECT
 
   bool openFile(const QString&);
   void saveFile(QFile&);
+  KUrl saveGame(const KUrl& url);
 
   void readSettings();
   void writeSettings();
@@ -120,6 +121,7 @@ public Q_SLOTS:
   bool newGame(const QString& var, AbstractPosition::Ptr, bool);
   void loadGame();
   void saveGame();
+  void saveGameAs();
   void quit();
   void flipView();
   void toggleConsole();
