@@ -886,11 +886,20 @@ int Wrapper<Glyph>::constructor(lua_State* l) {
     break;
   case 3: {
       Context* context = retrieve_context(l);
-      QString path = file_path(l, lua_tostring(l, 1));
-      unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
-      int d = int(lua_tonumber(l, 3));
-      lua_pop(l, 3);
-      create(l, context, path, c, d);
+      if (lua_isnil(l, 1)) {
+        // no font path, just load the string
+        QString str(lua_tostring(l, 2));
+        int d = static_cast<int>(lua_tonumber(l, 3));
+        lua_pop(l, 3);
+        create(l, str, d);
+      }
+      else {
+        QString path = file_path(l, lua_tostring(l, 1));
+        unsigned int c = strtoul(lua_tostring(l, 2), NULL, 0);
+        int d = int(lua_tonumber(l, 3));
+        lua_pop(l, 3);
+        create(l, context, path, c, d);
+      }
     }
     break;
   default:

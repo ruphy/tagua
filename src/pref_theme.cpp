@@ -312,7 +312,6 @@ ThemeInfo PrefTheme::getBestTheme(const VariantPtr& vi, const QString& category)
                                                                   "themes/" + category + "/*.desktop",
                                                                   KStandardDirs::Recursive ),
                                             cached_theme_info.group(category));
-  //std::cout << "found " << themes.size() << " themes" << std::endl;
 
   int best = 0;
   ThemeInfo* retv = 0;
@@ -327,8 +326,10 @@ ThemeInfo PrefTheme::getBestTheme(const VariantPtr& vi, const QString& category)
     }
   }
 
-  if (retv && *retv)
+
+  if (retv && *retv) {
     var_settings[tag] = retv->desktopFile;
+  }
 
   return retv ? *retv : ThemeInfo();
 }

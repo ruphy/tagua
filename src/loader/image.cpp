@@ -378,7 +378,12 @@ Image Image::createShadow(double radius,
 
 //BEGIN Glyph------------------------------------------------------------------
 
-Glyph::Glyph(Context* ctx, const QString& file, QChar c, int d)
+Glyph::Glyph(const QString& c, int d)
+: m_font_valid(false)
+, m_char(c)
+, m_delta(d) { }
+
+Glyph::Glyph(Context* ctx, const QString& file, const QChar& c, int d)
   : m_font_valid(false)
   , m_char(c)
   , m_delta(d) {
@@ -390,11 +395,12 @@ Glyph::Glyph(Context* ctx, const QString& file, QChar c, int d)
   }
 }
 
-Glyph::Glyph(QChar c)
+Glyph::Glyph(const QChar& c)
   : m_font_valid(false)
   , m_char(c)
   , m_delta(0) {
 }
+
 
 //END Glyph--------------------------------------------------------------------
 

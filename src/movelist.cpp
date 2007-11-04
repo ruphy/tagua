@@ -354,10 +354,11 @@ void Entry::paint (QPainter *p) {
     }
     else if(move[i].m_type == MovePart::Figurine) {
       ::Loader::Glyph g = m->m_loader.getValue< ::Loader::Glyph>(move[i].m_string);
-      p->setFont(g.fontValid() ? g.font() : tf);
-      p->drawText(QPoint(x+r.width(), y), g.ch());
-      QFontMetrics fi(g.fontValid() ? g.font() : tf);
-      QRect b = fi.boundingRect(g.ch());
+      QFont font = g.fontValid() ? g.font() : tf;
+      p->setFont(font);
+      p->drawText(QPoint(x+r.width(), y), g.str());
+      QFontMetrics fi(font);
+      QRect b = fi.boundingRect(g.str());
       r |= b.translated(r.width()-b.x(), 0);
     }
   }
@@ -385,7 +386,7 @@ void Entry::doUpdate () {
     else if(move[i].m_type == MovePart::Figurine) {
       ::Loader::Glyph g = m->m_loader.getValue< ::Loader::Glyph>(move[i].m_string);
       QFontMetrics fi(g.fontValid() ? g.font() : tf);
-      QRect b = fi.boundingRect(g.ch());
+      QRect b = fi.boundingRect(g.str());
       m_rect |= b.translated(m_rect.width()-b.x(), 0);
     }
   }

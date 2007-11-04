@@ -272,17 +272,18 @@ private:
   friend class Theme;
   bool m_font_valid;
   QFont m_font;
-  QChar m_char;
+  QString m_char;
   int m_delta;
 
 public:
-  Glyph(Context* ctx, const QString&, QChar, int = 0);
-  Glyph(QChar = QChar());
+  Glyph(const QString& str, int = 0);
+  Glyph(Context* ctx, const QString&, const QChar& c, int = 0);
+  Glyph(const QChar& = QChar());
 
-  QFont font() { return m_font; }
-  bool fontValid() { return m_font_valid; }
-  QChar ch() { return m_char; }
-  int delta() { return m_delta; }
+  QFont font() const { return m_font; }
+  bool fontValid() const { return m_font_valid; }
+  QString str() const { return m_char; }
+  int delta() const { return m_delta; }
 };
 
 
