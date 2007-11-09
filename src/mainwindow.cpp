@@ -472,7 +472,7 @@ void MainWindow::saveGame() {
 }
 
 void MainWindow::saveGameAs() {
-  m_url = saveGame(KFileDialog::getOpenUrl(KUrl(), "*.pgn", this, i18n("Save PGN file")));
+  m_url = saveGame(KFileDialog::getSaveUrl(KUrl(), "*.pgn", this, i18n("Save PGN file")));
 }
 
 KUrl MainWindow::saveGame(const KUrl& url) {
