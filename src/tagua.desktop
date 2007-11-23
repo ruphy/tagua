@@ -1,12 +1,16 @@
 [Desktop Entry]
 Encoding=UTF-8
 Name=Tagua
+Name[cs]=Tagua
 Name[it]=Tagua
 Name[xx]=xxTaguaxx
+GenericName=Generic Board Game
+GenericName[cs]=Deskové hry
 Exec=tagua %i %m -caption "%c"
 Icon=tagua
 Type=Application
 DocPath=tagua/tagua.html
 Comment=A generic board game application.
+Comment[cs]=Aplikace pro různé deskové hry.
 Terminal=false
 
