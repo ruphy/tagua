@@ -1,0 +1,747 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: http://trac.tagua-project.org\n"
+"POT-Creation-Date: 2007-11-23 23:17+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: main.cpp:35
+msgid "Tagua"
+msgstr ""
+
+#: main.cpp:37
+msgid "(C) 2006 Paolo Capriotti, Maurizio Monge"
+msgstr ""
+
+#: main.cpp:38
+msgid "Paolo Capriotti"
+msgstr ""
+
+#: main.cpp:39
+msgid "Maurizio Monge"
+msgstr ""
+
+#: main.cpp:40
+msgid "Jani Huhtanen"
+msgstr ""
+
+#: main.cpp:40
+msgid "Gaussian blur code"
+msgstr ""
+
+#: main.cpp:41
+msgid "Rici Lake"
+msgstr ""
+
+#: main.cpp:41
+msgid "funclib lua library"
+msgstr ""
+
+#: main.cpp:42
+msgid "Riccardo Iaconelli"
+msgstr ""
+
+#: main.cpp:42
+msgid "Various fixes and cleanups"
+msgstr ""
+
+#: main.cpp:43
+msgid "Yann Dirson"
+msgstr ""
+
+#: main.cpp:43
+msgid "Shogi related patches"
+msgstr ""
+
+#: main.cpp:44
+msgid "Pieter Stouten"
+msgstr ""
+
+#: main.cpp:44
+msgid "Allowed free use of images on shogi.net"
+msgstr ""
+
+#: main.cpp:47
+msgid "Initial variant"
+msgstr ""
+
+#: mainwindow.cpp:78
+msgid "Move list"
+msgstr ""
+
+#: mainwindow.cpp:88
+msgid "FICS Connection"
+msgstr ""
+
+#: mainwindow.cpp:91
+msgid "Console"
+msgstr ""
+
+#: mainwindow.cpp:128
+msgid "E&ngines"
+msgstr ""
+
+#: mainwindow.cpp:142
+msgid "Play as &white"
+msgstr ""
+
+#: mainwindow.cpp:148
+msgid "Play as &black"
+msgstr ""
+
+#: mainwindow.cpp:155
+msgid "&Analyze"
+msgstr ""
+
+#: mainwindow.cpp:174
+msgid "&Back"
+msgstr ""
+
+#: mainwindow.cpp:175
+msgid "&Forward"
+msgstr ""
+
+#: mainwindow.cpp:176
+msgid "Be&gin"
+msgstr ""
+
+#: mainwindow.cpp:177
+msgid "&End"
+msgstr ""
+
+#: mainwindow.cpp:178
+msgid "&Connect"
+msgstr ""
+
+#: mainwindow.cpp:179
+msgid "&Disconnect"
+msgstr ""
+
+#: mainwindow.cpp:186
+msgid "&Edit position"
+msgstr ""
+
+#: mainwindow.cpp:187
+msgid "&Clear board"
+msgstr ""
+
+#: mainwindow.cpp:188
+msgid "&Set starting position"
+msgstr ""
+
+#: mainwindow.cpp:192
+msgid "&Flip view"
+msgstr ""
+
+#: mainwindow.cpp:194
+msgid "Toggle &console"
+msgstr ""
+
+#: mainwindow.cpp:195
+msgid "Toggle &move list"
+msgstr ""
+
+#: mainwindow.cpp:426
+msgid "You have specified a folder"
+msgstr ""
+
+#: mainwindow.cpp:426 mainwindow.cpp:431 mainwindow.cpp:438 mainwindow.cpp:635
+msgid "Error"
+msgstr ""
+
+#: mainwindow.cpp:431
+msgid "The specified file does not exist"
+msgstr ""
+
+#: mainwindow.cpp:438
+msgid "You do not have read permission to this file."
+msgstr ""
+
+#: mainwindow.cpp:453
+msgid "Open PGN file"
+msgstr ""
+
+#: mainwindow.cpp:475
+msgid "Save PGN file"
+msgstr ""
+
+#: mainwindow.cpp:635
+msgid "Error creating game"
+msgstr ""
+
+#: mainwindow.cpp:675
+msgid "Illegal move"
+msgstr ""
+
+#: pref_engines.cpp:39
+msgid "&Name:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 136
+#: pref_engines.cpp:47 extractedrc.cpp:131
+msgid "&Type:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 147
+#: pref_engines.cpp:52 extractedrc.cpp:134
+msgid "XBoard"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 152
+#: pref_engines.cpp:53 extractedrc.cpp:137
+msgid "UCI"
+msgstr ""
+
+#: pref_engines.cpp:54
+msgid "Tagua (textual)"
+msgstr ""
+
+#: pref_engines.cpp:55
+msgid "Tagua (DBUS)"
+msgstr ""
+
+#: pref_engines.cpp:56
+msgid "GNU Shogi"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 113
+#: pref_engines.cpp:61 extractedrc.cpp:128
+msgid "&Path:"
+msgstr ""
+
+#: pref_engines.cpp:70
+msgid "&Work directory:"
+msgstr ""
+
+#: pref_engines.cpp:93
+msgid "Choose a name for the engine"
+msgstr ""
+
+#: pref_engines.cpp:93
+msgid "No engine name"
+msgstr ""
+
+#: qconnect.cpp:56
+msgid "Select timeseal binary"
+msgstr ""
+
+#: qconnect.cpp:59
+msgid "Only local executables supported"
+msgstr ""
+
+#: tabwidget.cpp:24
+msgid "Close the current tab"
+msgstr ""
+
+#. i18n: tag Text
+#. i18n: file ./taguaui.rc line 15
+#: extractedrc.cpp:3
+msgid "&Edit"
+msgstr ""
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 24
+#: extractedrc.cpp:6
+msgid "&Game"
+msgstr ""
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 33
+#: extractedrc.cpp:9
+msgid "&View"
+msgstr ""
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 47
+#: extractedrc.cpp:12
+msgid "Game Toolbar"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 13
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 13
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 13
+#: extractedrc.cpp:15 extractedrc.cpp:63 extractedrc.cpp:185
+msgid "Form"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 25
+#: extractedrc.cpp:18
+msgid "Round:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 35
+#: extractedrc.cpp:21
+msgid "Time:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 54
+#: extractedrc.cpp:24
+msgid "Result:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 61
+#: extractedrc.cpp:27
+msgid "Increment:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 71
+#: extractedrc.cpp:30
+msgid "Site:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 78
+#: extractedrc.cpp:33
+msgid "Black rating:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 85
+#: extractedrc.cpp:36
+msgid "Event:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 92
+#: extractedrc.cpp:39
+msgid "Black:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 99
+#: extractedrc.cpp:42
+msgid "White:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 121
+#: extractedrc.cpp:45
+msgid "Date:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 131
+#: extractedrc.cpp:48
+msgid "White rating:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 138
+#: extractedrc.cpp:51
+msgid "ECO:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 13
+#: extractedrc.cpp:54
+msgid "New game"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 39
+#. i18n: tag string
+#. i18n: file ./ui/pref_theme.ui line 48
+#: extractedrc.cpp:57 extractedrc.cpp:238
+msgid "&Variant:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 74
+#: extractedrc.cpp:60
+msgid "Create in new &tab"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 36
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 36
+#: extractedrc.cpp:66 extractedrc.cpp:188
+msgid "&Animations"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 51
+#: extractedrc.cpp:69
+msgid "&Transformations"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 58
+#: extractedrc.cpp:72
+msgid "&Explosions"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 65
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 158
+#: extractedrc.cpp:75 extractedrc.cpp:208
+msgid "&Movements"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 72
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 165
+#: extractedrc.cpp:78 extractedrc.cpp:211
+msgid "&Fading"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 88
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 60
+#: extractedrc.cpp:81 extractedrc.cpp:191
+msgid ""
+"Rough\n"
+"(little CPU usage)"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 115
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 87
+#: extractedrc.cpp:85 extractedrc.cpp:195
+msgid ""
+"Smooth\n"
+"(high CPU usage)"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 130
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 179
+#: extractedrc.cpp:89 extractedrc.cpp:217
+msgid "Animation s&moothness:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 151
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 123
+#: extractedrc.cpp:92 extractedrc.cpp:202
+msgid "Slow"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 177
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 146
+#: extractedrc.cpp:95 extractedrc.cpp:205
+msgid "Fast"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 189
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 102
+#: extractedrc.cpp:98 extractedrc.cpp:199
+msgid "Animation s&peed:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 231
+#: extractedrc.cpp:101
+msgid "&Max sequence length:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 253
+#: extractedrc.cpp:104
+msgid "Animate move &sequences"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 277
+#: extractedrc.cpp:107
+msgid "&Border"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 292
+#: extractedrc.cpp:110
+msgid "&Color"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 302
+#: extractedrc.cpp:113
+msgid "&Text Color"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 320
+#: extractedrc.cpp:116
+msgid "Custom &font:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 13
+#: extractedrc.cpp:119
+msgid "Engines"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 25
+#: extractedrc.cpp:122
+msgid "Engine list"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 93
+#: extractedrc.cpp:125
+msgid "Engine properties"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 157
+#: extractedrc.cpp:140
+msgid "Tagua (text)"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 162
+#: extractedrc.cpp:143
+msgid "Tagua (D-BUS)"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 180
+#: extractedrc.cpp:146
+msgid "&Work dir:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/preferences.ui line 13
+#: extractedrc.cpp:149
+msgid "Change Tagua Settings"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 13
+#: extractedrc.cpp:152
+msgid "Dialog"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 47
+#: extractedrc.cpp:155
+msgid "Pattern"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 75
+#: extractedrc.cpp:158
+msgid "Bold"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 82
+#: extractedrc.cpp:161
+msgid "Italic"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 148
+#: extractedrc.cpp:164
+msgid "Use this box to test your regular expression"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 186
+#: extractedrc.cpp:167
+msgid "Add"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 193
+#: extractedrc.cpp:170
+msgid "Remove"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 223
+#: extractedrc.cpp:173
+msgid "Up"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 230
+#: extractedrc.cpp:176
+msgid "Down"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 266
+#: extractedrc.cpp:179
+msgid "OK"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 273
+#: extractedrc.cpp:182
+msgid "Cancel"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 172
+#: extractedrc.cpp:214
+msgid "&Smooth highlighting"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 203
+#: extractedrc.cpp:220
+msgid "&Colors and fonts"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 215
+#: extractedrc.cpp:223
+msgid "C&omments color:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 233
+#: extractedrc.cpp:226
+msgid "Cus&tom comments font:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 243
+#: extractedrc.cpp:229
+msgid "C&ustom moves font:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 253
+#: extractedrc.cpp:232
+msgid "S&elected move color:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_theme_page.ui line 31
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 149
+#: extractedrc.cpp:235 extractedrc.cpp:271
+msgid "..."
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 13
+#: extractedrc.cpp:241
+msgid "Quick Connect"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 28
+#: extractedrc.cpp:244
+msgid "&Login"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 47
+#: extractedrc.cpp:247
+msgid "&Password:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 60
+#: extractedrc.cpp:250
+msgid "&Username:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 70
+#: extractedrc.cpp:253
+msgid "&Store password on this computer"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 73
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 182
+#: extractedrc.cpp:256 extractedrc.cpp:280
+msgid "Alt+S"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 83
+#: extractedrc.cpp:259
+msgid "Ser&ver:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 98
+#: extractedrc.cpp:262
+msgid "ICS p&ort:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 115
+#: extractedrc.cpp:265
+msgid "ICS &host:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 131
+#: extractedrc.cpp:268
+msgid "&Timeseal"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 159
+#: extractedrc.cpp:274
+msgid "&File Path:"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 179
+#: extractedrc.cpp:277
+msgid "Use &custom command line arguments"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 232
+#: extractedrc.cpp:283
+msgid "&OK"
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 248
+#: extractedrc.cpp:286
+msgid "&Cancel"
+msgstr ""
+
+#: extractedrc.cpp:287
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+
+#: extractedrc.cpp:288
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
