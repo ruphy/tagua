@@ -48,6 +48,7 @@ add_definitions(-DQT_NO_KEYWORDS ${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
 add_subdirectory(src)
 add_subdirectory(data)
+add_subdirectory(translations)
 
 enable_testing()
 add_subdirectory(tests EXCLUDE_FROM_ALL)

@@ -32,7 +32,7 @@ echo "Done extracting messages"
  
  
 echo "Merging translations"
-catalogs=`find . -name '*.po'`
+catalogs=`find translations -name '*.po'`
 for cat in $catalogs; do
   echo $cat
   msgmerge -o $cat.new $cat ${PROJECT}.pot
