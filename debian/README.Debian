@@ -1,0 +1,25 @@
+tagua for Debian
+----------------
+
+IA engines currently have to be manually configured in your
+~/.kde/share/config/taguarc.xml.  Here is a sample <engines> block.
+
+ <engines>
+  <engine>
+   <name>GNU Chess</name>
+   <path>/usr/games/gnuchess</path>
+   <type>xboard</type>
+  </engine>
+  <engine>
+   <name>GNU Shogi</name>
+   <path>/usr/games/gnushogi</path>
+   <type>gnushogi</type>
+  </engine>
+  <engine>
+   <name>GPS Shogi</name>
+   <path>/export/work/yann/games/tagua/shogi/gpsshogi/bin/gpsshogi</path>
+   <type>gnushogi</type>
+  </engine>
+ </engines>
+
+ -- Yann Dirson <dwitch@nan92-1-81-57-214-146.fbx.proxad.net>, Sat,  8 Dec 2007 15:52:14 z

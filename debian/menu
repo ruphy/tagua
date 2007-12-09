@@ -1,0 +1,3 @@
+?package(tagua):needs="X11" section="Games/Board"\
+  hints="KDE" \
+  title="tagua" command="/usr/games/tagua"

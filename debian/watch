@@ -1,0 +1,5 @@
+version=3
+
+# <Webpage URL> <string match>
+opts="uversionmangle=s/-(alpha|beta)/~$1/" \
+  http://www.tagua-project.org/wiki/Download .*/tagua-(.*)\.tar\.gz

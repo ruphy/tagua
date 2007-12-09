@@ -1,0 +1,29 @@
+Source: tagua
+Section: games
+Priority: optional
+Maintainer: Yann Dirson <dirson@debian.org>
+Build-Depends: debhelper (>= 5), libkdegames-dev (>= 4:3.96), cmake, libboost-dev, libqimageblitz-dev, liblua5.1-0-dev
+Standards-Version: 3.7.2
+
+Package: tagua
+Architecture: any
+Depends: tagua-data (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: Board-game frontend for playing chess variants and other games.
+ Tagua is a frontend for a variety of board games.  Currently
+ supported games include chess, shogi and a couple of variants of
+ those games.
+ .
+ Tagua is based on a powerful plugin system that allows many games to
+ share the same graphical framework, game history handling,
+ interoperability with AI engines and connectivity to network servers.
+ .
+ It currently has support for xboard-compatible chess engines, and
+ xshogi-compatible shogi engines, as well as network play on chess ICS
+ servers.
+
+Package: tagua-data
+Architecture: all
+Depends: ${misc:Depends}
+Description: Theme data for the tagua board-game frontend.
+ This package contains the architecture independant data files
+ required by tagua.
