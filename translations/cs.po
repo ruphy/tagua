@@ -1,0 +1,752 @@
+# translation of cs.po to čeština
+# translation of cs.po to
+# translation of tagua.pot to Czech
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Karel Volný <kavol@seznam.cz>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: cs\n"
+"Report-Msgid-Bugs-To: http://trac.tagua-project.org\n"
+"POT-Creation-Date: 2007-11-23 23:17+0100\n"
+"PO-Revision-Date: 2007-11-29 18:54+0100\n"
+"Last-Translator: Karel Volný <kavol@seznam.cz>\n"
+"Language-Team: čeština <kde-czech-apps@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: main.cpp:35
+msgid "Tagua"
+msgstr "Tagua"
+
+#: main.cpp:37
+msgid "(C) 2006 Paolo Capriotti, Maurizio Monge"
+msgstr "© 2006 Paolo Capriotti, Maurizio Monge"
+
+#: main.cpp:38
+msgid "Paolo Capriotti"
+msgstr "Paolo Capriotti"
+
+#: main.cpp:39
+msgid "Maurizio Monge"
+msgstr "Maurizio Monge"
+
+#: main.cpp:40
+msgid "Jani Huhtanen"
+msgstr "Jani Huhtanen"
+
+#: main.cpp:40
+msgid "Gaussian blur code"
+msgstr "kód gausovského rozostření"
+
+#: main.cpp:41
+msgid "Rici Lake"
+msgstr "Rici Lake"
+
+#: main.cpp:41
+msgid "funclib lua library"
+msgstr "knihovna funclib pro lua"
+
+#: main.cpp:42
+msgid "Riccardo Iaconelli"
+msgstr "Riccardo Iaconelli"
+
+#: main.cpp:42
+msgid "Various fixes and cleanups"
+msgstr "různé opravy a pročištění"
+
+#: main.cpp:43
+msgid "Yann Dirson"
+msgstr "Yann Dirson"
+
+#: main.cpp:43
+msgid "Shogi related patches"
+msgstr "patche pro šógi"
+
+#: main.cpp:44
+msgid "Pieter Stouten"
+msgstr "Pieter Stouten"
+
+#: main.cpp:44
+msgid "Allowed free use of images on shogi.net"
+msgstr "umožnění volného použití obrázků ze shogi.net"
+
+#: main.cpp:47
+msgid "Initial variant"
+msgstr "původní varianta"
+
+#: mainwindow.cpp:78
+msgid "Move list"
+msgstr "Seznam tahů"
+
+#: mainwindow.cpp:88
+msgid "FICS Connection"
+msgstr "Připojení k FICS"
+
+#: mainwindow.cpp:91
+msgid "Console"
+msgstr "Konsole"
+
+#: mainwindow.cpp:128
+msgid "E&ngines"
+msgstr "&Programy"
+
+#: mainwindow.cpp:142
+msgid "Play as &white"
+msgstr "Hrát za &bílého"
+
+#: mainwindow.cpp:148
+msgid "Play as &black"
+msgstr "Hrát za &černého"
+
+#: mainwindow.cpp:155
+msgid "&Analyze"
+msgstr "&Analyzovat"
+
+#: mainwindow.cpp:174
+msgid "&Back"
+msgstr "&Zpět"
+
+#: mainwindow.cpp:175
+msgid "&Forward"
+msgstr "&Vpřed"
+
+#: mainwindow.cpp:176
+msgid "Be&gin"
+msgstr "Z&ačátek"
+
+#: mainwindow.cpp:177
+msgid "&End"
+msgstr "&Konec"
+
+#: mainwindow.cpp:178
+msgid "&Connect"
+msgstr "&Připojit"
+
+#: mainwindow.cpp:179
+msgid "&Disconnect"
+msgstr "&Odpojit"
+
+#: mainwindow.cpp:186
+msgid "&Edit position"
+msgstr "&Upravit posici"
+
+#: mainwindow.cpp:187
+msgid "&Clear board"
+msgstr "&Vyčistit desku"
+
+#: mainwindow.cpp:188
+msgid "&Set starting position"
+msgstr "&Nastavit počáteční posici"
+
+#: mainwindow.cpp:192
+msgid "&Flip view"
+msgstr "&Otočit desku"
+
+#: mainwindow.cpp:194
+msgid "Toggle &console"
+msgstr "Přepnout &konsoli"
+
+#: mainwindow.cpp:195
+msgid "Toggle &move list"
+msgstr "Přepnout &seznam tahů"
+
+#: mainwindow.cpp:426
+msgid "You have specified a folder"
+msgstr "Byl vybrán adresář"
+
+#: mainwindow.cpp:426 mainwindow.cpp:431 mainwindow.cpp:438 mainwindow.cpp:635
+msgid "Error"
+msgstr "Chyba"
+
+#: mainwindow.cpp:431
+msgid "The specified file does not exist"
+msgstr "Zadaný soubor neexistuje"
+
+#: mainwindow.cpp:438
+msgid "You do not have read permission to this file."
+msgstr "Nemáte potřebná oprávnění k tomuto souboru."
+
+#: mainwindow.cpp:453
+msgid "Open PGN file"
+msgstr "Otevřít soubor PNG"
+
+#: mainwindow.cpp:475
+msgid "Save PGN file"
+msgstr "Uložit soubor PNG"
+
+#: mainwindow.cpp:635
+msgid "Error creating game"
+msgstr "Chyba při vytváření hry"
+
+#: mainwindow.cpp:675
+msgid "Illegal move"
+msgstr "Neplatný tah"
+
+#: pref_engines.cpp:39
+msgid "&Name:"
+msgstr "&Jméno:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 136
+#: pref_engines.cpp:47 extractedrc.cpp:131
+msgid "&Type:"
+msgstr "&Typ:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 147
+#: pref_engines.cpp:52 extractedrc.cpp:134
+msgid "XBoard"
+msgstr "XBoard"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 152
+#: pref_engines.cpp:53 extractedrc.cpp:137
+msgid "UCI"
+msgstr "UCI"
+
+#: pref_engines.cpp:54
+msgid "Tagua (textual)"
+msgstr "Tagua (textové)"
+
+#: pref_engines.cpp:55
+msgid "Tagua (DBUS)"
+msgstr "Tagua (DBUS)"
+
+#: pref_engines.cpp:56
+msgid "GNU Shogi"
+msgstr "GNU Shogi"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 113
+#: pref_engines.cpp:61 extractedrc.cpp:128
+msgid "&Path:"
+msgstr "&Cesta:"
+
+#: pref_engines.cpp:70
+msgid "&Work directory:"
+msgstr "Pracovní &adresář:"
+
+#: pref_engines.cpp:93
+msgid "Choose a name for the engine"
+msgstr "Zvolte jméno pro program"
+
+#: pref_engines.cpp:93
+msgid "No engine name"
+msgstr "Není jméno pro program"
+
+#: qconnect.cpp:56
+msgid "Select timeseal binary"
+msgstr "Vyberte program timeseal"
+
+#: qconnect.cpp:59
+msgid "Only local executables supported"
+msgstr "Jsou podporovány pouze lokální programy"
+
+#: tabwidget.cpp:24
+msgid "Close the current tab"
+msgstr "Zavřít současnou kartu"
+
+#. i18n: tag Text
+#. i18n: file ./taguaui.rc line 15
+#: extractedrc.cpp:3
+msgid "&Edit"
+msgstr "Ú&pravy"
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 24
+#: extractedrc.cpp:6
+msgid "&Game"
+msgstr "&Hra"
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 33
+#: extractedrc.cpp:9
+msgid "&View"
+msgstr "Po&hled"
+
+#. i18n: tag text
+#. i18n: file ./taguaui.rc line 47
+#: extractedrc.cpp:12
+msgid "Game Toolbar"
+msgstr "Nástrojová lišta hry"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 13
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 13
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 13
+#: extractedrc.cpp:15 extractedrc.cpp:63 extractedrc.cpp:185
+msgid "Form"
+msgstr "Formát"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 25
+#: extractedrc.cpp:18
+msgid "Round:"
+msgstr "Kolo:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 35
+#: extractedrc.cpp:21
+msgid "Time:"
+msgstr "Čas:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 54
+#: extractedrc.cpp:24
+msgid "Result:"
+msgstr "Výsledek:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 61
+#: extractedrc.cpp:27
+msgid "Increment:"
+msgstr "Přírůstek:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 71
+#: extractedrc.cpp:30
+msgid "Site:"
+msgstr "Místo:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 78
+#: extractedrc.cpp:33
+msgid "Black rating:"
+msgstr "Hodnocení černého:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 85
+#: extractedrc.cpp:36
+msgid "Event:"
+msgstr "Událost:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 92
+#: extractedrc.cpp:39
+msgid "Black:"
+msgstr "Černý:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 99
+#: extractedrc.cpp:42
+msgid "White:"
+msgstr "Bílý:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 121
+#: extractedrc.cpp:45
+msgid "Date:"
+msgstr "Datum:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 131
+#: extractedrc.cpp:48
+msgid "White rating:"
+msgstr "Hodnocení bílého:"
+
+#. i18n: tag string
+#. i18n: file ./ui/gametags.ui line 138
+#: extractedrc.cpp:51
+msgid "ECO:"
+msgstr "ECO:"
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 13
+#: extractedrc.cpp:54
+msgid "New game"
+msgstr "Nová hra"
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 39
+#. i18n: tag string
+#. i18n: file ./ui/pref_theme.ui line 48
+#: extractedrc.cpp:57 extractedrc.cpp:238
+msgid "&Variant:"
+msgstr "&Hra:"
+
+#. i18n: tag string
+#. i18n: file ./ui/newgamedialog.ui line 74
+#: extractedrc.cpp:60
+msgid "Create in new &tab"
+msgstr "Vytvořit v nové &kartě"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 36
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 36
+#: extractedrc.cpp:66 extractedrc.cpp:188
+msgid "&Animations"
+msgstr "&Animace"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 51
+#: extractedrc.cpp:69
+msgid "&Transformations"
+msgstr "&Transformace"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 58
+#: extractedrc.cpp:72
+msgid "&Explosions"
+msgstr "&Explose"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 65
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 158
+#: extractedrc.cpp:75 extractedrc.cpp:208
+msgid "&Movements"
+msgstr "Ta&hy"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 72
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 165
+#: extractedrc.cpp:78 extractedrc.cpp:211
+#, fuzzy
+msgid "&Fading"
+msgstr "&Mizení"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 88
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 60
+#: extractedrc.cpp:81 extractedrc.cpp:191
+msgid ""
+"Rough\n"
+"(little CPU usage)"
+msgstr "Hrubé<br>(malé využití CPU)"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 115
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 87
+#: extractedrc.cpp:85 extractedrc.cpp:195
+msgid ""
+"Smooth\n"
+"(high CPU usage)"
+msgstr "Jemné<br>(velké využití CPU)"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 130
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 179
+#: extractedrc.cpp:89 extractedrc.cpp:217
+msgid "Animation s&moothness:"
+msgstr "&Plynulost animací:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 151
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 123
+#: extractedrc.cpp:92 extractedrc.cpp:202
+msgid "Slow"
+msgstr "Pomalu"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 177
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 146
+#: extractedrc.cpp:95 extractedrc.cpp:205
+msgid "Fast"
+msgstr "Rychle"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 189
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 102
+#: extractedrc.cpp:98 extractedrc.cpp:199
+msgid "Animation s&peed:"
+msgstr "&Rychlost animací:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 231
+#: extractedrc.cpp:101
+msgid "&Max sequence length:"
+msgstr "&Maximální délka posloupnosti:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 253
+#: extractedrc.cpp:104
+msgid "Animate move &sequences"
+msgstr "Animovat po&sloupnosti tahů:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 277
+#: extractedrc.cpp:107
+msgid "&Border"
+msgstr "&Okraj"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 292
+#: extractedrc.cpp:110
+msgid "&Color"
+msgstr "&Barva"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 302
+#: extractedrc.cpp:113
+msgid "&Text Color"
+msgstr "Barva &textu"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_board.ui line 320
+#: extractedrc.cpp:116
+msgid "Custom &font:"
+msgstr "Uživatelské &písmo:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 13
+#: extractedrc.cpp:119
+msgid "Engines"
+msgstr "Programy"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 25
+#: extractedrc.cpp:122
+msgid "Engine list"
+msgstr "Seznam programů"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 93
+#: extractedrc.cpp:125
+msgid "Engine properties"
+msgstr "Vlastnosti programu"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 157
+#: extractedrc.cpp:140
+msgid "Tagua (text)"
+msgstr "Tagua (textové)"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 162
+#: extractedrc.cpp:143
+msgid "Tagua (D-BUS)"
+msgstr "Tagua (DBUS)"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_engines.ui line 180
+#: extractedrc.cpp:146
+msgid "&Work dir:"
+msgstr "Pracovní &adresář:"
+
+#. i18n: tag string
+#. i18n: file ./ui/preferences.ui line 13
+#: extractedrc.cpp:149
+msgid "Change Tagua Settings"
+msgstr "Změnit nastavení Tagua"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 13
+#: extractedrc.cpp:152
+msgid "Dialog"
+msgstr "Dialog"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 47
+#: extractedrc.cpp:155
+msgid "Pattern"
+msgstr "Vzorek"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 75
+#: extractedrc.cpp:158
+msgid "Bold"
+msgstr "Tučné"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 82
+#: extractedrc.cpp:161
+msgid "Italic"
+msgstr "Kursiva"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 148
+#: extractedrc.cpp:164
+msgid "Use this box to test your regular expression"
+msgstr "Pro vyzkoušení regulárního výrazu použijte toto pole"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 186
+#: extractedrc.cpp:167
+msgid "Add"
+msgstr "Přidat"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 193
+#: extractedrc.cpp:170
+msgid "Remove"
+msgstr "Odstranit"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 223
+#: extractedrc.cpp:173
+msgid "Up"
+msgstr "Nahoru"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 230
+#: extractedrc.cpp:176
+msgid "Down"
+msgstr "Dolů"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 266
+#: extractedrc.cpp:179
+msgid "OK"
+msgstr "OK"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_highlight.ui line 273
+#: extractedrc.cpp:182
+msgid "Cancel"
+msgstr "Zrušit"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 172
+#: extractedrc.cpp:214
+msgid "&Smooth highlighting"
+msgstr "&Jemné zvýrazňování"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 203
+#: extractedrc.cpp:220
+msgid "&Colors and fonts"
+msgstr "&Barvy a písma"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 215
+#: extractedrc.cpp:223
+msgid "C&omments color:"
+msgstr "Barva &poznámek:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 233
+#: extractedrc.cpp:226
+msgid "Cus&tom comments font:"
+msgstr "Uživatelské písmo pro po&známky:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 243
+#: extractedrc.cpp:229
+msgid "C&ustom moves font:"
+msgstr "Uživatelské písmo pro &tahy:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_movelist.ui line 253
+#: extractedrc.cpp:232
+msgid "S&elected move color:"
+msgstr "Barva &vybraného tahu:"
+
+#. i18n: tag string
+#. i18n: file ./ui/pref_theme_page.ui line 31
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 149
+#: extractedrc.cpp:235 extractedrc.cpp:271
+msgid "..."
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 13
+#: extractedrc.cpp:241
+msgid "Quick Connect"
+msgstr "Rychlé připojení"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 28
+#: extractedrc.cpp:244
+msgid "&Login"
+msgstr "&Přihlášení"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 47
+#: extractedrc.cpp:247
+msgid "&Password:"
+msgstr "&Heslo:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 60
+#: extractedrc.cpp:250
+msgid "&Username:"
+msgstr "&Uživatelské jméno:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 70
+#: extractedrc.cpp:253
+msgid "&Store password on this computer"
+msgstr "Uložit he&slo na tomto počítači"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 73
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 182
+#: extractedrc.cpp:256 extractedrc.cpp:280
+msgid "Alt+S"
+msgstr "Alt+S"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 83
+#: extractedrc.cpp:259
+msgid "Ser&ver:"
+msgstr "Ser&ver:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 98
+#: extractedrc.cpp:262
+msgid "ICS p&ort:"
+msgstr "&Port pro ICS:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 115
+#: extractedrc.cpp:265
+msgid "ICS &host:"
+msgstr "&Hostitel ICS:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 131
+#: extractedrc.cpp:268
+msgid "&Timeseal"
+msgstr "&Timeseal"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 159
+#: extractedrc.cpp:274
+msgid "&File Path:"
+msgstr "&Cesta k souboru:"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 179
+#: extractedrc.cpp:277
+msgid "Use &custom command line arguments"
+msgstr "Použít &uživatelské parametry na příkazové řádce"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 232
+#: extractedrc.cpp:283
+msgid "&OK"
+msgstr "&OK"
+
+#. i18n: tag string
+#. i18n: file ./ui/quickconnect.ui line 248
+#: extractedrc.cpp:286
+msgid "&Cancel"
+msgstr "&Zrušit"
+
+#: extractedrc.cpp:287
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Karel Volný"
+
+#: extractedrc.cpp:288
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kavol@seznam.cz"
+
