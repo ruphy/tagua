@@ -15,7 +15,7 @@ else(NOT GETTEXT_MSGFMT_EXECUTABLE)
     add_custom_command(OUTPUT ${_gmoFile}
             COMMAND ${GETTEXT_MSGFMT_EXECUTABLE} --check -o ${_gmoFile} ${_poFile}
             DEPENDS ${_poFile})
-    add_custom_target(translations ALL DEPENDS ${_gmoFile})
+    add_custom_target(translation-${_lang} ALL DEPENDS ${_gmoFile})
     install(FILES ${_gmoFile} DESTINATION ${LOCALE_INSTALL_DIR}/${_lang}/LC_MESSAGES/ RENAME ${catalogname}.mo)
   endforeach(_poFile ${PO_FILES})
 endif(NOT GETTEXT_MSGFMT_EXECUTABLE)
