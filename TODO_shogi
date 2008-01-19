@@ -6,6 +6,11 @@ tagua core:
      moves in one click, depending on which part of the square is hit ?
 - allow to setup and play problems (tsume shogi)
 
+engines/core:
+- engine options (eg. select difficulty level)
+- do not allow selection of more than 1 engine for the same side
+- allow to declare engines system-wide
+
 shogi variant:
 - pools overlap when too many pieces were captured
 - decorated move could show captured piece
