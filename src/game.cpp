@@ -814,10 +814,10 @@ void Game::load(const PGN& pgn) {
   std::map<QString, QString>::const_iterator fen = pgn.m_tags.find("FEN");
   PositionPtr pos;
 
-  if(var == pgn.m_tags.end()) {
+  //if(var == pgn.m_tags.end()) {
     pos = vi->createPosition();
     pos->setup();
-  }
+  //}
 #if 0 // BROKEN
   else if( !(pos = vi->createPositionFromFEN(fen->second))) {
     ERROR("Wrong fen " << fen->second);
