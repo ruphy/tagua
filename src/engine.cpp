@@ -21,8 +21,9 @@
 using namespace boost;
 
 Engine::Engine(const QString& path, const QStringList& arguments)
-: m_path(path)
-, m_arguments(arguments) {
+  : m_path(path)
+, m_arguments(arguments)
+,m_side(-1) {
   connect(&m_engine, SIGNAL(readyReadStandardOutput()), this, SLOT(processInput()));
   connect(&m_engine, SIGNAL(started()), this, SLOT(engineRunning()));
   connect(&m_engine, SIGNAL(finished(int, QProcess::ExitStatus)), 
@@ -57,6 +58,10 @@ void Engine::sendCommand(const QString& command, bool echo) {
     QTextStream os(&m_engine);
     os << command << "\n";
 #ifdef ENGINE_DEBUG
+    if (m_side == -1)
+      std::cout << "?";
+    else
+      std::cout << m_side;
     std::cout << "> " << command << std::endl;
 #endif 
   }
@@ -71,6 +76,10 @@ void Engine::processInput() {
     QString line = m_engine.readLine();
     line.remove("\n").remove("\r");
 #ifdef ENGINE_DEBUG
+    if (m_side == -1)
+      std::cout << "?";
+    else
+      std::cout << m_side;
     std::cout << "< " << line << std::endl;
 #endif
     if (m_console)

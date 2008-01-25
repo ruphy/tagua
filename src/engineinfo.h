@@ -80,7 +80,7 @@ Q_OBJECT
   UI& m_ui;
   EntityToken m_token[2];
 protected:
-  virtual boost::shared_ptr<Engine> engine();
+  virtual boost::shared_ptr<Engine> engine(int player);
   void playAs(int player);
 public:
   EngineInfo(const EngineDetails& details, UI& ui);

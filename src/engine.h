@@ -39,6 +39,7 @@ protected:
   boost::shared_ptr<Console> m_console;
   boost::weak_ptr<EngineNotifier> m_notifier;
   std::queue<QString> m_command_queue;
+  int m_side;
 
   virtual void initializeEngine() = 0;
 public:
@@ -49,6 +50,7 @@ public:
   Engine(const QString& path, const QStringList& arguments);
 
   void setWorkingPath(const QString& workPath) { m_workPath = workPath; }
+  void setSide(int side) { m_side = side; }
 
   virtual ~Engine();
 

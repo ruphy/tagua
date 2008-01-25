@@ -45,7 +45,7 @@ void EngineInfo::playAs(int player) {
     m_token[player] = EntityToken();
   }
   else {
-    m_token[player] = m_ui.addPlayingEngine(player, engine());
+    m_token[player] = m_ui.addPlayingEngine(player, engine(player));
   }
 }
 
@@ -63,7 +63,7 @@ EngineInfo::EngineInfo(const EngineDetails& details, UI& ui)
 , m_details(details)
 , m_ui(ui) { }
 
-shared_ptr<Engine> EngineInfo::engine() {
+shared_ptr<Engine> EngineInfo::engine(int player) {
   shared_ptr<Engine> res;
   if (m_details.type == EngineDetails::XBoard)
     res = shared_ptr<Engine>(new XBoardEngine(m_details.path, QStringList()));
@@ -74,8 +74,10 @@ shared_ptr<Engine> EngineInfo::engine() {
     return shared_ptr<Engine>();
   }
 
-  if (res)
+  if (res) {
     res->setWorkingPath(m_details.workPath);
+    res->setSide(player);
+  }
 
   return res;
 }
