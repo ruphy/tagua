@@ -61,26 +61,26 @@ Preferences::Preferences(const QString& currentVariant, QWidget *parent)
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Board");
   i->setHeader("Board preferences:");
-  i->setIcon(KIcon("prefBoard"));
+  i->setIcon(KIcon("games-config-board"));
 
   b = new PrefWrapper<PrefMoveList>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Move list");
   i->setHeader("Move list preferences:");
-  i->setIcon(KIcon("prefMoveList"));
+  i->setIcon(KIcon("view-list-tree"));
 
   b = new PrefWrapper<PrefTheme>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Theme");
   i->setHeader("Pieces & squares theme:");
-  i->setIcon(KIcon("prefTheme"));
+  i->setIcon(KIcon("games-config-theme"));
   pagePref->show();
 
   b = new PrefWrapper<PrefEngines>(currentVariant, this);
   connect(this, SIGNAL(applied()), b, SLOT(apply()));
   i = pagePref->addPage(b, "Engines");
   i->setHeader("Engines:");
-  i->setIcon(KIcon("brain"));
+  i->setIcon(KIcon("help-hint"));
   pagePref->show();
 }
 

@@ -175,8 +175,9 @@ void MainWindow::setupActions() {
   installRegularAction("forward", KIcon("go-next"), i18n("&Forward"), &ui(), SLOT(forward()));
   installRegularAction("begin", KIcon("go-first"), i18n("Be&gin"), &ui(), SLOT(gotoFirst()));
   installRegularAction("end", KIcon("go-last"), i18n("&End"), &ui(), SLOT(gotoLast()));
-  installRegularAction("connect", KIcon("connection-established"), i18n("&Connect"), this, SLOT(icsConnect()));
-  installRegularAction("disconnect", KIcon("connect-no"), i18n("&Disconnect"), this, SLOT(icsDisconnect()));
+  installRegularAction("connect", KIcon("network-connect"), i18n("&Connect"), this, SLOT(icsConnect()));
+  installRegularAction("disconnect", KIcon("network-disconnect"), 
+      i18n("&Disconnect"), this, SLOT(icsDisconnect()));
 
   KStandardAction::undo(&ui(), SLOT(undo()), actionCollection());
   KStandardAction::redo(&ui(), SLOT(redo()), actionCollection());
@@ -189,10 +190,10 @@ void MainWindow::setupActions() {
       &ui(), SLOT(setStartingPosition()));
 //   installRegularAction("copyPosition", KIcon(), i18n("&Copy position"), &ui(), SLOT(copyPosition()));
 //   installRegularAction("pastePosition", KIcon(), i18n("&Paste position"), &ui(), SLOT(pastePosition()));
-  tmp = installRegularAction("flip", KIcon("rotate"), i18n("&Flip view"), this, SLOT(flipView()));
+  tmp = installRegularAction("flip", KIcon("object-rotate-left"), i18n("&Flip view"), this, SLOT(flipView()));
   tmp->setShortcut(Qt::CTRL + Qt::Key_F);
-  installRegularAction("toggleConsole", KIcon("openterm"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
-  installRegularAction("toggleMoveList", KIcon("view_text"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
+  installRegularAction("toggleConsole", KIcon("utilities-terminal"), i18n("Toggle &console"), this, SLOT(toggleConsole()));
+  installRegularAction("toggleMoveList", KIcon("view-list-tree"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
 }
 
 void MainWindow::updateVariantActions() {
