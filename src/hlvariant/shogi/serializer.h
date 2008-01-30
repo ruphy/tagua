@@ -12,12 +12,14 @@
 #define HLVARIANT__SHOGI__SERIALIZER_H
 
 #include <QString>
+#include <QRegExp>
 
 namespace HLVariant {
 namespace Shogi {
 
 template <typename _LegalityCheck>
 class Serializer {
+  static QRegExp pattern;
 public:
   typedef _LegalityCheck LegalityCheck;
   typedef typename LegalityCheck::GameState GameState;
@@ -37,6 +39,9 @@ public:
   
   QString serialize(const Move&, const GameState& ref);
   Move deserialize(const QString& str, const GameState& ref);
+
+  Move parse(const QString&, int& offset, int ysize, const GameState& ref);
+  Move parse(const QString&, int ysize, const GameState& ref);
 };
 
 // IMPLEMENTATION
@@ -189,24 +194,127 @@ Serializer<LegalityCheck>::getType(const QChar& letter) const {
 }
 
 template <typename LegalityCheck>
-typename Serializer<LegalityCheck>::Move 
+QRegExp Serializer<LegalityCheck>::
+//          1  2         3       4   5      6          7
+  pattern("^(([+])?([PRBLNSGK]))?((\\d*)([a-wyzA-Z])?)([-x*])?"
+//              8           9
+	  "(\\d+[a-zA-Z])?([+=])?[\?!]*");
+
+template <typename LegalityCheck>
+typename Serializer<LegalityCheck>::Move
+Serializer<LegalityCheck>::parse(const QString& str, int& offset,
+				      int ysize, const GameState& ref) {
+  std::cerr << "Looking at " << qPrintable(str) << std::endl;
+  if (pattern.indexIn(str, offset, QRegExp::CaretAtOffset) != -1) {
+    Point from;
+    typename Serializer<LegalityCheck>::Piece::Type type;
+    bool promoted;
+    int promotion;
+    Move candidate;
+
+    type = getType(pattern.cap(3)[0]);
+    promoted = pattern.cap(2) == "+";
+    Point to(ref.board().size().x - pattern.cap(8)[0].digitValue(),
+	     pattern.cap(8)[1].toAscii() - 'a');
+    promotion = (pattern.cap(9) == "+") ? 1 : -1;
+
+    if (pattern.cap(7) == "*")			  // is a drop ?
+      return Move(Piece(ref.turn(), type), to);
+
+    from = Point((pattern.cap(5).length() == 0) ? -1 :
+		 ref.board().size().x - pattern.cap(5)[0].digitValue(),
+		 (pattern.cap(6).length() == 0) ? -1 :
+		 pattern.cap(6)[0].toAscii() - 'a');
+
+    if (from.valid()) {				  // explicit from ?
+      candidate = Move(from, to, static_cast<typename Piece::Type>(promotion));
+      std::cerr << "from " << from.x << "," << from.y
+		<< " already valid, to" << to.x << "," << to.y
+		<< std::endl;
+    }
+    else { // resolve implicit from
+      std::cerr << "Pattern is " << qPrintable(pattern.cap(8))
+		<< ", type is " << type << (promoted ? "+" : "")
+		<< ", from is " << from.x << "," << from.y
+		<< ", target is " << to.x << "," << to.y
+		<< std::endl;
+
+      for (int i = 0; i < ref.board().size().x; i++) {
+	for (int j = 0; j < ref.board().size().y; j++) {
+	  Point p(i, j);
+	  Piece piece = ref.board().get(p);
+	  std::cerr << "looking at " << i << "," << j
+		    << ", piece is " << piece.type()
+		    << (piece.promoted() ? "+" : "")
+		    << std::endl;
+
+	  Move mv(p, to, static_cast<typename Piece::Type>(promotion));
+	  if (p.resembles(from) &&
+	      piece.type() == type &&
+	      piece.promoted() == promoted &&
+	      piece.color() == ref.turn()) {
+
+	    LegalityCheck check(ref);
+	    if (check.legal(mv))  {
+	      if (candidate.valid()) {
+		// ambiguous!
+		std::cerr << "ambiguous !" << std::endl;
+		return Move();
+	      }
+	      else {
+		// ok, we have found a candidate move
+		std::cerr << "candidate moved from "
+			  << mv.from().x << "," << mv.from().y
+			  << std::endl;
+		candidate = mv;
+	      }
+	    }
+	    else std::cerr << "piece at " << i << "," << j
+			   << " cannot move to " << to.toString(ref.board().size().y)
+			   << " aka " << to.x << "," << to.y
+			   << std::endl;
+	  }
+	  else std::cerr << "skipping" << std::endl;
+	}
+      }
+    }
+
+    if (!candidate.valid())
+      std::cerr << "error - piece not found" << std::endl;
+    else
+      std::cerr << "move is " << serialize(candidate, ref)
+		<< " from " << candidate.from().x << "," << candidate.from().y
+		<< std::endl;
+
+    offset += pattern.matchedLength();
+    return candidate;
+  }
+  else {
+    std::cout << "error!!!! " << qPrintable(str.mid(offset)) << std::endl;
+    return Move(Point::invalid(),Point::invalid());
+  }
+}
+
+template <typename LegalityCheck>
+typename Serializer<LegalityCheck>::Move
+Serializer<LegalityCheck>::parse(const QString& str, int ysize,
+				      const GameState& ref) {
+  int offset = 0;
+  return parse(str, offset, ysize, ref);
+}
+
+template <typename LegalityCheck>
+typename Serializer<LegalityCheck>::Move
 Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref) {
+  std::cerr << "shogi deserializing a " << qPrintable(m_rep) << " move" << std::endl;
   if (str[0].isDigit()) {
     // this is a move
     Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii() - 'a');
     Point dest(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
     return Move(orig, dest, ((str.size() > 4) && (str[4] == '+')) ? 1 : -1);
   } 
-  else {
-    if (str[1] != '*') {
-      std::cerr << "Expected a star, got a '" << str[1].toAscii() << "'" << std::endl;
-      return Move();
-    }
-    typename Piece::Type t = getType(str[0]);
-    Point to(ref.board().size().x - str[2].digitValue(), str[3].toAscii() - 'a');
-    return Move(Piece(ref.turn(), t), to);   
-  }
-
+  else
+    return parse(str, ref.board().size().y, ref);
 }
 
 } // namespace Shogi
