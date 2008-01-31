@@ -1,8 +1,4 @@
-- finalize deserialization breakages
-- PGN save should write variant tag
 - PGN load confused after returning from variations - gamestate issue ?
-- save/load support for PalView continuations: (* 10. f5)
-	http://www.eurochess.org/games/games/kusadasi/palview4/manual/pgn.htm
 
 tagua core:
 - gnushogi engine gets confused when moving through history => generic pb ?

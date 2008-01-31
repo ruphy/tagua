@@ -25,7 +25,10 @@ GameEntity::GameEntity(const VariantPtr& variant, const boost::shared_ptr<Game>&
 }
 
 QString GameEntity::save() const {
-  return m_game->pgn();
+  return
+    ((m_variant->name() == "Chess") ? QString()
+     : ("[Variant \"" + m_variant->name()) + "\"]")
+    + m_game->pgn();
 }
 
 void GameEntity::loadPGN(const PGN& pgn) {
