@@ -478,7 +478,25 @@ void MainWindow::saveGameAs() {
   ui().setUrl(saveGame(KFileDialog::getSaveUrl(KUrl(), "*.pgn", this, i18n("Save PGN file"))));
 }
 
+bool MainWindow::checkOverwrite(const KUrl& url) {
+  if (!url.isLocalFile())
+    return true;
+
+  QFileInfo info(url.path());
+  if (!info.exists())
+    return true;
+
+  return KMessageBox::Cancel != KMessageBox::warningContinueCancel(this,
+    i18n("A file named \"%1\" already exists. "
+         "Are you sure you want to overwrite it?" , info.fileName()),
+    i18n("Overwrite File?"),
+    KGuiItem(i18n("&Overwrite")));
+}
+
 KUrl MainWindow::saveGame(const KUrl& url) {
+  if (!checkOverwrite(url))
+    return KUrl();
+    
   if (url.isEmpty())
     return KUrl();
     

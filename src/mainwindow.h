@@ -120,6 +120,7 @@ public Q_SLOTS:
   void loadGame();
   void saveGame();
   void saveGameAs();
+  bool checkOverwrite(const KUrl& url);
   void quit();
   void flipView();
   void toggleConsole();
