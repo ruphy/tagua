@@ -196,9 +196,10 @@ void MainWindow::setupActions() {
   installRegularAction("toggleMoveList", KIcon("view-list-tree"), i18n("Toggle &move list"), this, SLOT(toggleMoveList()));
 }
 
-void MainWindow::updateVariantActions() {
+void MainWindow::updateVariantActions(bool unplug) {
   ActionCollection* variant_actions = m_ui.variantActions();
-  unplugActionList("variantActions");
+  if (unplug)
+    unplugActionList("variantActions");
   if (variant_actions) {
     plugActionList("variantActions", variant_actions->actions());
   }
@@ -324,6 +325,7 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
       ui().setController(controller);
       table()->setPlayers(Player(), Player());
       m_main->setTabText(m_main->currentIndex(), text);
+      updateVariantActions(false);
     }
     return true;
   }
