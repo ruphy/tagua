@@ -22,7 +22,7 @@ TabWidget::TabWidget(QWidget* parent)
 : KTabWidget(parent) {
   m_close = new QPushButton(this);
   m_close->setToolTip(i18n("Close the current tab"));
-  m_close->setIcon(KIcon("tab-remove"));
+  m_close->setIcon(KIcon("tab-close"));
   m_close->adjustSize();
   
   connect(m_close, SIGNAL(clicked()), this, SIGNAL(closeTab()));

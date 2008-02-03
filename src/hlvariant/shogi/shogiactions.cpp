@@ -18,7 +18,7 @@ namespace Shogi {
 
 ShogiActions::ShogiActions()
 : m_promotion(true) {
-  QAction* toggle = new KAction(KIcon("bookmark"), "Promote automatically", this);
+  QAction* toggle = new KAction(KIcon("games-solve"), "Promote automatically", this);
   toggle->setCheckable(true);
   toggle->setChecked(true);
   connect(toggle, SIGNAL(triggered()), this, SLOT(toggle_promotion()));
