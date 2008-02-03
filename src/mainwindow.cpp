@@ -468,14 +468,14 @@ void MainWindow::loadGame() {
 }
 
 void MainWindow::saveGame() {
-  if (m_url.isEmpty())
+  if (ui().url().isEmpty())
     saveGameAs();
   else
-    m_url = saveGame(m_url);
+    ui().setUrl(saveGame(ui().url()));
 }
 
 void MainWindow::saveGameAs() {
-  m_url = saveGame(KFileDialog::getSaveUrl(KUrl(), "*.pgn", this, i18n("Save PGN file")));
+  ui().setUrl(saveGame(KFileDialog::getSaveUrl(KUrl(), "*.pgn", this, i18n("Save PGN file"))));
 }
 
 KUrl MainWindow::saveGame(const KUrl& url) {

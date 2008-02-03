@@ -12,7 +12,8 @@
 #define CONTROLLER_H
 
 #include <boost/enable_shared_from_this.hpp>
-#include <qstring.h>
+#include <QString>
+#include <KUrl>
 #include "common.h"
 #include "entitytoken.h"
 #include "fwd.h"
@@ -36,6 +37,7 @@ class Controller : public boost::enable_shared_from_this<Controller> {
 protected:
   ChessTable* m_view;
   virtual boost::shared_ptr<UserEntity> entity() const = 0;
+  KUrl m_url;
 public:
   Controller(ChessTable* view);
   virtual ~Controller();
@@ -184,6 +186,19 @@ public:
     * Called whenever a controller becomes active in the main window.
     */
   virtual void activate() = 0;
+  
+  /**
+    * Each controller has an associated URL that will be used for saving
+    * its content.
+    * @return The URL associated with this controller.
+    */
+  virtual KUrl url() const;
+  
+  /**
+    * Set this controller's URL.
+    * @sa url()
+    */
+  virtual void setUrl(const KUrl& url);
 };
 
 

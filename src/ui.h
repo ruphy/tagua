@@ -12,7 +12,8 @@
 #define UI_H
 
 #include <boost/shared_ptr.hpp>
-#include <qobject.h>
+#include <QObject>
+#include <KUrl>
 #include "common.h"
 #include "controllers/entitytoken.h"
 #include "tagua.h"
@@ -50,6 +51,8 @@ Q_OBJECT
   boost::shared_ptr<Controller>& controller();
   boost::shared_ptr<Controller> controller() const;
   KActionCollection* m_actions;
+  KUrl m_url;
+  
   friend class UIActionStateObserver;
 public:
   /**
@@ -125,6 +128,9 @@ public Q_SLOTS:
   
   QString currentVariant() const;
   void reloadSettings();
+  
+  KUrl url() const;
+  void setUrl(const KUrl& url);
 };
 
 #endif

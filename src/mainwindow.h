@@ -14,7 +14,6 @@
 #include <map>
 #include <vector>
 #include <KXmlGuiWindow>
-#include <KUrl>
 
 #include <QApplication>
 #include <QMainWindow>
@@ -54,7 +53,6 @@ Q_OBJECT
   QMenu* m_engine_menu;
   
   ChessTable* table();
-  KUrl m_url;
   UI m_ui;
   UI& ui() { return m_ui; }
   void createTab(ChessTable*, const boost::shared_ptr<Controller>&,

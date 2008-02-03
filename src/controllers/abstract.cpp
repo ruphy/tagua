@@ -56,3 +56,6 @@ void Controller::loadPGN(const PGN& pgn) {
   entity()->loadPGN(pgn);
 }
 
+KUrl Controller::url() const { return m_url; }
+void Controller::setUrl(const KUrl& url) { m_url = url; }
+

@@ -217,3 +217,7 @@ UI::createActionStateObserver(const shared_ptr<Controller>& controller) const {
   return shared_ptr<UIActionStateObserver>(
     new UIActionStateObserver(this, controller));
 }
+
+KUrl UI::url() const { return controller()->url(); }
+void UI::setUrl(const KUrl& url) { controller()->setUrl(url); }
+

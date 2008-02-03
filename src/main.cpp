@@ -54,12 +54,6 @@ int main(int argc, char **argv) {
   QString variant = args->count() > 0 ? args->arg(0) : "chess";  
   KApplication app;
 
-#ifdef TAGUA_DEBUG
-  // So you can attach the debugger in case of segfault.
-  CrashHandler::install();
-  atexit(trap);
-#endif // TAGUA_DEBUG
-
   MainWindow* widget = new MainWindow(variant);
   widget->show();
 
