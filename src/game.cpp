@@ -316,6 +316,8 @@ void Game::undo() {
       onSetVComment(sc->index, sc->variation, sc->old_comment);
     }
   }
+  else
+    ERROR("Game::undo(): unexpected type in boost::variant!");
 
   if(last_undo)
     onAvailableUndo(false);
@@ -439,6 +441,8 @@ void Game::redo() {
       onSetVComment(sc->index, sc->variation, sc->new_comment);
     }
   }
+  else
+    ERROR("Game::redo(): unexpected type in boost::variant!");
 
   if(now_undo)
     onAvailableUndo(true);
@@ -942,6 +946,8 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
 
       var_start = false;
     }
+    else
+      ERROR("Game::load: unexpected type in boost::variant!");
   }
 
   if(history.size()>1)
