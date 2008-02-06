@@ -243,7 +243,7 @@ void floodFill(QImage& image, QPoint point, QColor color,
   }
 
   while(!lines.empty()) {
-    Line ll = lines[lines.size()-1];
+    Line ll = lines.back();
     lines.pop_back();
 
     if(ll.x1>0) {
@@ -308,7 +308,7 @@ void floodFillBlueThreshold(QImage& image, QPoint point, QColor color, unsigned 
   }
 
   while(!lines.empty()) {
-    Line ll = lines[lines.size()-1];
+    Line ll = lines.back();
     lines.pop_back();
 
     if(ll.x1>0) {

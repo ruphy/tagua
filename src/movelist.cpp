@@ -1179,9 +1179,9 @@ void Widget::setMove(const Index& index,
     return;
   }
 
-  if(index.nested.size() && index.nested[index.nested.size()-1].num_moves == 0) {
+  if(index.nested.size() && index.nested.back().num_moves == 0) {
     History var;
-    int v = index.nested[index.nested.size()-1].variation;
+    int v = index.nested.back().variation;
     var.push_back(e = EntryPtr( new Entry(turn, move, index, this)) );
     (*vec)[at]->variations[v] = var;
     (*vec)[at]->braces[v] = BracePtr( new Brace( (*vec)[at].get(), v, this) );
@@ -1201,7 +1201,7 @@ void Widget::remove(const Index& index) {
     if(!e)
       return;
 
-    int v = index.nested[index.nested.size()-1].variation;
+    int v = index.nested.back().variation;
     if(!e->variations.count(v))
       return;
 

@@ -288,7 +288,7 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
     }
   }
   else {
-    Index pi = index.prev(index.nested[index.nested.size()-1].num_moves);
+    Index pi = index.prev(index.nested.back().num_moves);
     parent = document.getElementById("vr_"+pi);
     if(parent.isNull()) {
       std::cout << " --> Error in Textual::setMove, no variation?!?!?" << std::endl;

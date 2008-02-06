@@ -212,7 +212,7 @@ void Game::undo() {
       Entry* e = fetch(a->index.prev());
       Q_ASSERT(e);
 
-      int v = a->index.nested[a->index.nested.size()-1].variation;
+      int v = a->index.nested.back().variation;
       Q_ASSERT(e->variations.count(v) == 1);
       Q_ASSERT(e->variations[v].size() == 1);
 
@@ -342,7 +342,7 @@ void Game::redo() {
       Entry* e = fetch(a->index.prev());
       Q_ASSERT(e);
 
-      int v = a->index.nested[a->index.nested.size()-1].variation;
+      int v = a->index.nested.back().variation;
       Q_ASSERT(e->variations.count(v) == 0);
 
       History h;
@@ -492,7 +492,7 @@ void Game::promoteVariation(const Index& _ix) {
     return;
   }
   Index ix = _ix;
-  int v = ix.nested[ix.nested.size()-1].variation;
+  int v = ix.nested.back().variation;
   ix.nested.pop_back();
 
   promoteVariation(ix, v);
@@ -530,7 +530,7 @@ void Game::removeVariation(const Index& _ix) {
     return;
   }
   Index ix = _ix;
-  int v = ix.nested[ix.nested.size()-1].variation;
+  int v = ix.nested.back().variation;
   ix.nested.pop_back();
 
   removeVariation(ix, v);
@@ -882,7 +882,7 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
         ERROR("Unexpected end variation!");
         break;
       }
-      current = var_stack[var_stack.size()-1];
+      current = var_stack.back();
       var_stack.pop_back();
     }
     else if(boost::get<PGN::Move>(pgn[i])) {

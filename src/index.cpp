@@ -47,7 +47,7 @@ int Index::totalNumMoves() const {
 }
 
 bool Index::atVariationStart() const {
-  return nested.size() && (nested[nested.size()-1].num_moves == 0);
+  return nested.size() && (nested.back().num_moves == 0);
 }
 
 Index Index::flipVariation(const Index& vstart, int v_id) const {
@@ -195,7 +195,7 @@ std::pair<int, int> Index::stepsTo(const Index& ix) const {
 }
 
 int Index::lastIndex() {
-  return nested.size() ? nested[nested.size()-1].num_moves : num_moves;
+  return nested.size() ? nested.back().num_moves : num_moves;
 }
 
 bool Index::mainLine() const {
