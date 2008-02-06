@@ -1,5 +1,3 @@
-- PGN load confused after returning from variations - gamestate issue ?
-
 tagua core:
 - gnushogi engine gets confused when moving through history => generic pb ?
 - tooltips for figurines, for people who can't read kanji

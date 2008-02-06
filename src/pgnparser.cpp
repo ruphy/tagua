@@ -21,7 +21,7 @@ QRegExp PGN::comment2("^;[^\\n]*\\n");
 QRegExp PGN::wsPattern("^\\s+");
 QRegExp PGN::tag("^\\[(\\S+)\\s+\"((?:[^\"]|\\\\\")*)\"\\]");
 QRegExp PGN::move_tag("^\\$(\\d+)");
-QRegExp PGN::move("^[^$\\{\\(\\[\\s][^\\{\\(\\[\\s]*");
+QRegExp PGN::move("^[^$\\{\\(\\[\\s][^\\{\\(\\)\\[\\s]*");
 QRegExp PGN::result("^(?:\\*|1-0|0-1|1/2-1/2)");
 QRegExp PGN::time("^\\([\\d:.]*\\)");
 QRegExp PGN::eol("(?:[ \t]\r?\n\r?|\r?\n\r?[ \t]|\r?\n\r?)");
