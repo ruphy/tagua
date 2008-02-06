@@ -204,7 +204,6 @@ template <typename LegalityCheck>
 typename Serializer<LegalityCheck>::Move
 Serializer<LegalityCheck>::parse(const QString& str, int& offset,
 				      int ysize, const GameState& ref) {
-  std::cerr << "Looking at " << qPrintable(str) << std::endl;
   if (pattern.indexIn(str, offset, QRegExp::CaretAtOffset) != -1) {
     Point from;
     typename Serializer<LegalityCheck>::Piece::Type type;
@@ -228,25 +227,12 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
 
     if (from.valid()) {				  // explicit from ?
       candidate = Move(from, to, static_cast<typename Piece::Type>(promotion));
-      std::cerr << "from " << from.x << "," << from.y
-		<< " already valid, to" << to.x << "," << to.y
-		<< std::endl;
     }
     else { // resolve implicit from
-      std::cerr << "Pattern is " << qPrintable(pattern.cap(8))
-		<< ", type is " << type << (promoted ? "+" : "")
-		<< ", from is " << from.x << "," << from.y
-		<< ", target is " << to.x << "," << to.y
-		<< std::endl;
-
       for (int i = 0; i < ref.board().size().x; i++) {
 	for (int j = 0; j < ref.board().size().y; j++) {
 	  Point p(i, j);
 	  Piece piece = ref.board().get(p);
-	  std::cerr << "looking at " << i << "," << j
-		    << ", piece is " << piece.type()
-		    << (piece.promoted() ? "+" : "")
-		    << std::endl;
 
 	  Move mv(p, to, static_cast<typename Piece::Type>(promotion));
 	  if (p.resembles(from) &&
@@ -263,28 +249,16 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
 	      }
 	      else {
 		// ok, we have found a candidate move
-		std::cerr << "candidate moved from "
-			  << mv.from().x << "," << mv.from().y
-			  << std::endl;
 		candidate = mv;
 	      }
 	    }
-	    else std::cerr << "piece at " << i << "," << j
-			   << " cannot move to " << to.toString(ref.board().size().y)
-			   << " aka " << to.x << "," << to.y
-			   << std::endl;
 	  }
-	  else std::cerr << "skipping" << std::endl;
 	}
       }
     }
 
     if (!candidate.valid())
       std::cerr << "error - piece not found" << std::endl;
-    else
-      std::cerr << "move is " << serialize(candidate, ref)
-		<< " from " << candidate.from().x << "," << candidate.from().y
-		<< std::endl;
 
     offset += pattern.matchedLength();
     return candidate;
@@ -306,7 +280,6 @@ Serializer<LegalityCheck>::parse(const QString& str, int ysize,
 template <typename LegalityCheck>
 typename Serializer<LegalityCheck>::Move
 Serializer<LegalityCheck>::deserialize(const QString& str, const GameState& ref) {
-  std::cerr << "shogi deserializing a " << qPrintable(m_rep) << " move" << std::endl;
   if (str[0].isDigit()) {
     // this is a move
     Point orig(ref.board().size().x - str[0].digitValue(), str[1].toAscii() - 'a');
