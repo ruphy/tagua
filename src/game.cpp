@@ -839,6 +839,8 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
   undo_history.clear();
   undo_pos = 0;
 
+  // setup an empty history, clear as needed
+
   if(history.size()) {
     Entry* fe = &history[0];
     int old_history_size = history.size();
@@ -861,6 +863,8 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
   }
   else
     history.push_back( Entry(MovePtr(), pos) );
+
+  // apply moves from PGN, one by one
 
   QString vcomment;
   std::vector<Index> var_stack;
@@ -894,7 +898,7 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
 
       int n = current.totalNumMoves()+1;
       if(var_start) {
-        if(!pm->m_number)
+        if(!pm->m_number) // not all moves get numbered in PGN, usually only 1st player ones
           current = current.prev();
         else if(pm->m_number>n+1)
           ERROR("Too far variation!");

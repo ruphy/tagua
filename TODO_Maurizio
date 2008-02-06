@@ -24,7 +24,6 @@
 [HALF DONE] - move in the variant the square numbering string and the SAN move figurines
 - support fonts for move figurines
 - investigate pcre as a possible replacement for QRegExp.
-[DONE] - remove all code that assumes the board to be 8x8.
 - remove all code that assumes that there are 2 players :)
 - allow to customize fg and bg of svg files too, in some way
   (a CSS file? but Paolo will get angry because this will require

@@ -12,7 +12,6 @@ engines/core:
 - allow to declare engines system-wide
 
 shogi variant:
-- pools overlap when too many pieces were captured
 - decorated move could show captured piece
 
 gnushogi engine:
@@ -21,11 +20,6 @@ gnushogi engine:
 	"Drawn game!" "Black mates!"
   (gnushogi only reports a draw on one side !?)
 - support for time
-
-other shogi:
-- implement ACS protocol and shogi-server extended commands
-	http://www.computer-shogi.org/protocol/tcp_ip_server_11_e.html
-	http://shogi-server.sourceforge.jp/protocol.html
 
 fetching games from the net for learning:
 - http://play.chessvariants.org/
