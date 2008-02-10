@@ -12,7 +12,7 @@
 #include "xboardengine.h"
 #include "gnushogiengine.h"
 #include "ui.h"
-#include <iostream>
+#include <KDebug>
 
 using namespace boost;
 
@@ -70,7 +70,7 @@ shared_ptr<Engine> EngineInfo::engine(int player) {
   else if (m_details.type == EngineDetails::GNUShogi)
     res = shared_ptr<Engine>(new GNUShogiEngine(m_details.path, QStringList()));
   else {
-    ERROR("Unimplemented engine type " << EngineDetails::typeName(m_details.type));
+    kError() << "Unimplemented engine type" << EngineDetails::typeName(m_details.type);
     return shared_ptr<Engine>();
   }
 

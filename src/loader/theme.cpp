@@ -9,11 +9,11 @@
 */
 
 
-#include <iostream>
+#include "theme.h"
 #include <QHash>
+#include <KDebug>
 #include "common.h"
 #include "mastersettings.h"
-#include "loader/theme.h"
 
 namespace Loader {
 
@@ -36,10 +36,9 @@ Theme::Theme(const ThemeInfo& theme)
 : m_theme(theme)
 , m_context()
 , m_lua_loader(&m_context, theme) {
-  //std::cout << "loading theme " << theme.file_name << std::endl;
   m_lua_loader.runFile(m_theme.file_name);
   if(m_lua_loader.error())
-    ERROR("Script load error: " << std::endl << m_lua_loader.errorString());
+    kError() << "Script load error:" << m_lua_loader.errorString();
 
   settings().onChange(this, "onSettingsChanged");
   onSettingsChanged();
@@ -47,7 +46,7 @@ Theme::Theme(const ThemeInfo& theme)
 
 Theme::~Theme() {
   if(!m_cache.empty())
-    ERROR("Sizes still referenced.");
+    kError() << "Sizes still referenced.";
 }
 
 void Theme::onSettingsChanged() {
@@ -71,7 +70,7 @@ void Theme::refSize(int size) {
 void Theme::unrefSize(int size) {
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
+    kError() << "Size" << size << "not referenced.";
     return;
   }
 
@@ -86,14 +85,14 @@ T Theme::getValue(const QString& key, int size, const ::LuaApi::LuaValueMap* arg
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
+    kError() << "Size" << size << "not referenced.";
     return T();
   }
 
   T retv = m_lua_loader.getValue<T>(key, size, args, allow_nil);
 
   if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    kError() << "Script run error:" << m_lua_loader.errorString();
     m_lua_loader.clearError();
   }
 
@@ -107,7 +106,7 @@ PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size, const ::L
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
+    kError() << "Size" << size << "not referenced.";
     return PixmapOrMap();
   }
 
@@ -119,7 +118,7 @@ PixmapOrMap Theme::getValue<PixmapOrMap>(const QString& key, int size, const ::L
 
   PixmapOrMap retv = to_pixmap_map(m_lua_loader.getValue< ::LuaApi::ImageOrMap>(key, size, args, allow_nil));
   if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    kError() << "Script run error:" << m_lua_loader.errorString();
     m_lua_loader.clearError();
   }
 
@@ -143,7 +142,7 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size, const ::LuaApi::LuaVa
 
   Cache::iterator it = m_cache.find(size);
   if(it == m_cache.end()) {
-    ERROR("Size " << size << " not referenced.");
+    kError() << "Size" << size << "not referenced.";
     return Glyph();
   }
 
@@ -156,7 +155,7 @@ Glyph Theme::getValue<Glyph>(const QString& key, int size, const ::LuaApi::LuaVa
   Glyph retv = m_lua_loader.getValue<Glyph>(key, size, args, allow_nil);
 
   if(m_lua_loader.error()) {
-    ERROR("Script run error: " << std::endl << m_lua_loader.errorString());
+    kError() << "Script run error:" << m_lua_loader.errorString();
     m_lua_loader.clearError();
   }
 

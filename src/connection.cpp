@@ -9,17 +9,13 @@
 */
 
 #include "connection.h"
-
-#include <iostream>
-
 #include <QHostInfo>
 #include <QTextStream>
 #include <QTcpSocket>
 #include <QTextStream>
 #include <QFile>
-
+#include <KDebug>
 #include <KProcess>
-
 #include "common.h"
 #include "settings.h"
 
@@ -119,7 +115,7 @@ void Connection::lookedUp(const QHostInfo &hi) {
 
 void Connection::processLine() {
   if(!m_device) {
-    ERROR("No m_device");
+    kError() << "No device";
     return;
   }
 
@@ -152,7 +148,7 @@ void Connection::sendText(const QString& text) {
   }
 
   if(!m_device) {
-    ERROR("No m_device");
+    kDebug() << "No device";
     return;
   }
 

@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@gmail.com>
+  Copyright (c) 2006-2008 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
@@ -8,8 +8,9 @@
   (at your option) any later version.
 */
 
-#include "luaapi/luavalue.h"
-#include "luaapi/imaging.h"
+#include "luavalue.h"
+#include <KDebug>
+#include "imaging.h"
 
 namespace LuaApi {
 
@@ -21,7 +22,7 @@ void lua_pushvalue(lua_State* l, const LuaValue& value) {
   else if(const QRectF* v = boost::get<QRectF>(&value))
     Wrapper<QRectF>::create(l, *v);
   else
-    ERROR("Unknown variant type!");
+    kError() << "Unknown variant type!";
 }
 
 void lua_pushvaluemap(lua_State* l, const LuaValueMap* valuemap) {

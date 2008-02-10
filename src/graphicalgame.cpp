@@ -8,8 +8,10 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include "graphicalgame.h"
+
+#include <KDebug>
+
 #include "game.h"
 #include "game_p.h"
 #include "mastersettings.h"
@@ -17,7 +19,6 @@
 #include "movelist_table.h"
 #include "decoratedmove.h"
 #include "entities/userentity.h"
-#include <iostream>
 
 using namespace GamePrivate; // is this ok?
 
@@ -91,7 +92,7 @@ void GraphicalGame::onAddedInternal(const Index& ix, bool confirm_promotion) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    ERROR("invalid index " << ix);
+    kError() << "invalid index " << ix;
     return;
   }
 

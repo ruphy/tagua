@@ -8,11 +8,10 @@
   (at your option) any later version.
 */
 
-#include <iostream>
+#include "icsconnection.h"
 #include <QRegExp>
 #include <QStringList>
-
-#include "icsconnection.h"
+#include <KDebug>
 #include "poolinfo.h"
 #include "positioninfo.h"
 #include "player.h"
@@ -198,7 +197,7 @@ void ICSConnection::process(QString str) {
           
           // no info on this game
           if (!incomingGameInfo) {
-            WARNING("unexpected style 12 for game " << gameNumber);
+            kWarning() << "unexpected style 12 for game" << gameNumber;
             incomingGameInfo = new GameInfo(Player(positionInfo.whitePlayer, 0),
                                           Player(positionInfo.blackPlayer, 0),
                                           "rated", "", 0, 0);
@@ -306,7 +305,7 @@ void ICSConnection::process(QString str) {
         else {
           std::map<int, ICSGameData>::const_iterator gi = m_games.find(m_move_list_game_num);
           if (gi == m_games.end()) {
-            ERROR("BUG: Received move list for unknown game  " << m_move_list_game_num);
+            kError() << "Received move list for unknown game  " << m_move_list_game_num;
           }
           else {
             VariantPtr variant = gi->second.variant;

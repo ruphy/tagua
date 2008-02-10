@@ -7,8 +7,6 @@
   the Free Software Foundation; either version 2 of the License, or
   (at your option) any later version.
 */
-
-#include <iostream>
 #include <QApplication>
 #include <QPainter>
 #include <QPaintEvent>
@@ -22,14 +20,15 @@
 #include <QScrollBar>
 #include <QTimer>
 #include <cmath>
-#include <iostream>
-#include <kstandarddirs.h>
-#include "mastersettings.h"
-#include "pref_theme.h"
+#include <KDebug>
+#include <KStandardDirs>
+
 #include "movelist_widget.h"
 #include "movelist_table.h"
 #include "movelist_notifier.h"
 #include "movelist_p.h"
+#include "mastersettings.h"
+#include "pref_theme.h"
 
 namespace MoveList {
 
@@ -607,7 +606,7 @@ void Widget::startEditing(const Index& i, int v) {
 
   EntryPtr e = fetch(i);
   if(!e) {
-    ERROR("Invalid index " << i);
+    kError() << "Invalid index " << i;
     return;
   }
 
@@ -1124,7 +1123,7 @@ void Widget::setComment(EntryPtr e, int v, const QString& comment) {
 void Widget::setComment(const Index& index, const QString& comment) {
   EntryPtr e = fetch(index);
   if(!e) {
-    ERROR("Invalid index " << index);
+    kError() << "Invalid index" << index;
     return;
   }
   setComment(e, -1, comment);
@@ -1133,7 +1132,7 @@ void Widget::setComment(const Index& index, const QString& comment) {
 void Widget::setVComment(const Index& index, int v, const QString& comment) {
   EntryPtr e = fetch(index);
   if(!e || !e->variations.count(v)) {
-    ERROR("Invalid index " << index);
+    kError() << "Invalid index" << index;
     return;
   }
   setComment(e, v, comment);
@@ -1175,7 +1174,7 @@ void Widget::setMove(const Index& index,
   int at;
   History *vec = fetchRef(index.prev(), &at);
   if(!vec) {
-    ERROR("Invalid index " << index);
+    kError() << "Invalid index" << index;
     return;
   }
 
@@ -1225,7 +1224,7 @@ void Widget::fixIndices(const Index& ix) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    ERROR("Invalid index " << ix);
+    kError() << "Invalid index" << ix;
     return;
   }
   Index index = ix;
@@ -1244,7 +1243,7 @@ void Widget::promoteVariation(const Index& ix, int v) {
   int at;
   History *vec = fetchRef(ix, &at);
   if(!vec) {
-    ERROR("Invalid index " << ix);
+    kError() << "Invalid index" << ix;
     return;
   }
 

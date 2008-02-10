@@ -9,9 +9,9 @@
 */
 
 
-#include "board.h"
 #include "piecepool.h"
-
+#include "board.h"
+#include <KDebug>
 
 PiecePool::PiecePool(int num, Board* b, const AnimationSettings& animSettings, KGameCanvasAbstract* parent)
 : ClickableCanvas(parent)
@@ -102,7 +102,7 @@ void PiecePool::insertSprite(int index, const NamedSprite& nsprite) {
     index--;
 
   if(index < 0 || index > fill() ) {
-    ERROR("invalid index " << index);
+    kError() << "invalid index" << index;
     return;
   }
 
@@ -128,7 +128,7 @@ NamedSprite PiecePool::getSprite(int index) {
     index--;
 
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index);
+    kError() << "invalid index" << index;
     return NamedSprite();
   }
 
@@ -147,7 +147,7 @@ void PiecePool::removeSprite(int index) {
     index--;
 
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index);
+    kError() << "invalid index" << index;
     return;
   }
 
@@ -164,14 +164,14 @@ NamedSprite PiecePool::takeSprite(int index) {
     return retv;
   }
 
-  ERROR("Only the sprite being dropped can be taken from the pool.");
+  kError() << "Only the sprite being dropped can be taken from the pool.";
   return NamedSprite();
 #if 0
   if(m_dragged && index > m_dragged_index)
     index--;
 
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index);
+    kError() << "invalid index" << index;
     return NamedSprite();
   }
 
@@ -182,7 +182,7 @@ NamedSprite PiecePool::takeSprite(int index) {
 
 NamedSprite PiecePool::takeSpriteAt(int index) {
   if(index < 0 || index >= (int)m_sprites.size() ) {
-    ERROR("invalid index " << index);
+    kError() << "invalid index" << index;
     return NamedSprite();
   }
 
@@ -270,7 +270,7 @@ void PiecePool::onMousePress(const QPoint& pos, int button) {
     return;
 
   if(m_dragged) {
-    ERROR("Eh? We are already dragging?");
+    kError() << "Eh? We are already dragging?";
     cancelDragging(); //never remove implicitly a piece from the pool
   }
 

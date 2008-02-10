@@ -9,6 +9,7 @@
 */
 
 #include "options.h"
+#include <KDebug>
 #include "luaapi/loader.h"
 
 namespace LuaApi {
@@ -269,7 +270,7 @@ int Wrapper<IntOptPtr>::constructor(lua_State* l) {
       visualization = IntOpt::Slider;
     }
     else if (vstring.compare("spinbox", Qt::CaseInsensitive) != 0) {
-      ERROR("No such visualization `" << vstring << "'. Using `spinbox' instead");
+      kError() << "No such visualization `" << vstring << "'. Using `spinbox' instead";
     }
   }
 

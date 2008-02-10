@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006-2007 Paolo Capriotti <p.capriotti@gmail.com>
+  Copyright (c) 2006-2008 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006-2007 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
@@ -9,6 +9,7 @@
 */
 
 #include "icsgamedata.h"
+#include <KDebug>
 #include "tagua.h"
 #include "gameinfo.h"
 #include "variants.h"
@@ -26,7 +27,7 @@ ICSGameData::ICSGameData(int index, const QString& type)
 void ICSGameData::setType(const QString& type) {
   variant = Variants::instance().get(GameInfo::variantCode(type));
   if (!variant) {
-    ERROR("BUG: No variant corresponding to " << type);
+    kError() << "No variant corresponding to " << type;
   }
   else if (!(icsapi = variant->icsAPI())) {
     // There's no ICSAPI in this variant.

@@ -11,7 +11,7 @@
 #include "mastersettings.h"
 
 #include <QTextStream>
-
+#include <KDebug>
 #include <KStandardDirs>
 
 #include "common.h"
@@ -22,7 +22,7 @@ QDomElement MasterSettings::node() const {
   if (m_node.isNull()) {
     QFile f(m_filename);
     if (!f.open(QFile::ReadOnly | QFile::Text) || !m_doc.setContent(&f)) {
-      WARNING("Unable to open configuration file for reading.");
+      kWarning() << "Unable to open configuration file for reading.";
 
 //       // create a stub configuration file
 //       {
@@ -97,10 +97,10 @@ void MasterSettings::onChange(QObject* obj, const char* method, const char* depe
           if (it2->dependency && strcmp(it2->dependency, this_class) == 0) {
             // something which is notified before has us a dependency
             // this means that there is a cyclic dependency it2 -> us -> it.
-            WARNING("Removing a cyclic dependency: " <<
-              it2->object->metaObject()->className() << " -> " <<
-              this_class << " -> " <<
-              observer_class);
+            kWarning() << "Removing a cyclic dependency:" <<
+              it2->object->metaObject()->className() << "->" <<
+              this_class << "->" <<
+              observer_class;
               
             // remove the cycle
             it2->dependency = 0;
@@ -121,7 +121,7 @@ void MasterSettings::sync() {
   // store to file
   QFile f(m_filename);
   if (!f.open(QFile::WriteOnly | QFile::Text))
-    ERROR("Cannot open configuration file for writing");
+    kError() << "Cannot open configuration file for writing";
   else {
     QTextStream stream(&f);
     stream << node().ownerDocument().toString();

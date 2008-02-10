@@ -52,10 +52,5 @@ inline void TRAP() {
   #define M_PI 3.1415926
 #endif
 
-#define DEBUG_MSG(header, msg) (std::cerr << header << msg << "\n" \
-      << "  in " << __PRETTY_FUNCTION__ << ", line " << __LINE__ << " of " << __FILE__ << std::endl)
-#define ERROR(x) DEBUG_MSG("Error: ", x)
-#define WARNING(x) DEBUG_MSG("Warning: ", x)
-
 #endif // COMMON_H
 

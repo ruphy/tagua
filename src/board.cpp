@@ -13,6 +13,7 @@
 #include <QPainter>
 #include <QApplication>
 #include <QMouseEvent>
+#include <KDebug>
 
 #include "mastersettings.h"
 #include "board.h"
@@ -111,7 +112,7 @@ void Board::updateBackground() {
     }
   }
   else
-    ERROR("Board::updateBackground(): unexpected type in boost::variant!");
+    kError() << "Board::updateBackground(): unexpected type in boost::variant!";
 }
 
 void Board::enqueue(const shared_ptr<Animation>& anim) {
@@ -257,7 +258,7 @@ void Board::updateBorder() {
     }
   }
   else
-    ERROR("Board::updateBorder(): unexpected type in boost::variant!");
+    kError() << "Board::updateBorder(): unexpected type in boost::variant!";
 }
 
 void Board::createGrid(Point p, const QStringList& border_coords) {

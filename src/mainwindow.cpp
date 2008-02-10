@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006-2007 Paolo Capriotti <p.capriotti@gmail.com>
+  Copyright (c) 2006-2008 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006-2007 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
@@ -19,14 +19,15 @@
 #include <QTextCodec>
 
 #include <KAction>
-#include <KStandardAction>
 #include <KActionCollection>
+#include <KDebug>
+#include <KFileDialog>
 #include <KIcon>
 #include <KLocale>
-#include <KFileDialog>
 #include <kio/netaccess.h>
 #include <KMessageBox>
 #include <KMenuBar>
+#include <KStandardAction>
 #include <KTemporaryFile>
 
 #include "actioncollection.h"
@@ -204,7 +205,7 @@ void MainWindow::updateVariantActions(bool unplug) {
     plugActionList("variantActions", variant_actions->actions());
   }
   else {
-    WARNING("No variant actions");
+    kWarning() << "No variant actions";
   }
 }
 
@@ -307,7 +308,7 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
                          bool newTab) {
   VariantPtr variant = Variants::instance().get(variantName);
   if (!variant) {
-    WARNING("no variant " << variantName << " found");
+    kWarning() << "no variant" << variantName << "found";
     variant = Variants::instance().get("chess");
   }
   
@@ -330,7 +331,7 @@ bool MainWindow::newGame(const QString& variantName, AbstractPosition::Ptr start
     return true;
   }
   else {
-    ERROR("Could not find the chess variant");
+    kError() << "Could not find the chess variant";
     exit(1);
     return false;
   }

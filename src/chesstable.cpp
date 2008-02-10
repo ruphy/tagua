@@ -8,10 +8,10 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include <QLayout>
 #include <QSplitter>
 #include <QMouseEvent>
+#include <KDebug>
 #include "chesstable.h"
 #include "game.h"
 #include "gameinfo.h"
@@ -153,7 +153,7 @@ void ChessTable::layout(bool force_reload) {
   if(double* val = (it==lvals.end()) ? 0 : boost::get<double>(&lvals[#name]) )  \
     name = (int)*val;                                    \
   else                                                   \
-    ERROR("Hey Jack, please set "<<#name<<" to a number in the layout!");}
+    kError() << "Theme error:" << #name << "should be set to a number in the layout";}
 
 #define GET_POINT(name)                                  \
   QPoint name;                                           \
@@ -161,7 +161,7 @@ void ChessTable::layout(bool force_reload) {
   if(QPointF* val = (it==lvals.end()) ? 0 : boost::get<QPointF>(&lvals[#name]) )  \
     name = val->toPoint();                               \
   else                                                   \
-    ERROR("Hey Jack, please set "<<#name<<" to a point in the layout!");}
+    kError() << "Theme error:" << #name << "should be set to a point in the layout";}
 
   GET_POINT(board_position);
   GET_INT(square_size);

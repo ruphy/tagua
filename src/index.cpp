@@ -9,8 +9,8 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include <QStringList>
+#include <KDebug>
 #include "index.h"
 
 Index::operator QString() const {
@@ -124,8 +124,7 @@ Index Index::prev(int _num) const {
   while(num) {
     if(retv.nested.size() == 0) {
       if(retv.num_moves < num) {
-        ERROR("Cannot rewind index " << *this <<
-                              " by " << _num << "!");
+        kError() << "Cannot rewind index" << *this << "by" << _num;
         return Index(-1);
       }
       retv.num_moves -= num;

@@ -8,12 +8,12 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <KDebug>
 #include "settings.h"
 #include "common.h"
 #include "option.h"
@@ -148,7 +148,7 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
       layout->addWidget(ow, lpos++, right);
     }
     else
-      ERROR("Unknown option of type " << prettyTypeName(typeid(*_o).name()));
+      kError() << "Unknown option of type" << prettyTypeName(typeid(*_o).name());
   }
 
   if(indent)
@@ -239,11 +239,11 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
       ow->setFont(o->value());
     }
     else
-      ERROR("Unknown option of type " << prettyTypeName(typeid(*_o).name()));
+      kError() << "Unknown option of type" << prettyTypeName(typeid(*_o).name());
   }
   return;
 fail:
-  ERROR("Options/Widget mismatch!");
+  kError() << "Options/Widget mismatch!";
 }
 
 void dump_options_list(const OptList& options, int indent) {
@@ -373,7 +373,7 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
       o->setSelected( newval );
     }
     else
-      ERROR("option of type " << prettyTypeName(typeid(*_o).name()) );
+      kError() << "option of type" << prettyTypeName(typeid(*_o).name()) ;
   }
   return retv;
 }
@@ -421,6 +421,6 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
       sel_group["value"] = o->value();
     }
     else
-      ERROR("option of type " << prettyTypeName(typeid(*_o).name()) );
+      kError() << "option of type" << prettyTypeName(typeid(*_o).name()) ;
   }
 }

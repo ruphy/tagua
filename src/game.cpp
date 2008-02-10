@@ -8,8 +8,8 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include <map>
+#include <KDebug>
 #ifdef Q_CC_MSVC
   #pragma warning( push )
   #pragma warning( disable : 4100 )
@@ -108,7 +108,7 @@ void Game::testMove(const Index& ix) {
       return;
 
     if (!e1->position->testMove(e2->move))
-      ERROR("invalid move added to game history!");
+      kError() << "invalid move added to game history";
   }
 }
 
@@ -150,7 +150,7 @@ MovePtr Game::move() const {
 MovePtr Game::move(const Index& index) const {
   Entry *e = (Entry*)fetch(index);
   if(!e) {
-    ERROR("Index out of range!");
+    kError() << "Index out of range";
     return MovePtr();
   }
   return e->move;
@@ -163,7 +163,7 @@ PositionPtr Game::position() const {
 PositionPtr Game::position(const Index& index) const {
   Entry *e = (Entry*)fetch(index);
   if(!e) {
-    ERROR("Index " << index << " out of range!");
+    kError() << "Index" << index << "out of range";
     return PositionPtr();
   }
   return e->position;
@@ -176,7 +176,7 @@ QString Game::comment() const {
 QString Game::comment(const Index& index) const {
   const Entry *e = fetch(index);
   if(!e) {
-    ERROR("Index out of range!");
+    kError() << "Index out of range";
     return QString();
   }
   return e->comment;
@@ -195,7 +195,7 @@ void Game::reset(PositionPtr pos) {
 
 void Game::undo() {
   if(undo_pos <= 0) {
-    ERROR("Cannot undo at the beginning of the undo history!");
+    kError() << "Nothing to undo";
     return;
   }
 
@@ -317,7 +317,7 @@ void Game::undo() {
     }
   }
   else
-    ERROR("Game::undo(): unexpected type in boost::variant!");
+    kError() << "Unexpected type in boost::variant";
 
   if(last_undo)
     onAvailableUndo(false);
@@ -327,7 +327,7 @@ void Game::undo() {
 
 void Game::redo() {
   if(undo_pos >= (int)undo_history.size()) {
-    ERROR("Cannot redo at the end of the undo history!");
+    kError() << "Nothing to redo";
     return;
   }
 
@@ -442,7 +442,7 @@ void Game::redo() {
     }
   }
   else
-    ERROR("Game::redo(): unexpected type in boost::variant!");
+    kError() << "Unexpected type in boost::variant";
 
   if(now_undo)
     onAvailableUndo(true);
@@ -457,7 +457,7 @@ void Game::setComment(const QString& c) {
 void Game::setComment(const Index& ix, const QString& c) {
   Entry* e = fetch(ix);
   if(!e) {
-    ERROR("Invalid index!");
+    kError() << "Invalid index";
     return;
   }
   if(e->comment == c)
@@ -471,7 +471,7 @@ void Game::setComment(const Index& ix, const QString& c) {
 void Game::setVComment(const Index& ix, int v, const QString& c) {
   Entry* e = fetch(ix);
   if(!e) {
-    ERROR("Invalid index!");
+    kError() << "Invalid index";
     return;
   }
   QString oc = e->vcomments.count(v) ? e->vcomments[v] : QString();
@@ -492,7 +492,7 @@ void Game::promoteVariation() {
 
 void Game::promoteVariation(const Index& _ix) {
   if(_ix.nested.size()==0) {
-    ERROR("Cannot promote main line!");
+    kError() << "Cannot promote main line";
     return;
   }
   Index ix = _ix;
@@ -530,7 +530,7 @@ void Game::removeVariation(int v) {
 
 void Game::removeVariation(const Index& _ix) {
   if(_ix.nested.size()==0) {
-    ERROR("Cannot remove main line!");
+    kError() << "Cannot remove main line";
     return;
   }
   Index ix = _ix;
@@ -583,7 +583,7 @@ void Game::truncate(const Index& ix) {
   int at;
   History* vec = fetchRef(ix, &at);
   if(!vec) {
-    ERROR("Truncating at an unexisting index!");
+    kError() << "Truncating at an unexisting index";
     return;
   }
 
@@ -676,7 +676,7 @@ bool Game::insert(MovePtr m, PositionPtr pos, const Index& at) {
       return true;
     }
     else {
-      ERROR("Index out if range!");
+      kError() << "Index out if range";
       return false;
     }
   }
@@ -811,7 +811,7 @@ void Game::load(const PGN& pgn) {
     vi = Variants::instance().get("chess");
   }
   else if (!(vi = Variants::instance().get(var->second))) {
-    ERROR("No such variant " << var->second);
+    kError() << "No such variant" << var->second;
     return;
   }
 
@@ -824,7 +824,7 @@ void Game::load(const PGN& pgn) {
   //}
 #if 0 // BROKEN
   else if( !(pos = vi->createPositionFromFEN(fen->second))) {
-    ERROR("Wrong fen " << fen->second);
+    kError() << "Wrong fen " << fen->second;
     return;
   }
 #endif
@@ -887,7 +887,7 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
     }
     else if(boost::get<PGN::EndVariation>(pgn[i])) {
       if(var_stack.size() == 0) {
-        ERROR("Unexpected end variation!");
+        kError() << "Unexpected end variation";
         break;
       }
       current = var_stack.back();
@@ -901,15 +901,15 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
         if(!pm->m_number) // not all moves get numbered in PGN, usually only 1st player ones
           current = current.prev();
         else if(pm->m_number>n+1)
-          ERROR("Too far variation!");
+          kError() << "Too far variation";
         else {
           if(pm->m_number<n)
-            ERROR("Too near variation!");
+            kError() << "Too close variation";
           current = current.prev(n + 1 - pm->m_number);
         }
       }
       else if(pm->m_number && pm->m_number!=n+1)
-        ERROR("Move number mismatch!");
+        kError() << "Move number mismatch";
 
       PositionPtr pos = position();
       MovePtr m = pos->getMove(pm->m_move);
@@ -951,7 +951,7 @@ void Game::load(PositionPtr pos, const PGN& pgn) {
       var_start = false;
     }
     else
-      ERROR("Game::load: unexpected type in boost::variant!");
+      kError() << "Unexpected type in boost::variant";
   }
 
   if(history.size()>1)

@@ -12,6 +12,7 @@
 #include <QFileInfo>
 #include <QStringList>
 #include <QListWidgetItem>
+#include <KDebug>
 #include <KStandardDirs>
 
 #include "foreach.h"
@@ -52,7 +53,7 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
       all_themes << theme_info;
 
       if (theme_info.name.isEmpty()) {
-        ERROR("No name property in " << files[i]);
+        kError() << "No name property in" << files[i];
       }
     }
   }
@@ -88,7 +89,7 @@ OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
   lua_context.runFile(f);
 
   if(lua_context.error()) {
-    ERROR(lua_context.errorString());
+    kError() << lua_context.errorString();
     lua_context.clearError();
 
     m_new_theme_options[f] = OptList();
@@ -97,7 +98,7 @@ OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
 
   OptList o = lua_context.getValue<OptList>("options", 0, NULL, true);
   if(lua_context.error()) {
-    ERROR(lua_context.errorString());
+    kError() << lua_context.errorString();
     lua_context.clearError();
   }
 

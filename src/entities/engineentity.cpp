@@ -9,10 +9,10 @@
 */
 
 #include "engineentity.h"
+#include <KDebug>
 #include "game.h"
 #include "engine.h"
 
-#include <iostream>
 #include <stack>
 
 using namespace boost;
@@ -74,7 +74,7 @@ void EngineEntity::notifyEngineMove(const QString& move_str) {
     m_dispatcher.move(m_game->index());
   }
   else
-    ERROR("Engine attempted to execute an invalid move: " << move_str);
+    kError() << "Engine attempted to execute an invalid move:" << move_str;
 }
 
 void EngineEntity::checkPlaying() {
@@ -97,7 +97,7 @@ void EngineEntity::notifyMove(const Index& index) {
   }
   else {
     // TODO: handle move notification in arbitrary indexes
-    WARNING("engine entity can't handle index " << index << " (m_last_index = " << m_last_index << ")");
+    kWarning() << "engine entity can't handle index" << index << "(m_last_index =" << m_last_index << ")";
   }
 }
 

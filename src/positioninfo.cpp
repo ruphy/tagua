@@ -9,6 +9,7 @@
 */
 
 #include "positioninfo.h"
+#include <KDebug>
 #include "variants.h"
 #include "gameinfo.h"
 #include "icsapi.h"
@@ -88,7 +89,7 @@ bool PositionInfo::load(std::map<int, ICSGameData>& games, const QString& str) {
   ICSAPIPtr icsapi;
   
   if (gi == games.end()) {
-    WARNING("Received style12 for unknown game  " << gn);
+    kWarning() << "Received style12 for unknown game" << gn;
     // create a gameinfo of type "dummy"
     gi = games.insert(std::make_pair(gn, ICSGameData(gn, ""))).first;
     new_game = true;

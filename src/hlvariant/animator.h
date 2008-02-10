@@ -12,6 +12,7 @@
 #define HLVARIANT__ANIMATOR_H
 
 #include "animation.h"
+#include <KDebug>
 #include "fwd.h"
 #include "variantdata.h"
 #include "namedsprite.h"
@@ -149,7 +150,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
   if (piece)
     res.addPreAnimation(*movement(piece, move.from(), move.to()));
   else
-    ERROR("Bug!!!");
+    kError() << "Scheduling movement animation for a null piece";
 
   if (captured)
     res.addPostAnimation(Animate::destroy(captured));
@@ -165,7 +166,7 @@ AnimationGroupPtr SimpleAnimator<Variant>::forward(const GameState& final, const
       res.addPostAnimation(Animate::morph(old_sprite, new_sprite));
     }
     else
-      ERROR("Bug!!!");
+      kError() << "Scheduling morph animation for a null piece";
   }
   else if (move.kingSideCastling()) {
     Point rookSquare = move.to() + Point(1,0);
