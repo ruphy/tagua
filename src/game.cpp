@@ -361,6 +361,8 @@ void Game::redo() {
     }
 
     onAdded(a->index);
+    current = a->index;
+    onCurrentIndexChanged();
   }
   else if(boost::get<UndoPromote>(op)) {
     UndoPromote *p = boost::get<UndoPromote>(op);
