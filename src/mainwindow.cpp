@@ -402,25 +402,15 @@ void MainWindow::setupPGN(const QString& s) {
   PGN pgn(s);
 
   std::map<QString, QString>::const_iterator var = pgn.m_tags.find("Variant");
-  VariantPtr variant;
+  QString variant;
 
-  if (var == pgn.m_tags.end()) {
-    variant = Variants::instance().get("chess");
-  }
-  else if (!(variant = Variants::instance().get(var->second))) {
-    kDebug() << " --> MainWindow::setupPGN: Error, no such variant " << var->second;
-    return;
-  }
-
-  shared_ptr<EditGameController> controller(new EditGameController(
-                                              table(), variant));
-  ui().setController(controller);
-  controller->loadPGN(pgn);
-
-//   table()->setPlayers(gameInfo->white(), gameInfo->black());
-//   m_main->setTabText(m_main->currentIndex(),
-//     QString("FICS Game - %1 vs %2").arg(style12.whitePlayer)
-//                                     .arg(style12.blackPlayer));
+  if (var == pgn.m_tags.end())
+    variant = "chess";
+  else
+    variant = var->second;
+  
+  newGame(variant, PositionPtr(), false);
+  ui().pgnPaste(pgn);
 }
 
 bool MainWindow::openFile(const QString& filename) {

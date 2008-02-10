@@ -24,6 +24,7 @@ class Engine;
 class ActionCollection;
 class KActionCollection;
 class ActionStateObserver;
+class PGN;
 
 /**
   * @brief Utility class to handle GUI actions.
@@ -110,6 +111,7 @@ public Q_SLOTS:
   void pgnCopy();
   void pgnPaste();
   void pgnPaste(const QString&);
+  void pgnPaste(const PGN& pgn);
   QString currentPGN();
   
   // editing

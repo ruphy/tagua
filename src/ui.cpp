@@ -141,6 +141,10 @@ void UI::pgnPaste(const QString&) {
   //controller()->loadPGN(pgn);
 }
 
+void UI::pgnPaste(const PGN& pgn) {
+  controller()->loadPGN(pgn);
+}
+
 void UI::clearBoard() {
   controller()->clearBoard();
 }
