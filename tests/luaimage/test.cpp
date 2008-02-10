@@ -57,7 +57,7 @@ void mkWidget(QImage img)
 int main(int argc, char *argv[])
 {
   QApplication app(argc, argv);
-  //std::cout << "Va a cagare " << QDir::cleanPath("pqr/abc/../xyz") << std::endl;
+  //kDebug()()() << "Va a cagare " << QDir::cleanPath("pqr/abc/../xyz") << std::endl;
 
 #if 0
   LoadingContext* x = new LoadingContext;

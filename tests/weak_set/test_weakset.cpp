@@ -24,7 +24,7 @@ void test_insertion() {
 
 void test_garbage_collection() {
   #ifdef WEAK_SET_DEBUG
-    cout << "\n\ntesting garbage collection\n\n" << endl;
+    kDebug()() << "\n\ntesting garbage collection\n\n" << endl;
   #endif // WEAK_SET_DEBUG
   
   weak_set<int> s;

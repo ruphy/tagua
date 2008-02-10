@@ -173,7 +173,7 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
       return true;
     }
     else {
-      //std::cerr << "CANNOT MOVE: piece type cannot go there" << std::endl;
+      //std::cerr << "CANNOT MOVE: piece type cannot go there";
       return false;
     }
   }
@@ -188,7 +188,7 @@ template <typename GameState>
       Piece piece = state.board().get(p);
       LegalityCheck<GameState> check(state);
       if (piece.color() == state.turn() && check.getMoveType(piece, Move(p, point))) {
-	std::cerr << state.board().get(point).name() << " can be captured" << std::endl;
+	std::cerr << state.board().get(point).name() << " can be captured";
         return true;
       }
     }

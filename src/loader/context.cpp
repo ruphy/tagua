@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@gmail.com>
+  Copyright (c) 2006-2008 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
             
   This program is free software; you can redistribute it and/or modify
@@ -8,9 +8,8 @@
   (at your option) any later version.
 */
 
-#include <iostream>
-#include <iomanip>
 #include "common.h"
+#include <KDebug>
 #include "loader/context.h"
 
 namespace Loader {
@@ -37,15 +36,6 @@ void Context::flush() {
 Context::~Context() {
   flush();
   Q_ASSERT(m_references.empty());
-}
-
-void Context::dump() {
-    for(Cache::iterator c = s_cache.begin(); c != s_cache.end(); ++c)
-      std::cout << "*"<< std::setiosflags(std::ios::left)
-                << std::setw(2) << c->second.m_ref_count
-                << std::setiosflags(std::ios::left)
-                << std::setw(50) << prettyTypeName(c->first.m_type)
-              << " \"" << c->first.m_name << "\"" << std::endl;
 }
 
 } //end namespace Loader

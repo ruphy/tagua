@@ -24,7 +24,7 @@
 
 
 PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files, const Settings& s) {
-  //std::cout << "about to examine " << files.size() << " desktop files" << std::endl;
+  //kDebug() << "about to examine " << files.size() << " desktop files";
   std::map<QString, ThemeInfo> cached_info;
 
   SettingArray themes = s.group("themes").array("theme");
@@ -76,7 +76,7 @@ PrefTheme::ThemeInfoList PrefTheme::to_theme_info_list(const QStringList& files,
 
 
 OptList PrefTheme::get_file_options(const QString& f, bool reload_defaults) {
-  //std::cout << "get file options for " << f << std::endl;
+  //kDebug() << "get file options for " << f;
 
   if(!reload_defaults) {
     std::map<QString, OptList>::iterator it = m_new_theme_options.find(f);
@@ -163,7 +163,7 @@ PrefTheme::PrefTheme(const QString& currentVariant, QWidget *parent)
       cached_theme_info.group(cit->first)
     );
 
-    //std::cout << "loaded " << c->m_themes.size() << " themes" << std::endl;
+    //kDebug() << "loaded " << c->m_themes.size() << " themes";
   }
 
   QStringList all = Variants::instance().all();

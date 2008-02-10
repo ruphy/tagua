@@ -13,7 +13,6 @@
 #include "movelist_p.h"
 #include "pref_movelist.h"
 
-
 PrefMoveList::PrefMoveList(const QString&, QWidget *parent)
 : QWidget(parent) {
 

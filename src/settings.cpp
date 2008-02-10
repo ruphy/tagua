@@ -103,8 +103,8 @@ void Settings::ensureExistence(QDomElement& node, QDomElement parent, const QStr
 }
 
 bool Settings::flag(const QString& attr, bool def) const {
-  //std::cout << "get flag " << node().isNull() << " " << attr << " = "
-    //<< node().attribute(attr, def ? "true" : "false") << std::endl;
+  //kDebug() << "get flag " << node().isNull() << " " << attr << " = "
+    //<< node().attribute(attr, def ? "true" : "false");
   return node().attribute(attr, def ? "true" : "false") == "true";
 }
 

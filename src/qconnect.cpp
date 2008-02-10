@@ -34,7 +34,7 @@ QConnect::QConnect(QWidget *parent, const char *name)
   connect(buttonTimesealPath, SIGNAL(clicked()), this, SLOT(setTimesealPath()));
   chkTimesealCmd->setToolTip(timeseal_cmd_tool_tip);
   editTimesealCmd->setToolTip(timeseal_cmd_tool_tip);
-  //std::cout << "initializing dialog" << std::endl;
+  //kDebug() << "initializing dialog";
 
   Settings s_ics = settings().group("ics");
   if (s_ics["username"])

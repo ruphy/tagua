@@ -160,10 +160,10 @@ class EditPositionEntity : public UserEntity {
     }
 
     void operator()(const WarpAction& action) {
-      std::cout << "undo warp from:" << std::endl;
-      std::cout << action.m_from->fen(0, 0) << std::endl;
-      std::cout << "to" << std::endl;
-      std::cout << action.m_to->fen(0, 0) << std::endl;
+      kDebug() << "undo warp from:";
+      kDebug() << action.m_from->fen(0, 0);
+      kDebug() << "to";
+      kDebug() << action.m_to->fen(0, 0);
       m_data.m_graphical->warp(AbstractMove::Ptr(), action.m_from);
     }
   };
@@ -319,9 +319,9 @@ bool EditPositionController::clearBoard() {
 bool EditPositionController::setStartingPosition() {
   AbstractPosition::Ptr startingPosition = m_variant->createPosition();
   startingPosition->setup();
-  std::cout << "adding warp to undo history:" << std::endl;
-  std::cout << m_graphical->position()->fen(0, 0) << std::endl;
-  std::cout << startingPosition->fen(0, 0) << std::endl;
+  kDebug() << "adding warp to undo history:";
+  kDebug() << m_graphical->position()->fen(0, 0);
+  kDebug() << startingPosition->fen(0, 0);
   m_undo_history.add(WarpAction(m_graphical->position()->clone(), startingPosition));
   m_graphical->warp(AbstractMove::Ptr(), startingPosition);
   return true;
@@ -334,13 +334,13 @@ QString EditPositionController::fen() {
 bool EditPositionController::setFEN(const QString& fen) {
   AbstractPosition::Ptr pos = m_variant->createPositionFromFEN(fen);
   if (pos) {
-    std::cout << "warping to fen " << fen << std::endl;
+    kDebug() << "warping to fen " << fen;
     m_undo_history.add(WarpAction(m_graphical->position()->clone(), pos));
     m_graphical->warp(AbstractMove::Ptr(), pos);
     return true;
   }
   else {
-    std::cout << "invalid fen" << std::endl;
+    kDebug() << "invalid fen";
     return false;
   }
 }

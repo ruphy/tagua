@@ -10,6 +10,7 @@
 
 #include <QImage>
 #include <QPainter>
+#include <KDebug>
 #include <iostream>
 #include <cmath>
 #include <boost/random/uniform_smallint.hpp>
@@ -64,7 +65,7 @@ Sprite* Sprite::duplicate() const {
 }
 
 void Sprite::setThumb(const QImage& thumb) {
-  std::cout << "setting thumb" << std::endl;
+  kDebug() << "setting thumb";
   QPixmap pix = m_pixmap;
   int width = pix.width() / 2;
   int height = pix.height() / 2;

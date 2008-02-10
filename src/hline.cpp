@@ -9,18 +9,16 @@
 */
 
 #include "hline.h"
-
-#include "common.h"
-#include <iostream>
+#include <KDebug>
 
 class TrivialExecutor : public HLineExecutor {
 public:
   virtual ~TrivialExecutor() {
-    std::cout << std::endl;
+    kDebug();
   }
 
   virtual void writeChunk(const QString& text) {
-    std::cout << text << "|";
+    kDebug() << text << "|";
   }
 
   virtual void setFormat(const QTextCharFormat&) { }

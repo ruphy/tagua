@@ -8,10 +8,9 @@
   (at your option) any later version.
 */
 
-#include <iostream>
-#include <QRegExp>
 #include "pgnparser.h"
-#include "common.h"
+#include <QRegExp>
+#include <KDebug>
 
 QRegExp PGN::number("^(\\d+)(?:(?:\\.\\s+)?(\\.\\.\\.)|\\.?)?");
 QRegExp PGN::begin_var("^\\(");
@@ -102,7 +101,7 @@ bool PGN::parse(const QString& pgn) {
     }
 
     // parse error!
-    std::cout << "pgn parse error! at" << pgn.mid(offset, 100) << std::endl;
+    kDebug() << "pgn parse error! at" << pgn.mid(offset, 100);
     return false;
   }
 

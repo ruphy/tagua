@@ -356,7 +356,7 @@ bool Board::doMove(const NormalUserMove& m) {
     }
   }
 
-  std::cout << "invalid move" << std::endl;
+  kDebug() << "invalid move";
   error(InvalidMove);
 
   return false;
@@ -727,7 +727,7 @@ bool Board::dropOn(int pool, int index, const QPoint& point) {
       break;
   }
 
-  std::cout << "invalid move" << std::endl;
+  kDebug() << "invalid move";
   error(InvalidMove);
   return false;
 }

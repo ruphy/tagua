@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
   ja.runFile("test.lua");
   OptList opts2 = ja.getOptList("options");
   if(ja.error())
-    std::cout << ja.errorString() << std::endl;
+    kDebug()()() << ja.errorString() << std::endl;
   else {
     /*sets.qSettings()->beginGroup("o2");
     options_list_load_from_settings(opts2, sets);

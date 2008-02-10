@@ -38,7 +38,7 @@ void EngineEntity::setup() {
   Index index = m_game->index();
   while (index != 0) {
     m_indexes.push(index);
-    std::cout << "pushed index " << index << std::endl;
+    kDebug() << "pushed index " << index;
     index = index.prev();
   }
   
@@ -46,14 +46,14 @@ void EngineEntity::setup() {
   // in the current variation
   while (!m_indexes.empty()) {
     PositionPtr pos = m_game->position(index);
-    std::cout <<  "REF:" << std::endl;
+    kDebug() <<  "REF:";
     pos->dump();
     
     index = m_indexes.top();
     m_indexes.pop();
     
     MovePtr move = m_game->move(index);
-    std::cout << "move = " << move->toString("simple", pos) << std::endl;
+    kDebug() << "move = " << move->toString("simple", pos);
     
     m_engine->sendMove(move, pos);
   }

@@ -43,12 +43,12 @@ Textual::Textual(QWidget *parent)
   setPluginsEnabled(false);
 
   QString fpath = KStandardDirs::locate("appdata", "scripts/movelist_textual.html");
-  //std::cout << "HTML file is:"<< fpath <<std::endl;
+  //kDebug() << "HTML file is:"<< fpath;
   QFile file(fpath);
   file.open(QIODevice::ReadOnly);
   QTextStream stream(&file);
   QString html = stream.readAll();
-  //std::cout << "Using HTML:"<< std::endl<<html<<std::endl;
+  //kDebug() << "Using HTML:"<<html;
 
   begin();
   write(html);
@@ -80,12 +80,12 @@ static void clear_from(DOM::Node n) {
 void Textual::onURL(const KUrl &url) {
   QString u = url.url();
   if(!u.startsWith("index://")) {
-    std::cout << " --> Error in Textual::onURL, what should i do with url \""<< u <<"\"?" << std::endl;
+    kDebug() << " --> Error in Textual::onURL, what should i do with url \""<< u <<"\"?";
     return;
   }
   QString p = u.mid(8);
   Index ix = Index::fromString(p);
-  std::cout << "Open Link \"" << p << "\" = \"" << ix << "\"" << std::endl;
+  kDebug() << "Open Link \"" << p << "\" = \"" << ix << "\"";
   m_notifier->onUserSelectMove(ix);
 }
 
@@ -93,7 +93,7 @@ void Textual::setComment(const Index& index, const QString& comment) {
   DOM::HTMLDocument document = htmlDocument();
   DOM::Element this_cm = document.getElementById("cm_"+index);
   if(this_cm.isNull()) {
-    std::cout << " --> Error in Textual::setComment, invalid index!" << std::endl;
+    kDebug() << " --> Error in Textual::setComment, invalid index!";
     return;
   }
 
@@ -108,7 +108,7 @@ void Textual::setVComment(const Index& index, int v, const QString& comment) {
   DOM::HTMLDocument document = htmlDocument();
   DOM::Element this_cm = document.getElementById("vk_"+index.next(v));
   if(this_cm.isNull()) {
-    std::cout << " --> Error in Textual::setVComment, invalid index!" << std::endl;
+    kDebug() << " --> Error in Textual::setVComment, invalid index!";
     return;
   }
 
@@ -178,7 +178,7 @@ void Textual::setMove(const Index& index, int turn, const QString& move,
 
 void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
                                                           const QString& comment) {
-  //std::cout << "i= " << index << std::endl;
+  //kDebug() << "i= " << index;
   DOM::HTMLDocument document = htmlDocument();
   QString istr = (QString)index;
 
@@ -207,7 +207,7 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
     prev_cm = document.getElementById("cm_"+index.prev());
     prev_mv = document.getElementById("mv_"+index.prev());
     if(prev_cm.isNull() || prev_mv.isNull()) {
-      std::cout << " --> Error in Textual::setMove, no previous move!" << std::endl;
+      kDebug() << " --> Error in Textual::setMove, no previous move!";
       return;
     }
   }
@@ -229,7 +229,7 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
   if(!index.nested.size()) {
     parent = document.body();
     if(parent.isNull()) {
-      std::cout << "QUEEEEEEEEE!!!!!!!" << std::endl;
+      kDebug() << "QUEEEEEEEEE!!!!!!!";
       return;
     }
   }
@@ -291,7 +291,7 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
     Index pi = index.prev(index.nested.back().num_moves);
     parent = document.getElementById("vr_"+pi);
     if(parent.isNull()) {
-      std::cout << " --> Error in Textual::setMove, no variation?!?!?" << std::endl;
+      kDebug() << " --> Error in Textual::setMove, no variation?!?!?";
       return;
     }
   }
@@ -329,11 +329,11 @@ void Textual::setMove(const Index& index, int turn, const DecoratedMove& move,
       ::Loader::Glyph g = m_loader.getValue< ::Loader::Glyph>(move[i].m_string);
       DOM::Element el = document.createElement("span");
 #if 1
-      std::cout << "size = " << QString("%1%").arg(g.m_font.pointSize()*100/12) << std::endl;
+      kDebug() << "size = " << QString("%1%").arg(g.m_font.pointSize()*100/12);
       el.style().setProperty("font-size", QString("%1%").arg(g.m_font.pointSize()*100/12), "important");
       el.style().setProperty("line-height", QString("%1%").arg(g.m_font.pointSize()*100/12), "important");
 #endif
-      std::cout << "familiy = " << g.m_font.family() << std::endl;
+      kDebug() << "familiy = " << g.m_font.family();
       el.style().setProperty("font-weight", "normal", "important");
       el.style().setProperty("font-family", g.m_font.family(), "important");
       DOM::Text t = document.createTextNode(QString(g.m_char));

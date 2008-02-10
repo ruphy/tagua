@@ -12,8 +12,7 @@
 
 #include <QFileInfo>
 #include <QRegExp>
-#include <iostream>
-
+#include <KDebug>
 #include "enginenotifier.h"
 #include "foreach.h"
 
@@ -48,7 +47,7 @@ GNUShogiEngine::GNUShogiEngine(const QString& path, const QStringList& arguments
 }
 
 GNUShogiEngine::~GNUShogiEngine() {
-  std::cout << "[debug] destroying engine" << std::endl;
+  kDebug() << "[debug] destroying engine";
   stop();
   m_engine.kill();
 }

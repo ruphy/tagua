@@ -1,5 +1,5 @@
 /*
-  Copyright (c) 2006 Paolo Capriotti <p.capriotti@gmail.com>
+  Copyright (c) 2006-2008 Paolo Capriotti <p.capriotti@gmail.com>
             (c) 2006 Maurizio Monge <maurizio.monge@kdemail.net>
 
   This program is free software; you can redistribute it and/or modify
@@ -106,11 +106,6 @@ public:
     s_cache[key] = Resource(data);
     m_references.insert(key);
   }
-
-  /**
-    * For debugging
-    */
-  static void dump();
 };
 
 } //end namespace Loader

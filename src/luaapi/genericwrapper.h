@@ -17,8 +17,8 @@ extern "C" {
 #include <lauxlib.h>
 #include "lfunclib.h"
 }
-#include <iostream>
 #include <QString>
+#include <KDebug>
 #include "common.h"
 
 namespace Loader { class Context; }
@@ -129,9 +129,9 @@ public:
 
   ~StackCheck() {
     if (lua_gettop(l) != top) {
-      std::cout << "Wrong lua stack size!\n"
+      kDebug() << "Wrong lua stack size!\n"
                    "    expected = " << top << "\n"
-                   "    actual = " << lua_gettop(l) << std::endl;
+                   "    actual = " << lua_gettop(l);
     }
   }
 };

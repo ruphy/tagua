@@ -212,17 +212,17 @@ void Api::runFile(const char* file) {
     if(luaL_loadfile(m_state, file) == 0)
       pcall(0, LUA_MULTRET);
     else {
-      std::cout << "LOADFILE FOR " << wrap_cptr(file) << " FAILED" << std::endl;
-      std::cout << wrap_cptr(lua_tostring(m_state, -1)) << std::endl;
+      kDebug() << "LOADFILE FOR " << wrap_cptr(file) << " FAILED";
+      kDebug() << wrap_cptr(lua_tostring(m_state, -1));
     }
   }
   else
-    std::cout << "FILE " << wrap_cptr(file) << " DOES NOT EXIST" << std::endl;
+    kDebug() << "FILE " << wrap_cptr(file) << " DOES NOT EXIST";
 }
 
 void Api::pcall(int nArgs, int nResults) {
   if (lua_pcall(m_state, nArgs, nResults, 0) != 0) {
-    std::cout << "RUNTIME ERROR: " << wrap_cptr(lua_tostring(m_state, -1)) << std::endl;
+    kDebug() << "RUNTIME ERROR: " << wrap_cptr(lua_tostring(m_state, -1));
   }
 }
 
@@ -234,7 +234,7 @@ int Api::create_line(lua_State* l) {
   Wrapper<HLine>::allocate(l,
     new HLine(line, QTextCharFormat()));
   if (lua_pcall(l, 1, 1, 0) != 0)
-    std::cout << "ERROR INSIDE create_line" << std::endl;
+    kDebug() << "ERROR INSIDE create_line";
   return 1;
 }
 
@@ -292,8 +292,8 @@ std::pair<bool, HLine*> Api::runEvent(const QString& text, int eventIndex, QRegE
   lua_getglobal(m_state, "__run_event__");
 
   if (!lua_isfunction(m_state, -1)) {
-    std::cout << "** ERROR: __run_event__ is corrupted (type = " <<
-      lua_typename(m_state, lua_type(m_state, -1)) << ") **" << std::endl;
+    kDebug() << "** ERROR: __run_event__ is corrupted (type = " <<
+      lua_typename(m_state, lua_type(m_state, -1)) << ") **";
     lua_pop(m_state, 1);
     return std::pair<bool, HLine*>(false, 0);
   }
@@ -301,7 +301,7 @@ std::pair<bool, HLine*> Api::runEvent(const QString& text, int eventIndex, QRegE
   // event
   lua_getglobal(m_state, "__patterns__");
   if (!lua_istable(m_state, -1)) {
-    std::cout << "** ERROR: __patterns__ is corrupted **" << std::endl;
+    kDebug() << "** ERROR: __patterns__ is corrupted **";
     lua_pop(m_state, 2);
     return std::pair<bool, HLine*>(false, 0);
   }

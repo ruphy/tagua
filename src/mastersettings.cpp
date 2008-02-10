@@ -28,7 +28,7 @@ QDomElement MasterSettings::node() const {
 //       {
 //         QFile stub(m_filename);
 //         if (!stub.open(QFile::WriteOnly | QFile::Text)) {
-//           std::cout << "Unable to write to configuration file." << std::endl;
+//           kDebug() << "Unable to write to configuration file.";
 //           exit(1);
 //         }
 //         QTextStream stream(&stub);
@@ -42,7 +42,7 @@ QDomElement MasterSettings::node() const {
 //         exit(1);
 
       m_doc.appendChild(m_doc.createElement("configuration"));
-//      std::cout << m_doc.toString() << std::endl;
+//      kDebug() << m_doc.toString();
     }
 
 

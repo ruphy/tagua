@@ -29,7 +29,7 @@ Font::Font(int id, int size)
 , m_families(QFontDatabase::applicationFontFamilies(id))
 , m_font(m_families.empty()?QString():m_families[0], size) {
   //for(int i=0;i<m_families.size();i++)
-    //std::cout << "Familiy[" << i << "] = " << m_families[i] << std::endl;
+    //kDebug() << "Familiy[" << i << "] = " << m_families[i];
 }
 
 Font::Font(const QFont& font)

@@ -46,7 +46,7 @@ public:
     
     void skip_garbage() {
       #ifdef WEAK_SET_DEBUG
-      cout << "skipping garbage" << endl;
+      kDebug() << "skipping garbage" << endl;
       uint c = 0;
       #endif // WEAK_SET_DEBUG
       while (true) {
@@ -56,13 +56,13 @@ public:
 
 //      while (m_it != m_parent.m_set.end() && !(obj = (*m_it).lock())) {
         #ifdef WEAK_SET_DEBUG
-        cout << "iteration " << c++ << endl;
+        kDebug() << "iteration " << c++ << endl;
         #endif // WEAK_SET_DEBUG
 
         // the current reference is dangling:
         // remove it from the list and get the next one
         #ifdef WEAK_SET_DEBUG
-        cout << "dangling reference! removing it" << endl;
+        kDebug() << "dangling reference! removing it" << endl;
         #endif // WEAK_SET_DEBUG
         m_it = m_parent.m_set.erase(m_it);
       }
@@ -72,9 +72,9 @@ public:
       // m_it == m_parent.m_set.end()
       #ifdef WEAK_SET_DEBUG
       if (obj)
-        cout << "no iteration done: uses = " << obj.use_count() << ", obj = " << *obj << endl;
+        kDebug() << "no iteration done: uses = " << obj.use_count() << ", obj = " << *obj << endl;
       else
-        cout << "we're at the end" << endl;
+        kDebug() << "we're at the end" << endl;
       #endif // WEAK_SET_DEBUG
     }
   public:
@@ -95,13 +95,13 @@ public:
       */
     iterator& operator++() {
       #ifdef WEAK_SET_DEBUG
-      cout << "incrementing" << endl;
+      kDebug() << "incrementing" << endl;
       #endif // WEAK_SET_DEBUG
       ++m_it;
       obj.reset();
       skip_garbage();
       #ifdef WEAK_SET_DEBUG
-      cout << "done incrementing" << endl;
+      kDebug() << "done incrementing" << endl;
       #endif // WEAK_SET_DEBUG
       return *this;
     }

@@ -33,14 +33,14 @@ TabWidget::TabWidget(QWidget* parent)
 
 // void TabWidget::insertTab(int index, QWidget* widget, const QString& caption) {
 //   KTabWidget::insertTab(index, widget, caption);
-//   std::cout << "showing" << std::endl;
+//   kDebug() << "showing";
 //   if (count() > 1)
 //     setTabBarHidden(false);
 // }
 // 
 // void TabWidget::removeTab(int index) {
 //   KTabWidget::removeTab(index);
-//   std::cout << "hiding" << std::endl;
+//   kDebug() << "hiding";
 //   if (count() <= 1)
 //     setTabBarHidden(true);
 // }

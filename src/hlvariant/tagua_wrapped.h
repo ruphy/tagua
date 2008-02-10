@@ -23,10 +23,10 @@
   #define __FUNC__ __FUNCTION__
 #endif
 
-#define MISMATCH(x,y) (std::cout << " --> Error in "<<__FUNC__<<", MISMATCH!" << std::endl \
-                       << "     got type   " << prettyTypeName(typeid(x).name()) << std::endl \
-                       << "     instead of " << prettyTypeName(typeid(y).name()) << std::endl \
-                       << "     this is    " << prettyTypeName(typeid(*this).name()) << std::endl)
+#define MISMATCH(x,y) (kDebug() << " --> Error in "<<__FUNC__<<", MISMATCH!"  \
+                       << "     got type   " << prettyTypeName(typeid(x).name())  \
+                       << "     instead of " << prettyTypeName(typeid(y).name())  \
+                       << "     this is    " << prettyTypeName(typeid(*this).name()) )
                        
 #define DEFINE_VARIANT_FACTORY() \
   VariantFactory* createFactory() { \

@@ -14,8 +14,7 @@
 
 #define ENGINE_DEBUG
 #ifdef ENGINE_DEBUG
-  #include <iostream>
-  #include "common.h"
+  #include <KDebug>
 #endif
 
 using namespace boost;
@@ -59,10 +58,10 @@ void Engine::sendCommand(const QString& command, bool echo) {
     os << command << "\n";
 #ifdef ENGINE_DEBUG
     if (m_side == -1)
-      std::cout << "?";
+      kDebug() << "?";
     else
-      std::cout << m_side;
-    std::cout << "> " << command << std::endl;
+      kDebug() << m_side;
+    kDebug() << "> " << command;
 #endif 
   }
   else {
@@ -77,10 +76,10 @@ void Engine::processInput() {
     line.remove("\n").remove("\r");
 #ifdef ENGINE_DEBUG
     if (m_side == -1)
-      std::cout << "?";
+      kDebug() << "?";
     else
-      std::cout << m_side;
-    std::cout << "< " << line << std::endl;
+      kDebug() << m_side;
+    kDebug() << "< " << line;
 #endif
     if (m_console)
       m_console->displayText(line + "\n", 0);

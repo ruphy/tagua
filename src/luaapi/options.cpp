@@ -108,7 +108,7 @@ int Wrapper<OptList>::constructor(lua_State* l) {
   lua_pop(l, n);
 
 //   for(int i=0;i<list.size();i++)
-//     std::cout << "list[" << i << "] = " << list[i]->name() << std::endl;
+//     kDebug() << "list[" << i << "] = " << list[i]->name();
   create(l, list);
   return 1;
 }

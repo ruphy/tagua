@@ -8,11 +8,11 @@
   (at your option) any later version.
 */
 
-#include <iostream>
 #include <QApplication>
 #include <QClipboard>
 #include <KActionCollection>
 #include <KAction>
+#include <KDebug>
 #include "ui.h"
 #include "controllers/abstract.h"
 #include "graphicalgame.h"
@@ -78,7 +78,7 @@ void UI::setController(const shared_ptr<Controller>& controller) {
 
 void UI::removeController(QWidget* w) {
   controller()->end();
-  std::cout << "removing controller " << w << std::endl;
+  kDebug() << "removing controller " << w;
   m_controller.erase(w);
 }
 

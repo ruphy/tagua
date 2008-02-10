@@ -13,6 +13,7 @@
 
 #include <QString>
 #include <QRegExp>
+#include <KDebug>
 
 namespace HLVariant {
 namespace Shogi {
@@ -244,7 +245,7 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
 	    if (check.legal(mv))  {
 	      if (candidate.valid()) {
 		// ambiguous!
-		std::cerr << "ambiguous !" << std::endl;
+		std::cerr << "ambiguous !";
 		return Move();
 	      }
 	      else {
@@ -258,13 +259,13 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
     }
 
     if (!candidate.valid())
-      std::cerr << "error - piece not found" << std::endl;
+      std::cerr << "error - piece not found";
 
     offset += pattern.matchedLength();
     return candidate;
   }
   else {
-    std::cout << "error!!!! " << qPrintable(str.mid(offset)) << std::endl;
+    kDebug() << "error!!!! " << qPrintable(str.mid(offset));
     return Move(Point::invalid(),Point::invalid());
   }
 }

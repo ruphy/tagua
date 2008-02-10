@@ -390,7 +390,7 @@ void MainWindow::setupObservedGame(const GameInfo* g, const PositionInfo& style1
     board->setPlayers(Player(style12.whitePlayer, -1),
                       Player(style12.blackPlayer, -1));
 //    ui().setController(controller);
-    //std::cout << "adding tab" << std::endl;
+    //kDebug() << "adding tab";
     createTab(board.get(), controller,
       QString("Observing - %1 vs %2").arg(style12.whitePlayer)
                                      .arg(style12.blackPlayer));
@@ -408,7 +408,7 @@ void MainWindow::setupPGN(const QString& s) {
     variant = Variants::instance().get("chess");
   }
   else if (!(variant = Variants::instance().get(var->second))) {
-    std::cout << " --> MainWindow::setupPGN: Error, no such variant " << var->second << std::endl;
+    kDebug() << " --> MainWindow::setupPGN: Error, no such variant " << var->second;
     return;
   }
 
@@ -617,24 +617,24 @@ void MainWindow::testConnect() {
 
 
 void MainWindow::onEstablishConnection() {
-//  std::cout << "connection established" << std::endl;
+//  kDebug() << "connection established";
 }
 
 void MainWindow::onConnectionError(int ) {
-//  std::cout << "connection error (" << code << ")" << std::endl;
+//  kDebug() << "connection error (" << code << ")";
 }
 
 void MainWindow::onHostLookup() {
-//  std::cout << "hostLookup..." << std::flush;
+//  kDebug() << "hostLookup..." << std::flush;
 }
 
 void MainWindow::onHostFound() {
-//  std::cout << "found" << std::endl;
+//  kDebug() << "found";
 }
 
 
 void MainWindow::sendLogin() {
-//  std::cout << "sending username" << std::endl;
+//  kDebug() << "sending username";
 //  connection->sendText(connection->username());
 }
 

@@ -82,7 +82,7 @@ void SAN::load(const QString& str, int& offset, int ysize) {
     offset += kingCastlingPattern.matchedLength();
   }
   else {
-    //std::cout << "error!!!! " << str.mid(offset) << std::endl;
+    //kDebug() << "error!!!! " << str.mid(offset);
     to = Point::invalid();
   }
 }

@@ -45,15 +45,15 @@ MovementAnimation::MovementAnimation(const SpritePtr& piece,
 , m_state(Inactive)
 , m_rotate(rotate) {
 #ifdef ANIMATION_DEBUG
-  cout << "creating animation " << this << " for piece " << piece.get() << endl;
+  kDebug() << "creating animation " << this << " for piece " << piece.get() << endl;
 #endif
 }
 
 MovementAnimation::~MovementAnimation() {
 #ifdef ANIMATION_DEBUG
-  cout << "destroying animation " << this << " for piece " << m_piece.get() << endl;
+  kDebug() << "destroying animation " << this << " for piece " << m_piece.get() << endl;
   if (m_piece->movementAnimation().lock())
-    cout << " ***********    BUG    **************" << endl;
+    kDebug() << " ***********    BUG    **************" << endl;
 #endif
 //  m_piece->setMovementAnimation(0);
 }
@@ -73,14 +73,14 @@ MovementAnimation::createMovement(const QPoint& from, const QPoint& to) const {
 
 void MovementAnimation::start() {
 #ifdef ANIMATION_DEBUG
-  cout << "starting movement animation " << this
+  kDebug() << "starting movement animation " << this
        << " on piece " << m_piece.get() << endl;
 #endif
 
   {
     if (shared_ptr<Animation> animation = m_source->movementAnimation().lock()) {
 #ifdef ANIMATION_DEBUG
-      cout << "aborting movement animation " << animation
+      kDebug() << "aborting movement animation " << animation
            << " on piece " << m_source.get() << endl;
 #endif
       animation->abort();
@@ -119,7 +119,7 @@ Animation::State MovementAnimation::animationAdvance(int msec) {
       Q_ASSERT(t >= 0);
 
 #ifdef ANIMATION_DEBUG
-      cout << "active: t = " << t << endl;
+      kDebug() << "active: t = " << t << endl;
 #endif
 
       if (t >= 1)
@@ -135,14 +135,14 @@ Animation::State MovementAnimation::animationAdvance(int msec) {
   }
 
 #ifdef ANIMATION_DEBUG
-  cout << "advance (" << this << ") state = " << m_state << endl;
+  kDebug() << "advance (" << this << ") state = " << m_state << endl;
 #endif
   return m_state;
 }
 
 void MovementAnimation::stop() {
 #ifdef ANIMATION_DEBUG
-  cout << "stopping animation " << this
+  kDebug() << "stopping animation " << this
        << " on piece " << m_piece.get() << endl;
 #endif
   m_piece->moveTo(m_destination);
@@ -153,7 +153,7 @@ void MovementAnimation::stop() {
 
 void MovementAnimation::abort() {
 #ifdef ANIMATION_DEBUG
-  cout << "aborting animation " << this
+  kDebug() << "aborting animation " << this
        << " on piece " << m_piece.get() << endl;
 #endif
   m_state = Aborted;

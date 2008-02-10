@@ -87,9 +87,9 @@ bool ICSConnection::test(const QRegExp& pattern, const QString& str) {
 }
 
 void ICSConnection::processPartialLine(QString str) {
-//  std::cout << "processing (partial) " << str << std::endl;
+//  kDebug() << "processing (partial) " << str;
   if (test(fics, str)) {
-//    std::cout << "matched prompt" << std::endl;
+//    kDebug() << "matched prompt";
     prompt();
   }
   else if (test(beep, str)) {
@@ -127,10 +127,10 @@ void ICSConnection::process(QString str) {
       int number = observed_game.cap(1).toInt();
       incomingGameInfo->setGameNumber(number);
       m_games[number] = ICSGameData(-1, incomingGameInfo->type());
-      //std::cout << "ok, obs " << number << " of type " << incomingGameInfo->type() << std::endl;
+      //kDebug() << "ok, obs " << number << " of type " << incomingGameInfo->type();
     }
     else if (test(game, str)) {
-      //std::cout << "matched game. incomingGameInfo = " << incomingGameInfo << std::endl;
+      //kDebug() << "matched game. incomingGameInfo = " << incomingGameInfo;
       if(game.cap(4).startsWith("Creating") || game.cap(4).startsWith("Continuing") ) {
         if (!incomingGameInfo) {
           //this should really never happen, but anyway...
@@ -149,7 +149,7 @@ void ICSConnection::process(QString str) {
       else {
         if (!incomingGameInfo) {
           int number = game.cap(1).toInt();
-          //std::cout << "matching game " << number << " end" << std::endl;
+          //kDebug() << "matching game " << number << " end";
           m_games.erase(number);
           QString what = game.cap(4);
           QString result = game.cap(5);
@@ -158,7 +158,7 @@ void ICSConnection::process(QString str) {
       }
     }
     else if (test(unexamine, str)) {
-      //std::cout << "matching examined game end" << std::endl;
+      //kDebug() << "matching examined game end";
       int gameNumber = unexamine.cap(1).toInt();
       m_games.erase(gameNumber);
       endingExaminedGame(gameNumber);
@@ -169,7 +169,7 @@ void ICSConnection::process(QString str) {
       endingObservedGame(gameNumber);
     }
     else if (test(move_list_start, str)) {
-      //std::cout << "entering move list state" << std::endl;
+      //kDebug() << "entering move list state";
       m_move_list_game_num = move_list_start.cap(1).toInt();
       state = MoveListHeader;
     }
@@ -206,16 +206,16 @@ void ICSConnection::process(QString str) {
           switch (positionInfo.relation) {
             case PositionInfo::NotMyMove:
             case PositionInfo::MyMove:
-              //std::cout << "creating game" << std::endl;
+              //kDebug() << "creating game";
               creatingGame(incomingGameInfo, positionInfo);
               break;
             case PositionInfo::Examining:
-              //std::cout << "creating examination" << std::endl;
+              //kDebug() << "creating examination";
               creatingExaminedGame(incomingGameInfo, positionInfo);
               break;
             case PositionInfo::ObservingPlayed:
             case PositionInfo::ObservingExamined:
-              //std::cout << "creating obs " << gameNumber << " " << incomingGameInfo->type() << std::endl;
+              //kDebug() << "creating obs " << gameNumber << " " << incomingGameInfo->type();
               creatingObservedGame(incomingGameInfo, positionInfo);
               break;
             default:
@@ -249,11 +249,11 @@ void ICSConnection::process(QString str) {
 
   case MoveListHeader:
     if (test(move_list_players, str)){
-      //std::cout << "move list players: " << str << std::endl;
+      //kDebug() << "move list players: " << str;
       m_move_list_players = move_list_players.capturedTexts();
     }
     else if (test(move_list_game, str)){
-      //std::cout << "move list game: " << str << std::endl;
+      //kDebug() << "move list game: " << str;
       if (m_move_list_game_info)
         delete m_move_list_game_info;
 
@@ -275,13 +275,13 @@ void ICSConnection::process(QString str) {
       m_games[m_move_list_game_num].setType(move_list_game.cap(2));
     }
     else if (test(move_list_terminator, str)) {
-      //std::cout << "move list ign3: " << str << std::endl;
+      //kDebug() << "move list ign3: " << str;
     }
     else if (test(move_list_ignore1, str)){
-      //std::cout << "move list ign1: " << str << std::endl;
+      //kDebug() << "move list ign1: " << str;
     }
     else if (test(move_list_ignore2, str)) {
-      //std::cout << "move list ign2: " << str << std::endl;
+      //kDebug() << "move list ign2: " << str;
       state = MoveListMoves;
     }
     else {
@@ -322,7 +322,7 @@ void ICSConnection::process(QString str) {
     
           PGN pgn(m_move_list);
           if (!pgn.valid())
-            std::cout << "parse error on move list" << std::endl;
+            kDebug() << "parse error on move list";
           else
             listener->notifyMoveList(m_move_list_game_num, p, pgn);
         }

@@ -98,8 +98,8 @@ void FancyItem::goTo(QPoint p) {
     old_pos = pos();
     target_pos = p;
     time_pos = m->layout_time;
-    /*std::cout << m->layout_time << " start " << this << " "
-            << prettyTypeName(typeid(*this).name()) << std::endl;*/
+    /*kDebug() << m->layout_time << " start " << this << " "
+            << prettyTypeName(typeid(*this).name());*/
     setAnimated(true);
   }
 }
@@ -125,8 +125,8 @@ void FancyItem::setHighlight(bool h) {
 
 void FancyItem::advance(int time) {
   Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
-  /*std::cout << time << " anim " << this << " "
-            << prettyTypeName(typeid(*this).name()) << std::endl;*/
+  /*kDebug() << time << " anim " << this << " "
+            << prettyTypeName(typeid(*this).name());*/
   if(time_highlight != -1) {
     float fact = (time - time_highlight) / m->m_settings->anim_time;
     if(fact >= 1.0) {
@@ -152,21 +152,21 @@ void FancyItem::advance(int time) {
   if(time_pos != -1) {
     float fact = (time - time_pos) / m->m_settings->anim_time;
     if(fact >= 1.0) {
-      /*std::cout << time << " done " << this << " "
-            << prettyTypeName(typeid(*this).name()) << std::endl;*/
+      /*kDebug() << time << " done " << this << " "
+            << prettyTypeName(typeid(*this).name());*/
       moveTo(target_pos);
       time_pos = -1;
     }
     else {
-      /*std::cout << time << " move " << this << " "
-            << prettyTypeName(typeid(*this).name()) << std::endl;*/
+      /*kDebug() << time << " move " << this << " "
+            << prettyTypeName(typeid(*this).name());*/
       moveTo( int(target_pos.x()*fact + old_pos.x()*(1-fact)+0.5),
              int(target_pos.y()*fact + old_pos.y()*(1-fact)+0.5));
     }
   }
   if(canStop()) {
-    /*std::cout << time << " stop " << this << " "
-            << prettyTypeName(typeid(*this).name()) << std::endl;*/
+    /*kDebug() << time << " stop " << this << " "
+            << prettyTypeName(typeid(*this).name());*/
     setAnimated(false);
   }
 }
@@ -794,7 +794,7 @@ void Widget::doLayout() {
   layout_time = mSecs();
   layout_pending = false;
   layout_max_width = 0;
-  //std::cout << "layout_must_relayout = " << layout_must_relayout << std::endl;
+  //kDebug() << "layout_must_relayout = " << layout_must_relayout;
   int h = layoutHistory(history, BORDER_LEFT, BORDER_TOP, -1, 0, 0, true);
 
   QSize s(std::max(entry_size*7, layout_max_width+BORDER_RIGHT),

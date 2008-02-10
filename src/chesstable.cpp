@@ -139,12 +139,12 @@ void ChessTable::layout(bool force_reload) {
 #if 0
   for(::LuaApi::LuaValueMap::iterator it = lvals.begin(); it != lvals.end(); ++it)
   if(double* val = boost::get<double>(&it.value()))
-    std::cout << "lvals[" << it.key() << "] = " << *val << std::endl;
+    kDebug() << "lvals[" << it.key() << "] = " << *val;
   else if(QPointF* val = boost::get<QPointF>(&it.value()))
-    std::cout << "lvals[" << it.key() << "] = Point(" << val->x() << "," << val->y() << ")" << std::endl;
+    kDebug() << "lvals[" << it.key() << "] = Point(" << val->x() << "," << val->y() << ")";
   else if(QRectF* val = boost::get<QRectF>(&it.value()))
-    std::cout << "lvals[" << it.key() << "] = Rect(" << val->x() << "," << val->y()
-                                   << "," << val->width() << "," << val->height() << ")" << std::endl;
+    kDebug() << "lvals[" << it.key() << "] = Rect(" << val->x() << "," << val->y()
+                                   << "," << val->width() << "," << val->height() << ")";
 #endif
 
 #define GET_INT(name)                                    \
@@ -183,11 +183,11 @@ void ChessTable::layout(bool force_reload) {
 
   m_clocks[x]->resize(clock_size);
   m_clocks[x]->moveTo(clock0_position.x(), clock0_position.y());
-//   std::cout << "moving clock " << x << " to " << clock0_position.y() << std::endl;
+//   kDebug() << "moving clock " << x << " to " << clock0_position.y();
 
   m_clocks[!x]->resize(clock_size);
   m_clocks[!x]->moveTo(clock1_position.x(), clock1_position.y());
-//   std::cout << "moving clock " << !x << " to " << clock1_position.y() << std::endl;
+//   kDebug() << "moving clock " << !x << " to " << clock1_position.y();
 
   m_pools[x]->m_flipped = false;
   m_pools[x]->onResize(pool_piece_size, force_reload);
@@ -335,7 +335,7 @@ void ChessTable::run() {
 }
 
 void ChessTable::displayMessage(const QString& msg) {
-  std::cout << msg << std::endl;
+  kDebug() << msg;
   message(msg);
 }
 

@@ -9,15 +9,14 @@
 */
 
 #include "icsentity.h"
+#include <KDebug>
 #include "game.h"
 #include "icsconnection.h"
 #include "positioninfo.h"
 #include "poolinfo.h"
 #include "icsapi.h"
-#include <iostream>
 
 using namespace boost;
-
 
 class ICSTurnPolicy : public TurnPolicy::Abstract {
   const ICSEntity* m_entity;
@@ -82,10 +81,10 @@ void ICSEntity::updateGame(const Index& index, AbstractMove::Ptr icsMove,
         icsPos->copyPoolFrom(position);
         
         if (!position->equals(icsPos))
-          std::cout << "[inconsistency] computed position differs from expected!" << std::endl;
+          kDebug() << "[inconsistency] computed position differs from expected!";
       }
       else
-        std::cout << "[inconsistency] invalid move from server!" << std::endl;
+        kDebug() << "[inconsistency] invalid move from server!";
     }
   }
   
@@ -126,9 +125,9 @@ void ICSEntity::notifyStyle12(const PositionInfo& style12, bool is_starting) {
     if (position) {
       AbstractMove::Ptr mv = position->getMove(style12.lastMoveSAN);
       if (!mv || !mv->equals(last_move)) {
-        std::cout <<
+        kDebug() <<
           "[server inconsistency] SAN for last move is different from verbose notation"
-          << std::endl;
+         ;
       }
     }
   }
@@ -157,8 +156,8 @@ void ICSEntity::notifyMoveList(int num, AbstractPosition::Ptr pos, const PGN& pg
   if (m_game_number != num) return;
 
   if(pos->variant() != m_variant->name()) {
-    std::cout << "Mismatch for move list, this variant is \"" << m_variant->name() << "\",\n"
-                " got move list for \"" << pos->variant() << "\"" << std::endl;
+    kDebug() << "Mismatch for move list, this variant is \"" << m_variant->name() << "\",\n"
+                " got move list for \"" << pos->variant() << "\"";
     return;
   }
 
@@ -180,7 +179,7 @@ bool ICSEntity::canDetach() const {
 
 bool ICSEntity::attach() {
   // an ICS player can attach only if no move for that side has been made
-  //std::cout << "[ICS attach] index = " << m_game->lastMainlineIndex() << std::endl;
+  //kDebug() << "[ICS attach] index = " << m_game->lastMainlineIndex();
   if (m_game->lastMainlineIndex() == 0) return true;
   if (m_game->lastMainlineIndex() == 1 && m_side == 1) {
     // white already played, inform black

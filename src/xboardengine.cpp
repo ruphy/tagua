@@ -10,9 +10,9 @@
 
 #include "xboardengine.h"
 
+#include <KDebug>
 #include <QFileInfo>
 #include <QRegExp>
-#include <iostream>
 
 #include "enginenotifier.h"
 #include "foreach.h"
@@ -48,7 +48,7 @@ XBoardEngine::XBoardEngine(const QString& path, const QStringList& arguments)
 }
 
 XBoardEngine::~XBoardEngine() {
-  std::cout << "[debug] destroying engine" << std::endl;
+  kDebug() << "[debug] destroying engine";
   stop();
   m_engine.kill();
 }

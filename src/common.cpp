@@ -15,12 +15,13 @@
 #include <stdarg.h>
 #include <iostream>
 #include <QString>
+#include <KDebug>
 #include "common.h"
 
 namespace boost {
 
 void throw_exception(std::exception const &) {
-  std::cout << "[bug] boost exception" << std::endl;
+  kError() << "[bug] boost exception";
 }
 
 }
@@ -36,7 +37,7 @@ std::ostream &operator <<(std::ostream &os, const QString& s) {
   void
 #endif
 pstr(const QString& s) {
-  std::cout << "\"" << s << "\"" << std::endl;
+  kDebug() << "\"" << s << "\"";
 }
 
 QString qPrintf(const char* fmt, ...) {

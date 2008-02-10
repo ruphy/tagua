@@ -247,70 +247,70 @@ fail:
 }
 
 void dump_options_list(const OptList& options, int indent) {
-  if(!indent)std::cout << "---- begin dump ----" << std::endl;
+  if(!indent)kDebug() << "---- begin dump ----";
   for(int i=0;i<options.size();i++) {
     OptPtr _o = options[i];
     if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << (o->value()?"[X]":"[ ]") << " " << o->label() << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << (o->value()?"[X]":"[ ]") << " " << o->label();
       dump_options_list(o->subOptions(), indent+1);
     }
     else if(IntOptPtr o =
             boost::dynamic_pointer_cast<IntOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " |" << o->value() << "|" << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << o->label() << " |" << o->value() << "|";
     }
     else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " [" << o->value() << "]" << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << o->label() << " [" << o->value() << "]";
     }
     else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " {" << o->value() << "}" << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << o->label() << " {" << o->value() << "}";
     }
     else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " {" << o->value().name() << "}" << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << o->label() << " {" << o->value().name() << "}";
     }
     else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << o->label() << " {" << o->value().toString() << "}" << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << o->label() << " {" << o->value().toString() << "}";
     }
     else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << "[combo] " << o->label() << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << "[combo] " << o->label();
       for(int k=0;k<o->values().size();k++) {
-        for(int j=0;j<indent+1;j++)std::cout << "  ";
+        for(int j=0;j<indent+1;j++)kDebug() << "  ";
         if(k==o->selected())
-          std::cout << " *<" << o->values()[k] << ">*" << std::endl;
+          kDebug() << " *<" << o->values()[k] << ">*";
         else
-          std::cout << "  <" << o->values()[k] << ">" << std::endl;
+          kDebug() << "  <" << o->values()[k] << ">";
       }
     }
     else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
-      for(int j=0;j<indent;j++)std::cout << "  ";
-      std::cout << "[group] " << o->label() << std::endl;
+      for(int j=0;j<indent;j++)kDebug() << "  ";
+      kDebug() << "[group] " << o->label();
       for(int j=0;j<o->options().size();j++) {
         BoolOptPtr so = o->options()[j];
-        for(int j=0;j<indent+1;j++)std::cout << "  ";
-        std::cout << (so->value()?"(*)":"( )") << " " << so->label() << std::endl;
+        for(int j=0;j<indent+1;j++)kDebug() << "  ";
+        kDebug() << (so->value()?"(*)":"( )") << " " << so->label();
         if(so->subOptions().size())
           dump_options_list(so->subOptions(), indent+2);
       }
     }
     else {
-      std::cout << "dump_options_list: Error, unknown option of type "
-          << prettyTypeName(typeid(*_o).name()) << std::endl;
+      kDebug() << "dump_options_list: Error, unknown option of type "
+          << prettyTypeName(typeid(*_o).name());
     }
   }
-  if(!indent)std::cout << "---- end dump ----" << std::endl;
+  if(!indent)kDebug() << "---- end dump ----";
 }
 
 bool options_list_load_from_settings(OptList& options, const Settings& s) {
@@ -373,7 +373,7 @@ bool options_list_load_from_settings(OptList& options, const Settings& s) {
       o->setSelected( newval );
     }
     else
-      kError() << "option of type" << prettyTypeName(typeid(*_o).name()) ;
+      kError() << "option of type" << prettyTypeName(typeid(*_o).name());
   }
   return retv;
 }
@@ -421,6 +421,6 @@ void options_list_save_to_settings(const OptList& options, Settings s) {
       sel_group["value"] = o->value();
     }
     else
-      kError() << "option of type" << prettyTypeName(typeid(*_o).name()) ;
+      kError() << "option of type" << prettyTypeName(typeid(*_o).name());
   }
 }

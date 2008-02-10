@@ -20,10 +20,10 @@
 #include <QTextCursor>
 #include <QTextEdit>
 
-#include <iostream>
 #include <boost/scoped_ptr.hpp>
-#include <kstandarddirs.h>
-#include <kglobal.h>
+#include <KDebug>
+#include <KGlobal>
+#include <KStandardDirs>
 
 #include "common.h"
 #include "foreach.h"
@@ -72,12 +72,12 @@ LuaConsoleHighlighter::LuaConsoleHighlighter()
   KStandardDirs* dirs = KGlobal::dirs();
 
   QString luaHighlightingLibrary = dirs->locate("appdata", "scripts/hllib.lua");
-  std::cout << "lua lib: " << luaHighlightingLibrary << std::endl;
+  kDebug() << "lua lib: " << luaHighlightingLibrary;
   m_api.runFile(qPrintable(luaHighlightingLibrary));
 
   QStringList highlighting = dirs->findAllResources("appdata", "highlighting/*.lua", KStandardDirs::Recursive);
   foreach (QString f, highlighting) {
-    std::cout << "lua highlighting file: " << f << std::endl;
+    kDebug() << "lua highlighting file: " << f;
     m_api.runFile(qPrintable(f));
   }
 }
@@ -156,22 +156,22 @@ void ConsoleHighlighter::operator()(const QString& text, ConsoleOutput& output) 
     if (best >= 0) {
       // output the portion of the text before the matching
       // substring
-//       std::cout << "outputting plain: " << text.mid(offset, best_offset - offset) << std::endl;
-//       std::cout << "weight = " << m_display->currentCharFormat().fontWeight() << std::endl;
+//       kDebug() << "outputting plain: " << text.mid(offset, best_offset - offset);
+//       kDebug() << "weight = " << m_display->currentCharFormat().fontWeight();
       output(text.mid(offset, best_offset - offset));
 
       // change format
       m_display->setCurrentCharFormat(m_patterns[best].format);
 
       // output the matching substring
-//       std::cout << "outputting formatted: " << text.mid(best_offset, best_length) << std::endl;
-//       std::cout << "weight = " << m_display->currentCharFormat().fontWeight() << std::endl;
+//       kDebug() << "outputting formatted: " << text.mid(best_offset, best_length);
+//       kDebug() << "weight = " << m_display->currentCharFormat().fontWeight();
       output(text.mid(best_offset, best_length));
 
       // restore basic format
       m_display->setCurrentCharFormat(m_basic_format);
-//       std::cout << "restored" << std::endl;
-//       std::cout << "weight = " << m_display->currentCharFormat().fontWeight() << std::endl;
+//       kDebug() << "restored";
+//       kDebug() << "weight = " << m_display->currentCharFormat().fontWeight();
 
       // update offset
       offset = best_offset + best_length;
@@ -180,9 +180,9 @@ void ConsoleHighlighter::operator()(const QString& text, ConsoleOutput& output) 
   }
 
   // output the last portion of the text
-//   std::cout << "outputting plain: " << text.mid(offset) << std::endl;
+//   kDebug() << "outputting plain: " << text.mid(offset);
   output(text.mid(offset));
-//   std::cout << "weight = " << m_display->currentCharFormat().fontWeight() << std::endl;
+//   kDebug() << "weight = " << m_display->currentCharFormat().fontWeight();
 }
 #endif
 

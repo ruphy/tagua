@@ -9,7 +9,7 @@
 */
 
 #include "editgame.h"
-
+#include <KDebug>
 #include "graphicalgame.h"
 #include "graphicalsystem.h"
 #include "xboardengine.h"
@@ -24,7 +24,6 @@
 #include "foreach.h"
 #include "actioncollection.h"
 #include "ui.h"
-#include <iostream>
 
 using namespace boost;
 
@@ -153,7 +152,7 @@ EntityToken EditGameController::addPlayingEngine(int side, const shared_ptr<Engi
     return EntityToken(entity);
   }
   else {
-    std::cout << "** could not detach entity playing " << side << "**" << std::endl;
+    kDebug() << "** could not detach entity playing " << side << "**";
   }
 
   return EntityToken();
@@ -190,7 +189,7 @@ void EditGameController::removeEntity(const EntityToken& token) {
       m_entities.erase(it);
     }
   }
-  std::cout << "there are " << m_entities.size() << " entities left" << std::endl;
+  kDebug() << "there are " << m_entities.size() << " entities left";
 }
 
 bool EditGameController::addICSPlayer(int side, int game_number, const shared_ptr<ICSConnection>& connection) {
@@ -200,7 +199,7 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
                                 side, game_number, connection, &m_agents));
 
     if (entity->attach()) {
-      std::cout << "added ICS agent " << entity.get() << std::endl;
+      kDebug() << "added ICS agent " << entity.get();
       m_agents.addAgent(entity);
 
       m_players[side] = entity;
@@ -212,12 +211,12 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
       m_agents.addAgent(m_clock_agent);
     }
     else {
-      std::cout << "** could not attach ics entity **" << std::endl;
+      kDebug() << "** could not attach ics entity **";
       return false;
     }
   }
   else {
-    std::cout << "** could not detach entity playing " << side << "**" << std::endl;
+    kDebug() << "** could not detach entity playing " << side << "**";
     return false;
   }
 
@@ -225,7 +224,7 @@ bool EditGameController::addICSPlayer(int side, int game_number, const shared_pt
 }
 
 bool EditGameController::setExaminationMode(int game_number, const shared_ptr<ICSConnection>& connection) {
-  std::cout << "[controller " << this << "] setting examination mode" << std::endl;
+  kDebug() << "[controller " << this << "] setting examination mode";
   if (m_players[0]->canDetach() &&
       m_players[1]->canDetach()) {
     shared_ptr<ExaminationEntity> entity(new ExaminationEntity(m_variant, m_game,
@@ -244,10 +243,10 @@ bool EditGameController::setExaminationMode(int game_number, const shared_ptr<IC
       return true;
     }
     else
-      std::cout << "** could not attach examination entity **" << std::endl;
+      kDebug() << "** could not attach examination entity **";
   }
   else
-    std::cout << "** could not detach entity **" << std::endl;
+    kDebug() << "** could not detach entity **";
 
   return false;
 }
@@ -269,10 +268,10 @@ bool EditGameController::setObserveMode(int game_number, const shared_ptr<ICSCon
       return true;
     }
     else
-      std::cout << "** could not attach ics entity for observe mode ** " << std::endl;
+      kDebug() << "** could not attach ics entity for observe mode ** ";
   }
   else
-    std::cout << "** could not detach entity **" << std::endl;
+    kDebug() << "** could not detach entity **";
 
   return false;
 }
