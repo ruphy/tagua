@@ -14,7 +14,7 @@
 #include <iostream>
 
 #include <QRegExp>
-
+#include <QDebug>
 #include "export.h"
 #include "point.h"
 
@@ -22,7 +22,7 @@ namespace HLVariant {
 namespace Chess {
 
 class TAGUA_EXPORT SAN {
-  friend std::ostream& operator<<(std::ostream& os, const SAN& move);
+  friend QDebug operator<<(QDebug os, const SAN& move);
 
   static QRegExp pattern;
   static QRegExp kingCastlingPattern;

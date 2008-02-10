@@ -9,25 +9,22 @@
 */
 
 #include <cmath>
-#include <iostream>
+#include <QDebug>
 #include <QString>
 #include "common.h"
 #include "point.h"
 
 Point::Point(int x, int y)
-    : x(x), y(y)
-{
+    : x(x), y(y) {
 
 }
 
 Point::Point(const QPoint& p)
-    : x(p.x()), y(p.y())
-{
+    : x(p.x()), y(p.y()) {
 
 }
 
-Point::Point()
-{
+Point::Point() {
 
 }
 
@@ -120,58 +117,47 @@ bool Point::operator==(const Point& other) const {
     return x == other.x && y == other.y;
 }
 
-bool Point::operator!=(const Point& other) const
-{
+bool Point::operator!=(const Point& other) const {
     return !(*this == other);
 }
 
-bool Point::operator<(const Point& other) const
-{
+bool Point::operator<(const Point& other) const {
     return y < other.y || (y == other.y && x < other.x);
 }
 
-bool Point::operator<=(const Point& other) const
-{
+bool Point::operator<=(const Point& other) const {
     return y <= other.y || (y == other.y && x <= other.x);
 }
 
-bool Point::resembles(const Point& other) const
-{
+bool Point::resembles(const Point& other) const {
     return (other.x == -1 || x == other.x) &&
             (other.y == -1 || y == other.y);
 }
 
-Point::operator QPoint() const
-{
+Point::operator QPoint() const {
     return QPoint(x,y);
 }
 
-Point Point::normalizeInfinity() const
-{
+Point Point::normalizeInfinity() const {
     return Point(
         normalizeInfinityHelper(x),
         normalizeInfinityHelper(y)
     );
 }
 
-double Point::norm() const
-{
+double Point::norm() const {
     return sqrt((double)(x*x + y*y));
 }
 
-int Point::normalizeInfinityHelper(int n) const
-{
+int Point::normalizeInfinityHelper(int n) const {
     if (n == 0)
         return 0;
     else
         return n > 0 ? 1 : -1;
 }
 
-std::ostream& operator<<(std::ostream& os, const Point& p)
-{
-    return os << "(" << (p.x == -1 ? QString("?") : QString::number(p.x))
-            << ", " << (p.y == -1 ? QString("?") : QString::number(p.y)) << ")";
+QDebug operator<<(QDebug dbg, const Point& p) {
+  dbg << "(" << (p.x == -1 ? QString("?") : QString::number(p.x))
+      << ", " << (p.y == -1 ? QString("?") : QString::number(p.y)) << ")";
+  return dbg;
 }
-
-
-

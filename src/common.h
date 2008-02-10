@@ -11,9 +11,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <iosfwd>
 #include "export.h"
-
+#include <math.h>
 
 class QString;
 
@@ -21,32 +20,7 @@ enum ErrorCode {
   InvalidMove
 };
 
-struct null_deleter {
-  void operator()(void const *) const { }
-};
-
-//class ChessPiece;
-
-template <typename T> class Grid;
-template <typename T> class PointerGrid;
-//typedef PointerGrid<ChessPiece> PieceGrid;
-
-
-TAGUA_EXPORT std::ostream &operator <<(std::ostream &os, const QString& s);
-
-inline const char* wrap_cptr(const char* ptr) {
-  return ptr ? ptr : "[NULL]";
-}
-
-QString qPrintf(const char* fmt, ...);
-
-TAGUA_EXPORT QString prettyTypeName(const char* name);
-
-inline void TRAP() {
-#if defined(Q_CC_GNU)
-  __asm__ __volatile__("int $3\n\t");
-#endif
-}
+QString prettyTypeName(const char* name);
 
 #ifndef M_PI
   #define M_PI 3.1415926

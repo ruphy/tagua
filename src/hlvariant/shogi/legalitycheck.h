@@ -12,6 +12,7 @@
 #define HLVARIANT__SHOGI__LEGALITYCHECK_H
 
 #include "interactiontype.h"
+#include <KDebug>
 #include "turnpolicy.h"
 
 namespace HLVariant {
@@ -173,7 +174,6 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
       return true;
     }
     else {
-      //std::cerr << "CANNOT MOVE: piece type cannot go there";
       return false;
     }
   }
@@ -188,7 +188,7 @@ template <typename GameState>
       Piece piece = state.board().get(p);
       LegalityCheck<GameState> check(state);
       if (piece.color() == state.turn() && check.getMoveType(piece, Move(p, point))) {
-	std::cerr << state.board().get(point).name() << " can be captured";
+	kDebug() << state.board().get(point).name() << " can be captured";
         return true;
       }
     }

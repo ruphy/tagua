@@ -157,7 +157,6 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
       return true;
     }
     else {
-      //std::cerr << "CANNOT MOVE: piece type cannot go there";
       return false;
     }
   }

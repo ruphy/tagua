@@ -8,55 +8,14 @@
   (at your option) any later version.
 */
 
-// throw exception: used by boost
-
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <iostream>
-#include <QString>
-#include <KDebug>
 #include "common.h"
+#include <KDebug>
 
 namespace boost {
-
+// throw exception: used by boost
 void throw_exception(std::exception const &) {
   kError() << "[bug] boost exception";
 }
-
-}
-
-std::ostream &operator <<(std::ostream &os, const QString& s) {
-    os << s.toAscii().constData();
-    return os;
-}
-
-#ifdef Q_CC_GNU
-  void __attribute__ ((used))
-#else
-  void
-#endif
-pstr(const QString& s) {
-  kDebug() << "\"" << s << "\"";
-}
-
-QString qPrintf(const char* fmt, ...) {
-  va_list ap;
-
-  va_start(ap, fmt);
-  int l = vsnprintf(NULL, 0, fmt, ap)+1;
-  va_end(ap);
-
-  char *str = (char*)alloca(l);
-  //char *str = (char*)malloc(l);
-  va_start(ap, fmt);
-  vsnprintf(str, l, fmt, ap);
-  va_end(ap);
-
-  QString retv(str);
-
-  //free(str);
-  return retv;
 }
 
 #ifdef Q_CC_GNU

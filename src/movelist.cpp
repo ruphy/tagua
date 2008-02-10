@@ -98,8 +98,6 @@ void FancyItem::goTo(QPoint p) {
     old_pos = pos();
     target_pos = p;
     time_pos = m->layout_time;
-    /*kDebug() << m->layout_time << " start " << this << " "
-            << prettyTypeName(typeid(*this).name());*/
     setAnimated(true);
   }
 }
@@ -125,8 +123,6 @@ void FancyItem::setHighlight(bool h) {
 
 void FancyItem::advance(int time) {
   Widget *m = dynamic_cast<Widget*>(topLevelCanvas());
-  /*kDebug() << time << " anim " << this << " "
-            << prettyTypeName(typeid(*this).name());*/
   if(time_highlight != -1) {
     float fact = (time - time_highlight) / m->m_settings->anim_time;
     if(fact >= 1.0) {
@@ -152,21 +148,15 @@ void FancyItem::advance(int time) {
   if(time_pos != -1) {
     float fact = (time - time_pos) / m->m_settings->anim_time;
     if(fact >= 1.0) {
-      /*kDebug() << time << " done " << this << " "
-            << prettyTypeName(typeid(*this).name());*/
       moveTo(target_pos);
       time_pos = -1;
     }
     else {
-      /*kDebug() << time << " move " << this << " "
-            << prettyTypeName(typeid(*this).name());*/
       moveTo( int(target_pos.x()*fact + old_pos.x()*(1-fact)+0.5),
              int(target_pos.y()*fact + old_pos.y()*(1-fact)+0.5));
     }
   }
   if(canStop()) {
-    /*kDebug() << time << " stop " << this << " "
-            << prettyTypeName(typeid(*this).name());*/
     setAnimated(false);
   }
 }

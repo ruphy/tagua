@@ -59,11 +59,11 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
     if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
       OptCheckBox *cb = new OptCheckBox(o, this, widget);
-      cb->setObjectName(qPrintf("%02d_check",i));
+      cb->setObjectName(QString("%02d_check").arg(i));
       layout->addWidget(cb, lpos++, left, 1, 2);
       if(o->m_sub_options.size()) {
         QWidget *w = new QWidget(widget);
-        w->setObjectName(qPrintf("%02d_check_sub",i));
+        w->setObjectName(QString("%02d_check_sub").arg(i));
         setupOptionWidget(w, o->m_sub_options, true);
         w->setEnabled(o->value());
         QObject::connect(cb, SIGNAL(toggled(bool)), w, SLOT(setEnabled(bool)));
@@ -73,17 +73,17 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
     else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
       QGroupBox *gb = new QGroupBox(o->label(), widget);
-      gb->setObjectName(qPrintf("%02d_group",i));
+      gb->setObjectName(QString("%02d_group").arg(i));
       QVBoxLayout *vbox = new QVBoxLayout(gb);
       //vbox->setMargin(0);
       for(int j=0;j<o->m_options.size();j++) {
         BoolOptPtr so = o->m_options[j];
         OptRadioButton *rb = new OptRadioButton(o, j, this, gb);
-        rb->setObjectName(qPrintf("%02d_radio_%02d",i,j));
+        rb->setObjectName(QString("%02d_radio_%02d").arg(i).arg(j));
         vbox->addWidget(rb);
         if(so->m_sub_options.size()) {
           QWidget *w = new QWidget(widget);
-          w->setObjectName(qPrintf("%02d_radio_%02d_sub",i,j));
+          w->setObjectName(QString("%02d_radio_%02d_sub").arg(i).arg(j));
           setupOptionWidget(w, so->m_sub_options, true);
           w->setEnabled(so->value());
           QObject::connect(rb, SIGNAL(toggled(bool)), w, SLOT(setEnabled(bool)));
@@ -99,14 +99,14 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
       case IntOpt::SpinBox:
         {
           OptSpinBox *sb = new OptSpinBox(o, this, widget);
-          sb->setObjectName(qPrintf("%02d_spin",i));
+          sb->setObjectName(QString("%02d_spin").arg(i));
           layout->addWidget(sb, lpos++, right);
           break;
         }
       case IntOpt::Slider:
         {
           OptSlider *sl = new OptSlider(o, this, widget);
-          sl->setObjectName(qPrintf("%02d_slid",i));
+          sl->setObjectName(QString("%02d_slid").arg(i));
           layout->addWidget(sl, lpos++, right);
           break;
         }
@@ -116,35 +116,35 @@ void OptionWidget::setupOptionWidget(QWidget* widget, OptList& options, bool ind
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptLineEdit *ow = new OptLineEdit(o, this, widget);
-      ow->setObjectName(qPrintf("%02d_line",i));
+      ow->setObjectName(QString("%02d_line").arg(i));
       layout->addWidget(ow, lpos++, right);
     }
     else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptUrlRequester *ow = new OptUrlRequester(o, this, widget);
-      ow->setObjectName(qPrintf("%02d_url",i));
+      ow->setObjectName(QString("%02d_url").arg(i));
       layout->addWidget(ow, lpos++, right);
     }
     else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptComboBox *ow = new OptComboBox(o, this, widget);
-      ow->setObjectName(qPrintf("%02d_combo",i));
+      ow->setObjectName(QString("%02d_combo").arg(i));
       layout->addWidget(ow, lpos++, right);
     }
     else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptColorButton *ow = new OptColorButton(o, this, widget);
-      ow->setObjectName(qPrintf("%02d_color",i));
+      ow->setObjectName(QString("%02d_color").arg(i));
       layout->addWidget(ow, lpos++, right);
     }
     else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
       layout->addWidget(new QLabel(o->label()), lpos, left);
       OptFontRequester *ow = new OptFontRequester(o,this, widget);
-      ow->setObjectName(qPrintf("%02d_font",i));
+      ow->setObjectName(QString("%02d_font").arg(i));
       layout->addWidget(ow, lpos++, right);
     }
     else
@@ -161,29 +161,29 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
     OptPtr _o = newopts[i];
     if(BoolOptPtr o =
             boost::dynamic_pointer_cast<BoolOpt,BaseOpt>(_o)) {
-      OptCheckBox *cb = widget->findChild<OptCheckBox*>(qPrintf("%02d_check",i));
+      OptCheckBox *cb = widget->findChild<OptCheckBox*>(QString("%02d_check").arg(i));
       if(!cb) goto fail;
       cb->setChecked(o->value());
 
       if(o->m_sub_options.size()) {
-        QWidget *w = widget->findChild<QWidget*>(qPrintf("%02d_check_sub",i));
+        QWidget *w = widget->findChild<QWidget*>(QString("%02d_check_sub").arg(i));
         if(!w) goto fail;
         setOptionWidgetValues(w, o->m_sub_options);
       }
     }
     else if(SelectOptPtr o =
             boost::dynamic_pointer_cast<SelectOpt,BaseOpt>(_o)) {
-      QGroupBox *gb = widget->findChild<QGroupBox*>(qPrintf("%02d_group",i));
+      QGroupBox *gb = widget->findChild<QGroupBox*>(QString("%02d_group").arg(i));
       if(!gb) goto fail;
 
       for(int j=0;j<o->m_options.size();j++) {
         BoolOptPtr so = o->m_options[j];
-        OptRadioButton *rb = gb->findChild<OptRadioButton*>(qPrintf("%02d_radio_%02d",i,j));
+        OptRadioButton *rb = gb->findChild<OptRadioButton*>(QString("%02d_radio_%02d").arg(i).arg(j));
         if(!rb) goto fail;
         rb->setChecked(so->value());
 
         if(so->m_sub_options.size()) {
-          QWidget *w = widget->findChild<QWidget*>(qPrintf("%02d_radio_%02d_sub",i,j));
+          QWidget *w = widget->findChild<QWidget*>(QString("%02d_radio_%02d_sub").arg(i).arg(j));
           if(!w) goto fail;
           setOptionWidgetValues(w, so->m_sub_options);
         }
@@ -194,14 +194,14 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
       switch (o->visualization()) {
       case IntOpt::SpinBox:
         {
-          OptSpinBox *sb = widget->findChild<OptSpinBox*>(qPrintf("%02d_spin",i));
+          OptSpinBox *sb = widget->findChild<OptSpinBox*>(QString("%02d_spin").arg(i));
           if(!sb) goto fail;
           sb->setValue(o->value());
           break;
         }
       case IntOpt::Slider:
         {
-          OptSlider *sl = widget->findChild<OptSlider*>(qPrintf("%02d_slid",i));
+          OptSlider *sl = widget->findChild<OptSlider*>(QString("%02d_slid").arg(i));
           if(!sl) goto fail;
           sl->setValue(o->value());
           break;
@@ -210,31 +210,31 @@ void OptionWidget::setOptionWidgetValues(QWidget* widget, OptList& newopts) {
     }
     else if(StringOptPtr o =
             boost::dynamic_pointer_cast<StringOpt,BaseOpt>(_o)) {
-      OptLineEdit *ow = widget->findChild<OptLineEdit*>(qPrintf("%02d_line",i));
+      OptLineEdit *ow = widget->findChild<OptLineEdit*>(QString("%02d_line").arg(i));
       if(!ow) goto fail;
       ow->setText(o->value());
     }
     else if(UrlOptPtr o =
             boost::dynamic_pointer_cast<UrlOpt,BaseOpt>(_o)) {
-      OptUrlRequester *ow = widget->findChild<OptUrlRequester*>(qPrintf("%02d_url",i));
+      OptUrlRequester *ow = widget->findChild<OptUrlRequester*>(QString("%02d_url").arg(i));
       if(!ow) goto fail;
       ow->setUrl(o->value());
     }
     else if(ComboOptPtr o =
             boost::dynamic_pointer_cast<ComboOpt,BaseOpt>(_o)) {
-      OptComboBox *ow = widget->findChild<OptComboBox*>(qPrintf("%02d_combo",i));
+      OptComboBox *ow = widget->findChild<OptComboBox*>(QString("%02d_combo").arg(i));
       if(!ow) goto fail;
       ow->setCurrentIndex(o->selected());
     }
     else if(ColorOptPtr o =
             boost::dynamic_pointer_cast<ColorOpt,BaseOpt>(_o)) {
-      OptColorButton *ow = widget->findChild<OptColorButton*>(qPrintf("%02d_color",i));
+      OptColorButton *ow = widget->findChild<OptColorButton*>(QString("%02d_color").arg(i));
       if(!ow) goto fail;
       ow->setColor(o->value());
     }
     else if(FontOptPtr o =
             boost::dynamic_pointer_cast<FontOpt,BaseOpt>(_o)) {
-      OptFontRequester *ow = widget->findChild<OptFontRequester*>(qPrintf("%02d_font",i));
+      OptFontRequester *ow = widget->findChild<OptFontRequester*>(QString("%02d_font").arg(i));
       if(!ow) goto fail;
       ow->setFont(o->value());
     }

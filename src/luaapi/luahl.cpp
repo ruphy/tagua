@@ -212,17 +212,17 @@ void Api::runFile(const char* file) {
     if(luaL_loadfile(m_state, file) == 0)
       pcall(0, LUA_MULTRET);
     else {
-      kDebug() << "LOADFILE FOR " << wrap_cptr(file) << " FAILED";
-      kDebug() << wrap_cptr(lua_tostring(m_state, -1));
+      kDebug() << "LOADFILE FOR " << file << " FAILED";
+      kDebug() << lua_tostring(m_state, -1);
     }
   }
   else
-    kDebug() << "FILE " << wrap_cptr(file) << " DOES NOT EXIST";
+    kDebug() << "FILE " << file << " DOES NOT EXIST";
 }
 
 void Api::pcall(int nArgs, int nResults) {
   if (lua_pcall(m_state, nArgs, nResults, 0) != 0) {
-    kDebug() << "RUNTIME ERROR: " << wrap_cptr(lua_tostring(m_state, -1));
+    kDebug() << "RUNTIME ERROR: " << lua_tostring(m_state, -1);
   }
 }
 

@@ -92,13 +92,14 @@ void SAN::load(const QString& str, int ysize) {
   load(str, offset, ysize);
 }
 
-std::ostream& operator<<(std::ostream& os, const SAN& move) {
+QDebug operator<<(QDebug os, const SAN& move) {
   if (move.castling == SAN::KingSide)
-    return os << "O-O";
+    os << "O-O";
   else if (move.castling == SAN::QueenSide)
-    return os << "O-O-O";
+    os << "O-O-O";
   else
-    return os << move.type << ": " << move.from << " -> " << move.to;
+    os << move.type << ": " << move.from << " -> " << move.to;
+  return os;
 }
 
 

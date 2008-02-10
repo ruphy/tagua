@@ -217,7 +217,7 @@ bool Image::drawGlyph(Context* ctx,
   QChar glyph(glyph_num);
   FontGlyphPtr font_glyph;
 
-  QString k = file + qPrintf(":%04x", glyph_num);
+  QString k = file + QString(":%04x").arg(glyph_num);
   if(FontGlyphPtr *f = ctx->get<FontGlyphPtr>(k))
     font_glyph = *f;
   else {

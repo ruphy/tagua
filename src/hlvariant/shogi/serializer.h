@@ -245,7 +245,7 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
 	    if (check.legal(mv))  {
 	      if (candidate.valid()) {
 		// ambiguous!
-		std::cerr << "ambiguous !";
+		kDebug() << "ambiguous";
 		return Move();
 	      }
 	      else {
@@ -259,7 +259,7 @@ Serializer<LegalityCheck>::parse(const QString& str, int& offset,
     }
 
     if (!candidate.valid())
-      std::cerr << "error - piece not found";
+      kError() << "Piece not found";
 
     offset += pattern.matchedLength();
     return candidate;

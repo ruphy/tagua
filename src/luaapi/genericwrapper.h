@@ -217,7 +217,7 @@ public:
             lua_getfield(l, -2, ".type");
             if(lua_isstring(l, -1))
               luaL_error(l, "Mismatch, got object of type %s expecting %s",
-                            wrap_cptr(lua_tostring(l,-1)), Wrapper<T>::class_name());
+                            lua_tostring(l,-1), Wrapper<T>::class_name());
           }
           lua_pop(l,2);
           luaL_error(l, "Mismatch, got object of unknown type expecting %s",

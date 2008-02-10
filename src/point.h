@@ -60,6 +60,6 @@ private:
   int normalizeInfinityHelper(int n) const;
 };
 
-TAGUA_EXPORT std::ostream& operator<<(std::ostream&, const Point&);
+TAGUA_EXPORT QDebug operator<<(QDebug dbg, const Point& c);
 
 #endif // POINT_H
