@@ -22,20 +22,21 @@ GITVERSION=$(shell git describe | sed -e s/^v// -e s/-/~/)
 configure: BUILD/CMakeCache.txt
 BUILD/CMakeCache.txt:
 	dh_testdir
-	rm -f CMakeCache.txt
-	cmake \
+	rm -rf CMakeCache.txt BUILD
+	mkdir BUILD
+	cd BUILD && cmake \
 		-DSYSTEM_LUA=yes \
 		-DCMAKE_INSTALL_PREFIX:PATH=/usr \
-		-DQT_QMAKE_EXECUTABLE:FILEPATH=/usr/bin/qmake-qt4
+		-DQT_QMAKE_EXECUTABLE:FILEPATH=/usr/bin/qmake-qt4 ..
 
 
 #Architecture 
 build: build-arch build-indep
 
 build-arch: build-stamp
-build-stamp: CMakeCache.txt
+build-stamp: BUILD/CMakeCache.txt
 
-	$(MAKE)
+	$(MAKE) -C BUILD
 	touch $@
 
 build-indep:
@@ -56,7 +57,7 @@ install:
 	dh_testroot
 	dh_clean -k
 
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+	$(MAKE) -C BUILD DESTDIR=$(CURDIR)/debian/tmp install
 	cd debian/tmp && mv usr/bin usr/games
 
 	dh_movefiles
