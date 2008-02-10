@@ -19,8 +19,8 @@ export DH_OPTIONS
 # drop leading "v", replace the 1st hyphen with a ~ to sort lower than 1.0
 GITVERSION=$(shell git describe | sed -e s/^v// -e s/-/~/)
 
-configure: CMakeCache.txt
-CMakeCache.txt:
+configure: BUILD/CMakeCache.txt
+BUILD/CMakeCache.txt:
 	dh_testdir
 	rm -f CMakeCache.txt
 	cmake \
@@ -46,9 +46,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 
-	rm -f CMakeCache.txt
-	rm -rf CMakeTmp
-	$(MAKE) clean
+	rm -rf BUILD
 
 	dh_clean 
 
