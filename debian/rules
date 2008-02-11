@@ -16,6 +16,9 @@
 # This has to be exported to make some magic below work.
 export DH_OPTIONS
 
+# drop leading "v", replace the 1st hyphen with a ~ to sort lower than 1.0
+GITVERSION=$(shell git describe | sed -e s/^v// -e s/-/~/)
+
 configure: CMakeCache.txt
 CMakeCache.txt:
 	dh_testdir
@@ -86,7 +89,7 @@ binary-common:
 	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
-	dh_gencontrol
+	dh_gencontrol -u '-v$(GITVERSION)'
 	dh_md5sums
 	dh_builddeb
 
