@@ -4,7 +4,7 @@ import("piece_theme.lua")
 theme.options = OptList {
   BoolOpt("wallpaper", "Draw wallpaper", true, OptList {
       BoolOpt("blur", "Enable blur", false),
-      UrlOpt("file", "File:", "../../wallpapers/Paris_by_Night.jpg")
+      UrlOpt("file", "File:", "../../wallpapers/Dark_Sunset.jpg")
   }),
   FontOpt("clock_font1", "Clock text font", Font("Sans", true, true)),
   FontOpt("clock_font2", "Clock time font", Font("Sans", true, false)),
