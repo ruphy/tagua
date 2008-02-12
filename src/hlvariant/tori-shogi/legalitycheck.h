@@ -32,6 +32,7 @@ public:
   virtual bool getMoveType(const Piece& piece, const Move& move) const;
   bool legal(Move& move) const;
   bool pseudolegal(Move& move) const;
+  bool canBeCaptured(const GameState& state, const Point& point) const;
 protected:
   virtual bool stuckPiece(const Piece& piece, const Point& p) const;
 };
@@ -163,6 +164,23 @@ bool LegalityCheck<GameState>::pseudolegal(Move& move) const {
 }
 
 
+// strict copy from Shogi, for template-instantation reasons
+template <typename GameState>
+  bool LegalityCheck<GameState>::canBeCaptured(const GameState& state, const Point& point) const {
+  for (int i = 0; i < state.board().size().x; i++) {
+    for (int j = 0; j < state.board().size().y; j++) {
+      Point p(i, j);
+      Piece piece = state.board().get(p);
+      LegalityCheck<GameState> check(state);
+      if (piece.color() == state.turn() && check.getMoveType(piece, Move(p, point))) {
+	kDebug() << state.board().get(point).name() << " can be captured";
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 template <typename GameState>
 bool LegalityCheck<GameState>::legal(Move& move) const {
   if (!pseudolegal(move))
@@ -171,14 +189,13 @@ bool LegalityCheck<GameState>::legal(Move& move) const {
   GameState tmp(Base::m_state);
   tmp.move(move);
 
-  // find king and prince positions
+  // find king position
   Point king_pos = tmp.board().find(Piece(Base::m_state.turn(), Piece::PHOENIX));
-
   if (!king_pos.valid())
     return false;
 
   // check if the king can be captured
-  if (Base::canBeCaptured(tmp, king_pos))
+  if (canBeCaptured(tmp, king_pos))
     return false;
 
   return true;
