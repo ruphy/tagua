@@ -6,11 +6,13 @@ Name[it]=Tagua
 Name[xx]=xxTaguaxx
 GenericName=Generic Board Game
 GenericName[cs]=Deskové hry
-Exec=tagua %i %m -caption "%c"
+GenericName[fr]=Jeux de pions
+Exec=tagua %i -caption "%c"
 Icon=tagua
 Type=Application
+Categories=Qt;KDE;Game;BoardGame;
 DocPath=tagua/tagua.html
 Comment=A generic board game application.
 Comment[cs]=Aplikace pro různé deskové hry.
+Comment[fr]=Divers jeux de pions (échecs, shogi, ...)
 Terminal=false
-
