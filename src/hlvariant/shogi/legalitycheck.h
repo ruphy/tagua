@@ -188,7 +188,6 @@ template <typename GameState>
       Piece piece = state.board().get(p);
       LegalityCheck<GameState> check(state);
       if (piece.color() == state.turn() && check.getMoveType(piece, Move(p, point))) {
-	kDebug() << state.board().get(point).name() << " can be captured";
         return true;
       }
     }
