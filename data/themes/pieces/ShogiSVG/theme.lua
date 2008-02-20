@@ -7,8 +7,8 @@ shadow_offset_x=6
 shadow_offset_y=4
 shadow_grow=5
 
-fontnames = {"Potraced from ???", "Potraced from shogi.net", "Potraced from daemonshogi"}
-fontlist = {"default", "shogi.net", "daemonshogi"}
+fontnames = {"Potraced from ???"} -- , "Potraced from shogi.net", "Potraced from daemonshogi"}
+fontlist = {"default"} -- , "shogi.net", "daemonshogi"}
 
 theme.options = OptList {
   BoolOpt("moves_overlay", "Moves overlay", true),
