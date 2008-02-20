@@ -57,11 +57,7 @@ void Engine::sendCommand(const QString& command, bool echo) {
     QTextStream os(&m_engine);
     os << command << "\n";
 #ifdef ENGINE_DEBUG
-    if (m_side == -1)
-      kDebug() << "?";
-    else
-      kDebug() << m_side;
-    kDebug() << "> " << command;
+    kDebug() << "" << m_side << ">" << command;
 #endif 
   }
   else {
@@ -75,11 +71,7 @@ void Engine::processInput() {
     QString line = m_engine.readLine();
     line.remove("\n").remove("\r");
 #ifdef ENGINE_DEBUG
-    if (m_side == -1)
-      kDebug() << "?";
-    else
-      kDebug() << m_side;
-    kDebug() << "< " << line;
+    kDebug() << m_side << "<" << line;
 #endif
     if (m_console)
       m_console->displayText(line + "\n", 0);
