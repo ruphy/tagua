@@ -341,7 +341,7 @@ PrefThemeCategory::PrefThemeCategory(QWidget* parent, PrefTheme* owner)
   , m_opt_layout(NULL)
   , m_opt_widget(NULL) {
   setupUi(this);
-  m_reset = new QAction(KIcon("edit-clear"), "&Reset to default", this);
+  m_reset = new QAction(KIcon("edit-clear"), i18n("&Reset to Default"), this);
   m_reset->setShortcut(Qt::CTRL+Qt::Key_Z);
   connect(m_reset, SIGNAL(triggered()), this, SLOT(reset()));
   m_resetButton->setDefaultAction(m_reset);

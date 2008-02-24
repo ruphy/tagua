@@ -681,12 +681,12 @@ void Widget::mousePressEvent ( QMouseEvent * event ) {
     else if(event->button() == Qt::RightButton) {
       QAction *a;
       QMenu m(this);
-      a = m.addAction(KIcon("pen"), "&Set comment");
+      a = m.addAction(KIcon("pen"), i18n("&Set Comment"));
       a->setData("comment");
       m.addSeparator();
-      a = m.addAction(KIcon(), "&Promote variation");
+      a = m.addAction(KIcon(), i18n("&Promote Variation"));
       a->setData("promote");
-      a = m.addAction(KIcon("edit-delete"), "&Remove variation");
+      a = m.addAction(KIcon("edit-delete"), i18n("&Remove Variation"));
       a->setData("remove");
       boost::weak_ptr<Entry> ewptr = boost::weak_ptr<Entry>(fetch(b->entry->index));
       int v = b->variation;
@@ -722,19 +722,19 @@ void Widget::mousePressEvent ( QMouseEvent * event ) {
     else if(event->button() == Qt::RightButton) {
       QAction *a;
       QMenu m(this);
-      a = m.addAction(KIcon("pen"), "&Set comment");
+      a = m.addAction(KIcon("pen"), i18n("&Set Comment"));
       a->setData("comment");
-      a = m.addAction(KIcon("edit-clear"), "&Clear variations");
+      a = m.addAction(KIcon("edit-clear"), i18n("&Clear Variations"));
       a->setEnabled(!e->variations.empty());
       a->setData("clear");
-      a = m.addAction(KIcon("cut"), "&Truncate");
+      a = m.addAction(KIcon("cut"), i18n("&Truncate"));
       a->setEnabled(fetch(e->index.next()));
       a->setData("truncate");
       m.addSeparator();
-      a = m.addAction(KIcon(), "&Promote variation");
+      a = m.addAction(KIcon(), i18n("&Promote variation"));
       a->setEnabled(e->index.nested.size());
       a->setData("promote");
-      a = m.addAction(KIcon("edit-delete"), "&Remove variation");
+      a = m.addAction(KIcon("edit-delete"), i18n("&Remove variation"));
       a->setEnabled(e->index.nested.size());
       a->setData("remove");
       boost::weak_ptr<Entry> ewptr = boost::weak_ptr<Entry>(fetch(e->index));
