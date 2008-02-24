@@ -724,7 +724,7 @@ void Widget::mousePressEvent ( QMouseEvent * event ) {
       QMenu m(this);
       a = m.addAction(KIcon("pen"), "&Set comment");
       a->setData("comment");
-      a = m.addAction(KIcon("eraser"), "&Clear variations");
+      a = m.addAction(KIcon("edit-clear"), "&Clear variations");
       a->setEnabled(!e->variations.empty());
       a->setData("clear");
       a = m.addAction(KIcon("cut"), "&Truncate");
