@@ -11,7 +11,8 @@
 #ifndef CHESSTABLE_H
 #define CHESSTABLE_H
 
-#include <qwidget.h>
+#include <QWidget>
+#include <QPixmap>
 
 #include "kgamecanvas.h"
 #include "positioninfo.h"
@@ -32,7 +33,8 @@ namespace Canvas {
 
 class ChessTable : public KGameCanvasWidget {
   Q_OBJECT
-  KGameCanvasTiledPixmap* m_wallpaper;
+  KGameCanvasPixmap* m_wallpaper;
+  QPixmap m_background_pixmap;
 
   Clock*           m_clocks[2];
   Board*           m_board;
@@ -47,8 +49,10 @@ class ChessTable : public KGameCanvasWidget {
   ClickableCanvas*    eventItemAt(QPoint pos);
 
   void layout(bool force_reload = false);
+  void renderWallpaper();
 
   AnimationSettings m_anim_settings;
+  
 public:
   ChessTable(QWidget* parent = 0);
   ~ChessTable();

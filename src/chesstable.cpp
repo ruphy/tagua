@@ -71,6 +71,46 @@ ChessTable::~ChessTable() {
   delete m_info;
 }
 
+void ChessTable::renderWallpaper() {
+  if (!m_background_pixmap.isNull()) {
+    QPixmap bg = m_background_pixmap;
+    // scale & crop background
+    double ratio_x = (double) width() / m_background_pixmap.width();
+    double ratio_y = (double) height() / m_background_pixmap.height();
+    if (ratio_x > ratio_y)
+      bg = bg.scaledToWidth(width(), Qt::SmoothTransformation);
+    else
+      bg = bg.scaledToHeight(height(), Qt::SmoothTransformation);
+    QSize size(width(), height());
+    QImage res(size, QImage::Format_ARGB32_Premultiplied);
+    {
+      QPoint pos(
+        (bg.width() - width()) / 2, 
+        (bg.height() - height()) / 2);
+      kDebug() << "img size" << bg.size();
+      kDebug() << "size" << size;
+      kDebug() << "pos" << pos;
+      QPainter p(&res);
+      p.drawPixmap(QPoint(0,0), bg, QRectF(pos, size));
+    }
+  
+    bg = QPixmap::fromImage(res);
+    if (m_wallpaper) {
+      m_wallpaper->setPixmap(bg);
+    }
+    else {
+      delete m_wallpaper;
+      m_wallpaper = new KGameCanvasPixmap(QPixmap::fromImage(res), this);
+      m_wallpaper->lower();
+      m_wallpaper->show();
+    }
+  }
+  else {
+    delete m_wallpaper;
+    m_wallpaper = 0;
+  }
+}
+
 void ChessTable::settingsChanged() {
   m_anim_settings.reload();
 
@@ -80,18 +120,9 @@ void ChessTable::settingsChanged() {
   m_info->settingsChanged();
   for(int i=0;i<2;i++)
     m_pools[i]->settingsChanged();
-
-  if(m_wallpaper)
-    delete m_wallpaper;
-
-  QPixmap bg = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper", 0, true);
-  if (!bg.isNull()) {
-    m_wallpaper = new KGameCanvasTiledPixmap(bg, QSize(), QPoint(), false, this);
-    m_wallpaper->lower();
-    m_wallpaper->show();
-  }
-  else
-    m_wallpaper = 0;
+    
+  m_background_pixmap = m_board->controlsLoader()->getStaticValue<QPixmap>("wallpaper", 0, true);
+  renderWallpaper();
 
   /* redo the layout, forcing reload */
   if(isVisible())
@@ -123,11 +154,7 @@ void ChessTable::layout(bool force_reload) {
   force_reload |= m_need_reload;
   m_need_reload = false;
 
-  if (m_wallpaper) {
-    m_wallpaper->setSize(size());
-    QSize delta = (m_wallpaper->pixmap().size()-size())/2;
-    m_wallpaper->setOrigin(QPoint(delta.width(), delta.height()));
-  }
+  renderWallpaper();
 
   ::LuaApi::LuaValueMap params;
   params["width"] = width();
