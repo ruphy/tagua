@@ -114,11 +114,11 @@ PrefEngines::PrefEngines(const QString&, QWidget* parent)
   layout->addWidget(m_list);
   
   QVBoxLayout* buttons = new QVBoxLayout;
-  m_new = new QPushButton(KIcon("edit-add"), "&New...", this);
+  m_new = new QPushButton(i18n("&New..."), this);
   buttons->addWidget(m_new);
-  m_edit = new QPushButton(KIcon("edit"), "&Edit...", this);
+  m_edit = new QPushButton(i18n("&Edit..."), this);
   buttons->addWidget(m_edit);
-  m_delete = new QPushButton(KIcon("edit-delete"), "&Delete", this);
+  m_delete = new QPushButton(i18n("&Delete"), this);
   buttons->addWidget(m_delete);
   buttons->addStretch();
   layout->addLayout(buttons);
