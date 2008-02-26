@@ -37,6 +37,7 @@ build-arch: build-stamp
 build-stamp: BUILD/CMakeCache.txt
 
 	$(MAKE) -C BUILD
+	./extract-messages.sh
 	touch $@
 
 build-indep:
