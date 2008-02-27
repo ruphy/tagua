@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: http://trac.tagua-project.org\n"
-"POT-Creation-Date: 2007-11-23 23:17+0100\n"
+"POT-Creation-Date: 2008-02-26 23:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -76,112 +76,153 @@ msgstr ""
 msgid "Initial variant"
 msgstr ""
 
-#: mainwindow.cpp:78
+#: mainwindow.cpp:79
 msgid "Move list"
 msgstr ""
 
-#: mainwindow.cpp:88
+#: mainwindow.cpp:89
 msgid "FICS Connection"
 msgstr ""
 
-#: mainwindow.cpp:91
+#: mainwindow.cpp:92
 msgid "Console"
 msgstr ""
 
-#: mainwindow.cpp:128
+#: mainwindow.cpp:129
 msgid "E&ngines"
 msgstr ""
 
-#: mainwindow.cpp:142
+#: mainwindow.cpp:143
 msgid "Play as &white"
 msgstr ""
 
-#: mainwindow.cpp:148
+#: mainwindow.cpp:149
 msgid "Play as &black"
 msgstr ""
 
-#: mainwindow.cpp:155
+#: mainwindow.cpp:156
 msgid "&Analyze"
 msgstr ""
 
-#: mainwindow.cpp:174
+#: mainwindow.cpp:175
 msgid "&Back"
 msgstr ""
 
-#: mainwindow.cpp:175
+#: mainwindow.cpp:176
 msgid "&Forward"
 msgstr ""
 
-#: mainwindow.cpp:176
+#: mainwindow.cpp:177
 msgid "Be&gin"
 msgstr ""
 
-#: mainwindow.cpp:177
+#: mainwindow.cpp:178
 msgid "&End"
 msgstr ""
 
-#: mainwindow.cpp:178
+#: mainwindow.cpp:179
 msgid "&Connect"
 msgstr ""
 
-#: mainwindow.cpp:179
+#: mainwindow.cpp:181
 msgid "&Disconnect"
 msgstr ""
 
-#: mainwindow.cpp:186
+#: mainwindow.cpp:188
 msgid "&Edit position"
 msgstr ""
 
-#: mainwindow.cpp:187
+#: mainwindow.cpp:189
 msgid "&Clear board"
 msgstr ""
 
-#: mainwindow.cpp:188
+#: mainwindow.cpp:190
 msgid "&Set starting position"
 msgstr ""
 
-#: mainwindow.cpp:192
+#: mainwindow.cpp:194
 msgid "&Flip view"
 msgstr ""
 
-#: mainwindow.cpp:194
+#: mainwindow.cpp:196
 msgid "Toggle &console"
 msgstr ""
 
-#: mainwindow.cpp:195
+#: mainwindow.cpp:197
 msgid "Toggle &move list"
 msgstr ""
 
-#: mainwindow.cpp:426
+#: mainwindow.cpp:420
 msgid "You have specified a folder"
 msgstr ""
 
-#: mainwindow.cpp:426 mainwindow.cpp:431 mainwindow.cpp:438 mainwindow.cpp:635
+#: mainwindow.cpp:420 mainwindow.cpp:425 mainwindow.cpp:432 mainwindow.cpp:647
 msgid "Error"
 msgstr ""
 
-#: mainwindow.cpp:431
+#: mainwindow.cpp:425
 msgid "The specified file does not exist"
 msgstr ""
 
-#: mainwindow.cpp:438
+#: mainwindow.cpp:432
 msgid "You do not have read permission to this file."
 msgstr ""
 
-#: mainwindow.cpp:453
+#: mainwindow.cpp:447
 msgid "Open PGN file"
 msgstr ""
 
-#: mainwindow.cpp:475
+#: mainwindow.cpp:469
 msgid "Save PGN file"
 msgstr ""
 
-#: mainwindow.cpp:635
+#: mainwindow.cpp:481
+msgid ""
+"A file named \"%1\" already exists. Are you sure you want to overwrite it?"
+msgstr ""
+
+#: mainwindow.cpp:483
+msgid "Overwrite File?"
+msgstr ""
+
+#: mainwindow.cpp:484
+msgid "&Overwrite"
+msgstr ""
+
+#: mainwindow.cpp:647
 msgid "Error creating game"
 msgstr ""
 
-#: mainwindow.cpp:675
+#: mainwindow.cpp:687
 msgid "Illegal move"
+msgstr ""
+
+#: movelist.cpp:684 movelist.cpp:725
+msgid "&Set Comment"
+msgstr ""
+
+#: movelist.cpp:687
+msgid "&Promote Variation"
+msgstr ""
+
+#: movelist.cpp:689
+msgid "&Remove Variation"
+msgstr ""
+
+#: movelist.cpp:727
+msgid "&Clear Variations"
+msgstr ""
+
+#: movelist.cpp:730
+msgid "&Truncate"
+msgstr ""
+
+#: movelist.cpp:734
+msgid "&Promote variation"
+msgstr ""
+
+#: movelist.cpp:737
+msgid "&Remove variation"
 msgstr ""
 
 #: pref_engines.cpp:39
@@ -236,6 +277,22 @@ msgstr ""
 msgid "No engine name"
 msgstr ""
 
+#: pref_engines.cpp:117
+msgid "&New..."
+msgstr ""
+
+#: pref_engines.cpp:119
+msgid "&Edit..."
+msgstr ""
+
+#: pref_engines.cpp:121
+msgid "&Delete"
+msgstr ""
+
+#: pref_theme.cpp:344
+msgid "&Reset to Default"
+msgstr ""
+
 #: qconnect.cpp:56
 msgid "Select timeseal binary"
 msgstr ""
@@ -278,7 +335,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 13
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 13
-#: extractedrc.cpp:15 extractedrc.cpp:63 extractedrc.cpp:185
+#: extractedrc.cpp:15 extractedrc.cpp:63 extractedrc.cpp:182
 msgid "Form"
 msgstr ""
 
@@ -364,7 +421,7 @@ msgstr ""
 #. i18n: file ./ui/newgamedialog.ui line 39
 #. i18n: tag string
 #. i18n: file ./ui/pref_theme.ui line 48
-#: extractedrc.cpp:57 extractedrc.cpp:238
+#: extractedrc.cpp:57 extractedrc.cpp:232
 msgid "&Variant:"
 msgstr ""
 
@@ -378,7 +435,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 36
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 36
-#: extractedrc.cpp:66 extractedrc.cpp:188
+#: extractedrc.cpp:66 extractedrc.cpp:185
 msgid "&Animations"
 msgstr ""
 
@@ -398,7 +455,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 65
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 158
-#: extractedrc.cpp:75 extractedrc.cpp:208
+#: extractedrc.cpp:75 extractedrc.cpp:205
 msgid "&Movements"
 msgstr ""
 
@@ -406,7 +463,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 72
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 165
-#: extractedrc.cpp:78 extractedrc.cpp:211
+#: extractedrc.cpp:78 extractedrc.cpp:208
 msgid "&Fading"
 msgstr ""
 
@@ -414,7 +471,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 88
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 60
-#: extractedrc.cpp:81 extractedrc.cpp:191
+#: extractedrc.cpp:81 extractedrc.cpp:188
 msgid ""
 "Rough\n"
 "(little CPU usage)"
@@ -424,7 +481,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 115
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 87
-#: extractedrc.cpp:85 extractedrc.cpp:195
+#: extractedrc.cpp:85 extractedrc.cpp:192
 msgid ""
 "Smooth\n"
 "(high CPU usage)"
@@ -434,7 +491,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 130
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 179
-#: extractedrc.cpp:89 extractedrc.cpp:217
+#: extractedrc.cpp:89 extractedrc.cpp:214
 msgid "Animation s&moothness:"
 msgstr ""
 
@@ -442,7 +499,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 151
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 123
-#: extractedrc.cpp:92 extractedrc.cpp:202
+#: extractedrc.cpp:92 extractedrc.cpp:199
 msgid "Slow"
 msgstr ""
 
@@ -450,7 +507,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 177
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 146
-#: extractedrc.cpp:95 extractedrc.cpp:205
+#: extractedrc.cpp:95 extractedrc.cpp:202
 msgid "Fast"
 msgstr ""
 
@@ -458,7 +515,7 @@ msgstr ""
 #. i18n: file ./ui/pref_board.ui line 189
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 102
-#: extractedrc.cpp:98 extractedrc.cpp:199
+#: extractedrc.cpp:98 extractedrc.cpp:196
 msgid "Animation s&peed:"
 msgstr ""
 
@@ -535,110 +592,104 @@ msgid "&Work dir:"
 msgstr ""
 
 #. i18n: tag string
-#. i18n: file ./ui/preferences.ui line 13
-#: extractedrc.cpp:149
-msgid "Change Tagua Settings"
-msgstr ""
-
-#. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 13
-#: extractedrc.cpp:152
+#: extractedrc.cpp:149
 msgid "Dialog"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 47
-#: extractedrc.cpp:155
+#: extractedrc.cpp:152
 msgid "Pattern"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 75
-#: extractedrc.cpp:158
+#: extractedrc.cpp:155
 msgid "Bold"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 82
-#: extractedrc.cpp:161
+#: extractedrc.cpp:158
 msgid "Italic"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 148
-#: extractedrc.cpp:164
+#: extractedrc.cpp:161
 msgid "Use this box to test your regular expression"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 186
-#: extractedrc.cpp:167
+#: extractedrc.cpp:164
 msgid "Add"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 193
-#: extractedrc.cpp:170
+#: extractedrc.cpp:167
 msgid "Remove"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 223
-#: extractedrc.cpp:173
+#: extractedrc.cpp:170
 msgid "Up"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 230
-#: extractedrc.cpp:176
+#: extractedrc.cpp:173
 msgid "Down"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 266
-#: extractedrc.cpp:179
+#: extractedrc.cpp:176
 msgid "OK"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_highlight.ui line 273
-#: extractedrc.cpp:182
+#: extractedrc.cpp:179
 msgid "Cancel"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 172
-#: extractedrc.cpp:214
+#: extractedrc.cpp:211
 msgid "&Smooth highlighting"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 203
-#: extractedrc.cpp:220
+#: extractedrc.cpp:217
 msgid "&Colors and fonts"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 215
-#: extractedrc.cpp:223
+#: extractedrc.cpp:220
 msgid "C&omments color:"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 233
-#: extractedrc.cpp:226
+#: extractedrc.cpp:223
 msgid "Cus&tom comments font:"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 243
-#: extractedrc.cpp:229
+#: extractedrc.cpp:226
 msgid "C&ustom moves font:"
 msgstr ""
 
 #. i18n: tag string
 #. i18n: file ./ui/pref_movelist.ui line 253
-#: extractedrc.cpp:232
+#: extractedrc.cpp:229
 msgid "S&elected move color:"
 msgstr ""
 
@@ -648,6 +699,12 @@ msgstr ""
 #. i18n: file ./ui/quickconnect.ui line 149
 #: extractedrc.cpp:235 extractedrc.cpp:271
 msgid "..."
+msgstr ""
+
+#. i18n: tag string
+#. i18n: file ./ui/preferences.ui line 13
+#: extractedrc.cpp:238
+msgid "Change Tagua Settings"
 msgstr ""
 
 #. i18n: tag string
