@@ -1,4 +1,6 @@
 #!/bin/sh
+set -e
+
 WDIR=`pwd`
 BASEDIR=$1
 [ $BASEDIR ] || BASEDIR=$WDIR   # root of translatable sources
