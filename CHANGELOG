@@ -1,3 +1,14 @@
+Version 1.0 alpha 2 - "Raigor"
+==============================
+01-Mar-2008
+
+* Ported to kdelibs 4.0.
+* Improved loading and saving of PGNs.
+* More consistent debug output.
+* Created a translation subsystem.
+* Added French and Czech translations.
+* Debian packaging.
+
 Version 1.0 alpha - "Clinkz"
 ===========================
 01-Sep-2007
