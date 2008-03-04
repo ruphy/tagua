@@ -1,6 +1,37 @@
 Tagua - A generic board game application
 ===========================================
 
+Tagua is a powerful board game application which supports several
+types of games, and has a powerful plugin system which makes it
+easy to add more. Just let your imagination decide. =)
+
+Games implemented up to now:
+- Chess
+- Shogi
+- Minichess
+- Minishogi
+- Tori shogi
+- Sho shogi
+
+===========================================
+Why the name
+
+Tagua is the name of a plant where vegetal ivory is extracted.
+Ivory because of it's wide usage while making board games, vegetal
+because we love animals and elephants. <3
+
+===========================================
+
 For more information, visit http://www.tagua-project.org
 
+There's a mailing list on Google Groups about tagua development:
+http://groups.google.com/group/tagua-devel
 
+Feel free to come and ask questions about the development of
+the game, writing rules for new games, or anything else.
+
+We want you. =)
+
+Love!
+
+- The Tagua team
